@@ -1,6 +1,5 @@
-from fastapi import APIRouter, HTTPException
-
 from app.security import create_access_token
+from fastapi import APIRouter, HTTPException
 from schemas import LoginRequest, TokenResponse
 from services.upstream_client import UpstreamClient
 

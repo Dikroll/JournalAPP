@@ -1,9 +1,8 @@
 from collections import defaultdict
 
-from fastapi import APIRouter, Depends
-
 from app.logger import setup_logger
 from app.security import get_current_user
+from fastapi import APIRouter, Depends
 from schemas import ReviewGroup, UpstreamReview
 from services.upstream_client import UpstreamClient, get_upstream_client
 
@@ -13,7 +12,6 @@ router = APIRouter(prefix="/reviews", tags=["reviews"])
 
 @router.get("/list", response_model=list[ReviewGroup])
 async def get_reviews(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     raw = [UpstreamReview(**e) for e in await client.get("/reviews/index/list")]

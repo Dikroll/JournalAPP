@@ -1,8 +1,7 @@
 import asyncio
 
-from fastapi import APIRouter, Depends
-
 from app.security import get_current_user
+from fastapi import APIRouter, Depends
 from schemas import (
     ActivityEntry,
     Counters,
@@ -28,7 +27,6 @@ _HW_MAP   = {0: "pending", 1: "checked", 2: "overdue", 3: "returned", 4: "total"
 
 @router.get("/counters", response_model=Counters)
 async def get_counters(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     raw = [UpstreamCounter(**e) for e in await client.get("/count/page-counters", params={"filter_type": 0})]
@@ -37,7 +35,7 @@ async def get_counters(
 
 @router.get("/homework-counters", response_model=HomeworkCounters)
 async def get_homework_counters(
-    user: dict = Depends(get_current_user),
+
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     raw = [UpstreamCounter(**e) for e in await client.get("/count/homework")]
@@ -46,7 +44,6 @@ async def get_homework_counters(
 
 @router.get("/leaderboard", response_model=Leaderboard)
 async def get_leaderboard(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     grp_pos_raw, str_pos_raw, str_top_raw, grp_top_raw = await asyncio.gather(
@@ -76,7 +73,6 @@ async def get_leaderboard(
 
 @router.get("/activity", response_model=list[ActivityEntry])
 async def get_activity(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     raw = [UpstreamActivityEntry(**e) for e in await client.get("/dashboard/progress/activity")]
@@ -85,7 +81,6 @@ async def get_activity(
 
 @router.get("/quizzes", response_model=list[QuizItem])
 async def get_quizzes(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     data = await client.get("/library/operations/list", params={"material_type": 7, "recommended_type": 0})

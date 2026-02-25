@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends
-
 from app.security import get_current_user
+from fastapi import APIRouter, Depends
 from schemas import (
     GamingPoints,
     Group,
@@ -46,7 +45,6 @@ def _adapt(raw: UpstreamUserInfo) -> UserInfo:
 
 @router.get("/me", response_model=UserInfo)
 async def get_me(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     raw = UpstreamUserInfo(**(await client.get("/settings/user-info")))

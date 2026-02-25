@@ -1,8 +1,7 @@
 import asyncio
 
-from fastapi import APIRouter, Depends
-
 from app.security import get_current_user
+from fastapi import APIRouter, Depends
 from schemas import (
     PaymentRecord,
     PaymentSummary,
@@ -35,7 +34,6 @@ def _adapt_history(raw: list | dict) -> list[PaymentRecord]:
 
 @router.get("/schedule", response_model=list[ScheduledPayment])
 async def get_schedule(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     return _adapt_schedule(await client.get("/payment/operations/schedule"))
@@ -43,7 +41,7 @@ async def get_schedule(
 
 @router.get("/history", response_model=list[PaymentRecord])
 async def get_history(
-    user: dict = Depends(get_current_user),
+
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     return _adapt_history(await client.get("/payment/operations/history"))
@@ -51,7 +49,6 @@ async def get_history(
 
 @router.get("/summary", response_model=PaymentSummary)
 async def get_summary(
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     schedule_raw, history_raw = await asyncio.gather(

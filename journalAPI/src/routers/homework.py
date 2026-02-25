@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, Query
-
 from app.security import get_current_user
+from fastapi import APIRouter, Depends, Query
 from schemas import HomeworkCounters, HomeworkItem
 from services.upstream_client import UpstreamClient, get_upstream_client
 
@@ -32,7 +31,6 @@ async def get_homework(
     type: int = Query(0),
     group_id: int = Query(..., description="ID группы студента"),
     page: int = Query(None, description="Конкретная страница. Если не указана — все страницы"),
-    user: dict = Depends(get_current_user),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
     """

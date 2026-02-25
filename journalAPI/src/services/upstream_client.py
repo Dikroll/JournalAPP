@@ -1,8 +1,8 @@
 import httpx
-from fastapi import HTTPException
-
 from app.config import settings
 from app.logger import setup_logger
+from app.security import get_current_user
+from fastapi import Depends, HTTPException
 
 log = setup_logger("upstream")
 
@@ -97,5 +97,5 @@ class UpstreamClient:
         return await self._request("POST", path, json=json)
 
 
-def get_upstream_client(user: dict) -> UpstreamClient:
+def get_upstream_client(user: dict = Depends(get_current_user)) -> UpstreamClient:
     return UpstreamClient(username=user["username"], password=user["password"])
