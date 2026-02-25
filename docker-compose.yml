@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./journalAPI
+    container_name: journal_backend
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./journalAPI/src:/app/src
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./journalWeb
+    container_name: journal_frontend
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./journalWeb:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
