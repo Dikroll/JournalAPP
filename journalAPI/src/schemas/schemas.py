@@ -138,13 +138,17 @@ class QuizItem(BaseModel):
 # ══════════════════════════════════════════════════════════════════
 
 class HomeworkItem(BaseModel):
-    id: Optional[int] = None
-    theme: Optional[str] = None
-    spec_name: Optional[str] = None
-    teacher: Optional[str] = None
-    issued_date: Optional[str] = None
-    deadline: Optional[str] = None
-    status: Optional[int] = None
+    id: int
+    theme: str
+    spec_name: str
+    teacher: str
+    issued_date: str
+    deadline: str
+    overdue_date: Optional[str] = None  
+    status: int
+    has_file: bool
+    file_url: Optional[str] = None                       
+    comment: Optional[str] = None
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -403,3 +407,23 @@ class UpstreamVisitRecord(BaseModel):
     class_work_mark: Optional[int]
     practical_work_mark: Optional[int]
     final_work_mark: Optional[int]
+
+
+
+class UpstreamLesson(BaseModel):
+    date: str
+    lesson: int
+    started_at: str
+    finished_at: str
+    teacher_name: str
+    subject_name: str
+    room_name: str
+
+class LessonItem(BaseModel):
+    date: str
+    lesson: int
+    started_at: str
+    finished_at: str
+    teacher: str      
+    subject: str       
+    room: str           

@@ -17,12 +17,10 @@ async def get_reviews(
     raw = [UpstreamReview(**e) for e in await client.get("/reviews/index/list")]
     log.debug(f"Got {len(raw)} raw review entries from upstream")
 
-    # группируем по teacher + message (дату игнорируем — upstream ставит разный timestamp
-    # для одного и того же отзыва по нескольким предметам)
     groups: dict[tuple, dict] = defaultdict(lambda: {"date": None, "specs": []})
     for e in raw:
         key = (e.teacher, e.message)
-        groups[key]["date"] = groups[key]["date"] or e.date  # берём первую дату
+        groups[key]["date"] = groups[key]["date"] or e.date  
         groups[key]["specs"].append(e.full_spec)
 
     result = [

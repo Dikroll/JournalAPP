@@ -1,13 +1,14 @@
 from app.security import get_current_user
-from fastapi import APIRouter, Depends, Query
-from schemas import HomeworkCounters, HomeworkItem
+from fastapi import APIRouter, Depends, HTTPException, Query
+from schemas import HomeworkItem
 from services.upstream_client import UpstreamClient, get_upstream_client
 
 router = APIRouter(prefix="/homework", tags=["homework"])
 
+PAGE_SIZE = 6  
+
 
 async def _fetch_all_pages(client: UpstreamClient, status: int, type: int, group_id: int) -> list:
-    """Итерирует страницы до пустого ответа."""
     results = []
     page = 1
     while True:
@@ -18,26 +19,28 @@ async def _fetch_all_pages(client: UpstreamClient, status: int, type: int, group
             "group_id": group_id,
         })
         items = data if isinstance(data, list) else []
+        
         if not items:
             break
-        results.extend(items)
+        
+        results.extend(items) 
+        
+        if len(items) < PAGE_SIZE:  
+            break
+        
         page += 1
+    
     return results
 
 
 @router.get("/list", response_model=list[HomeworkItem])
 async def get_homework(
-    status: int = Query(0, description="0 pending, 1 checked, 2 overdue, 3 returned"),
-    type: int = Query(0),
-    group_id: int = Query(..., description="ID группы студента"),
-    page: int = Query(None, description="Конкретная страница. Если не указана — все страницы"),
+    status: int = Query(0, ge=0, le=3, description="0 pending, 1 checked, 2 overdue, 3 returned"),
+    type: int = Query(0, ge=0, le=1, description="0 или 1"),
+    group_id: int = Query(..., gt=0, description="ID группы студента"),
+    page: int = Query(None, ge=1, description="Конкретная страница (с 1). Если не указана — все страницы"),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """
-    Список домашних заданий.
-    Без page — собирает все страницы автоматически.
-    С page — возвращает только указанную страницу.
-    """
     if page is not None:
         raw = await client.get("/homework/operations/list", params={
             "page": page, "status": status, "type": type, "group_id": group_id,
@@ -46,18 +49,20 @@ async def get_homework(
     else:
         items = await _fetch_all_pages(client, status, type, group_id)
 
-    # структура ответа upstream пока не полностью известна — возвращаем as-is через модель
     return [HomeworkItem(**_normalize_homework(item)) for item in items]
 
 
 def _normalize_homework(raw: dict) -> dict:
-    """Нормализует поля — дополнить когда узнаем полную структуру upstream."""
     return {
-        "id": raw.get("id") or raw.get("homework_id"),
-        "theme": raw.get("theme") or raw.get("name"),
-        "spec_name": raw.get("spec_name") or raw.get("subject"),
-        "teacher": raw.get("teacher") or raw.get("teacher_name"),
-        "issued_date": raw.get("issued_date") or raw.get("date"),
-        "deadline": raw.get("deadline") or raw.get("date_deadline"),
+        "id": raw.get("id"),
+        "theme": raw.get("theme"),
+        "spec_name": raw.get("name_spec"),
+        "teacher": raw.get("fio_teach"),
+        "issued_date": raw.get("creation_time"),
+        "deadline": raw.get("completion_time"),
+        "overdue_date": raw.get("overdue_time"),
         "status": raw.get("status"),
+        "has_file": bool(raw.get("file_path")),
+        "file_url": raw.get("file_path"),   
+        "comment": raw.get("comment") or None,
     }

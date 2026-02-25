@@ -8,6 +8,7 @@ from routers import (
     payment,
     progress,
     reviews,
+    schedule,
     user,
 )
 
@@ -33,6 +34,7 @@ app.include_router(reviews.router)
 app.include_router(news.router)
 app.include_router(payment.router)
 app.include_router(progress.router)
+app.include_router(schedule.router)
 
 
 @app.get("/health")
