@@ -21,8 +21,8 @@ from services.upstream_client import UpstreamClient, get_upstream_client
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
-_PAGE_MAP = {100: "homework", 200: "messages", 300: "notifications", 400: "news"}
-_HW_MAP   = {0: "pending", 1: "checked", 2: "overdue", 3: "returned", 4: "total", 5: "new"}
+_PAGE_MAP = {100: "homework", 200: "messages", 300: "notifications", 400: "materials"}
+_HW_MAP   = {0: "overdue", 1: "checked", 2: "unchecked", 3: "returned", 4: "total", 5: "new"}
 
 
 @router.get("/counters", response_model=Counters)

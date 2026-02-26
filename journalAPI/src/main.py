@@ -14,13 +14,13 @@ from routers import (
 
 app = FastAPI(
     title="Top Academy API",
-    description="Неофициальная прослойка над msapi.top-academy.ru с нормальным API",
-    version="0.2.0",
+    description="прослойка msapi.top-academy.ru ",
+    version="0.0.2",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # в проде заменить на конкретный origin
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
