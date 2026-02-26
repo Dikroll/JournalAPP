@@ -1,11 +1,12 @@
 from app.security import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, Query
-from schemas import HomeworkItem
+from schemas import HomeworkCounters, HomeworkItem, UpstreamCounter
 from services.upstream_client import UpstreamClient, get_upstream_client
 
 router = APIRouter(prefix="/homework", tags=["homework"])
 
 PAGE_SIZE = 6  
+
 
 
 async def _fetch_all_pages(client: UpstreamClient, status: int, type: int, group_id: int) -> list:
@@ -50,6 +51,22 @@ async def get_homework(
         items = await _fetch_all_pages(client, status, type, group_id)
 
     return [HomeworkItem(**_normalize_homework(item)) for item in items]
+
+
+@router.get("/homework-counters", response_model=HomeworkCounters)
+async def get_homework_counters(
+    client: UpstreamClient = Depends(get_upstream_client),
+):
+    _HW_MAP = {
+    0: "overdue",     # просрочено
+    1: "checked",     # проверены
+    2: "pending",     # на проверке 
+    3: "new",         # новые
+    4: "total",       # всего
+    5: "returned",    # вернули
+}
+    raw = [UpstreamCounter(**e) for e in await client.get("/count/homework")]
+    return HomeworkCounters(**{_HW_MAP[c.counter_type]: c.counter for c in raw if c.counter_type in _HW_MAP})
 
 
 def _normalize_homework(raw: dict) -> dict:

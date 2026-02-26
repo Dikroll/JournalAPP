@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends
 from schemas import (
     ActivityEntry,
     Counters,
-    HomeworkCounters,
     Leaderboard,
     LeaderEntry,
     QuizItem,
@@ -21,8 +20,7 @@ from services.upstream_client import UpstreamClient, get_upstream_client
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
-_PAGE_MAP = {100: "homework", 200: "messages", 300: "notifications", 400: "materials"}
-_HW_MAP   = {0: "overdue", 1: "checked", 2: "unchecked", 3: "returned", 4: "total", 5: "new"}
+_PAGE_MAP = {100: "homework", 200: "messages", 300: "reviews", 400: "vacancies", 500: "news", 600: "signals", 700: "profile"}
 
 
 @router.get("/counters", response_model=Counters)
@@ -33,20 +31,70 @@ async def get_counters(
     return Counters(**{_PAGE_MAP[c.counter_type]: c.counter for c in raw if c.counter_type in _PAGE_MAP})
 
 
-@router.get("/homework-counters", response_model=HomeworkCounters)
-async def get_homework_counters(
 
+
+
+@router.get("/leaderboard/stream", response_model=Leaderboard)
+async def get_leaderboard_stream(
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    raw = [UpstreamCounter(**e) for e in await client.get("/count/homework")]
-    return HomeworkCounters(**{_HW_MAP[c.counter_type]: c.counter for c in raw if c.counter_type in _HW_MAP})
+    """Рейтинг потока (весь колледж)."""
+    str_pos_raw, str_top_raw = await asyncio.gather(
+        client.get("/dashboard/progress/leader-stream-points"),
+        client.get("/dashboard/progress/leader-stream"),
+    )
+
+    def rank(raw: dict) -> RankInfo:
+        u = UpstreamLeaderPoints(**raw)
+        return RankInfo(position=u.studentPosition, total=u.totalCount, week_diff=u.weekDiff, month_diff=u.monthDiff)
+
+    def top(raw: list) -> list[LeaderEntry]:
+        return [
+            LeaderEntry(student_id=e.id, full_name=e.full_name, photo_url=e.photo_path, position=e.position, points=e.amount)
+            for e in [UpstreamLeaderEntry(**i) for i in raw]
+            if e.id is not None
+        ]
+
+    return Leaderboard(
+        my_rank={"stream": rank(str_pos_raw)},
+        top_group=[],
+        top_stream=top(str_top_raw),
+    )
+
+
+@router.get("/leaderboard/group", response_model=Leaderboard)
+async def get_leaderboard_group(
+    client: UpstreamClient = Depends(get_upstream_client),
+):
+    """Рейтинг своей группы."""
+    grp_pos_raw, grp_top_raw = await asyncio.gather(
+        client.get("/dashboard/progress/leader-group-points"),
+        client.get("/dashboard/progress/leader-group"),
+    )
+
+    def rank(raw: dict) -> RankInfo:
+        u = UpstreamLeaderPoints(**raw)
+        return RankInfo(position=u.studentPosition, total=u.totalCount, week_diff=u.weekDiff, month_diff=u.monthDiff)
+
+    def top(raw: list) -> list[LeaderEntry]:
+        return [
+            LeaderEntry(student_id=e.id, full_name=e.full_name, photo_url=e.photo_path, position=e.position, points=e.amount)
+            for e in [UpstreamLeaderEntry(**i) for i in raw]
+            if e.id is not None
+        ]
+
+    return Leaderboard(
+        my_rank={"group": rank(grp_pos_raw)},
+        top_group=top(grp_top_raw),
+        top_stream=[],
+    )
 
 
 @router.get("/leaderboard", response_model=Leaderboard)
 async def get_leaderboard(
-
     client: UpstreamClient = Depends(get_upstream_client),
 ):
+    """Оба рейтинга сразу — группа + поток."""
     grp_pos_raw, str_pos_raw, str_top_raw, grp_top_raw = await asyncio.gather(
         client.get("/dashboard/progress/leader-group-points"),
         client.get("/dashboard/progress/leader-stream-points"),
@@ -99,3 +147,12 @@ async def get_quizzes(
         )
         for e in raw
     ]
+
+
+@router.get("/activity", response_model=list[ActivityEntry])
+async def get_activity(
+
+    client: UpstreamClient = Depends(get_upstream_client),
+):
+    raw = [UpstreamActivityEntry(**e) for e in await client.get("/dashboard/progress/activity")]
+    return [ActivityEntry(date=e.date, points=e.current_point, point_type=e.point_types_name, achievement=e.achievements_name) for e in raw]

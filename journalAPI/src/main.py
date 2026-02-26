@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
 from routers import (
     auth,
     dashboard,
+    feedback,
     homework,
+    library,
+    market,
     news,
     payment,
-    progress,
     reviews,
     schedule,
     user,
@@ -14,13 +17,19 @@ from routers import (
 
 app = FastAPI(
     title="Top Academy API",
-    description="прослойка msapi.top-academy.ru ",
-    version="0.0.2",
+    description="Неофициальная прослойка над msapi.top-academy.ru с нормальным API",
+    version="0.2.0",
+    swagger_ui_init_oauth={
+        "usePkceWithAuthorizationCodeGrant": False,
+    },
+    swagger_ui_parameters={
+        "persistAuthorization": True, 
+    },
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,9 +42,10 @@ app.include_router(homework.router)
 app.include_router(reviews.router)
 app.include_router(news.router)
 app.include_router(payment.router)
-app.include_router(progress.router)
 app.include_router(schedule.router)
-
+app.include_router(feedback.router)
+app.include_router(market.router)
+app.include_router(library.router)
 
 @app.get("/health")
 def health():

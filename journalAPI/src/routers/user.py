@@ -3,10 +3,15 @@ from fastapi import APIRouter, Depends
 from schemas import (
     GamingPoints,
     Group,
+    Phone,
     PointBalance,
+    Relative,
+    SocialLink,
     Stream,
     UpstreamUserInfo,
+    UpstreamUserProfile,
     UserInfo,
+    UserProfile,
 )
 from services.upstream_client import UpstreamClient, get_upstream_client
 
@@ -49,3 +54,43 @@ async def get_me(
 ):
     raw = UpstreamUserInfo(**(await client.get("/settings/user-info")))
     return _adapt(raw)
+
+
+def _adapt_profile(raw: UpstreamUserProfile) -> UserProfile:
+    return UserProfile(
+        id=raw.id,
+        full_name=raw.ful_name,          # исправляем опечатку
+        address=raw.address,
+        birthday=raw.date_birth,
+        email=raw.email,
+        photo_url=raw.photo_path,
+        is_email_verified=raw.is_email_verified,
+        is_phone_verified=raw.is_phone_verified,
+        fill_percentage=raw.fill_percentage,
+        phones=[Phone(type=p.phone_type, number=p.phone_number) for p in raw.phones],
+        # только соцсети с заполненным значением
+        socials=[
+            SocialLink(name=l.name, url=l.value)
+            for l in raw.links
+            if l.value and l.show_link
+        ],
+        relatives=[
+            Relative(
+                full_name=r.full_name,
+                relationship=r.relationship,
+                address=r.address,
+                phones=[Phone(type=p.phone_type, number=p.phone_number) for p in r.phones],
+                emails=r.emails,
+            )
+            for r in raw.relatives
+        ],
+    )
+
+
+@router.get("/profile", response_model=UserProfile)
+async def get_profile(
+    client: UpstreamClient = Depends(get_upstream_client),
+):
+    """Полный профиль студента — контакты, родственники, соцсети."""
+    raw = UpstreamUserProfile(**(await client.get("/profile/operations/settings")))
+    return _adapt_profile(raw)

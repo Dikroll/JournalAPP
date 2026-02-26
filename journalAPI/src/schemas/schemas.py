@@ -71,8 +71,8 @@ class HomeworkCounters(BaseModel):
     pending: int = 0
     checked: int = 0
     overdue: int = 0
-    returned: int = 0
     new: int = 0
+    returned: int = 0
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -427,3 +427,197 @@ class LessonItem(BaseModel):
     teacher: str      
     subject: str       
     room: str           
+
+class MarketItem(BaseModel):
+    description: str
+    dynamic_price_status: int
+    file_name: str
+    id: int
+    prices: list[dict]
+    quantity: int
+    status: int
+    title: str
+    url: str
+    vendor_code: str
+    total_count: int
+
+
+
+# ══════════════════════════════════════════════════════════════════
+#  FEEDBACK
+# ══════════════════════════════════════════════════════════════════
+
+class UpstreamPendingLesson(BaseModel):
+    key: str
+    date_visit: str
+    fio_teach: str
+    spec_name: str
+    teach_photo: Optional[str]
+
+class UpstreamTag(BaseModel):
+    id: int
+    translate_key: str
+    type: str
+
+class PendingLesson(BaseModel):
+    key: str
+    date: str
+    teacher: str
+    subject: str
+    teacher_photo: Optional[str]
+
+class Tag(BaseModel):
+    id: int
+    key: str
+
+class EvaluateRequest(BaseModel):
+    key: str
+    mark_lesson: int
+    mark_teach: int
+    tags_lesson: list[int] = []
+    tags_teach: list[int] = []
+    comment_lesson: str = ""
+    comment_teach: str = ""
+
+
+# ══════════════════════════════════════════════════════════════════
+#  MARKET
+# ══════════════════════════════════════════════════════════════════
+
+class ProductPrice(BaseModel):
+    diamonds: int
+    coins: int
+
+class ProductItem(BaseModel):
+    id: int
+    title: str
+    description: str
+    quantity: int
+    image_url: str
+    price: ProductPrice
+
+class CartItem(BaseModel):
+    id: int
+    count: int
+
+class OrderProduct(BaseModel):
+    id: int
+    title: str
+    quantity: int
+    image_url: str
+    price: ProductPrice
+
+class Order(BaseModel):
+    id: int
+    created_at: str
+    status: int
+
+class OrderDetail(BaseModel):
+    id: int
+    created_at: str
+    updated_at: str
+    status: int
+    notes: Optional[str]
+    products: list[OrderProduct]
+
+class CreateOrderRequest(BaseModel):
+    notes: Optional[str] = None
+    items: list[CartItem]
+
+    # ══════════════════════════════════════════════════════════════════
+#  LIBRARY
+# ══════════════════════════════════════════════════════════════════
+
+class UpstreamLibraryCount(BaseModel):
+    material_type_id: int
+    materials_count: int
+    new_count: int
+    recommended_count: int
+
+class UpstreamSpec(BaseModel):
+    id: int
+    name: str
+    short_name: str
+
+class SpecItem(BaseModel):
+    id: int
+    name: str
+    short_name: str
+
+class LibraryTypeCount(BaseModel):
+    type_id: int
+    type_name: str
+    total: int
+    new: int
+    recommended: int
+
+class LibrarySummary(BaseModel):
+    new: list[LibraryTypeCount]   # filter_type=0
+    all: list[LibraryTypeCount]   # filter_type=1
+
+
+# ══════════════════════════════════════════════════════════════════
+#  USER PROFILE
+# ══════════════════════════════════════════════════════════════════
+
+class UpstreamPhone(BaseModel):
+    phone_type: int
+    phone_number: str
+
+class UpstreamSocialLink(BaseModel):
+    id: int
+    name: str
+    value: Optional[str]
+    show_link: bool
+
+class UpstreamRelative(BaseModel):
+    full_name: str
+    address: Optional[str]
+    relationship: str
+    phones: list[UpstreamPhone]
+    emails: list[str]
+
+class UpstreamUserProfile(BaseModel):
+    id: int
+    ful_name: str           # опечатка в upstream — намеренно
+    address: Optional[str]
+    date_birth: str
+    email: Optional[str]
+    photo_path: Optional[str]
+    is_email_verified: bool
+    is_phone_verified: bool
+    fill_percentage: int
+    phones: list[UpstreamPhone]
+    links: list[UpstreamSocialLink]
+    relatives: list[UpstreamRelative]
+
+# ── output ──────────────────────────────────────────────────────
+
+class Phone(BaseModel):
+    type: int         # 0 — мобильный, 1 — домашний
+    number: str
+
+class SocialLink(BaseModel):
+    name: str
+    url: Optional[str]
+
+class Relative(BaseModel):
+    full_name: str
+    relationship: str
+    address: Optional[str]
+    phones: list[Phone]
+    emails: list[str]
+
+class UserProfile(BaseModel):
+    id: int
+    full_name: str             # исправлена опечатка ful_name
+    address: Optional[str]
+    birthday: str              # date_birth → birthday
+    email: Optional[str]
+    photo_url: Optional[str]   # photo_path → photo_url
+    is_email_verified: bool
+    is_phone_verified: bool
+    fill_percentage: int
+    phones: list[Phone]
+    socials: list[SocialLink]  # links → socials, только те у кого show_link=True и value заполнен
+    relatives: list[Relative]

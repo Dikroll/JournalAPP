@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from app.config import settings
 
-bearer_scheme = HTTPBearer()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -29,11 +29,5 @@ def decode_token(token: str) -> dict:
         )
 
 
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-) -> dict:
-    """
-    Декодирует наш токен и возвращает payload.
-    В payload хранятся зашифрованные credentials для upstream.
-    """
-    return decode_token(credentials.credentials)
+def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
+    return decode_token(token)
