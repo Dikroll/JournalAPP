@@ -1,6 +1,7 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.docs import get_swagger_ui_html
 from routers import (
     auth,
     dashboard,
@@ -14,17 +15,26 @@ from routers import (
     schedule,
     user,
 )
+from services.upstream_client import get_http_client
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # при старте — инициализируем connection pool
+    get_http_client()
+    yield
+    # при остановке — закрываем все соединения
+    from services.upstream_client import _http
+    if _http and not _http.is_closed:
+        await _http.aclose()
+
 
 app = FastAPI(
     title="Top Academy API",
     description="Неофициальная прослойка над msapi.top-academy.ru с нормальным API",
     version="0.2.0",
-    swagger_ui_init_oauth={
-        "usePkceWithAuthorizationCodeGrant": False,
-    },
-    swagger_ui_parameters={
-        "persistAuthorization": True, 
-    },
+    lifespan=lifespan,
+    swagger_ui_parameters={"persistAuthorization": True},
 )
 
 app.add_middleware(
@@ -46,6 +56,7 @@ app.include_router(schedule.router)
 app.include_router(feedback.router)
 app.include_router(market.router)
 app.include_router(library.router)
+
 
 @app.get("/health")
 def health():

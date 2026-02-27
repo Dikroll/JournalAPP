@@ -1,5 +1,6 @@
 import asyncio
 import time
+from contextlib import asynccontextmanager
 
 import httpx
 from app.config import settings
@@ -18,8 +19,21 @@ DEFAULT_HEADERS = {
     "Referer": "https://journal.top-academy.ru/",
 }
 
-# глобальный кеш клиентов — ключ username, значение UpstreamClient
 _clients: dict[str, "UpstreamClient"] = {}
+
+# один глобальный httpx клиент с connection pool
+_http: httpx.AsyncClient | None = None
+
+
+def get_http_client() -> httpx.AsyncClient:
+    global _http
+    if _http is None or _http.is_closed:
+        _http = httpx.AsyncClient(
+            timeout=httpx.Timeout(10.0),
+            limits=httpx.Limits(max_connections=50, max_keepalive_connections=20),
+            http2=True,  # HTTP/2 если сервер поддерживает
+        )
+    return _http
 
 
 class UpstreamClient:
@@ -31,26 +45,24 @@ class UpstreamClient:
         self._login_lock = asyncio.Lock()
 
     def _is_token_expired(self) -> bool:
-        return time.time() >= self._token_expires_at - 60  # за 60 сек до истечения
+        return time.time() >= self._token_expires_at - 60
 
     async def _login(self) -> None:
         async with self._login_lock:
             if self._token and not self._is_token_expired():
-                return  # уже залогинились пока ждали лока
+                return
 
             log.info(f"[AUTH] logging in as '{self.username}'")
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(
-                    f"{settings.UPSTREAM_BASE_URL}/auth/login",
-                    headers=DEFAULT_HEADERS,
-                    json={
-                        "application_key": settings.UPSTREAM_APP_KEY,
-                        "username": self.username,
-                        "password": self.password,
-                        "id_city": None,
-                    },
-                    timeout=10,
-                )
+            resp = await get_http_client().post(
+                f"{settings.UPSTREAM_BASE_URL}/auth/login",
+                headers=DEFAULT_HEADERS,
+                json={
+                    "application_key": settings.UPSTREAM_APP_KEY,
+                    "username": self.username,
+                    "password": self.password,
+                    "id_city": None,
+                },
+            )
 
             if resp.status_code != 200:
                 log.error(f"[AUTH] failed — {resp.status_code}: {resp.text}")
@@ -61,10 +73,8 @@ class UpstreamClient:
             if not self._token:
                 raise HTTPException(status_code=502, detail=f"Unexpected auth response: {data}")
 
-            # expires_in_access это unix timestamp истечения
             expires = data.get("expires_in_access") or data.get("expires_in")
             self._token_expires_at = float(expires) if expires else time.time() + 6 * 3600
-
             log.info(f"[AUTH] login successful, expires at {self._token_expires_at}")
 
     async def _request(self, method: str, path: str, **kwargs) -> dict | list:
@@ -74,14 +84,12 @@ class UpstreamClient:
         log.debug(f"[{method}] {path}")
         headers = {**DEFAULT_HEADERS, "Authorization": f"Bearer {self._token}"}
 
-        async with httpx.AsyncClient() as client:
-            resp = await client.request(
-                method,
-                f"{settings.UPSTREAM_BASE_URL}{path}",
-                headers=headers,
-                timeout=10,
-                **kwargs,
-            )
+        resp = await get_http_client().request(
+            method,
+            f"{settings.UPSTREAM_BASE_URL}{path}",
+            headers=headers,
+            **kwargs,
+        )
 
         if resp.status_code == 401:
             log.warning(f"[{method}] {path} — 401, forcing re-login")
@@ -89,14 +97,12 @@ class UpstreamClient:
             self._token_expires_at = 0
             await self._login()
             headers["Authorization"] = f"Bearer {self._token}"
-            async with httpx.AsyncClient() as client:
-                resp = await client.request(
-                    method,
-                    f"{settings.UPSTREAM_BASE_URL}{path}",
-                    headers=headers,
-                    timeout=10,
-                    **kwargs,
-                )
+            resp = await get_http_client().request(
+                method,
+                f"{settings.UPSTREAM_BASE_URL}{path}",
+                headers=headers,
+                **kwargs,
+            )
 
         if resp.status_code >= 400:
             log.error(f"[{method}] {path} — {resp.status_code}: {resp.text}")
@@ -115,11 +121,9 @@ class UpstreamClient:
 
 def get_upstream_client(user: dict = Depends(get_current_user)) -> UpstreamClient:
     username = user["username"]
-
     if username not in _clients:
         log.debug(f"[CACHE] creating new client for '{username}'")
         _clients[username] = UpstreamClient(username, user["password"])
     else:
         log.debug(f"[CACHE] reusing client for '{username}'")
-
     return _clients[username]
