@@ -524,39 +524,6 @@ class CreateOrderRequest(BaseModel):
     notes: Optional[str] = None
     items: list[CartItem]
 
-    # ══════════════════════════════════════════════════════════════════
-#  LIBRARY
-# ══════════════════════════════════════════════════════════════════
-
-class UpstreamLibraryCount(BaseModel):
-    material_type_id: int
-    materials_count: int
-    new_count: int
-    recommended_count: int
-
-class UpstreamSpec(BaseModel):
-    id: int
-    name: str
-    short_name: str
-
-class SpecItem(BaseModel):
-    id: int
-    name: str
-    short_name: str
-
-class LibraryTypeCount(BaseModel):
-    type_id: int
-    type_name: str
-    total: int
-    new: int
-    recommended: int
-
-class LibrarySummary(BaseModel):
-    new: list[LibraryTypeCount]   # filter_type=0
-    all: list[LibraryTypeCount]   # filter_type=1
-
-
-# ══════════════════════════════════════════════════════════════════
 #  USER PROFILE
 # ══════════════════════════════════════════════════════════════════
 
@@ -621,3 +588,65 @@ class UserProfile(BaseModel):
     phones: list[Phone]
     socials: list[SocialLink]  # links → socials, только те у кого show_link=True и value заполнен
     relatives: list[Relative]
+
+# ══════════════════════════════════════════════════════════════════
+#  LIBRARY — замени весь блок library в schemas.py (с UpstreamLibraryCount до конца файла)
+# ══════════════════════════════════════════════════════════════════
+
+# upstream — структура счётчика (один item из /count/library)
+class UpstreamLibraryCounter(BaseModel):
+    material_type_id: int
+    materials_count: int
+    new_count: int
+    recommended_count: int
+
+# upstream — один материал из /library/operations/list
+class UpstreamSpec(BaseModel):
+    id: int
+    name: str
+    short_name: str
+
+# ── output: предметы ─────────────────────────────────────────────
+
+class SpecItem(BaseModel):
+    id: int
+    name: str
+    short_name: str
+
+# ── output: счётчики ─────────────────────────────────────────────
+
+class LibraryCounterItem(BaseModel):
+    total: int = 0
+    new: int = 0
+    recommended: int = 0
+
+class LibraryCounters(BaseModel):
+    lessons:    LibraryCounterItem = LibraryCounterItem()  # type 1 — Уроки
+    books:      LibraryCounterItem = LibraryCounterItem()  # type 2 — Библиотека
+    videos:     LibraryCounterItem = LibraryCounterItem()  # type 3 — Видео
+    articles:   LibraryCounterItem = LibraryCounterItem()  # type 4 — Статьи
+    practical:  LibraryCounterItem = LibraryCounterItem()  # type 5 — Практические задания
+    other:      LibraryCounterItem = LibraryCounterItem()  # type 6 — Другое
+    tests:      LibraryCounterItem = LibraryCounterItem()  # type 7 — Тесты
+    additional: LibraryCounterItem = LibraryCounterItem()  # type 8 — Дополнительно
+
+# ── output: материалы ────────────────────────────────────────────
+
+class LibraryMaterialItem(BaseModel):
+    material_id: int
+    theme: Optional[str]
+    description: Optional[str]
+    material_type: int
+    type_name: str                  
+    spec_id: Optional[int]
+    spec_name: Optional[str]
+    date: Optional[str]
+    week: Optional[int]            
+    public_week: Optional[int]
+    is_new: bool
+    link: Optional[str]             
+    download_url: Optional[str]    
+    cover_image: Optional[str]
+
+
+

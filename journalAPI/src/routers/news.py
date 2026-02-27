@@ -19,3 +19,4 @@ async def get_latest_news(
     )
     return [NewsItem(id=e.id_bbs, title=e.theme, published_at=e.time, is_read=e.viewed)
             for e in [UpstreamNewsItem(**i) for i in raw]]
+
