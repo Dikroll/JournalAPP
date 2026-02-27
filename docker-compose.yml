@@ -16,8 +16,10 @@ services:
     ports:
       - '5173:5173'
     volumes:
-      - ./journalWeb:/app
-      - /app/node_modules
+      - ./journalWeb/src:/app/src      
+      - ./journalWeb/public:/app/public
+      - ./journalWeb/index.html:/app/index.html
+      - /app/node_modules              
     depends_on:
       - backend
     restart: unless-stopped
