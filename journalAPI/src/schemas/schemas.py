@@ -636,3 +636,18 @@ class LibraryMaterialItem(BaseModel):
     link: Optional[str]             
     download_url: Optional[str]    
     cover_image: Optional[str]
+
+
+# CHARTS ══════════════════════════════════════════════════════════════════
+
+class ChartPoint(BaseModel):
+    date: str
+    points: Optional[float] = None
+    previous_points: Optional[float] = None
+    has_rasp: Optional[bool] = None
+
+class UpstreamChartPoint(BaseModel):
+    date: str
+    points: Optional[float] = None
+    previous_points: Optional[float] = None
+    has_rasp: Optional[bool] = None
