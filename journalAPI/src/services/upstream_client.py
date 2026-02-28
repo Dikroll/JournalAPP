@@ -70,6 +70,7 @@ class UpstreamClient:
 
             data = resp.json()
             self._token = data.get("token") or data.get("access_token") or data.get("jwt")
+            log.debug(f"[AUTH] full response: {data}")
             if not self._token:
                 raise HTTPException(status_code=502, detail=f"Unexpected auth response: {data}")
 

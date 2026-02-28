@@ -230,7 +230,7 @@ class LessonMarks(BaseModel):
 class VisitRecord(BaseModel):
     date: str
     lesson_number: int
-    attended: bool           # вместо status: 1/2 — просто bool
+    attended: bool           
     spec_id: int
     spec_name: str
     teacher: str
@@ -238,7 +238,7 @@ class VisitRecord(BaseModel):
     marks: Optional[LessonMarks]  # None если оценок нет вообще
 
 
-    # ══════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════
 #  UPSTREAM MODELS (то что приходит от msapi.top-academy.ru)
 # ══════════════════════════════════════════════════════════════════
 
@@ -408,8 +408,6 @@ class UpstreamVisitRecord(BaseModel):
     practical_work_mark: Optional[int]
     final_work_mark: Optional[int]
 
-
-
 class UpstreamLesson(BaseModel):
     date: str
     lesson: int
@@ -558,7 +556,6 @@ class UpstreamUserProfile(BaseModel):
     links: list[UpstreamSocialLink]
     relatives: list[UpstreamRelative]
 
-# ── output ──────────────────────────────────────────────────────
 
 class Phone(BaseModel):
     type: int         # 0 — мобильный, 1 — домашний
@@ -577,21 +574,17 @@ class Relative(BaseModel):
 
 class UserProfile(BaseModel):
     id: int
-    full_name: str             # исправлена опечатка ful_name
+    full_name: str             
     address: Optional[str]
-    birthday: str              # date_birth → birthday
+    birthday: str              
     email: Optional[str]
-    photo_url: Optional[str]   # photo_path → photo_url
+    photo_url: Optional[str] 
     is_email_verified: bool
     is_phone_verified: bool
     fill_percentage: int
     phones: list[Phone]
-    socials: list[SocialLink]  # links → socials, только те у кого show_link=True и value заполнен
+    socials: list[SocialLink]  
     relatives: list[Relative]
-
-# ══════════════════════════════════════════════════════════════════
-#  LIBRARY — замени весь блок library в schemas.py (с UpstreamLibraryCount до конца файла)
-# ══════════════════════════════════════════════════════════════════
 
 # upstream — структура счётчика (один item из /count/library)
 class UpstreamLibraryCounter(BaseModel):
@@ -606,14 +599,10 @@ class UpstreamSpec(BaseModel):
     name: str
     short_name: str
 
-# ── output: предметы ─────────────────────────────────────────────
-
 class SpecItem(BaseModel):
     id: int
     name: str
     short_name: str
-
-# ── output: счётчики ─────────────────────────────────────────────
 
 class LibraryCounterItem(BaseModel):
     total: int = 0
@@ -647,6 +636,3 @@ class LibraryMaterialItem(BaseModel):
     link: Optional[str]             
     download_url: Optional[str]    
     cover_image: Optional[str]
-
-
-

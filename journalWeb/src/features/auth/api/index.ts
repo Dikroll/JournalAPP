@@ -1,4 +1,4 @@
-import { api } from "@/shared/api/instance";
+import { api } from "@/shared/api/instance"
 
 interface LoginPayload {
 	username: string;
@@ -13,8 +13,18 @@ interface TokenResponse {
 export const authApi = {
 	login: (payload: LoginPayload) =>
 		api
-			.post<TokenResponse>("/auth/login", new URLSearchParams(payload), {
-				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-			})
+			.post<TokenResponse>(
+				"/auth/login",
+				new URLSearchParams({
+					grant_type: "password",
+					username: payload.username,
+					password: payload.password,
+				}),
+				{
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+				},
+			)
 			.then((r) => r.data),
 };
