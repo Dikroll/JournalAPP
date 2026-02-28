@@ -1,4 +1,7 @@
+
 class ApiRoutes {
+	// api routes
+	
   // auth
   readonly AUTH_LOGIN = "/auth/login"
 
