@@ -40,7 +40,7 @@ export function LoginForm() {
 				{error && <p className="text-red-500 text-sm text-center">{error}</p>}
 				<input
 					type="text"
-					placeholder="Логиpppн"
+					placeholder="Логин"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
 					required
