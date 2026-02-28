@@ -5,6 +5,7 @@ from app.security import get_current_user
 from fastapi import APIRouter, Depends
 from schemas import (
     ActivityEntry,
+    ChartPoint,
     Counters,
     Leaderboard,
     LeaderEntry,
@@ -12,6 +13,7 @@ from schemas import (
     QuizRetries,
     RankInfo,
     UpstreamActivityEntry,
+    UpstreamChartPoint,
     UpstreamCounter,
     UpstreamLeaderEntry,
     UpstreamLeaderPoints,
@@ -136,4 +138,45 @@ async def get_quizzes(
             last_mark=e.last_mark, passed_at=e.passed_at,
             week=e.current_week, date=e.date, is_new=e.is_new_material,
         ) for e in raw
+    ]
+
+@router.get("/chart/average-progress", response_model=list[ChartPoint])
+async def get_average_progress(
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    raw = await cache.get_or_fetch(
+        key=f"dashboard:chart:progress:{user['username']}",
+        ttl=TTL.CHARTS,  
+        fetch=lambda: client.get("/dashboard/chart/average-progress"),
+    )
+    return [
+        ChartPoint(
+            date=e.date,
+            points=e.points,
+            previous_points=e.previous_points,
+            has_rasp=e.has_rasp,
+        )
+        for e in [UpstreamChartPoint(**i) for i in raw]
+    ]
+
+
+@router.get("/chart/attendance", response_model=list[ChartPoint])
+async def get_attendance_chart(
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    raw = await cache.get_or_fetch(
+        key=f"dashboard:chart:attendance:{user['username']}",
+        ttl=TTL.CHARTS,  
+        fetch=lambda: client.get("/dashboard/chart/attendance"),
+    )
+    return [
+        ChartPoint(
+            date=e.date,
+            points=e.points,
+            previous_points=e.previous_points,
+            has_rasp=e.has_rasp,
+        )
+        for e in [UpstreamChartPoint(**i) for i in raw]
     ]
