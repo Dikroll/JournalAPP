@@ -53,7 +53,8 @@ export const storage = {
 		}
 		Object.keys(localStorage)
 			.filter((k) => k.startsWith(prefix))
-			.forEach((k) => localStorage.removeItem(k));
+			.forEach((k) => { localStorage.removeItem(k) })
+
 	},
 };
 

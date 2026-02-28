@@ -1,4 +1,5 @@
 class PageConfig {
+  // Page routes
   readonly login = "/login"
   readonly home = "/"
   readonly schedule = "/schedule"

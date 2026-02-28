@@ -1,4 +1,5 @@
 import { api } from "@/shared/api/instance"
+import { apiConfig } from "@/shared/config/apiConfig"
 
 interface LoginPayload {
 	username: string;
@@ -14,7 +15,7 @@ export const authApi = {
 	login: (payload: LoginPayload) =>
 		api
 			.post<TokenResponse>(
-				"/auth/login",
+				apiConfig.AUTH_LOGIN,
 				new URLSearchParams({
 					grant_type: "password",
 					username: payload.username,
