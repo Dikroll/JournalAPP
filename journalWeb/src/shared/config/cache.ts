@@ -1,4 +1,5 @@
 class TTL {
+  // Time to live cache values in seconds
   readonly USER_INFO   = 60 * 60 * 24      
   readonly SCHEDULE    = 60 * 60 * 4       
   readonly LEADERBOARD = 60 * 60 * 1      

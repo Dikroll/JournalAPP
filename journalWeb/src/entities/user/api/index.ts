@@ -1,6 +1,7 @@
-import { api } from "@/shared/api/instance";
-import type { UserInfo } from "../model/types";
+import { api } from "@/shared/api/instance"
+import { apiConfig } from "@/shared/config/apiConfig"
+import type { UserInfo } from "../model/types"
 
 export const userApi = {
-	getMe: () => api.get<UserInfo>("/user/me").then((r) => r.data),
+	getMe: () => api.get<UserInfo>(apiConfig.USER_ME).then((r) => r.data),
 };

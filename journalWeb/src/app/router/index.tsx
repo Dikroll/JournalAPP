@@ -5,7 +5,7 @@ import { HashRouter, Navigate, Route, Routes } from "react-router-dom"
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-	return isAuthenticated ? <>{children}</> : <Navigate to={pageConfig.login} replace />;
+	return isAuthenticated ? children : <Navigate to={pageConfig.login} replace />
 }
 
 export function AppRouter() {

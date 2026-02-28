@@ -137,6 +137,33 @@ class QuizItem(BaseModel):
 #  HOMEWORK
 # ══════════════════════════════════════════════════════════════════
 
+class HomeworkDeleteRequest(BaseModel):
+    """Тело запроса для удаления ДЗ."""
+    id: int
+
+
+class HomeworkSubmitRequest(BaseModel):
+    """Тело запроса для сдачи выполненного ДЗ."""
+    id: int
+    stud_answer: str
+    creation_time: str                  # дата сдачи, формат YYYY-MM-DD
+    filename: Optional[str] = None
+    file_path: Optional[str] = None
+    tmp_file: Optional[str] = None
+    mark: Optional[int] = None
+    auto_mark: bool = False
+
+
+class HomeworkEvaluateRequest(BaseModel):
+    """Тело запроса для выставления оценки за ДЗ."""
+    id: int                             # ID записи оценки (0 при создании новой)
+    id_dom_zad: int                     # ID домашнего задания
+    id_stud: int                        # ID студента
+    mark: int                           # оценка 1–5
+    comment: str = ""
+    tags: list[int] = []
+
+
 class HomeworkItem(BaseModel):
     id: int
     theme: str

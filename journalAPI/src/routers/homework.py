@@ -3,7 +3,14 @@ import time
 
 from app.security import get_current_user
 from fastapi import APIRouter, Depends, Query
-from schemas import HomeworkCounters, HomeworkItem, UpstreamCounter
+from schemas import (
+    HomeworkCounters,
+    HomeworkDeleteRequest,
+    HomeworkEvaluateRequest,
+    HomeworkItem,
+    HomeworkSubmitRequest,
+    UpstreamCounter,
+)
 from services.upstream_client import UpstreamClient, get_upstream_client
 
 router = APIRouter(prefix="/homework", tags=["homework"])
@@ -261,6 +268,61 @@ async def refresh_cache(
     """Сбросить кэш ДЗ вручную."""
     _cache_invalidate(user["username"])
     return {"status": "cache cleared"}
+
+
+@router.post("/delete", summary="Удалить ДЗ")
+async def delete_homework(
+    body: HomeworkDeleteRequest,
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    """Удалить домашнее задание по ID. Сбрасывает кэш."""
+    result = await client.post("/homework/operations/delete", json={"id": body.id})
+    _cache_invalidate(user["username"])
+    return result
+
+
+@router.post("/submit", summary="Сдать выполненное ДЗ")
+async def submit_homework(
+    body: HomeworkSubmitRequest,
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    """
+    Отправить выполненное домашнее задание.
+    Обязательно: id + stud_answer. Файл опционален.
+    """
+    result = await client.post("/homework/operations/create", json={
+        "id": body.id,
+        "filename": body.filename,
+        "file_path": body.file_path,
+        "tmp_file": body.tmp_file,
+        "mark": body.mark,
+        "creation_time": body.creation_time,
+        "stud_answer": body.stud_answer,
+        "auto_mark": body.auto_mark,
+    })
+    _cache_invalidate(user["username"])
+    return result
+
+
+@router.post("/evaluate", summary="Выставить оценку за ДЗ")
+async def evaluate_homework(
+    body: HomeworkEvaluateRequest,
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    """Выставить оценку за ДЗ. Сбрасывает кэш после сохранения."""
+    result = await client.post("/homework/evaluation/operations/save", json={
+        "id": body.id,
+        "id_dom_zad": body.id_dom_zad,
+        "id_stud": body.id_stud,
+        "mark": body.mark,
+        "comment": body.comment,
+        "tags": body.tags,
+    })
+    _cache_invalidate(user["username"])
+    return result
 
 
 @router.get("/list", response_model=list[HomeworkItem])
