@@ -1,5 +1,5 @@
 
-class ApiRoutes {
+class ApiConfig {
 	// api routes
 	
   // auth
@@ -60,4 +60,4 @@ class ApiRoutes {
   readonly LIBRARY_MATERIALS_ALL = "/library/materials/all"
 }
 
-export const apiRoutes = new ApiRoutes()
+export const apiConfig = new ApiConfig()
