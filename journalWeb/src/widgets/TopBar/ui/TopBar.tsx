@@ -1,6 +1,6 @@
 import { useUserStore } from "@/entities/user/model/store"
+import { pageConfig } from "@/shared/config/pageConfig"
 import { Link } from "react-router-dom"
-
 export function TopBar() {
   const user = useUserStore((s) => s.user)
   if (!user) return null
@@ -27,7 +27,7 @@ export function TopBar() {
           </div>
 
           {user.photo_url && (
-  <Link to="{pageConfig.profile}">
+  <Link to={pageConfig.profile}>
     <div className="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-[#F20519]/50">
       <img
         src={user.photo_url}
