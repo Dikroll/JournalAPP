@@ -1,4 +1,4 @@
-import { BottomBar } from "@/widgets/BottomBar/ui/BottomBar"
+import { BottomBar } from "@/widgets"
 import { Outlet } from "react-router-dom"
 
 export function AppLayout() {
