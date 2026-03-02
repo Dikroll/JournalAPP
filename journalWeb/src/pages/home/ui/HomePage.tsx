@@ -1,3 +1,4 @@
+import { scheduleApi } from "@/entities/schedule/api"
 import { ScheduleList } from "@/widgets"
 
 export function HomePage() {

@@ -37,12 +37,14 @@ export function ScheduleList() {
   return (
     <ul className="flex flex-col gap-2">
       {today.map((lesson) => (
-        <li key={`${lesson.started_at}-${lesson.room}`} className="border rounded p-3 text-sm">
+        <li key={`${lesson.started_at}-${lesson.room}`} className="bg-white/5 rounded-2xl backdrop-blur-sm  p-3 text-xs">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#6FA8DC]/30 to-[#6FA8DC]/20 rounded-2xl flex items-center justify-center border border-[#6FA8DC]/20 text-lg font-bold">{lesson.lesson}</div>
           <div className="font-medium">{lesson.subject}</div>
-          <div className="text-gray-500">
-            {lesson.started_at} – {lesson.finished_at} · {lesson.room}
+          <div className="text-zinc-500 text-xs mb-1 whitespace-normal text text-center">
+            {lesson.started_at} – {lesson.finished_at} 
           </div>
-          <div className="text-gray-500">{lesson.teacher}</div>
+          <div className="text-zinc-500 text-xs whitespace-normal text-right ">{lesson.room}</div>
+          <div className="text-zinc-500 text-xs whitespace-normal">{lesson.teacher}</div>
         </li>
       ))}
     </ul>
