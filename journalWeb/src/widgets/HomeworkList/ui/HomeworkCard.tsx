@@ -1,6 +1,6 @@
-import { HomeworkItemWithStatus } from "@/entities/homework/model/useHomeworkGroups"
-import { getGradeStyle, STATUS_CONFIG } from "@/entities/schedule/config"
-import { AlertCircle, Calendar, Clock, Diamond, Download, MessageSquare, Upload } from "lucide-react"
+import { getGradeStyle, STATUS_CONFIG } from "@/entities/homework/config"
+import type { HomeworkItemWithStatus } from "@/entities/homework/model/useHomeworkGroups"
+import { AlertCircle, Calendar, Clock, Diamond, Download, ExternalLink, MessageSquare, Upload } from "lucide-react"
 import { useState } from "react"
 
 interface Props {
@@ -17,7 +17,6 @@ export function HomeworkCard({ hw }: Props) {
   const isReturned = hw.statusKey === "returned"
   const isOverdue  = hw.statusKey === "overdue"
 
-  // ✅ hw.grade — оценка из homework_stud.mark (не путать с hw.status = числовой статус)
   const grade = isChecked ? hw.grade : null
   const gradeStyle = grade != null ? getGradeStyle(grade) : null
 
@@ -27,56 +26,71 @@ export function HomeworkCard({ hw }: Props) {
       ? "bg-[#DC2626]/5"
       : "bg-white/5"
 
+  // Кнопка скачать задание (file_url от преподавателя)
+  const handleDownloadTask = () => {
+    if (hw.file_url) window.open(hw.file_url, "_blank")
+  }
+
+  // Кнопка посмотреть свой ответ (stud_answer)
+  const handleViewAnswer = () => {
+    if (hw.stud_answer) window.open(hw.stud_answer, "_blank")
+  }
+
   return (
     <div
       className={`${cardBg} backdrop-blur-xl rounded-[24px] p-5 border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0`}
       style={{ boxShadow: "0 4px 24px 0 rgba(0,0,0,0.3)" }}
     >
+      {/* Header */}
       <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <StatusIcon size={16} className={config.textColor} />
-            <h3 className="text-base font-semibold text-[#F2F2F2]">{hw.spec_name}</h3>
+            <StatusIcon size={16} className={`${config.textColor} flex-shrink-0`} />
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.textColor} bg-white/5`}>
+              {config.label}
+            </span>
           </div>
-          <p className="text-sm text-[#9CA3AF] line-clamp-2">{hw.theme}</p>
+          <h3 className="text-base font-semibold text-[#F2F2F2] leading-snug">{hw.spec_name}</h3>
+          <p className="text-sm text-[#9CA3AF] line-clamp-2 mt-0.5">{hw.theme}</p>
         </div>
 
-        {isChecked && grade != null && (
-          <div
-            className={`ml-3 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${gradeStyle!.badge}`}
-          >
-            {grade}
-          </div>
-        )}
-
-        {hw.comment && !isReturned && (
-          <MessageSquare size={20} className="ml-3 text-[#F29F05] flex-shrink-0" />
-        )}
+        <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+          {isChecked && grade != null && (
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${gradeStyle!.badge}`}>
+              {grade}
+            </div>
+          )}
+          {hw.comment && !isReturned && (
+            <MessageSquare size={18} className="text-[#F29F05]" />
+          )}
+        </div>
       </div>
 
-      <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] mb-1">
-        <Calendar size={14} />
-        <span>Выдано: {hw.issued_date}</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-sm mb-4">
-        <Clock
-          size={14}
-          className={isOverdue ? "text-[#DC2626]" : "text-[#9CA3AF]"}
-        />
-        <span className={isOverdue ? "text-[#DC2626] font-bold" : "text-[#9CA3AF]"}>
-          Срок: {hw.deadline}
-        </span>
+      {/* Dates */}
+      <div className="flex gap-4 mb-4">
+        <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF]">
+          <Calendar size={13} />
+          <span>{hw.issued_date}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-sm">
+          <Clock size={13} className={isOverdue ? "text-[#DC2626]" : "text-[#9CA3AF]"} />
+          <span className={isOverdue ? "text-[#DC2626] font-semibold" : "text-[#9CA3AF]"}>
+            {hw.deadline}
+          </span>
+        </div>
       </div>
 
+      {/* Returned comment */}
       {isReturned && hw.comment && (
         <div className="mb-4 p-3 bg-[#6B7280]/10 border border-[#6B7280]/30 rounded-2xl">
           <div className="flex items-start gap-2">
-            <AlertCircle size={16} className="text-[#6B7280] flex-shrink-0 mt-0.5" />
+            <AlertCircle size={15} className="text-[#6B7280] flex-shrink-0 mt-0.5" />
             <p className="text-sm text-[#F2F2F2]">{hw.comment}</p>
           </div>
         </div>
       )}
 
+      {/* Actions */}
       <div className="flex items-center gap-2">
         {!isChecked && !isReturned && (
           <>
@@ -84,7 +98,13 @@ export function HomeworkCard({ hw }: Props) {
               <Upload size={16} />
               <span>Загрузить</span>
             </button>
-            <button className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors">
+            {/* Скачать задание от преподавателя */}
+            <button
+              onClick={handleDownloadTask}
+              disabled={!hw.file_url}
+              className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors"
+              title="Скачать задание"
+            >
               <Download size={16} />
             </button>
           </>
@@ -96,7 +116,12 @@ export function HomeworkCard({ hw }: Props) {
               <Upload size={16} />
               <span>Загрузить заново</span>
             </button>
-            <button className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors">
+            <button
+              onClick={handleDownloadTask}
+              disabled={!hw.file_url}
+              className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors"
+              title="Скачать задание"
+            >
               <Download size={16} />
             </button>
           </>
@@ -111,13 +136,30 @@ export function HomeworkCard({ hw }: Props) {
               <Upload size={16} />
               <span>Загрузить заново</span>
             </button>
-            <button className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors">
-              <Download size={16} />
-            </button>
+            {/* Если есть свой ответ — показать его, иначе скачать задание */}
+            {hw.stud_answer ? (
+              <button
+                onClick={handleViewAnswer}
+                className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-2xl text-[#10B981] border border-[#10B981]/20 transition-colors"
+                title="Посмотреть мой ответ"
+              >
+                <ExternalLink size={16} />
+              </button>
+            ) : (
+              <button
+                onClick={handleDownloadTask}
+                disabled={!hw.file_url}
+                className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#F2F2F2] border border-white/10 transition-colors"
+                title="Скачать задание"
+              >
+                <Download size={16} />
+              </button>
+            )}
           </>
         )}
       </div>
 
+      {/* Upload warning */}
       {showUploadWarning && (
         <div className="mt-3 p-3 bg-[#F29F05]/10 border border-[#F29F05]/30 rounded-2xl">
           <div className="flex items-start gap-2 mb-3">

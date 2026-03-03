@@ -9,6 +9,7 @@ export interface HomeworkItem {
   status: number          // числовой статус: 0/1/2/3/5
   grade: number | null    // оценка из homework_stud.mark (только у checked)
   has_file: boolean
+	stud_answer: string | null
   file_url: string | null
   comment: string | null
 }

@@ -1,52 +1,44 @@
 import { useUserStore } from "@/entities/user/model/store"
 import { useCallback, useEffect, useRef } from "react"
 import { homeworkApi } from "../api"
-import { PREVIEW_SIZE, useHomeworkStore } from "./store"
+import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from "./store"
 
 const ALL_STATUSES = [0, 1, 2, 3, 5] as const
-
-// Авто-рефреш каждые 90 минут — только первые страницы, без 429
 const AUTO_REFRESH_MS = 90 * 60 * 1000
+const BATCH_SIZE = 2
+const BATCH_DELAY_MS = 400
 
 export function useHomework() {
   const user = useUserStore((s) => s.user)
 
   const {
-    items,
-    expandedStatuses,
-    counters,
-    status,
-    error,
-    setItems,
-    setExpanded,
-    setCounters,
-    setStatus,
-    setError,
+    items, expandedStatuses, counters, status, error, filterStatus,
+    setItems, appendItems, setExpanded, setCounters, setStatus, setError, setFilter,
   } = useHomeworkStore()
 
   const didLoadRef = useRef(false)
   const loadingRef = useRef(false)
 
-  // ── Быстрая загрузка: только page=1 каждого статуса ─────────────────────────
   const loadPreviews = useCallback(async () => {
     if (!user?.group?.id) return
     if (loadingRef.current) return
-
     loadingRef.current = true
     setStatus("loading")
     setError(null)
-
     try {
-      const [countersData, ...pages] = await Promise.all([
-        homeworkApi.getCounters(),
-        ...ALL_STATUSES.map((s) => homeworkApi.getByStatus(s, user.group!.id, 1)),
-      ])
-
-      ALL_STATUSES.forEach((statusKey, idx) => {
-        setItems(statusKey, pages[idx])
-      })
-
+      const countersData = await homeworkApi.getCounters()
       setCounters(countersData)
+
+      for (let i = 0; i < ALL_STATUSES.length; i += BATCH_SIZE) {
+        const batch = ALL_STATUSES.slice(i, i + BATCH_SIZE)
+        const pages = await Promise.all(
+          batch.map((s) => homeworkApi.getByStatus(s, user.group!.id, 1))
+        )
+        batch.forEach((statusKey, idx) => setItems(statusKey, pages[idx]))
+        if (i + BATCH_SIZE < ALL_STATUSES.length) {
+          await new Promise((r) => setTimeout(r, BATCH_DELAY_MS))
+        }
+      }
       setStatus("success")
     } catch {
       setError("Не удалось загрузить домашние задания")
@@ -56,29 +48,27 @@ export function useHomework() {
     }
   }, [user?.group?.id])
 
-  // ── Загрузить ВСЕ страницы одного статуса (кнопка «Показать все») ────────────
-  const loadAll = useCallback(
-    async (statusKey: number) => {
-      if (!user?.group?.id) return
-      try {
-        const all = await homeworkApi.getAllByStatus(statusKey, user.group.id)
-        setItems(statusKey, all)
-      } catch {
-        // тихо — первая страница уже есть
-      } finally {
+  const loadMore = useCallback(async (statusKey: number) => {
+    if (!user?.group?.id) return
+    const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
+    const nextPage = currentPage + 1
+    try {
+      const newItems = await homeworkApi.getByStatus(statusKey, user.group.id, nextPage)
+      appendItems(statusKey, newItems, nextPage)
+    
+      if (newItems.length < PAGE_SIZE) {
         setExpanded(statusKey, true)
       }
-    },
-    [user?.group?.id],
-  )
+    } catch {
 
-  // ── Ручное обновление (кнопка «Обновить») ────────────────────────────────────
+    }
+  }, [user?.group?.id])
+
   const refresh = useCallback(() => {
     didLoadRef.current = false
     loadPreviews()
   }, [loadPreviews])
 
-  // ── Первоначальная загрузка ──────────────────────────────────────────────────
   useEffect(() => {
     if (!user?.group?.id) return
     if (didLoadRef.current) return
@@ -86,7 +76,6 @@ export function useHomework() {
     loadPreviews()
   }, [user?.group?.id, loadPreviews])
 
-  // ── Авто-рефреш каждые 90 мин (только превью, не трогает раскрытые списки) ───
   useEffect(() => {
     if (!user?.group?.id) return
     const timer = setInterval(loadPreviews, AUTO_REFRESH_MS)
@@ -94,13 +83,7 @@ export function useHomework() {
   }, [user?.group?.id, loadPreviews])
 
   return {
-    items,
-    expandedStatuses,
-    counters,
-    status,
-    error,
-    loadAll,
-    refresh,
-    PREVIEW_SIZE,
+    items, expandedStatuses, counters, status, error,
+    filterStatus, loadMore, refresh, setFilter, PREVIEW_SIZE,
   }
 }

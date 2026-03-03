@@ -1,9 +1,9 @@
+import { STATUS_CONFIG } from "@/entities/homework/config"
 import type {
 	GroupData,
 	HomeworkStatus,
 } from "@/entities/homework/model/useHomeworkGroups"
 import { STATUS_KEY_MAP, STATUS_ORDER } from "@/entities/homework/model/useHomeworkGroups"
-import { STATUS_CONFIG } from "@/entities/schedule/config"
 import { ChevronDown } from "lucide-react"
 import { HomeworkCard } from "./HomeworkCard"
 
@@ -12,6 +12,7 @@ interface Props {
   byStatus: Record<HomeworkStatus, GroupData>
   bySubject: Record<string, Record<HomeworkStatus, GroupData>>
   onLoadAll: (statusKey: number) => void
+	filterStatus: HomeworkStatus | null
 }
 
 function ShowMoreButton({
@@ -34,11 +35,12 @@ function ShowMoreButton({
   )
 }
 
-export function HomeworkList({ groupBy, byStatus, bySubject, onLoadAll }: Props) {
+export function HomeworkList({ groupBy, byStatus, bySubject, onLoadAll, filterStatus }: Props) {
+	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
   if (groupBy === "status") {
     return (
       <div className="space-y-6">
-        {STATUS_ORDER.map((s) => {
+        {statusesToShow.map((s) => {
           const group = byStatus[s]
           if (!group?.items.length) return null
           const { label, icon: Icon, textColor } = STATUS_CONFIG[s]
@@ -71,7 +73,7 @@ export function HomeworkList({ groupBy, byStatus, bySubject, onLoadAll }: Props)
       {Object.entries(bySubject).map(([subject, statusGroups]) => (
         <div key={subject}>
           <h2 className="text-lg font-bold text-[#F2F2F2] mb-3">{subject}</h2>
-          {STATUS_ORDER.map((s) => {
+          {statusesToShow.map((s) => {
             const group = statusGroups[s]
             if (!group?.items.length) return null
             const { label, icon: Icon, textColor } = STATUS_CONFIG[s]

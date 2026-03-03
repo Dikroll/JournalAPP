@@ -6,7 +6,7 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react"
-import type { HomeworkStatus } from "../homework/model/useHomeworkGroups"
+import type { HomeworkStatus } from "./model/useHomeworkGroups"
 
 export const STATUS_CONFIG: Record<
   HomeworkStatus,
@@ -55,17 +55,18 @@ export function getGradeStyle(grade: number | null | undefined) {
       bg: "bg-[#10B981]/5",
       badge: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30",
     }
-  if (grade >= 90)
+  if (grade >= 5)
     return {
       bg: "bg-[#10B981]/10",
       badge: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30",
     }
-  if (grade >= 75)
+  if (grade >= 4)
     return {
-      bg: "bg-[#3B82F6]/10",
-      badge: "bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30",
+      bg: "bg-[#10B980]/40",
+      badge: "bg-[#10B980]/20 text-[#10B980] border-[#10B980]/30",
     }
-  if (grade >= 60)
+  if (grade >= 3)
+
     return {
       bg: "bg-[#F59E0B]/10",
       badge: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30",

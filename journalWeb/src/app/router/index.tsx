@@ -25,12 +25,9 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         >
-          <Route index element={
-            <HomeLayout>
-              <HomePage />
-            </HomeLayout>
-          } />
-
+         <Route element={<HomeLayout />}>
+  <Route index element={<HomePage />} />
+</Route>
           <Route path="schedule" element={<SchedulePage />} />
           <Route path="homework" element={<HomeworkPage />} />
           <Route path="profile" element={<div>kfkfkkf</div>} />

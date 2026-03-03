@@ -172,6 +172,8 @@ class HomeworkItem(BaseModel):
     issued_date: str
     deadline: str
     overdue_date: Optional[str] = None  
+    grade: Optional[int] = None
+    stud_answer: Optional[str] = None
     status: int
     has_file: bool
     file_url: Optional[str] = None                       
