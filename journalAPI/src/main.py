@@ -11,6 +11,7 @@ from routers import (
     market,
     news,
     payment,
+    progress,
     reviews,
     schedule,
     user,
@@ -54,6 +55,7 @@ app.include_router(news.router)
 app.include_router(payment.router)
 app.include_router(schedule.router)
 app.include_router(feedback.router)
+app.include_router(progress.router)
 app.include_router(market.router)
 app.include_router(library.router)
 

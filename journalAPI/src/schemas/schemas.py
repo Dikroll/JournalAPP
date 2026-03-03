@@ -165,17 +165,17 @@ class HomeworkEvaluateRequest(BaseModel):
 
 
 class HomeworkItem(BaseModel):
-    id: int
-    theme: str
-    spec_name: str
-    teacher: str
-    issued_date: str
-    deadline: str
+    id: Optional[int] = None
+    theme: Optional[str] = None
+    spec_name: Optional[str] = None
+    teacher: Optional[str] = None
+    issued_date: Optional[str] = None
+    deadline: Optional[str] = None
     overdue_date: Optional[str] = None  
     grade: Optional[int] = None
     stud_answer: Optional[str] = None
     status: int
-    has_file: bool
+    has_file: Optional[bool] = None
     file_url: Optional[str] = None                       
     comment: Optional[str] = None
 
@@ -237,10 +237,10 @@ class PaymentSummary(BaseModel):
 class ExamResult(BaseModel):
     exam_id: int
     spec: str
-    teacher: str
+    teacher: Optional[str]
     mark: int
     mark_type: int
-    date: str
+    date: Optional[str]
     comment: Optional[str]
     has_file: bool
 
@@ -410,10 +410,10 @@ class UpstreamPaymentRecord(BaseModel):
 class UpstreamExamResult(BaseModel):
     exam_id: int
     spec: str
-    teacher: str
+    teacher: Optional[str]
     mark: int
     mark_type: int
-    date: str
+    date: Optional[str]
     comment_teach: Optional[str]
     need_access: int
     need_access_stud: Optional[int]
@@ -680,3 +680,16 @@ class UpstreamChartPoint(BaseModel):
     points: Optional[float] = None
     previous_points: Optional[float] = None
     has_rasp: Optional[bool] = None
+
+
+# ══════════════════════════════════════════════════════════════════
+#  FUTURE EXAMS
+# ══════════════════════════════════════════════════════════════════
+
+class UpstreamFutureExam(BaseModel):
+    spec: str
+    date: str
+
+class FutureExam(BaseModel):
+    spec: str
+    date: str

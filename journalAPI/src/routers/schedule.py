@@ -58,3 +58,25 @@ async def get_month(
         fetch=lambda: client.get("/schedule/operations/get-month", params={"date_filter": date_filter}),
     )
     return [_adapt(UpstreamLesson(**e)) for e in raw]
+
+@router.get("/week", response_model=list[LessonItem])
+async def get_week(
+    date_filter: str = Query(..., description="Любая дата недели YYYY-MM-DD"),
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    """Расписание на неделю. Передай любую дату — API сам найдёт пн–вс."""
+    from datetime import date, timedelta
+    d = date.fromisoformat(date_filter)
+    monday = d - timedelta(days=d.weekday())
+    sunday = monday + timedelta(days=6)
+
+    raw = await cache.get_or_fetch(
+        key=f"schedule:week:{user['username']}:{monday.isoformat()}",
+        ttl=TTL.SCHEDULE,
+        fetch=lambda: client.get("/schedule/operations/get-by-date-range", params={
+            "date_start": monday.isoformat(),
+            "date_end": sunday.isoformat(),
+        }),
+    )
+    return [_adapt(UpstreamLesson(**e)) for e in raw]
