@@ -93,30 +93,7 @@ async def get_visits(
         fetch=lambda: client.get("/progress/operations/student-visits"),
     )
     return [_adapt_visit(UpstreamVisitRecord(**e)) for e in raw]
-@router.get("/visits/by-spec")
-async def get_visits_by_spec(...):
-    raw = await cache.get_or_fetch(...)
-    visits = [_adapt_visit(UpstreamVisitRecord(**e)) for e in raw]
-    
-    groups: dict[str, dict] = {}
-    for v in visits:
-        if v.spec_name not in groups:
-            groups[v.spec_name] = {
-                "spec_id": v.spec_id,
-                "spec_name": v.spec_name,
-                "teacher": v.teacher,
-                "total": 0, "attended": 0,
-                "visits": []
-            }
-        g = groups[v.spec_name]
-        g["total"] += 1
-        g["attended"] += int(v.attended)
-        g["visits"].append(v)
-    
-    for g in groups.values():
-        g["attendance_pct"] = round(g["attended"] / g["total"] * 100) if g["total"] else 0
-    
-    return list(groups.values())
+
 
 @router.get("/future-exams", response_model=list[FutureExam])
 async def get_future_exams(
