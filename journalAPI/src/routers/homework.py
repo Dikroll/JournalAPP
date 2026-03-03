@@ -33,14 +33,14 @@ _HW_COUNTER_MAP = {
     0: "overdue",
     1: "checked",
     2: "pending",
-    3: "new",       
+    3: "new",
     4: "total",
     5: "returned",
 }
 
 ALL_STATUSES = [0, 1, 2, 3, 5]
 
-# кэш для всех ДЗ по статусу: ключ — (username, status, group_id), значение — {"data": [...], "expires_at": timestamp}
+# кэш: ключ — (username, status, group_id), значение — {"data": [...], "expires_at": timestamp}
 _cache: dict[tuple, dict] = {}
 CACHE_TTL = 60 * 30
 
@@ -62,8 +62,22 @@ def _cache_invalidate(username: str) -> None:
         del _cache[k]
 
 
-# нормализация 
 def _normalize(raw: dict) -> HomeworkItem:
+    """
+    Нормализация ответа upstream в HomeworkItem.
+
+    Оценка лежит в homework_stud.mark — это вложенный объект.
+    status остаётся числовым (0/1/2/3/5), grade выносится отдельно
+    чтобы фронт не путал статус с оценкой.
+    """
+    homework_stud = raw.get("homework_stud") or {}
+    grade_raw = homework_stud.get("mark")
+    grade = int(grade_raw) if grade_raw is not None else None
+
+    # comment берём из homework_comment.text_comment, fallback на корневой comment
+    homework_comment = raw.get("homework_comment") or {}
+    comment = homework_comment.get("text_comment") or raw.get("comment") or None
+
     return HomeworkItem(**{
         "id": raw.get("id"),
         "theme": raw.get("theme"),
@@ -73,9 +87,10 @@ def _normalize(raw: dict) -> HomeworkItem:
         "deadline": raw.get("completion_time"),
         "overdue_date": raw.get("overdue_time"),
         "status": raw.get("status"),
+        "grade": grade,
         "has_file": bool(raw.get("file_path")),
         "file_url": raw.get("file_path"),
-        "comment": raw.get("comment") or None,
+        "comment": comment,
     })
 
 
@@ -121,14 +136,13 @@ async def _fetch_all(client: UpstreamClient, status: int, group_id: int, usernam
     return result
 
 
-
 @router.get("/counters", response_model=HomeworkCounters)
 async def get_counters(
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """Счётчики ДЗ по статусам."""
     raw = [UpstreamCounter(**e) for e in await client.get("/count/homework")]
     return HomeworkCounters(**{_HW_COUNTER_MAP[c.counter_type]: c.counter for c in raw if c.counter_type in _HW_COUNTER_MAP})
+
 
 @router.get("/overdue", response_model=list[HomeworkItem])
 async def get_overdue(
@@ -136,7 +150,6 @@ async def get_overdue(
     page: int = Query(1, ge=1),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """Просроченные ДЗ — одна страница."""
     return [_normalize(e) for e in await _fetch_page(client, 0, group_id, page)]
 
 
@@ -146,7 +159,6 @@ async def get_checked(
     page: int = Query(1, ge=1),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """Проверенные ДЗ — одна страница."""
     return [_normalize(e) for e in await _fetch_page(client, 1, group_id, page)]
 
 
@@ -156,7 +168,6 @@ async def get_pending(
     page: int = Query(1, ge=1),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """На проверке — одна страница."""
     return [_normalize(e) for e in await _fetch_page(client, 2, group_id, page)]
 
 
@@ -166,7 +177,6 @@ async def get_new(
     page: int = Query(1, ge=1),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """Новые/не сделанные ДЗ — одна страница."""
     return [_normalize(e) for e in await _fetch_page(client, 3, group_id, page)]
 
 
@@ -176,8 +186,8 @@ async def get_returned(
     page: int = Query(1, ge=1),
     client: UpstreamClient = Depends(get_upstream_client),
 ):
-    """Возвращённые ДЗ — одна страница."""
     return [_normalize(e) for e in await _fetch_page(client, 5, group_id, page)]
+
 
 @router.get("/overdue/all", response_model=list[HomeworkItem])
 async def get_all_overdue(
@@ -224,14 +234,6 @@ async def get_all_returned(
     return await _fetch_all(client, 5, group_id, user["username"])
 
 
-class AllHomework:
-    overdue: list[HomeworkItem]
-    checked: list[HomeworkItem]
-    pending: list[HomeworkItem]
-    new: list[HomeworkItem]
-    returned: list[HomeworkItem]
-
-
 @router.get("/sync")
 async def sync_all(
     group_id: int = Query(..., gt=0),
@@ -242,7 +244,7 @@ async def sync_all(
     Загружает ВСЕ ДЗ всех статусов параллельно.
     Один запрос — все дз.
     """
-    _cache_invalidate(user["username"])  # сбрасываем старый кэш
+    _cache_invalidate(user["username"])
 
     overdue, checked, pending, new, returned = await asyncio.gather(
         _fetch_all(client, 0, group_id, user["username"]),
@@ -261,6 +263,7 @@ async def sync_all(
         "total":    len(overdue) + len(checked) + len(pending) + len(new) + len(returned),
     }
 
+
 @router.post("/refresh")
 async def refresh_cache(
     user: dict = Depends(get_current_user),
@@ -276,7 +279,6 @@ async def delete_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """Удалить домашнее задание по ID. Сбрасывает кэш."""
     result = await client.post("/homework/operations/delete", json={"id": body.id})
     _cache_invalidate(user["username"])
     return result
@@ -288,10 +290,6 @@ async def submit_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """
-    Отправить выполненное домашнее задание.
-    Обязательно: id + stud_answer. Файл опционален.
-    """
     result = await client.post("/homework/operations/create", json={
         "id": body.id,
         "filename": body.filename,
@@ -312,7 +310,6 @@ async def evaluate_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """Выставить оценку за ДЗ. Сбрасывает кэш после сохранения."""
     result = await client.post("/homework/evaluation/operations/save", json={
         "id": body.id,
         "id_dom_zad": body.id_dom_zad,

@@ -1,5 +1,7 @@
 export { BottomBar } from "./BottomBar/ui/BottomBar"
+export { HomeworkCard } from "./HomeworkList/ui/HomeworkCard"
+export { HomeworkCountersBar } from "./HomeworkList/ui/HomeworkCounterBar"
+export { HomeworkList } from "./HomeworkList/ui/HomeworkList"
 export { ScheduleList } from "./ScheduleList/ui/ScheduleList"
 export { TopBar } from "./TopBar/ui/TopBar"
 export { UserCard } from "./UserCard/ui/UserCard"
-
