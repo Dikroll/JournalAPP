@@ -1,10 +1,10 @@
-import { useEffectererererereact
-import { scheduleApipiapiapiapi
-import ScuseScheduleStoreeeeeeeeeeee } from "@/entities/schestoreeeeeeeeeeee"
-import type tyLessonItemtyLessonIteentities/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/schedulesmodelntypess/scheduleomodelntypess/schedule/model/types"
-import { ttlecconfigecconfigecconfigecache
-import { cachedFetchhhhhhhhhhhh } from "@/cachedFetchFetchFetchFetchFetchFetchFetchFetchFetchFetchFetchFetch"
-import { CACHE_KEYSSSSSSSSSS@/shared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storageared/lib/storage"
+import { scheduleApi } from "@/entities/schedule/api"
+import { useScheduleStore } from "@/entities/schedule/model/store"
+import type { LessonItem } from "@/entities/schedule/model/types"
+import { ttl } from "@/shared/config/cache"
+import { cachedFetch } from "@/shared/lib/cachedFetch"
+import { CACHE_KEYS } from "@/shared/lib/storage"
+import { useEffect } from "react"
 
 
 export function useScheduleToday() {
