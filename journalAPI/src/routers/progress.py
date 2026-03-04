@@ -1,9 +1,10 @@
 import asyncio
 from datetime import date as date_type
+from typing import Optional
 
 from app.cache import TTL, cache
 from app.security import get_current_user
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from schemas import (
     ExamResult,
     FutureExam,
@@ -97,14 +98,17 @@ async def get_pending_exams(
 
 @router.get("/visits", response_model=list[VisitRecord])
 async def get_visits(
+    spec_id: Optional[int] = Query(None, description="Фильтр по предмету (из /library/specs)"),
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """История посещений с оценками."""
+    """История посещений с оценками. ?spec_id=36 — фильтр по предмету."""
+    params = {"spec": spec_id} if spec_id else None  
+
     raw = await cache.get_or_fetch(
-        key=f"progress:visits:{user['username']}",
+        key=f"progress:visits:{user['username']}:s{spec_id or 'all'}",
         ttl=TTL.SCHEDULE,
-        fetch=lambda: client.get("/progress/operations/student-visits"),
+        fetch=lambda: client.get("/progress/operations/student-visits", params=params),
     )
     return [_adapt_visit(UpstreamVisitRecord(**e)) for e in raw]
 
