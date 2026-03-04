@@ -1,4 +1,5 @@
 import asyncio
+from datetime import date as date_type
 
 from app.cache import TTL, cache
 from app.security import get_current_user
@@ -51,6 +52,19 @@ def _adapt_visit(e: UpstreamVisitRecord) -> VisitRecord:
         theme=e.lesson_theme,
         marks=marks if marks.any_marks() else None,
     )
+
+
+def _adapt_future_exam(raw: UpstreamFutureExam) -> FutureExam:
+    days_left = None
+    if raw.date:
+        try:
+            exam_date = date_type.fromisoformat(raw.date)
+            days_left = (exam_date - date_type.today()).days
+            if days_left < 0:
+                days_left = 0
+        except ValueError:
+            pass
+    return FutureExam(spec=raw.spec, date=raw.date, days_left=days_left)
 
 
 @router.get("/exams", response_model=list[ExamResult])
@@ -106,7 +120,7 @@ async def get_future_exams(
         ttl=TTL.SCHEDULE,
         fetch=lambda: client.get("/dashboard/info/future-exams"),
     )
-    return [FutureExam(spec=e.spec, date=e.date) for e in [UpstreamFutureExam(**i) for i in raw]]
+    return [_adapt_future_exam(e) for e in [UpstreamFutureExam(**i) for i in raw]]
 
 
 @router.get("/summary")
@@ -122,7 +136,7 @@ async def get_summary(
                            lambda: client.get("/dashboard/info/future-exams")),
     )
     exams = [_adapt_exam(UpstreamExamResult(**e)) for e in exams_raw]
-    future = [FutureExam(spec=e.spec, date=e.date) for e in [UpstreamFutureExam(**i) for i in future_raw]]
+    future = [_adapt_future_exam(e) for e in [UpstreamFutureExam(**i) for i in future_raw]]
     passed = [e for e in exams if e.mark > 0]
     pending = [e for e in exams if e.mark == 0]
     return {

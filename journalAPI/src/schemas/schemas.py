@@ -245,7 +245,6 @@ class ExamResult(BaseModel):
     has_file: bool
 
 class LessonMarks(BaseModel):
-    """Только непустые оценки — null поля не включаются"""
     control: Optional[int] = None
     homework: Optional[int] = None
     lab: Optional[int] = None
@@ -254,11 +253,18 @@ class LessonMarks(BaseModel):
     final: Optional[int] = None
 
     def any_marks(self) -> bool:
-        return any(v is not None for v in self.model_dump().values())
+        return any([
+            self.control is not None,
+            self.homework is not None,
+            self.lab is not None,
+            self.classwork is not None,
+            self.practical is not None,
+            self.final is not None,
+        ])
 
 class VisitRecord(BaseModel):
     date: str
-    lesson_number: int
+    lesson_number: Optional[int] = None
     attended: bool           
     spec_id: int
     spec_name: str
@@ -424,18 +430,18 @@ class UpstreamExamResult(BaseModel):
 
 class UpstreamVisitRecord(BaseModel):
     date_visit: str
-    lesson_number: int
-    status_was: int
+    lesson_number: Optional[int] = None   
+    status_was: Optional[int] = None      
     spec_id: int
     spec_name: str
     teacher_name: str
     lesson_theme: str
-    control_work_mark: Optional[int]
-    home_work_mark: Optional[int]
-    lab_work_mark: Optional[int]
-    class_work_mark: Optional[int]
-    practical_work_mark: Optional[int]
-    final_work_mark: Optional[int]
+    control_work_mark: Optional[int] = None
+    home_work_mark: Optional[int] = None
+    lab_work_mark: Optional[int] = None
+    class_work_mark: Optional[int] = None
+    practical_work_mark: Optional[int] = None
+    final_work_mark: Optional[int] = None
 
 class UpstreamLesson(BaseModel):
     date: str
@@ -693,3 +699,4 @@ class UpstreamFutureExam(BaseModel):
 class FutureExam(BaseModel):
     spec: str
     date: str
+    days_left: Optional[int] = None

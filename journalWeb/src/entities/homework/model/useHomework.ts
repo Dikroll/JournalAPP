@@ -5,6 +5,7 @@ import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from "./store"
 
 const ALL_STATUSES = [0, 1, 2, 3, 5] as const
 const AUTO_REFRESH_MS = 90 * 60 * 1000
+const CACHE_TTL_MS = 15 * 60 * 1000   
 const BATCH_SIZE = 2
 const BATCH_DELAY_MS = 400
 
@@ -12,16 +13,19 @@ export function useHomework() {
   const user = useUserStore((s) => s.user)
 
   const {
-    items, expandedStatuses, counters, status, error, filterStatus,
-    setItems, appendItems, setExpanded, setCounters, setStatus, setError, setFilter,
+    items, expandedStatuses, counters, status, error, filterStatus, loadedAt,
+    setItems, appendItems, setExpanded, setCounters, setStatus, setError, setFilter, setLoadedAt,
   } = useHomeworkStore()
 
-  const didLoadRef = useRef(false)
   const loadingRef = useRef(false)
 
-  const loadPreviews = useCallback(async () => {
+  const loadPreviews = useCallback(async (force = false) => {
     if (!user?.group?.id) return
     if (loadingRef.current) return
+
+    // если данные свежие — не перезагружаем (если не force)
+    if (!force && loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+
     loadingRef.current = true
     setStatus("loading")
     setError(null)
@@ -39,6 +43,7 @@ export function useHomework() {
           await new Promise((r) => setTimeout(r, BATCH_DELAY_MS))
         }
       }
+      setLoadedAt(Date.now())
       setStatus("success")
     } catch {
       setError("Не удалось загрузить домашние задания")
@@ -46,7 +51,7 @@ export function useHomework() {
     } finally {
       loadingRef.current = false
     }
-  }, [user?.group?.id])
+  }, [user?.group?.id, loadedAt])
 
   const loadMore = useCallback(async (statusKey: number) => {
     if (!user?.group?.id) return
@@ -55,30 +60,26 @@ export function useHomework() {
     try {
       const newItems = await homeworkApi.getByStatus(statusKey, user.group.id, nextPage)
       appendItems(statusKey, newItems, nextPage)
-    
       if (newItems.length < PAGE_SIZE) {
         setExpanded(statusKey, true)
       }
     } catch {
-
+      // silent
     }
   }, [user?.group?.id])
 
   const refresh = useCallback(() => {
-    didLoadRef.current = false
-    loadPreviews()
+    loadPreviews(true)
   }, [loadPreviews])
 
   useEffect(() => {
     if (!user?.group?.id) return
-    if (didLoadRef.current) return
-    didLoadRef.current = true
     loadPreviews()
   }, [user?.group?.id, loadPreviews])
 
   useEffect(() => {
     if (!user?.group?.id) return
-    const timer = setInterval(loadPreviews, AUTO_REFRESH_MS)
+    const timer = setInterval(() => loadPreviews(true), AUTO_REFRESH_MS)
     return () => clearInterval(timer)
   }, [user?.group?.id, loadPreviews])
 

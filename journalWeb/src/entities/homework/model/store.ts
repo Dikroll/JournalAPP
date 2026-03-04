@@ -14,6 +14,7 @@ interface HomeworkState {
   status: LoadingState
   error: string | null
   filterStatus: HomeworkStatus | null
+  loadedAt: number | null              // timestamp последней загрузки
 
   setItems: (statusKey: number, items: HomeworkItem[]) => void
   appendItems: (statusKey: number, newItems: HomeworkItem[], page: number) => void  
@@ -22,6 +23,7 @@ interface HomeworkState {
   setStatus: (s: LoadingState) => void
   setError: (e: string | null) => void
   setFilter: (f: HomeworkStatus | null) => void
+  setLoadedAt: (t: number) => void
   reset: () => void
 }
 
@@ -33,6 +35,7 @@ export const useHomeworkStore = create<HomeworkState>()((set) => ({
   status: "idle",
   error: null,
   filterStatus: null,
+  loadedAt: null,
 
   setItems: (statusKey, items) =>
     set((state) => ({
@@ -60,6 +63,7 @@ export const useHomeworkStore = create<HomeworkState>()((set) => ({
   setStatus: (status) => set({ status }),
   setError: (error) => set({ error }),
   setFilter: (filterStatus) => set({ filterStatus }),
+  setLoadedAt: (loadedAt) => set({ loadedAt }),
 
   reset: () =>
     set({
@@ -70,5 +74,6 @@ export const useHomeworkStore = create<HomeworkState>()((set) => ({
       status: "idle",
       error: null,
       filterStatus: null,
+      loadedAt: null,
     }),
 }))
