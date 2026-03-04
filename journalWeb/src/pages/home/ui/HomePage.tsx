@@ -1,9 +1,9 @@
-import { ScheduleList, UserCard, TopBar } from "@/widgets"
+
+import { ScheduleList } from "@/widgets"
 
 export function HomePage() {
   return (
-    <div className="min-h-screen bg-gray-500">
-      <TopBar />
+    <div className="min-h-screen bg-[#1F2024] text-[#8f1f1f] pb-28">
       <div className="p-4">
         <h1 className="text-lg font-bold mb-4">Расписание на сегодня</h1>
         <ScheduleList />

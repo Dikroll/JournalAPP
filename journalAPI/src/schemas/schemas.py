@@ -165,15 +165,17 @@ class HomeworkEvaluateRequest(BaseModel):
 
 
 class HomeworkItem(BaseModel):
-    id: int
-    theme: str
-    spec_name: str
-    teacher: str
-    issued_date: str
-    deadline: str
+    id: Optional[int] = None
+    theme: Optional[str] = None
+    spec_name: Optional[str] = None
+    teacher: Optional[str] = None
+    issued_date: Optional[str] = None
+    deadline: Optional[str] = None
     overdue_date: Optional[str] = None  
+    grade: Optional[int] = None
+    stud_answer: Optional[str] = None
     status: int
-    has_file: bool
+    has_file: Optional[bool] = None
     file_url: Optional[str] = None                       
     comment: Optional[str] = None
 
@@ -235,15 +237,14 @@ class PaymentSummary(BaseModel):
 class ExamResult(BaseModel):
     exam_id: int
     spec: str
-    teacher: str
+    teacher: Optional[str]
     mark: int
     mark_type: int
-    date: str
+    date: Optional[str]
     comment: Optional[str]
     has_file: bool
 
 class LessonMarks(BaseModel):
-    """Только непустые оценки — null поля не включаются"""
     control: Optional[int] = None
     homework: Optional[int] = None
     lab: Optional[int] = None
@@ -252,11 +253,18 @@ class LessonMarks(BaseModel):
     final: Optional[int] = None
 
     def any_marks(self) -> bool:
-        return any(v is not None for v in self.model_dump().values())
+        return any([
+            self.control is not None,
+            self.homework is not None,
+            self.lab is not None,
+            self.classwork is not None,
+            self.practical is not None,
+            self.final is not None,
+        ])
 
 class VisitRecord(BaseModel):
     date: str
-    lesson_number: int
+    lesson_number: Optional[int] = None
     attended: bool           
     spec_id: int
     spec_name: str
@@ -408,10 +416,10 @@ class UpstreamPaymentRecord(BaseModel):
 class UpstreamExamResult(BaseModel):
     exam_id: int
     spec: str
-    teacher: str
+    teacher: Optional[str]
     mark: int
     mark_type: int
-    date: str
+    date: Optional[str]
     comment_teach: Optional[str]
     need_access: int
     need_access_stud: Optional[int]
@@ -422,18 +430,18 @@ class UpstreamExamResult(BaseModel):
 
 class UpstreamVisitRecord(BaseModel):
     date_visit: str
-    lesson_number: int
-    status_was: int
+    lesson_number: Optional[int] = None   
+    status_was: Optional[int] = None      
     spec_id: int
     spec_name: str
     teacher_name: str
     lesson_theme: str
-    control_work_mark: Optional[int]
-    home_work_mark: Optional[int]
-    lab_work_mark: Optional[int]
-    class_work_mark: Optional[int]
-    practical_work_mark: Optional[int]
-    final_work_mark: Optional[int]
+    control_work_mark: Optional[int] = None
+    home_work_mark: Optional[int] = None
+    lab_work_mark: Optional[int] = None
+    class_work_mark: Optional[int] = None
+    practical_work_mark: Optional[int] = None
+    final_work_mark: Optional[int] = None
 
 class UpstreamLesson(BaseModel):
     date: str
@@ -678,3 +686,17 @@ class UpstreamChartPoint(BaseModel):
     points: Optional[float] = None
     previous_points: Optional[float] = None
     has_rasp: Optional[bool] = None
+
+
+# ══════════════════════════════════════════════════════════════════
+#  FUTURE EXAMS
+# ══════════════════════════════════════════════════════════════════
+
+class UpstreamFutureExam(BaseModel):
+    spec: str
+    date: str
+
+class FutureExam(BaseModel):
+    spec: str
+    date: str
+    days_left: Optional[int] = None

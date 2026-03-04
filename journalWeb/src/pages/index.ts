@@ -1,3 +1,4 @@
 export { HomePage } from "./home/ui/HomePage"
+export { HomeworkPage } from "./homework/ui/HomeworkPage"
 export { LoginPage } from "./login/ui/LoginPage"
 export { SchedulePage } from "./schedule/ui/SchedulePage"

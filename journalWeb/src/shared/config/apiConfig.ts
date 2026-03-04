@@ -1,5 +1,5 @@
 
-class ApiRoutes {
+class ApiConfig {
 	// api routes
 	
   // auth
@@ -29,6 +29,7 @@ class ApiRoutes {
   readonly HOMEWORK_LIST = "/homework/list"
   readonly HOMEWORK_SYNC = "/homework/sync"
   readonly HOMEWORK_REFRESH = "/homework/refresh"
+
 
   // reviews
   readonly REVIEWS_LIST = "/reviews/list"
@@ -60,4 +61,4 @@ class ApiRoutes {
   readonly LIBRARY_MATERIALS_ALL = "/library/materials/all"
 }
 
-export const apiRoutes = new ApiRoutes()
+export const apiConfig = new ApiConfig()
