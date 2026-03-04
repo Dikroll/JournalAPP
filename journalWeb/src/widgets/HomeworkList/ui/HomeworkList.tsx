@@ -2,8 +2,8 @@ import { STATUS_CONFIG } from "@/entities/homework/config"
 import type {
 	GroupData,
 	HomeworkStatus,
-} from "@/entities/homework/model/useHomeworkGroups"
-import { STATUS_KEY_MAP, STATUS_ORDER } from "@/entities/homework/model/useHomeworkGroups"
+} from "@/entities/homework/hooks/useHomeworkGroups"
+import { STATUS_KEY_MAP, STATUS_ORDER } from "@/entities/homework/hooks/useHomeworkGroups"
 import { ChevronDown } from "lucide-react"
 import { HomeworkCard } from "./HomeworkCard"
 
@@ -26,6 +26,7 @@ function ShowMoreButton({
 }) {
   return (
     <button
+      type="button"
       onClick={() => onLoadAll(STATUS_KEY_MAP[statusKey])}
       className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm text-[#9CA3AF] hover:text-[#F2F2F2] transition-colors"
     >

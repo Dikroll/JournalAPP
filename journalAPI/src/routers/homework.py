@@ -4,6 +4,7 @@ import time
 from app.security import get_current_user
 from fastapi import APIRouter, Depends, Query
 from schemas import (
+    HomeworkAllResponse,
     HomeworkCounters,
     HomeworkDeleteRequest,
     HomeworkEvaluateRequest,
@@ -78,6 +79,32 @@ async def get_homework(
     user: dict = Depends(get_current_user),
 ):
     return [_normalize(e) for e in await _fetch_page(client, status, group_id, page)]
+
+
+@router.get("/all", response_model=HomeworkAllResponse)
+async def get_all_homework(
+    group_id: int = Query(..., gt=0),
+    page: int = Query(1, ge=1),
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    counters_raw, *pages = await asyncio.gather(
+        client.get("/count/homework"),
+        *[_fetch_page(client, s, group_id, page) for s in ALL_STATUSES],
+    )
+
+    counters = HomeworkCounters(**{
+        _HW_COUNTER_MAP[c.counter_type]: c.counter
+        for c in [UpstreamCounter(**e) for e in counters_raw]
+        if c.counter_type in _HW_COUNTER_MAP
+    })
+
+    items = {
+        str(status): [_normalize(e) for e in page_items]
+        for status, page_items in zip(ALL_STATUSES, pages)
+    }
+
+    return HomeworkAllResponse(counters=counters, items=items)
 
 
 @router.post("/refresh")

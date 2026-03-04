@@ -6,7 +6,7 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react"
-import type { HomeworkStatus } from "./model/useHomeworkGroups"
+import type { HomeworkStatus } from "./hooks/useHomeworkGroups"
 
 export const STATUS_CONFIG: Record<
   HomeworkStatus,

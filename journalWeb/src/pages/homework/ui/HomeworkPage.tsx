@@ -1,5 +1,5 @@
-import { useHomework } from "@/entities/homework/model/useHomework"
-import { useHomeworkGroups } from "@/entities/homework/model/useHomeworkGroups"
+import { useHomework } from "@/entities/homework/hooks/useHomework"
+import { useHomeworkGroups } from "@/entities/homework/hooks/useHomeworkGroups"
 import { HomeworkCountersBar, HomeworkList } from "@/widgets"
 import { RefreshCw } from "lucide-react"
 import { useState } from "react"
@@ -8,8 +8,23 @@ export function HomeworkPage() {
   const [groupBy, setGroupBy] = useState<"status" | "subject">("status")
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const { items, expandedStatuses, counters, status, error, filterStatus, refresh, loadMore, setFilter } = useHomework()
-  const { byStatus, bySubject } = useHomeworkGroups(items, expandedStatuses, counters)
+  const {
+    items,
+    expandedStatuses,
+    counters,
+    status,
+    error,
+    filterStatus,
+    refresh,
+    loadMore,
+    setFilter,
+  } = useHomework()
+
+  const { byStatus, bySubject } = useHomeworkGroups(
+    items,
+    expandedStatuses,
+    counters,
+  )
 
   const handleRefresh = () => {
     setIsRefreshing(true)
@@ -29,8 +44,11 @@ export function HomeworkPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#1F2024] gap-4">
         <p className="text-[#DC2626]">{error}</p>
-        <button type="button" onClick={handleRefresh}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/15 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors">
+        <button
+          type="button"
+          onClick={handleRefresh}
+          className="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/15 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors"
+        >
           <RefreshCw size={16} />
           Повторить
         </button>
@@ -43,9 +61,15 @@ export function HomeworkPage() {
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Домашние задания</h1>
-          <button type="button" onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] text-sm border border-white/10 transition-colors">
-            <RefreshCw size={15} className={isRefreshing ? "animate-spin" : ""} />
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] text-sm border border-white/10 transition-colors"
+          >
+            <RefreshCw
+              size={15}
+              className={isRefreshing ? "animate-spin" : ""}
+            />
             Обновить
           </button>
         </div>
@@ -60,10 +84,15 @@ export function HomeworkPage() {
 
         <div className="flex gap-2">
           {(["status", "subject"] as const).map((mode) => (
-            <button key={mode} onClick={() => setGroupBy(mode)}
+            <button
+              key={mode}
+              onClick={() => setGroupBy(mode)}
               className={`flex-1 px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors ${
-                groupBy === mode ? "bg-[#0570f2] text-white" : "bg-white/5 text-[#F2F2F2] border border-white/10"
-              }`}>
+                groupBy === mode
+                  ? "bg-[#0570f2] text-white"
+                  : "bg-white/5 text-[#F2F2F2] border border-white/10"
+              }`}
+            >
               {mode === "status" ? "По статусу" : "По предметам"}
             </button>
           ))}

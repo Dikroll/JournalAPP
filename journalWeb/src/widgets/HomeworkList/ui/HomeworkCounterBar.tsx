@@ -1,5 +1,5 @@
+import type { HomeworkStatus } from "@/entities/homework/hooks/useHomeworkGroups"
 import type { HomeworkCounters } from "@/entities/homework/model/types"
-import type { HomeworkStatus } from "@/entities/homework/model/useHomeworkGroups"
 
 interface Props {
   counters: HomeworkCounters

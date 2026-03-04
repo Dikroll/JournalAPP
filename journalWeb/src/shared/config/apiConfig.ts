@@ -1,13 +1,13 @@
-
 class ApiConfig {
-	// api routes
-	
+  // api routes
+
   // auth
   readonly AUTH_LOGIN = "/auth/login"
 
   // user
   readonly USER_ME = "/user/me"
   readonly USER_PROFILE = "/user/profile"
+  readonly USER_AVATAR = "/user/me/avatar"
 
   // schedule
   readonly SCHEDULE_TODAY = "/schedule/today"
@@ -27,9 +27,9 @@ class ApiConfig {
   // homework
   readonly HOMEWORK_COUNTERS = "/homework/counters"
   readonly HOMEWORK_LIST = "/homework/list"
+  readonly HOMEWORK_ALL = "/homework/all"
   readonly HOMEWORK_SYNC = "/homework/sync"
   readonly HOMEWORK_REFRESH = "/homework/refresh"
-
 
   // reviews
   readonly REVIEWS_LIST = "/reviews/list"
