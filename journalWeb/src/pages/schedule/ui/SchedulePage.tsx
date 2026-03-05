@@ -1,12 +1,11 @@
 
-import { ScheduleList } from "@/widgets"
+import {  ScheduleCalendar} from "@/widgets"
 
 export function SchedulePage() {
   return (
     <div>
       <div className="p-4">
-        <h1 className="text-lg font-bold mb-4">Расписание на сегодня</h1>
-        <ScheduleList />
+        <ScheduleCalendar />
       </div>
     </div>
   )
