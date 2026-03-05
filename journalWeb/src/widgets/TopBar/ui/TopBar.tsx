@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 export function TopBar() {
-  // гранулярные селекторы — ре-рендер только если изменилось конкретное поле
   const fullName  = useUserStore((s) => s.user?.full_name)
   const groupName = useUserStore((s) => s.user?.group.name)
   const photoUrl  = useUserStore((s) => s.user?.photo_url)
@@ -20,7 +19,7 @@ export function TopBar() {
   if (!fullName) return null
 
   return (
-    <div className="p-4">
+    <div className="px-4 pt-4 pb-2">
       <div
         className="bg-white/5 backdrop-blur-xl rounded-[24px] px-5 py-4 border border-white/10"
         style={{ boxShadow: "0 4px 24px 0 rgba(0, 0, 0, 0.3)" }}

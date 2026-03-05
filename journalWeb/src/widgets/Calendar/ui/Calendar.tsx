@@ -1,18 +1,14 @@
 import { useScheduleMonth } from "@/entities/schedule/hooks/useScheduleMonth"
-import { toMinutes, useCurrentMinutes } from "@/shared/hooks/useCurrentTime"
+import { formatDateLong, getTodayString, toDateString } from "@/shared/lib/dateUtils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
-import { LessonCard } from "../../ScheduleList/ui/LessonCard"
+import { LessonList } from "../../ScheduleList/ui/LessonList"
 
 const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
 const MONTHS = [
   "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
   "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",
 ]
-
-function toDateString(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-}
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate()
@@ -27,13 +23,9 @@ export function ScheduleCalendar() {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
-  const [selectedDate, setSelectedDate] = useState<string>(
-    toDateString(now.getFullYear(), now.getMonth(), now.getDate())
-  )
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayString())
 
-  const nowMinutes = useCurrentMinutes()
-  const todayStr = toDateString(now.getFullYear(), now.getMonth(), now.getDate())
-
+  const todayStr = getTodayString()
   const dateFilter = toDateString(year, month, 1)
   const { lessons } = useScheduleMonth(dateFilter)
 
@@ -64,14 +56,14 @@ export function ScheduleCalendar() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Календарь */}
+
       <div className="bg-white/5 rounded-3xl backdrop-blur-sm p-4">
         <div className="flex items-center justify-between mb-4">
-          <button type='button' onClick={prevMonth} className="text-white/60 hover:text-white transition-colors p-1">
+          <button type="button" onClick={prevMonth} className="text-white/60 hover:text-white transition-colors p-1">
             <ChevronLeft size={16} />
           </button>
           <span className="font-semibold text-sm">{MONTHS[month]} {year}</span>
-          <button type='button' onClick={nextMonth} className="text-white/60 hover:text-white transition-colors p-1">
+          <button type="button" onClick={nextMonth} className="text-white/60 hover:text-white transition-colors p-1">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -96,6 +88,7 @@ export function ScheduleCalendar() {
                 const isWeekend = di === 5 || di === 6
                 const dateStr = day ? toDateString(year, month, day) : ""
                 const isSelected = dateStr === selectedDate
+                const isToday = dateStr === todayStr
                 const hasLesson = dateStr ? daysWithLessons.has(dateStr) : false
                 const isGray = !hasLesson || isWeekend
 
@@ -104,14 +97,17 @@ export function ScheduleCalendar() {
                     <div
                       onClick={() => day && setSelectedDate(dateStr)}
                       className={`
-                        w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold transition-colors
-                        ${isSelected ? "bg-[#F20519] text-white" : ""}
+                        w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold transition-colors relative
+                        ${isSelected ? "bg-[#F20519]/70 text-white" : ""}
                         ${!isSelected && isGray && day ? "text-white/30" : ""}
                         ${!isSelected && !isGray && day ? "text-white hover:bg-white/10" : ""}
                         ${day ? "cursor-pointer" : ""}
                       `}
                     >
                       {day}
+                      {isToday && !isSelected && (
+                        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#F20519]/70" />
+                      )}
                     </div>
                   </div>
                 )
@@ -121,35 +117,13 @@ export function ScheduleCalendar() {
         </div>
       </div>
 
-      {/* Список пар выбранного дня */}
+
       {selectedDate && (
         <div>
-          <p className="text-xs text-white/40 mb-2 px-1">
-            {new Date(`${selectedDate}T00:00:00`).toLocaleDateString("ru-RU", {
-              day: "numeric", month: "long", weekday: "long",
-            })}
+          <p className="text-xs text-white/40 mb-2 px-1 capitalize">
+            {formatDateLong(selectedDate)}
           </p>
-
-          {selectedLessons.length === 0 ? (
-            <p className="text-[#9CA3AF] text-sm px-1">Пар нет</p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {selectedLessons.map((lesson) => {
-                const isCurrent =
-                  selectedDate === todayStr &&
-                  nowMinutes >= toMinutes(lesson.started_at) &&
-                  nowMinutes <= toMinutes(lesson.finished_at)
-
-                return (
-                  <LessonCard
-                    key={`${lesson.started_at}-${lesson.room}`}
-                    lesson={lesson}
-                    isCurrent={isCurrent}
-                  />
-                )
-              })}
-            </ul>
-          )}
+          <LessonList lessons={selectedLessons} forDate={selectedDate} />
         </div>
       )}
     </div>
