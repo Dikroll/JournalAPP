@@ -1,6 +1,8 @@
+import httpx
 from app.cache import TTL, cache
 from app.security import get_current_user
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from schemas import (
     GamingPoints,
     Group,
@@ -14,7 +16,11 @@ from schemas import (
     UserInfo,
     UserProfile,
 )
-from services.upstream_client import UpstreamClient, get_upstream_client
+from services.upstream_client import (
+    UpstreamClient,
+    get_http_client,
+    get_upstream_client,
+)
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -69,6 +75,40 @@ async def get_me(
         fetch=lambda: client.get("/settings/user-info"),
     )
     return _adapt(UpstreamUserInfo(**data))
+
+
+@router.get("/me/avatar")
+async def get_avatar(
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    async def _fetch() -> dict:
+        data = await cache.get_or_fetch(
+            key=f"user:info:{user['username']}",
+            ttl=TTL.USER_INFO,
+            fetch=lambda: client.get("/settings/user-info"),
+        )
+        photo_url = UpstreamUserInfo(**data).photo
+        if not photo_url:
+            raise HTTPException(status_code=404, detail="No avatar")
+
+        resp = await get_http_client().get(photo_url, follow_redirects=True)
+        return {
+            "content": resp.content,
+            "media_type": resp.headers.get("content-type", "image/jpeg"),
+        }
+
+    result = await cache.get_or_fetch(
+        key=f"user:avatar:{user['username']}",
+        ttl=TTL.USER_INFO,
+        fetch=_fetch,
+    )
+
+    return Response(
+        content=result["content"],
+        media_type=result["media_type"],
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 
 @router.get("/profile", response_model=UserProfile)

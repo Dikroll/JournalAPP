@@ -1,7 +1,7 @@
 import type { LoadingState } from "@/shared/types"
 import { create } from "zustand"
+import type { HomeworkStatus } from "../hooks/useHomeworkGroups"
 import type { HomeworkCounters, HomeworkItem } from "./types"
-import type { HomeworkStatus } from "./useHomeworkGroups"
 
 export const PREVIEW_SIZE = 6
 export const PAGE_SIZE = 6  

@@ -137,6 +137,7 @@ class QuizItem(BaseModel):
 #  HOMEWORK
 # ══════════════════════════════════════════════════════════════════
 
+
 class HomeworkDeleteRequest(BaseModel):
     """Тело запроса для удаления ДЗ."""
     id: int
@@ -179,7 +180,9 @@ class HomeworkItem(BaseModel):
     file_url: Optional[str] = None                       
     comment: Optional[str] = None
 
-
+class HomeworkAllResponse(BaseModel):
+    counters: HomeworkCounters
+    items: dict[str, list[HomeworkItem]]  
 # ══════════════════════════════════════════════════════════════════
 #  REVIEWS
 # ══════════════════════════════════════════════════════════════════

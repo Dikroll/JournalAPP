@@ -2,22 +2,25 @@ import { api } from "@/shared/api/instance"
 import { apiConfig } from "@/shared/config/apiConfig"
 import type { HomeworkCounters, HomeworkItem } from "../model/types"
 
+export interface HomeworkAllResponse {
+  counters: HomeworkCounters
+  items: Record<string, HomeworkItem[]> // "0" | "1" | "2" | "3" | "5"
+}
+
 export const homeworkApi = {
-  getCounters: () =>
-    api.get<HomeworkCounters>(apiConfig.HOMEWORK_COUNTERS).then((r) => r.data),
-
-  getByStatus: (status: number, group_id: number, page?: number) =>
+  /** Все статусы + счётчики за один запрос */
+  getAll: (groupId: number, page = 1) =>
     api
-      .get<HomeworkItem[]>(apiConfig.HOMEWORK_LIST, { params: { status, group_id, page } })
+      .get<HomeworkAllResponse>(apiConfig.HOMEWORK_ALL, {
+        params: { group_id: groupId, page },
+      })
       .then((r) => r.data),
 
-  getAllByStatus: (status: number, group_id: number) =>
+  /** Подгрузка следующей страницы одного статуса */
+  getByStatus: (status: number, groupId: number, page: number) =>
     api
-      .get<HomeworkItem[]>(apiConfig.HOMEWORK_LIST, { params: { status, group_id } })
-      .then((r) => r.data),
-
-  syncAll: (group_id: number) =>
-    api
-      .get<Record<string, HomeworkItem[]>>(apiConfig.HOMEWORK_SYNC, { params: { group_id } })
+      .get<HomeworkItem[]>(apiConfig.HOMEWORK_LIST, {
+        params: { status, group_id: groupId, page },
+      })
       .then((r) => r.data),
 }
