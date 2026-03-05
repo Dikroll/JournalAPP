@@ -45,6 +45,7 @@ export function HomeworkCard({ hw }: Props) {
         issuedDate={hw.issued_date}
         deadline={hw.deadline}
         isOverdue={isOverdue}
+        isNew={hw.statusKey === "new"}
       />
 
       {isReturned && hw.comment && (
