@@ -2,6 +2,7 @@ export interface HomeworkItem {
   id: number
   theme: string
   spec_name: string
+  spec_id: number | null
   teacher: string
   issued_date: string
   deadline: string

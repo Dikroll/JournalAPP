@@ -1,32 +1,11 @@
 import { useMemo } from "react"
+import type { HomeworkStatus } from "../model/homeworkStatus"
+import { STATUS_KEY_MAP, STATUS_MAP, STATUS_ORDER } from "../model/homeworkStatus"
 import { PREVIEW_SIZE } from "../model/store"
 import type { HomeworkCounters, HomeworkItem } from "../model/types"
 
-export type HomeworkStatus = "overdue" | "new" | "pending" | "checked" | "returned"
-
-export const STATUS_MAP: Record<number, HomeworkStatus> = {
-  0: "overdue",
-  1: "checked",
-  2: "pending",
-  3: "new",
-  5: "returned",
-}
-
-export const STATUS_KEY_MAP: Record<HomeworkStatus, number> = {
-  overdue: 0,
-  checked: 1,
-  pending: 2,
-  new: 3,
-  returned: 5,
-}
-
-export const STATUS_ORDER: HomeworkStatus[] = [
-  "overdue",
-  "new",
-  "pending",
-  "checked",
-  "returned",
-]
+export type { HomeworkStatus }
+export { STATUS_MAP, STATUS_KEY_MAP, STATUS_ORDER }
 
 export type HomeworkItemWithStatus = HomeworkItem & { statusKey: HomeworkStatus }
 
@@ -50,30 +29,26 @@ export function useHomeworkGroups(
   }, [items])
 
   const byStatus = useMemo(() => {
-    return STATUS_ORDER.reduce(
-      (acc, s) => {
-        const numKey = STATUS_KEY_MAP[s]
-        const all = flat.filter((hw) => hw.statusKey === s)
-        const isExpanded = expandedStatuses.has(numKey)
-        const loadedCount = all.length
-        const realTotal = counters ? counters[s] : loadedCount
-        acc[s] = {
-          items: isExpanded ? all : all.slice(0, PREVIEW_SIZE),
-          total: realTotal,
-          isExpanded,
-          hasMore: !isExpanded && loadedCount < realTotal,
-        }
-        return acc
-      },
-      {} as Record<HomeworkStatus, GroupData>,
-    )
+    return STATUS_ORDER.reduce((acc, s) => {
+      const numKey = STATUS_KEY_MAP[s]
+      const all = flat.filter((hw) => hw.statusKey === s)
+      const isExpanded = expandedStatuses.has(numKey)
+      const loadedCount = all.length
+      const realTotal = counters ? counters[s] : loadedCount
+      const hasMore = !isExpanded && loadedCount < realTotal
+
+      acc[s] = {
+        items: loadedCount > PREVIEW_SIZE ? all : all.slice(0, PREVIEW_SIZE),
+        total: realTotal,
+        isExpanded,
+        hasMore,
+      }
+      return acc
+    }, {} as Record<HomeworkStatus, GroupData>)
   }, [flat, expandedStatuses, counters])
 
   const bySubject = useMemo(() => {
-    const raw: Record<
-      string,
-      Partial<Record<HomeworkStatus, HomeworkItemWithStatus[]>>
-    > = {}
+    const raw: Record<string, Partial<Record<HomeworkStatus, HomeworkItemWithStatus[]>>> = {}
 
     for (const hw of flat) {
       if (!raw[hw.spec_name]) raw[hw.spec_name] = {}
@@ -89,18 +64,19 @@ export function useHomeworkGroups(
         const all = raw[subject][s] ?? []
         const numKey = STATUS_KEY_MAP[s]
         const isExpanded = expandedStatuses.has(numKey)
-        const realTotal = counters ? counters[s] : all.length
+        const loadedCount = all.length
+   
         result[subject][s] = {
-          items: isExpanded ? all : all.slice(0, PREVIEW_SIZE),
-          total: all.length,
+          items: all.slice(0, PREVIEW_SIZE),
+          total: loadedCount,
           isExpanded,
-          hasMore: !isExpanded && realTotal > PREVIEW_SIZE,
+          hasMore: false, 
         }
       }
     }
 
     return result
-  }, [flat, expandedStatuses, counters])
+  }, [flat, expandedStatuses])
 
   return { flat, byStatus, bySubject }
 }

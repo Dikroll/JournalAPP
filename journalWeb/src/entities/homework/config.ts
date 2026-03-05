@@ -1,4 +1,3 @@
-
 import {
   AlertTriangle,
   BookOpen,
@@ -6,7 +5,7 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react"
-import type { HomeworkStatus } from "./hooks/useHomeworkGroups"
+import type { HomeworkStatus } from "./model/homeworkStatus"
 
 export const STATUS_CONFIG: Record<
   HomeworkStatus,
@@ -32,8 +31,8 @@ export const STATUS_CONFIG: Record<
   pending: {
     label: "На проверке",
     icon: BookOpen,
-    borderColor: "border-l-[#3B82F6] border-b-[#3B82F6]",
-    textColor: "text-[#3B82F6]",
+    borderColor: "border-l-[#F59E0B] border-b-[#F59E0B]",
+    textColor: "text-[#F59E0B]",
   },
   checked: {
     label: "Проверенные",
