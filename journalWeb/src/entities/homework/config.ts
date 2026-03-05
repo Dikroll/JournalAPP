@@ -48,30 +48,36 @@ export const STATUS_CONFIG: Record<
   },
 }
 
-export function getGradeStyle(grade: number | null | undefined) {
-  if (!grade)
-    return {
-      bg: "bg-[#10B981]/5",
-      badge: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30",
-    }
-  if (grade >= 5)
-    return {
-      bg: "bg-[#10B981]/10",
-      badge: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30",
-    }
-  if (grade >= 4)
-    return {
-      bg: "bg-[#10B980]/40",
-      badge: "bg-[#10B980]/20 text-[#10B980] border-[#10B980]/30",
-    }
-  if (grade >= 3)
 
+export function getGradeStyle(grade: number | null | undefined): {
+  bg: string
+  badge: string
+} {
+  if (grade == null) {
     return {
-      bg: "bg-[#F59E0B]/10",
-      badge: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30",
+      bg: "bg-white/5",
+      badge: "bg-white/10 text-[#9CA3AF] border-white/20",
     }
+  }
+  if (grade >= 5) return {
+    bg: "bg-[#10B981]/8",
+    badge: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30",
+  }
+  if (grade >= 4) return {
+    bg: "bg-[#3B82F6]/8",
+    badge: "bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30",
+  }
+  if (grade >= 3) return {
+    bg: "bg-[#F59E0B]/8",
+    badge: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30",
+  }
+  if (grade >= 2) return {
+    bg: "bg-[#F97316]/8",
+    badge: "bg-[#F97316]/20 text-[#F97316] border-[#F97316]/30",
+  }
+
   return {
-    bg: "bg-[#DC2626]/10",
+    bg: "bg-[#DC2626]/8",
     badge: "bg-[#DC2626]/20 text-[#DC2626] border-[#DC2626]/30",
   }
 }

@@ -61,6 +61,7 @@ export function HomeworkPage() {
     )
   }
 
+  // ─── Рендер группы по статусу
   const renderStatusMode = () => {
     if (!selectedSpec) {
       return (
@@ -150,7 +151,7 @@ export function HomeworkPage() {
     )
   }
 
-
+  // ─── Рендер группы по предмету
   const renderSubjectMode = () => {
     const specNames = selectedSpec
       ? Object.keys(bySubject).filter((n) => n === selectedSpec.name)
@@ -191,7 +192,9 @@ export function HomeworkPage() {
                 const storeTotal = subjectData?.counters?.[s] ?? null
                 const total = storeTotal ?? displayItems.length
                 const isExpanded = subjectData?.expandedStatuses.has(numKey) ?? false
-                const hasMore = !isExpanded && displayItems.length < total
+    
+                const subjectNotFetched = subjectData == null || subjectData.loadedAt == null
+                const hasMore = subjectNotFetched || (!isExpanded && displayItems.length < total)
                 const { label, icon: Icon, textColor } = STATUS_CONFIG[s]
 
                 return (
@@ -199,7 +202,9 @@ export function HomeworkPage() {
                     <h3 className="text-sm text-[#9CA3AF] flex items-center gap-1.5 mb-2">
                       <Icon size={13} className={textColor} />
                       {label}
-                      <span className="text-xs">({total}{hasMore ? "+" : ""})</span>
+                      <span className="text-xs">
+                        ({total}{hasMore ? "+" : ""})
+                      </span>
                     </h3>
                     <div className="space-y-3">
                       {displayItems.map((hw) => <HomeworkCard key={hw.id} hw={hw as any} />)}
@@ -208,12 +213,22 @@ export function HomeworkPage() {
                       <button
                         type="button"
                         disabled={isLoadingSubject}
-                        onClick={() => loadMoreForSubject(specId, numKey)}
+                        onClick={() => {
+                          if (subjectNotFetched) {
+
+                            loadSubject(specId, specName)
+                          } else {
+        
+                            loadMoreForSubject(specId, numKey)
+                          }
+                        }}
                         className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm text-[#9CA3AF] hover:text-[#F2F2F2] transition-colors disabled:opacity-50"
                       >
                         {isLoadingSubject
                           ? <><RefreshCw size={14} className="animate-spin" /> Загрузка...</>
-                          : <><ChevronDown size={16} /> Показать ещё ({total - displayItems.length}+)</>
+                          : subjectNotFetched
+                            ? <><ChevronDown size={16} /> Показать все ДЗ по предмету</>
+                            : <><ChevronDown size={16} /> Показать ещё ({total - displayItems.length}+)</>
                         }
                       </button>
                     )}
@@ -243,6 +258,7 @@ export function HomeworkPage() {
           <HomeworkCountersBar counters={counters} activeFilter={filterStatus} onFilter={setFilter} />
         )}
 
+        
         <div className="flex gap-2">
           {(["status", "subject"] as const).map((mode) => (
             <button key={mode} type="button" onClick={() => setGroupBy(mode)}
@@ -254,6 +270,7 @@ export function HomeworkPage() {
           ))}
         </div>
 
+        
         <SpecSelector
           subjects={specList}
           selectedId={selectedSpec?.id ?? null}
