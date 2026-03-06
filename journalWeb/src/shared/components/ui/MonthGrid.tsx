@@ -5,7 +5,7 @@ import {
 	RU_DAYS_SHORT,
 	RU_MONTHS,
 	toDateString,
-} from "@/shared/lib/dateUtils"
+} from "@/shared/utils/dateUtils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export interface MonthGridDayInfo {

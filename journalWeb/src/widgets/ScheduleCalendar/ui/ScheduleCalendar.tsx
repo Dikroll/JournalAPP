@@ -1,7 +1,7 @@
 import { useScheduleMonth } from "@/entities/schedule/hooks/useScheduleMonth"
 import { MonthGrid } from "@/shared/components/ui/MonthGrid"
 import { useMonthNav } from "@/shared/hooks/useMonthNav"
-import { formatDateLong, getTodayString, toDateString } from "@/shared/lib/dateUtils"
+import { formatDateLong, getTodayString, toDateString } from "@/shared/utils/dateUtils"
 import { useState } from "react"
 import { LessonList } from "../../ScheduleList/ui/LessonList"
 

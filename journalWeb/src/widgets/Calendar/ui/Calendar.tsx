@@ -1,5 +1,5 @@
 import { useScheduleMonth } from "@/entities/schedule/hooks/useScheduleMonth"
-import { formatDateLong, getTodayString, toDateString } from "@/shared/lib/dateUtils"
+import { formatDateLong, getTodayString, toDateString } from "@/shared/utils/dateUtils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { LessonList } from "../../ScheduleList/ui/LessonList"
