@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/features/auth/model/store"
-import { HomePage, HomeworkPage, LoginPage, SchedulePage } from "@/pages"
+import { GradesPage, HomePage, HomeworkPage, LoginPage, SchedulePage } from "@/pages"
 import { pageConfig } from "@/shared/config/pageConfig"
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom"
 import { AppLayout, HomeLayout } from "../layouts"
@@ -26,10 +26,12 @@ export function AppRouter() {
           }
         >
          <Route element={<HomeLayout />}>
-  <Route index element={<HomePage />} />
-</Route>
+            <Route index element={<HomePage />} />
+          </Route>
+
           <Route path="schedule" element={<SchedulePage />} />
           <Route path="homework" element={<HomeworkPage />} />
+          <Route path="grades" element={<GradesPage />} />
           <Route path="profile" element={<div>kfkfkkf</div>} />
         </Route>
 

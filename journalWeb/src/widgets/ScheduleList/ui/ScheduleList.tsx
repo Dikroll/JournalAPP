@@ -16,7 +16,7 @@ export function ScheduleList() {
     return <p className="text-[#9CA3AF] text-sm">Пар сегодня нет</p>
 
   return (
-    <ul className="flex flex-col gap-2 mb-4">
+    <ul className="flex flex-col gap-3 mb-4">
       {today.map((lesson) => (
         <LessonCard
           key={`${lesson.started_at}-${lesson.room}`}

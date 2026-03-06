@@ -5,6 +5,7 @@ class PageConfig {
   readonly schedule = "/schedule"
   readonly homework = "/homework"
   readonly profile = "/profile"
+  readonly grades = "/grades"
 }
 
 export const pageConfig = new PageConfig()

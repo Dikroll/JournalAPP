@@ -14,7 +14,7 @@ export default defineConfig({
   host: true,
   port: 5173,
   proxy: {
-  "^/(auth|user|schedule|dashboard|homework|news|payment|feedback|market|library|health)": {
+    "^/(auth|user|schedule|dashboard|homework|news|payment|feedback|market|library|progress|health)": {
     target: "http://backend:8000",
     changeOrigin: true,
   },

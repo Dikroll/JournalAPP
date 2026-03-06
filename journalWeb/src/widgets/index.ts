@@ -1,11 +1,15 @@
 export { BottomBar } from "./BottomBar/ui/BottomBar"
+export { ScheduleCalendar } from "./Calendar/ui/Calendar"
 export { DashboardCharts } from "./DashboardCharts/ui/DashboardCharts"
+export { GradesCharts } from "./GradesCharts/ui/GradesCharts"
+export { GradesCalendar } from "./GradesList/ui/GradesCalendar"
+export { GradesRecentList } from "./GradesList/ui/GradesRecentList"
+export { GradesSubjectList } from "./GradesList/ui/GradesSubjectList"
 export { HomeworkCard } from "./HomeworkList/ui/HomeworkCard"
 export { HomeworkCountersBar } from "./HomeworkList/ui/HomeworkCounterBar"
 export { HomeworkList } from "./HomeworkList/ui/HomeworkList"
 export { ScheduleList } from "./ScheduleList/ui/ScheduleList"
 export { TopBar } from "./TopBar/ui/TopBar"
 export { UserCard } from "./UserCard/ui/UserCard"
-export { ScheduleCalendar } from "./Calendar/ui/Calendar"
 
 

@@ -1,20 +1,11 @@
 import { api } from "@/shared/api/instance"
 import { apiConfig } from "@/shared/config/apiConfig"
-
-interface LoginPayload {
-	username: string;
-	password: string;
-}
-
-interface TokenResponse {
-	access_token: string;
-	token_type: string;
-}
+import type { LoginRequest, LoginResponse } from "../model/types"
 
 export const authApi = {
-	login: (payload: LoginPayload) =>
+	login: (payload: LoginRequest): Promise<LoginResponse> =>
 		api
-			.post<TokenResponse>(
+			.post<LoginResponse>(
 				apiConfig.AUTH_LOGIN,
 				new URLSearchParams({
 					grant_type: "password",
@@ -28,4 +19,4 @@ export const authApi = {
 				},
 			)
 			.then((r) => r.data),
-};
+}

@@ -17,7 +17,7 @@ export function LessonList({ lessons, forDate }: Props) {
     return <p className="text-[#9CA3AF] text-sm">Пар нет</p>
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-3">
       {lessons.map((lesson) => (
         <LessonCard
           key={`${lesson.started_at}-${lesson.room}`}

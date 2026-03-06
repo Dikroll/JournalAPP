@@ -32,6 +32,8 @@ class ApiConfig {
 
   // progress
   readonly PROGRESS_FUTURE_EXAMS = "/progress/future-exams"
+  readonly PROGRESS_VISITS = "/progress/visits"
+  
 
   // reviews
   readonly REVIEWS_LIST = "/reviews/list"

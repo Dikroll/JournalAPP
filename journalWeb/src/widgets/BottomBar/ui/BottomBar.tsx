@@ -1,9 +1,10 @@
 import { pageConfig } from "@/shared/config/pageConfig"
-import { BookOpen, Calendar, Home, } from "lucide-react"
+import { BookOpen, Calendar, GraduationCap, Home } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
 const tabs = [
   { to: pageConfig.home,     icon: Home,           label: "Дом",        end: true },
+  { to: pageConfig.grades,   icon: GraduationCap,  label: "Оценки",    end: false },
   { to: pageConfig.schedule, icon: Calendar,       label: "Расписание", end: false },
   { to: pageConfig.homework, icon: BookOpen,       label: "ДЗ",    end: false },
 
