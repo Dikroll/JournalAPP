@@ -1,3 +1,4 @@
+export { GradesPage } from "./grades/ui/GradesPage"
 export { HomePage } from "./home/ui/HomePage"
 export { HomeworkPage } from "./homework/ui/HomeworkPage"
 export { LoginPage } from "./login/ui/LoginPage"

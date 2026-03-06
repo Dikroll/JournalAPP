@@ -1,67 +1,58 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { authApi } from "../api"
-import { useAuthStore } from "../model/store"
+import { useLogin } from "../hooks/useLogin"
 
 export function LoginForm() {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState(false);
-
-	const setToken = useAuthStore((s) => s.setToken);
-	const navigate = useNavigate();
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError(null);
-		setLoading(true);
-		try {
-			const { access_token } = await authApi.login({ username, password });
-			setToken(access_token);
-			navigate("/");
-		} catch (err: unknown) {
-			const msg =
-				(err as { response?: { data?: { detail?: string } } })?.response?.data
-					?.detail ?? "Ошибка входа";
-			setError(msg);
-		} finally {
-			setLoading(false);
-		}
-	};
+	const {
+		username,
+		password,
+		error,
+		loading,
+		setUsername,
+		setPassword,
+		submit,
+	} = useLogin()
 
 	return (
-		<div className="min-h-screen flex items-center justify-center p-4">
+		<div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] p-4">
 			<form
-				onSubmit={handleSubmit}
-				className="w-full max-w-sm flex flex-col gap-3"
+				onSubmit={submit}
+				className="w-full max-w-sm flex flex-col gap-4 bg-white/5 backdrop-blur-xl p-8 rounded-[24px] border border-white/10"
+				style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.3)" }}
 			>
-				<h1 className="text-xl font-bold text-center">Вход</h1>
+				<div className="text-center mb-2">
+					<h1 className="text-lg font-semibold text-[#F2F2F2] tracking-wide">
+						IT <span className="text-[#F20519]">TOP</span> COLLEGE
+					</h1>
+					<p className="text-xs text-[#9CA3AF] mt-1">Student Portal</p>
+				</div>
+
 				{error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
 				<input
 					type="text"
 					placeholder="Логин"
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
 					required
-					className="border rounded px-3 py-2 text-sm"
+					className="bg-white/5 border border-white/10 focus:border-[#F20519] outline-none rounded-lg px-3 py-2 text-sm text-[#F2F2F2] placeholder:text-[#9CA3AF] transition"
 				/>
+
 				<input
 					type="password"
 					placeholder="Пароль"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					required
-					className="border rounded px-3 py-2 text-sm"
+					className="bg-white/5 border border-white/10 focus:border-[#F20519] outline-none rounded-lg px-3 py-2 text-sm text-[#F2F2F2] placeholder:text-[#9CA3AF] transition"
 				/>
+
 				<button
 					type="submit"
 					disabled={loading}
-					className="bg-blue-600 text-white rounded px-3 py-2 text-sm disabled:opacity-50"
+					className="mt-2 bg-[#F20519] hover:bg-[#d90416] transition text-white font-medium rounded-lg px-3 py-2 text-sm disabled:opacity-50"
 				>
 					{loading ? "Входим..." : "Войти"}
 				</button>
 			</form>
 		</div>
-	);
+	)
 }

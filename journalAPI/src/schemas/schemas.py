@@ -168,6 +168,7 @@ class HomeworkEvaluateRequest(BaseModel):
 class HomeworkItem(BaseModel):
     id: Optional[int] = None
     theme: Optional[str] = None
+    spec_id: Optional[int] = None
     spec_name: Optional[str] = None
     teacher: Optional[str] = None
     issued_date: Optional[str] = None
@@ -182,6 +183,11 @@ class HomeworkItem(BaseModel):
 
 class HomeworkAllResponse(BaseModel):
     counters: HomeworkCounters
+    items: dict[str, list[HomeworkItem]] 
+
+class HomeworkBySubjectResponse(BaseModel):
+    spec_id: int
+    counters: HomeworkCounters             
     items: dict[str, list[HomeworkItem]]  
 # ══════════════════════════════════════════════════════════════════
 #  REVIEWS

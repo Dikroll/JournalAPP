@@ -12,10 +12,11 @@ export function useHomework() {
   const {
     items, expandedStatuses, counters, status, error, filterStatus,
     setItems, appendItems, setExpanded, setCounters,
-    setStatus, setError, setFilter, setLoadedAt,
+    setStatus, setError, setFilter, setLoadedAt, setKnownSpecs,
   } = useHomeworkStore()
 
   const loadingRef = useRef(false)
+  const loadingMoreRef = useRef<Set<number>>(new Set())
 
   const loadAll = useCallback(async (force = false) => {
     if (!groupId) return
@@ -29,14 +30,24 @@ export function useHomework() {
     setError(null)
 
     try {
-      // один запрос вместо 6 последовательных
       const { counters, items } = await homeworkApi.getAll(groupId)
-
       setCounters(counters)
+
+      const specsMap = new Map<number, string>()
+      Object.values(items).flat().forEach((hw) => {
+        if (hw.spec_id != null && hw.spec_name) {
+          specsMap.set(hw.spec_id, hw.spec_name)
+        }
+      })
+      setKnownSpecs(
+        Array.from(specsMap.entries())
+          .map(([specId, specName]) => ({ specId, specName }))
+          .sort((a, b) => a.specName.localeCompare(b.specName, "ru"))
+      )
+
       Object.entries(items).forEach(([statusKey, list]) => {
         setItems(Number(statusKey), list)
       })
-
       setLoadedAt(Date.now())
       setStatus("success")
     } catch {
@@ -49,9 +60,12 @@ export function useHomework() {
 
   const loadMore = useCallback(async (statusKey: number) => {
     if (!groupId) return
-    const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
-    const nextPage = currentPage + 1
+    if (loadingMoreRef.current.has(statusKey)) return
+    loadingMoreRef.current.add(statusKey)
+
     try {
+      const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
+      const nextPage = currentPage + 1
       const newItems = await homeworkApi.getByStatus(statusKey, groupId, nextPage)
       appendItems(statusKey, newItems, nextPage)
       if (newItems.length < PAGE_SIZE) {
@@ -59,6 +73,8 @@ export function useHomework() {
       }
     } catch {
       // silent
+    } finally {
+      loadingMoreRef.current.delete(statusKey)
     }
   }, [groupId, appendItems, setExpanded])
 

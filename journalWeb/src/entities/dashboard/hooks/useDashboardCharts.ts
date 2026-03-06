@@ -1,36 +1,69 @@
-import { useEffect, useState } from "react"
+import { storage } from "@/shared/lib/storage"
+import { ttl } from "@/shared/config/cache"
+import { useEffect } from "react"
 import { dashboardApi } from "../api"
 import type { ChartPoint } from "../model/types"
+import { useDashboardChartsStore } from "../model/store"
 
-interface ChartsState {
-  progress: ChartPoint[]
-  attendance: ChartPoint[]
-  status: "idle" | "loading" | "success" | "error"
-}
+const CACHE_KEY_PROGRESS   = "cache:dashboard:chart:progress"
+const CACHE_KEY_ATTENDANCE = "cache:dashboard:chart:attendance"
+
+let fetchStarted = false
 
 export function useDashboardCharts() {
-  const [state, setState] = useState<ChartsState>({
-    progress: [],
-    attendance: [],
-    status: "idle",
-  })
+  const progress    = useDashboardChartsStore((s) => s.progress)
+  const attendance  = useDashboardChartsStore((s) => s.attendance)
+  const status      = useDashboardChartsStore((s) => s.status)
+  const setProgress   = useDashboardChartsStore((s) => s.setProgress)
+  const setAttendance = useDashboardChartsStore((s) => s.setAttendance)
+  const setStatus     = useDashboardChartsStore((s) => s.setStatus)
 
   useEffect(() => {
-    setState((s) => ({ ...s, status: "loading" }))
+    const state = useDashboardChartsStore.getState()
+
+    if (state.progress.length > 0 && state.attendance.length > 0) return
+
+
+    const freshProgress   = storage.get<ChartPoint[]>(CACHE_KEY_PROGRESS)
+    const freshAttendance = storage.get<ChartPoint[]>(CACHE_KEY_ATTENDANCE)
+    if (freshProgress && freshAttendance) {
+      setProgress(freshProgress)
+      setAttendance(freshAttendance)
+      setStatus("success")
+      return
+    }
+
+    const staleProgress   = storage.getStale<ChartPoint[]>(CACHE_KEY_PROGRESS)
+    const staleAttendance = storage.getStale<ChartPoint[]>(CACHE_KEY_ATTENDANCE)
+    if (staleProgress)   setProgress(staleProgress)
+    if (staleAttendance) setAttendance(staleAttendance)
+    if (staleProgress && staleAttendance) {
+      setStatus("success")
+    } else {
+      setStatus("loading")
+    }
+
+    if (fetchStarted) return
+    fetchStarted = true
 
     Promise.all([
       dashboardApi.getProgressChart(),
       dashboardApi.getAttendanceChart(),
     ])
       .then(([progress, attendance]) => {
-        setState({ progress, attendance, status: "success" })
+        setProgress(progress)
+        setAttendance(attendance)
+        setStatus("success")
+        storage.set(CACHE_KEY_PROGRESS,   progress,   ttl.ACTIVITY)
+        storage.set(CACHE_KEY_ATTENDANCE, attendance, ttl.ACTIVITY)
       })
       .catch(() => {
-        setState((s) => ({ ...s, status: "error" }))
+        fetchStarted = false 
+        setStatus("error")
       })
   }, [])
 
-  return state
+  return { progress, attendance, status }
 }
 
 export function calcTrend(data: ChartPoint[]): number | undefined {

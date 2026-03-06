@@ -4,11 +4,16 @@ import type { HomeworkCounters, HomeworkItem } from "../model/types"
 
 export interface HomeworkAllResponse {
   counters: HomeworkCounters
-  items: Record<string, HomeworkItem[]> // "0" | "1" | "2" | "3" | "5"
+  items: Record<string, HomeworkItem[]>
+}
+
+export interface HomeworkBySubjectResponse {
+  spec_id: number
+  counters: HomeworkCounters
+  items: Record<string, HomeworkItem[]>
 }
 
 export const homeworkApi = {
-  /** Все статусы + счётчики за один запрос */
   getAll: (groupId: number, page = 1) =>
     api
       .get<HomeworkAllResponse>(apiConfig.HOMEWORK_ALL, {
@@ -16,11 +21,24 @@ export const homeworkApi = {
       })
       .then((r) => r.data),
 
-  /** Подгрузка следующей страницы одного статуса */
   getByStatus: (status: number, groupId: number, page: number) =>
     api
       .get<HomeworkItem[]>(apiConfig.HOMEWORK_LIST, {
         params: { status, group_id: groupId, page },
+      })
+      .then((r) => r.data),
+
+  getBySubject: (groupId: number, specId: number, page = 1) =>
+    api
+      .get<HomeworkBySubjectResponse>(apiConfig.HOMEWORK_BY_SUBJECT, {
+        params: { group_id: groupId, spec_id: specId, page },
+      })
+      .then((r) => r.data),
+
+  getByStatusAndSubject: (status: number, groupId: number, specId: number, page: number) =>
+    api
+      .get<HomeworkItem[]>(apiConfig.HOMEWORK_LIST, {
+        params: { status, group_id: groupId, spec_id: specId, page },
       })
       .then((r) => r.data),
 }
