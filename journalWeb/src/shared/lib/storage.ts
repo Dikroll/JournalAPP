@@ -69,4 +69,8 @@ export const CACHE_KEYS = {
 	LIBRARY_COUNTERS: (specId?: number) =>
 		`cache:library:counters:${specId ?? "all"}`,
 	MARKET_PRODUCTS: "cache:market:products",
+	LEADERBOARD_GROUP: "cache:leaderboard:group",
+	LEADERBOARD_STREAM: "cache:leaderboard:stream",
+	REVIEWS: "cache:reviews",
+	
 };

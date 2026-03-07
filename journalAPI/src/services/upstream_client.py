@@ -21,7 +21,6 @@ DEFAULT_HEADERS = {
 
 _clients: dict[str, "UpstreamClient"] = {}
 
-# один глобальный httpx клиент с connection pool
 _http: httpx.AsyncClient | None = None
 
 
@@ -31,7 +30,7 @@ def get_http_client() -> httpx.AsyncClient:
         _http = httpx.AsyncClient(
             timeout=httpx.Timeout(10.0),
             limits=httpx.Limits(max_connections=50, max_keepalive_connections=20),
-            http2=True,  # HTTP/2 если сервер поддерживает
+            http2=True,  
         )
     return _http
 
@@ -118,6 +117,61 @@ class UpstreamClient:
 
     async def post(self, path: str, json: dict | None = None) -> dict | list:
         return await self._request("POST", path, json=json)
+
+    async def upload_file(self, file_content: bytes, filename: str, content_type: str) -> dict:
+        """
+        Двухшаговый upload файла на fs.top-academy.ru:
+          1. POST /auth/file-token  → получаем {dir, token, url}
+          2. POST {url}/api/v1/files с multipart → возвращаем {filename, file_path, tmp_file}
+        """
+        if not self._token or self._is_token_expired():
+            await self._login()
+
+        token_headers = {**DEFAULT_HEADERS, "Authorization": f"Bearer {self._token}"}
+        token_resp = await get_http_client().post(
+            f"{settings.UPSTREAM_BASE_URL}/auth/file-token",
+            headers=token_headers,
+            json={},
+        )
+        if token_resp.status_code >= 400:
+            log.error(f"[FILE-TOKEN] {token_resp.status_code}: {token_resp.text}")
+            raise HTTPException(status_code=502, detail="Failed to get file token from upstream")
+
+        creds = token_resp.json()
+        fs_url: str = creds.get("url", "https://fs.top-academy.ru")
+        fs_token: str = creds.get("token", "")
+        directory: str = (creds.get("dir") or {}).get("homeworkDirId", {}).get("src", "")
+
+        log.debug(f"[FILE-TOKEN] fs_url={fs_url} dir={directory}")
+
+
+        upload_headers = {
+            "Authorization": f"Bearer {fs_token}",
+            "X-Ignore-refresh": "",
+            "Origin": "https://journal.top-academy.ru",
+            "Referer": "https://journal.top-academy.ru/",
+            "User-Agent": DEFAULT_HEADERS["User-Agent"],
+            "Accept": DEFAULT_HEADERS["Accept"],
+        }
+        upload_resp = await get_http_client().post(
+            f"{fs_url}/api/v1/files",
+            headers=upload_headers,
+            files={"files[]": (filename, file_content, content_type)},
+            data={"directory": directory},
+        )
+        if upload_resp.status_code >= 400:
+            log.error(f"[FILE-UPLOAD] {upload_resp.status_code}: {upload_resp.text}")
+            raise HTTPException(status_code=502, detail="Failed to upload file to file server")
+
+        results = upload_resp.json()
+        result = results[0] if isinstance(results, list) else results
+        log.info(f"[FILE-UPLOAD] success: link={result.get('link')}")
+
+        return {
+            "filename": filename,
+            "file_path": result.get("link", ""),
+            "tmp_file": result.get("token", ""),
+        }
 
 
 def get_upstream_client(user: dict = Depends(get_current_user)) -> UpstreamClient:

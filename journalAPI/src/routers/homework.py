@@ -1,13 +1,15 @@
 import asyncio
+from datetime import date
 
 from app.security import get_current_user
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from schemas import (
     HomeworkAllResponse,
     HomeworkBySubjectResponse,
     HomeworkCounters,
     HomeworkDeleteRequest,
     HomeworkEvaluateRequest,
+    HomeworkFileUploadResponse,
     HomeworkItem,
     HomeworkSubmitRequest,
     UpstreamCounter,
@@ -24,6 +26,9 @@ _HW_COUNTER_MAP = {
 }
 
 ALL_STATUSES = [0, 1, 2, 3, 5]
+
+# Максимальный размер файла — 99 МБ (как в оригинальном приложении)
+MAX_FILE_SIZE_BYTES = 99 * 1024 * 1024
 
 
 def _normalize(raw: dict) -> HomeworkItem:
@@ -156,6 +161,35 @@ async def refresh_cache(user: dict = Depends(get_current_user)):
     return {"status": "ok"}
 
 
+@router.post("/upload-file", response_model=HomeworkFileUploadResponse)
+async def upload_homework_file(
+    file: UploadFile = File(...),
+    client: UpstreamClient = Depends(get_upstream_client),
+    user: dict = Depends(get_current_user),
+):
+    """
+    Загрузить файл для ДЗ.
+    Прокси сам получает file-token и загружает файл на fs.top-academy.ru.
+    Возвращает {filename, file_path, tmp_file} — передать в /homework/submit.
+    """
+    # Проверка формата (блокируем txt и csv как в оригинале)
+    ext = (file.filename or "").rsplit(".", 1)[-1].lower()
+    if ext in ("txt", "csv"):
+        raise HTTPException(status_code=400, detail=f"Формат .{ext} не поддерживается")
+
+    content = await file.read()
+
+    if len(content) > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(status_code=413, detail="Файл превышает 99 МБ")
+
+    result = await client.upload_file(
+        file_content=content,
+        filename=file.filename or "file",
+        content_type=file.content_type or "application/octet-stream",
+    )
+    return HomeworkFileUploadResponse(**result)
+
+
 @router.post("/delete")
 async def delete_homework(
     body: HomeworkDeleteRequest,
@@ -172,9 +206,14 @@ async def submit_homework(
     user: dict = Depends(get_current_user),
 ):
     return await client.post("/homework/operations/create", json={
-        "id": body.id, "filename": body.filename, "file_path": body.file_path,
-        "tmp_file": body.tmp_file, "mark": body.mark, "creation_time": body.creation_time,
-        "stud_answer": body.stud_answer, "auto_mark": body.auto_mark,
+        "id": body.id,
+        "filename": body.filename,
+        "file_path": body.file_path,
+        "tmp_file": body.tmp_file,
+        "mark": body.mark,
+        "creation_time": body.creation_time or date.today().isoformat(),
+        "stud_answer": body.stud_answer,
+        "auto_mark": body.auto_mark,
     })
 
 
