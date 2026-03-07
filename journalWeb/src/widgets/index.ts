@@ -9,6 +9,7 @@ export { HomeworkCountersBar } from "./HomeworkList/ui/shared/HomeworkCounterBar
 export { Leaderboard } from "./Leaderboard/ui/Leaderboard"
 export { ProfileHeader } from "./ProfileHeader/ui/ProfileHeader"
 export { ReviewsList } from "./ReviewList/ui/ReviewList"
+export { ScheduleCalendar } from "./Schedule/ScheduleCalendar/ui/ScheduleCalendar"
 export { ScheduleList } from "./Schedule/ScheduleList/ui/ScheduleList"
 export { TopBar } from "./TopBar/ui/TopBar"
 export { UserCard } from "./UserCard/ui/UserCard"

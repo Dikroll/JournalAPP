@@ -1,5 +1,5 @@
 
-import {  ScheduleCalendar} from "@/widgets"
+import { ScheduleCalendar } from "@/widgets"
 
 export function SchedulePage() {
   return (
