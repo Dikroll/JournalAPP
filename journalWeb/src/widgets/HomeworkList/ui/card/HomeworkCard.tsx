@@ -1,19 +1,17 @@
 import { getGradeStyle, STATUS_CONFIG } from "@/entities/homework/config"
 import type { HomeworkItemWithStatus } from "@/entities/homework/hooks/useHomeworkGroups"
+import { ChevronDown, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { HomeworkCardActions } from "./HomeworkCardActions"
 import { HomeworkCardDates } from "./HomeworkCardDates"
 import { HomeworkCardHeader } from "./HomeworkCardHeader"
-import { HomeworkCardReturnedComment } from "./HomeworkCardReturnedComment"
-import { HomeworkCardUploadWarning } from "./HomeworkCardUploadWarning"
-
 
 interface Props {
   hw: HomeworkItemWithStatus
 }
 
 export function HomeworkCard({ hw }: Props) {
-  const [showUploadWarning, setShowUploadWarning] = useState(false)
+  const [commentOpen, setCommentOpen] = useState(false)
 
   const config = STATUS_CONFIG[hw.statusKey]
   const isChecked = hw.statusKey === "checked"
@@ -29,10 +27,8 @@ export function HomeworkCard({ hw }: Props) {
       ? "bg-[#DC2626]/5"
       : "bg-white/5"
 
-  const handleConfirmReupload = () => {
-    setShowUploadWarning(false)
-    // TODO: вызвать useSendHomework.upload() когда будет реализовано
-  }
+  const hasComment = !!hw.comment
+  const commentAlwaysVisible = isReturned
 
   return (
     <div
@@ -48,24 +44,43 @@ export function HomeworkCard({ hw }: Props) {
         isNew={hw.statusKey === "new"}
       />
 
-      {isReturned && hw.comment && (
-        <HomeworkCardReturnedComment comment={hw.comment} />
+      {hasComment && (
+        <div className="mb-4">
+          {!commentAlwaysVisible && (
+            <button
+              type="button"
+              onClick={() => setCommentOpen((v) => !v)}
+              className="flex items-center gap-1.5 text-xs text-[#F29F05] hover:text-[#F29F05]/80 transition-colors mb-2"
+            >
+              <MessageSquare size={13} />
+              <span>Комментарий преподавателя</span>
+              <ChevronDown
+                size={13}
+                className={`transition-transform duration-200 ${commentOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+          )}
+          {(commentAlwaysVisible || commentOpen) && (
+            <div className={`p-3 rounded-2xl border ${
+              isReturned
+                ? "bg-[#6B7280]/10 border-[#6B7280]/30"
+                : "bg-[#F29F05]/10 border-[#F29F05]/20"
+            }`}>
+              <p className="text-sm text-[#F2F2F2]">{hw.comment}</p>
+            </div>
+          )}
+        </div>
       )}
 
       <HomeworkCardActions
         homeworkId={hw.id}
+        homeworkTheme={hw.theme ?? hw.spec_name}
         statusKey={hw.statusKey}
         fileUrl={hw.file_url}
         studAnswer={hw.stud_answer}
-        onUploadChecked={() => setShowUploadWarning(true)}
+        studFileUrl={(hw as any).stud_file_url ?? null}
+        studId={(hw as any).stud_id ?? null}
       />
-
-      {showUploadWarning && (
-        <HomeworkCardUploadWarning
-          onCancel={() => setShowUploadWarning(false)}
-          onConfirm={handleConfirmReupload}
-        />
-      )}
     </div>
   )
 }

@@ -28,9 +28,11 @@ class ApiConfig {
   readonly HOMEWORK_ALL = "/homework/all"
   readonly HOMEWORK_SYNC = "/homework/sync"
   readonly HOMEWORK_SUBMIT = "/homework/submit"
-  readonly HOMEWORK_FILE_UPLOAD = "/homework/upload-file"  // ← новое
+  readonly HOMEWORK_FILE_UPLOAD = "/homework/upload-file"  
   readonly HOMEWORK_BY_SUBJECT = "/homework/by-subject"
   readonly HOMEWORK_REFRESH = "/homework/refresh"
+  readonly HOMEWORK_DELETE = "/homework/delete"
+
 
   // progress
   readonly PROGRESS_FUTURE_EXAMS = "/progress/future-exams"

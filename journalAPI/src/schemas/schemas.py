@@ -178,6 +178,9 @@ class HomeworkItem(BaseModel):
     has_file: Optional[bool] = None
     file_url: Optional[str] = None                       
     comment: Optional[str] = None
+    stud_id: Optional[int] = None        
+    stud_file_url: Optional[str] = None
+    stud_filename: Optional[str] = None
 
 class HomeworkAllResponse(BaseModel):
     counters: HomeworkCounters

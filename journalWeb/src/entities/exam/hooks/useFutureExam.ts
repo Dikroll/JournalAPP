@@ -1,30 +1,27 @@
 import { ttl } from "@/shared/config/cache"
-import { cachedFetch } from "@/shared/lib/cachedFetch"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { examApi } from "../api"
-import type { FutureExamItem } from "../model/types"
+import { useExamStore } from "../model/store"
 
-const CACHE_KEY = "cache:exam:future"
-
-interface State {
-  exams: FutureExamItem[]
-  status: "idle" | "loading" | "success" | "error"
-}
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 export function useFutureExams() {
-  const [state, setState] = useState<State>({ exams: [], status: "idle" })
+  const { exams, status, loadedAt, setExams, setStatus, setLoadedAt } = useExamStore()
 
   useEffect(() => {
-    setState((s) => ({ ...s, status: "loading" }))
+    if (status === "loading") return
+    if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
 
-    cachedFetch<FutureExamItem[]>({
-      key: CACHE_KEY,
-      fetcher: examApi.getFutureExams,
-      ttlSeconds: ttl.SCHEDULE, // 4 часа
-      onData: (data) => setState({ exams: data, status: "success" }),
-      onError: () => setState((s) => ({ ...s, status: "error" })),
-    })
+    setStatus("loading")
+    examApi
+      .getFutureExams()
+      .then((data) => {
+        setExams(data)
+        setLoadedAt(Date.now())
+        setStatus("success")
+      })
+      .catch(() => setStatus("error"))
   }, [])
 
-  return state
+  return { exams, status }
 }

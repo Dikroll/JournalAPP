@@ -27,9 +27,7 @@ _HW_COUNTER_MAP = {
 
 ALL_STATUSES = [0, 1, 2, 3, 5]
 
-# Максимальный размер файла — 99 МБ (как в оригинальном приложении)
 MAX_FILE_SIZE_BYTES = 99 * 1024 * 1024
-
 
 def _normalize(raw: dict) -> HomeworkItem:
     homework_stud = raw.get("homework_stud") or {}
@@ -38,6 +36,15 @@ def _normalize(raw: dict) -> HomeworkItem:
     stud_answer = homework_stud.get("stud_answer") or None
     homework_comment = raw.get("homework_comment") or {}
     comment = homework_comment.get("text_comment") or raw.get("comment") or None
+
+    stud_id_val = homework_stud.get("id")
+    stud_file_raw = homework_stud.get("file_path") or None
+
+    if stud_file_raw and stud_file_raw.startswith("?"):
+        stud_file_url = f"https://msapi.top-academy.ru/api/v2/homework/operations/file/{stud_id_val}{stud_file_raw}"
+    else:
+        stud_file_url = stud_file_raw  
+
     return HomeworkItem(**{
         "id": raw.get("id"),
         "theme": raw.get("theme"),
@@ -51,8 +58,11 @@ def _normalize(raw: dict) -> HomeworkItem:
         "grade": grade,
         "has_file": bool(raw.get("file_path")),
         "file_url": raw.get("file_path"),
+        "stud_file_url": stud_file_url,
+        "stud_filename": homework_stud.get("filename"),
         "comment": comment,
         "stud_answer": stud_answer,
+        "stud_id": stud_id_val,
     })
 
 

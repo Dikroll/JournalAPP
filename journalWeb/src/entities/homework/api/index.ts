@@ -41,4 +41,9 @@ export const homeworkApi = {
         params: { status, group_id: groupId, spec_id: specId, page },
       })
       .then((r) => r.data),
+
+  deleteSubmission: (studId: number) =>
+    api
+      .post(apiConfig.HOMEWORK_DELETE, { id: studId })
+      .then((r) => r.data),
 }

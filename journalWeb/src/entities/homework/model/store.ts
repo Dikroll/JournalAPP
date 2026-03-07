@@ -18,7 +18,6 @@ export interface SubjectData {
 }
 
 interface HomeworkState {
-
   items: Record<number, HomeworkItem[]>
   pages: Record<number, number>
   expandedStatuses: Set<number>
@@ -36,7 +35,7 @@ interface HomeworkState {
   setError: (e: string | null) => void
   setFilter: (f: HomeworkStatus | null) => void
   setLoadedAt: (t: number) => void
-
+  removeItem: (homeworkId: number) => void
 
   knownSpecs: Array<{ specId: number; specName: string }>
   subjects: Record<number, SubjectData>
@@ -49,6 +48,21 @@ interface HomeworkState {
 
   reset: () => void
 }
+
+
+function filterItems(
+  items: Record<number, HomeworkItem[]>,
+  homeworkId: number,
+): Record<number, HomeworkItem[]> {
+  return Object.fromEntries(
+    Object.entries(items).map(([key, list]) => [
+      key,
+      list.filter((hw) => hw.id !== homeworkId),
+    ]),
+  )
+}
+
+
 
 export const useHomeworkStore = create<HomeworkState>()((set) => ({
   items: {},
@@ -88,6 +102,16 @@ export const useHomeworkStore = create<HomeworkState>()((set) => ({
   setFilter: (filterStatus) => set({ filterStatus }),
   setLoadedAt: (loadedAt) => set({ loadedAt }),
 
+  removeItem: (homeworkId) =>
+    set((state) => ({
+      items: filterItems(state.items, homeworkId),
+      subjects: Object.fromEntries(
+        Object.entries(state.subjects).map(([specId, subjectData]) => [
+          specId,
+          { ...subjectData, items: filterItems(subjectData.items, homeworkId) },
+        ]),
+      ),
+    })),
 
   knownSpecs: [],
   subjects: {},

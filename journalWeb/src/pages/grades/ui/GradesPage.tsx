@@ -4,7 +4,7 @@ import { useGrades } from "@/entities/grades/hooks/useGrades"
 import { useGradesBySubject } from "@/entities/grades/hooks/useGradesBySubject"
 import { useGradesGroups } from "@/entities/grades/hooks/useGradesGroups"
 import { useSubjects } from "@/entities/subject/hooks/useSubjects"
-import { SpecSelector } from "@/shared/components/ui/SpecSelector"
+import { SpecSelector } from '@/features/selectSpec/ui/SpecSelector'
 import { GradesCharts } from "@/widgets/GradesCharts/ui/GradesCharts"
 import { GradesCalendar } from "@/widgets/GradesList/ui/GradesCalendar"
 import { GradesRecentList } from "@/widgets/GradesList/ui/GradesRecentList"

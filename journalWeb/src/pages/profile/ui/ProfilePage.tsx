@@ -1,15 +1,13 @@
-import { useLeaderboard } from "@/entities/leaderboard/hooks/useLeaderboard"
+import { useLeaderboardStore } from "@/entities/leaderboard/model/store"
 import { useUser } from "@/entities/user/hooks/useUser"
 import { pageConfig } from "@/shared/config/pageConfig"
 import { Leaderboard, ProfileHeader, ReviewsList } from "@/widgets"
 import { ShoppingBag } from "lucide-react"
-
 import { Link } from "react-router-dom"
 
 export function ProfilePage() {
   const user = useUser()
-
-  const { myRank } = useLeaderboard("group")
+  const myRank = useLeaderboardStore((s) => s.group.data?.my_rank?.group)
 
   if (!user) {
     return (

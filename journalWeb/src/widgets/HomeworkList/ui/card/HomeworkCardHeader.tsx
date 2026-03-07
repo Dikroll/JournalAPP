@@ -1,7 +1,5 @@
-
 import { STATUS_CONFIG } from "@/entities/homework/config"
 import type { HomeworkItemWithStatus } from "@/entities/homework/hooks/useHomeworkGroups"
-import { MessageSquare } from "lucide-react"
 
 interface Props {
   hw: HomeworkItemWithStatus
@@ -12,7 +10,6 @@ interface Props {
 export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
   const config = STATUS_CONFIG[hw.statusKey]
   const StatusIcon = config.icon
-  const isReturned = hw.statusKey === "returned"
   const isChecked = hw.statusKey === "checked"
 
   return (
@@ -30,16 +27,11 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
         <p className="text-sm text-[#9CA3AF] line-clamp-2 mt-0.5">{hw.theme}</p>
       </div>
 
-      <div className="flex items-center gap-2 ml-3 flex-shrink-0">
-        {isChecked && grade != null && (
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${gradeStyle!.badge}`}>
-            {grade}
-          </div>
-        )}
-        {hw.comment && !isReturned && (
-          <MessageSquare size={18} className="text-[#F29F05]" />
-        )}
-      </div>
+      {isChecked && grade != null && (
+        <div className={`ml-3 flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${gradeStyle!.badge}`}>
+          {grade}
+        </div>
+      )}
     </div>
   )
 }

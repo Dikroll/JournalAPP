@@ -107,11 +107,12 @@ class UpstreamClient:
         if resp.status_code >= 400:
             log.error(f"[{method}] {path} — {resp.status_code}: {resp.text}")
             raise HTTPException(status_code=resp.status_code, detail=resp.text)
+        if not resp.content:
+            return {}
 
         data = resp.json()
         log.debug(f"[{method}] {path} — OK, items: {len(data) if isinstance(data, list) else 1}")
         return data
-
     async def get(self, path: str, params: dict | None = None) -> dict | list:
         return await self._request("GET", path, params=params)
 

@@ -1,8 +1,8 @@
 import { STATUS_CONFIG } from "@/entities/homework/config"
 import type { HomeworkItemWithStatus } from "@/entities/homework/hooks/useHomeworkGroups"
 import type { HomeworkStatus } from "@/entities/homework/model/homeworkStatus"
+import { HomeworkCard } from "@/widgets/HomeworkList/ui/card/HomeworkCard"
 import { ChevronDown, RefreshCw } from "lucide-react"
-import { HomeworkCard } from "./HomeworkCard"
 
 interface Props {
   status: HomeworkStatus
@@ -12,7 +12,6 @@ interface Props {
   isLoading?: boolean
   onLoadMore: () => void
 }
-
 
 export function HomeworkStatusSection({
   status,
@@ -31,9 +30,7 @@ export function HomeworkStatusSection({
       <h3 className="text-sm text-[#9CA3AF] flex items-center gap-1.5 mb-2">
         <Icon size={13} className={textColor} />
         {label}
-        <span className="text-xs">
-          ({total}{hasMore ? "+" : ""})
-        </span>
+        <span className="text-xs">({total}{hasMore ? "+" : ""})</span>
       </h3>
 
       <div className="space-y-3">
