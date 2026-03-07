@@ -1,12 +1,8 @@
 import { formatMonthShort } from "@/shared/utils/dateUtils"
 import { useTooltipTimeout } from "@/shared/utils/toollipUtils"
-import type { ChartPoint } from "../model/types"
+import type { ChartDataPoint, ChartPoint } from "../model/types"
 import { calcTrend, toChartData } from "./useDashboardCharts"
 
-export interface ChartDataPoint {
-  value: number | null
-  label: string
-}
 
 function toChartDataWithLabel(points: ChartPoint[]): ChartDataPoint[] {
   return toChartData(points).map((d, i) => ({

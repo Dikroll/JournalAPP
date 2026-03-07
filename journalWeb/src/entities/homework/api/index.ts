@@ -1,17 +1,8 @@
 import { api } from "@/shared/api/instance"
 import { apiConfig } from "@/shared/config/apiConfig"
-import type { HomeworkCounters, HomeworkItem } from "../model/types"
+import type { HomeworkAllResponse, HomeworkBySubjectResponse, HomeworkItem } from "../model/types"
 
-export interface HomeworkAllResponse {
-  counters: HomeworkCounters
-  items: Record<string, HomeworkItem[]>
-}
 
-export interface HomeworkBySubjectResponse {
-  spec_id: number
-  counters: HomeworkCounters
-  items: Record<string, HomeworkItem[]>
-}
 
 export const homeworkApi = {
   getAll: (groupId: number, page = 1) =>

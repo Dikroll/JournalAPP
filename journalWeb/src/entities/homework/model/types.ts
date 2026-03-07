@@ -43,3 +43,15 @@ export interface HomeworkItem {
   stud_file_url: string | null  
   stud_filename: string | null  
 }
+
+export interface HomeworkAllResponse {
+  counters: HomeworkCounters
+  items: Record<string, HomeworkItem[]>
+}
+
+export interface HomeworkBySubjectResponse {
+  spec_id: number
+  counters: HomeworkCounters
+  items: Record<string, HomeworkItem[]>
+}
+
