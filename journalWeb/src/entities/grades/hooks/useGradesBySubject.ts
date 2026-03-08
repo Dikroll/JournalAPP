@@ -1,31 +1,41 @@
-import { useCallback, useRef } from "react"
-import { gradesApi } from "../api/index"
-import { useGradesStore } from "../model/store"
+import { useCallback } from 'react'
+import { gradesApi } from '../api/index'
+import { useGradesStore } from '../model/store'
 
 const CACHE_TTL_MS = 15 * 60 * 1000
+const fetching = new Set<number>()
 
 export function useGradesBySubject() {
-  const { bySubject, setSubjectEntries, setSubjectStatus } = useGradesStore()
-  const loadingRef = useRef<Set<number>>(new Set())
+	const bySubject = useGradesStore(s => s.bySubject)
+	const updateSubject = useGradesStore(s => s.updateSubject)
 
-  const loadSubject = useCallback(async (specId: number, force = false) => {
-    if (loadingRef.current.has(specId)) return
+	const loadSubject = useCallback(async (specId: number, force = false) => {
+		if (fetching.has(specId)) return
 
-    const existing = useGradesStore.getState().bySubject[specId]
-    if (!force && existing?.loadedAt && Date.now() - existing.loadedAt < CACHE_TTL_MS) return
+		const existing = useGradesStore.getState().bySubject[specId]
+		if (
+			!force &&
+			existing?.loadedAt &&
+			Date.now() - existing.loadedAt < CACHE_TTL_MS
+		)
+			return
 
-    loadingRef.current.add(specId)
-    setSubjectStatus(specId, "loading")
+		fetching.add(specId)
+		updateSubject(specId, { status: 'loading' })
 
-    try {
-      const data = await gradesApi.getBySubject(specId)
-      setSubjectEntries(specId, data)
-    } catch {
-      setSubjectStatus(specId, "error")
-    } finally {
-      loadingRef.current.delete(specId)
-    }
-  }, [])
+		try {
+			const data = await gradesApi.getBySubject(specId)
+			updateSubject(specId, {
+				entries: data,
+				status: 'success',
+				loadedAt: Date.now(),
+			})
+		} catch {
+			updateSubject(specId, { status: 'error' })
+		} finally {
+			fetching.delete(specId)
+		}
+	}, [])
 
-  return { bySubject, loadSubject }
+	return { bySubject, loadSubject }
 }

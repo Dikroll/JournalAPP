@@ -1,6 +1,6 @@
-import { DashboardCharts, ScheduleList } from "@/widgets"
 import { useScheduleStore } from "@/entities/schedule/model/store"
-import { formatDateLong } from "@/shared/lib/dateUtils"
+import { formatDateLong } from "@/shared/utils/dateUtils"
+import { DashboardCharts, ScheduleList } from "@/widgets"
 
 export function HomePage() {
   const today = useScheduleStore((s) => s.today)

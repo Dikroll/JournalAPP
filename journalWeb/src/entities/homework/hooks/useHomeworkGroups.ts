@@ -4,8 +4,8 @@ import { STATUS_KEY_MAP, STATUS_MAP, STATUS_ORDER } from "../model/homeworkStatu
 import { PREVIEW_SIZE } from "../model/store"
 import type { HomeworkCounters, HomeworkItem } from "../model/types"
 
+export { STATUS_KEY_MAP, STATUS_MAP, STATUS_ORDER }
 export type { HomeworkStatus }
-export { STATUS_MAP, STATUS_KEY_MAP, STATUS_ORDER }
 
 export type HomeworkItemWithStatus = HomeworkItem & { statusKey: HomeworkStatus }
 

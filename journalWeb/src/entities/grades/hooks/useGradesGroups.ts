@@ -2,12 +2,12 @@ import { useMemo } from "react"
 import type { GradeEntry, GradeMarks, GradeType } from "../model/types"
 
 export const GRADE_TYPE_CONFIG: Record<GradeType, { label: string; color: string }> = {
-  homework:  { label: "ДЗ",              color: "bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30" },
-  lab:       { label: "Лабораторная",    color: "bg-[#8B5CF6]/20 text-[#8B5CF6] border-[#8B5CF6]/30" },
-  classwork: { label: "Классная работа", color: "bg-[#06B6D4]/20 text-[#06B6D4] border-[#06B6D4]/30" },
-  control:   { label: "Контрольная",     color: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30" },
-  practical: { label: "Практическая",    color: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30" },
-  final:     { label: "Итоговая",        color: "bg-[#F20519]/20 text-[#F20519] border-[#F20519]/30" },
+  homework:  { label: "ДЗ",       color: "bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30" },
+  lab:       { label: "Лаб",      color: "bg-[#8B5CF6]/20 text-[#8B5CF6] border-[#8B5CF6]/30" },
+  classwork: { label: "КР",       color: "bg-[#06B6D4]/20 text-[#06B6D4] border-[#06B6D4]/30" },
+  control:   { label: "Контроль", color: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30" },
+  practical: { label: "Практ",    color: "bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30" },
+  final:     { label: "Зачёт",    color: "bg-[#A855F7]/20 text-[#A855F7] border-[#A855F7]/30" },
 }
 
 export function getGradeColor(grade: number): string {
@@ -20,7 +20,7 @@ export function getGradeColor(grade: number): string {
 
 export function flattenMarks(marks: GradeMarks): Array<{ type: GradeType; value: number }> {
   return (Object.entries(marks) as [GradeType, number | null][])
-    .filter(([, v]) => v != null)
+    .filter(([, v]) => v != null && v !== 0)
     .map(([type, value]) => ({ type, value: value! }))
 }
 
@@ -34,9 +34,7 @@ export interface SubjectStats {
   spec_name: string
   entries: GradeEntryExpanded[]
   averageGrade: number
-  attendanceRate: number
-  totalLessons: number
-  absences: number
+  totalMarks: number
 }
 
 export function useGradesGroups(entries: GradeEntry[]) {
@@ -64,37 +62,36 @@ export function useGradesGroups(entries: GradeEntry[]) {
       }))
   }, [expanded])
 
-  
   const bySubject = useMemo<SubjectStats[]>(() => {
     const map: Record<number, GradeEntryExpanded[]> = {}
     for (const e of expanded) {
       if (!map[e.spec_id]) map[e.spec_id] = []
       map[e.spec_id].push(e)
     }
-    return Object.values(map).map((items) => {
-      const total = items.length
-      const absences = items.filter((e) => !e.attended).length
-      const allMarks = items.flatMap((e) => e.flatMarks.map((m) => m.value))
-      const avg = allMarks.length
-        ? allMarks.reduce((s, v) => s + v, 0) / allMarks.length
-        : 0
-      return {
-        spec_id: items[0].spec_id,
-        spec_name: items[0].spec_name,
-        entries: [...items].sort((a, b) => a.date.localeCompare(b.date) || a.lesson_number - b.lesson_number),
-        averageGrade: avg,
-        attendanceRate: total > 0 ? ((total - absences) / total) * 100 : 0,
-        totalLessons: total,
-        absences,
-      }
-    }).sort((a, b) => a.spec_name.localeCompare(b.spec_name, "ru"))
-  }, [expanded])
+    return Object.values(map)
+      .map((items) => {
 
+        const withMarks = items.filter((e) => e.flatMarks.length > 0)
+        const allMarks = withMarks.flatMap((e) => e.flatMarks.map((m) => m.value))
+        const avg = allMarks.length
+          ? allMarks.reduce((s, v) => s + v, 0) / allMarks.length
+          : 0
+        return {
+          spec_id: items[0].spec_id,
+          spec_name: items[0].spec_name,
+          entries: withMarks.sort((a, b) => a.date.localeCompare(b.date)),
+          averageGrade: avg,
+          totalMarks: allMarks.length,
+        }
+      })
+      .filter((s) => s.totalMarks > 0)
+      .sort((a, b) => a.spec_name.localeCompare(b.spec_name, "ru"))
+  }, [expanded])
 
   const byMonth = useMemo(() => {
     const map: Record<string, Record<string, GradeEntryExpanded[]>> = {}
     for (const e of expanded) {
-      const month = e.date.slice(0, 7) 
+      const month = e.date.slice(0, 7)
       if (!map[month]) map[month] = {}
       if (!map[month][e.date]) map[month][e.date] = []
       map[month][e.date].push(e)

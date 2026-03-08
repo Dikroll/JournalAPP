@@ -139,15 +139,13 @@ class QuizItem(BaseModel):
 
 
 class HomeworkDeleteRequest(BaseModel):
-    """Тело запроса для удаления ДЗ."""
     id: int
 
 
 class HomeworkSubmitRequest(BaseModel):
-    """Тело запроса для сдачи выполненного ДЗ."""
     id: int
-    stud_answer: str
-    creation_time: str                  # дата сдачи, формат YYYY-MM-DD
+    stud_answer: Optional[str] = None   
+    creation_time: Optional[str] = None  
     filename: Optional[str] = None
     file_path: Optional[str] = None
     tmp_file: Optional[str] = None
@@ -155,12 +153,12 @@ class HomeworkSubmitRequest(BaseModel):
     auto_mark: bool = False
 
 
+
 class HomeworkEvaluateRequest(BaseModel):
-    """Тело запроса для выставления оценки за ДЗ."""
-    id: int                             # ID записи оценки (0 при создании новой)
-    id_dom_zad: int                     # ID домашнего задания
-    id_stud: int                        # ID студента
-    mark: int                           # оценка 1–5
+    id: int                            
+    id_dom_zad: int                     
+    id_stud: int                        
+    mark: int                           
     comment: str = ""
     tags: list[int] = []
 
@@ -180,6 +178,9 @@ class HomeworkItem(BaseModel):
     has_file: Optional[bool] = None
     file_url: Optional[str] = None                       
     comment: Optional[str] = None
+    stud_id: Optional[int] = None        
+    stud_file_url: Optional[str] = None
+    stud_filename: Optional[str] = None
 
 class HomeworkAllResponse(BaseModel):
     counters: HomeworkCounters
@@ -189,6 +190,11 @@ class HomeworkBySubjectResponse(BaseModel):
     spec_id: int
     counters: HomeworkCounters             
     items: dict[str, list[HomeworkItem]]  
+
+class HomeworkFileUploadResponse(BaseModel):
+    filename: str
+    file_path: str
+    tmp_file: str
 # ══════════════════════════════════════════════════════════════════
 #  REVIEWS
 # ══════════════════════════════════════════════════════════════════
