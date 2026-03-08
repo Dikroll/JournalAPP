@@ -13,4 +13,4 @@ export { ScheduleCalendar } from "./Schedule/ScheduleCalendar/ui/ScheduleCalenda
 export { ScheduleList } from "./Schedule/ScheduleList/ui/ScheduleList"
 export { TopBar } from "./TopBar/ui/TopBar"
 export { UserCard } from "./UserCard/ui/UserCard"
-
+export { FutureExams } from "./FeatureExams/ui/FeatuerExams"
