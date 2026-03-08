@@ -1,3 +1,4 @@
+import { useHomeworkStore } from '@/entities/homework/model/store'
 import { useCallback, useState } from 'react'
 import { sendHomeworkApi } from '../api'
 
@@ -20,6 +21,8 @@ export function useSendHomework(
 	userId: number | null,
 	onSuccess?: () => void,
 ) {
+	const invalidate = useHomeworkStore(s => s.invalidate)
+
 	const [state, setState] = useState<State>({
 		file: null,
 		text: '',
@@ -108,6 +111,7 @@ export function useSendHomework(
 					})
 					.catch(() => {})
 			}
+			invalidate()
 
 			setState(s => ({ ...s, step: 'success' }))
 			onSuccess?.()
@@ -118,7 +122,7 @@ export function useSendHomework(
 				: (detail ?? e?.response?.data?.message ?? 'Ошибка отправки')
 			setState(s => ({ ...s, step: 'error', error: msg }))
 		}
-	}, [state, homeworkId, studId, userId, onSuccess])
+	}, [state, homeworkId, studId, userId, invalidate, onSuccess])
 
 	const isLoading = state.step === 'uploading' || state.step === 'submitting'
 	const loadingLabel =

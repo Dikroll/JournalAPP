@@ -64,10 +64,9 @@ interface HomeworkState {
 	) => void
 	setSubjectStatus: (specId: number, status: LoadingState) => void
 
+	invalidate: () => void
 	reset: () => void
 }
-
-// ── helpers ──────────────────────────────────────────────────────────────────
 
 function filterItems(
 	items: Record<number, HomeworkItem[]>,
@@ -193,6 +192,8 @@ export const useHomeworkStore = create<HomeworkState>()(set => ({
 				subjects: { ...state.subjects, [specId]: { ...existing, status } },
 			}
 		}),
+
+	invalidate: () => set({ loadedAt: null }),
 
 	reset: () =>
 		set({

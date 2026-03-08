@@ -28,9 +28,7 @@ export function HomeworkCardActions({
 	const [showDeleteWarning, setShowDeleteWarning] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 
-	const { removeItem, reset: resetStore, loadedAt } = useHomeworkStore()
-
-	const invalidateCache = () => useHomeworkStore.setState({ loadedAt: null })
+	const { removeItem, invalidate } = useHomeworkStore()
 
 	const isChecked = statusKey === 'checked'
 	const isReturned = statusKey === 'returned'
@@ -46,7 +44,7 @@ export function HomeworkCardActions({
 		try {
 			await homeworkApi.deleteSubmission(studId)
 			removeItem(homeworkId)
-			invalidateCache()
+			invalidate()
 		} catch {
 		} finally {
 			setIsDeleting(false)

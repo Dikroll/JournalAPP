@@ -31,13 +31,23 @@ ALL_STATUSES = [0, 1, 2, 3, 5]
 
 MAX_FILE_SIZE_BYTES = 99 * 1024 * 1024
 
+
+def _clean(value) -> str | None:
+    """Конвертирует строку "null"/"None"/пустую строку в None."""
+    if value is None:
+        return None
+    s = str(value).strip()
+    if s.lower() in ("null", "none", ""):
+        return None
+    return s
+
 def _normalize(raw: dict) -> HomeworkItem:
     homework_stud = raw.get("homework_stud") or {}
     grade_raw = homework_stud.get("mark")
     grade = int(grade_raw) if grade_raw is not None else None
-    stud_answer = homework_stud.get("stud_answer") or None
+    stud_answer = _clean(homework_stud.get("stud_answer"))
     homework_comment = raw.get("homework_comment") or {}
-    comment = homework_comment.get("text_comment") or raw.get("comment") or None
+    comment = _clean(homework_comment.get("text_comment")) or _clean(raw.get("comment"))
 
     stud_id_val = homework_stud.get("id")
     stud_file_raw = homework_stud.get("file_path") or None
@@ -49,7 +59,7 @@ def _normalize(raw: dict) -> HomeworkItem:
 
     return HomeworkItem(**{
         "id": raw.get("id"),
-        "theme": raw.get("theme"),
+        "theme": _clean(raw.get("theme")),
         "spec_name": raw.get("name_spec"),
         "spec_id": raw.get("spec_id"),
         "teacher": raw.get("fio_teach"),
@@ -153,7 +163,6 @@ async def get_homework_by_subject(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """Items + counters для конкретного предмета. Используется для вкладки 'По предметам'."""
     counters_raw, *pages = await asyncio.gather(
         client.get("/count/homework", params={"type": 0, "group_id": group_id, "spec_id": spec_id}),
         *[_fetch_page(client, s, group_id, page, spec_id) for s in ALL_STATUSES],
@@ -179,12 +188,7 @@ async def upload_homework_file(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """
-    Загрузить файл для ДЗ.
-    Прокси сам получает file-token и загружает файл на fs.top-academy.ru.
-    Возвращает {filename, file_path, tmp_file} — передать в /homework/submit.
-    """
-    # Проверка формата (блокируем txt и csv как в оригинале)
+
     ext = (file.filename or "").rsplit(".", 1)[-1].lower()
     if ext in ("txt", "csv"):
         raise HTTPException(status_code=400, detail=f"Формат .{ext} не поддерживается")
@@ -217,26 +221,17 @@ async def submit_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    # Upstream ожидает старые имена полей: answerText, file, spentTimeHour, spentTimeMin
-    has_file = bool(body.file_path or body.tmp_file)
-
+    creation_time = body.creation_time or date.today().isoformat()
     form_data = {
         "id": str(body.id),
-        # текстовый ответ — поле называется answerText
-        "answerText": body.stud_answer or "",
-        # файл — пустая строка если не загружен
-        "file": "",
-        # время выполнения — обязательные поля, ставим 00 если не переданы
-        "spentTimeHour": str(body.spent_hours or 0).zfill(2),
-        "spentTimeMin": str(body.spent_minutes or 0).zfill(2),
+        "filename": body.filename or "",
+        "file_path": body.file_path or "",
+        "tmp_file": body.tmp_file or "",
+        "mark": str(body.mark) if body.mark is not None else "",
+        "creation_time": creation_time,
+        "stud_answer": body.stud_answer or "",
+        "auto_mark": "false",
     }
-
-    # Если файл был загружен через /upload-file — добавляем его данные
-    if has_file:
-        form_data["file_path"] = body.file_path or ""
-        form_data["tmp_file"] = body.tmp_file or ""
-        form_data["filename"] = body.filename or ""
-
     log.debug(f"[SUBMIT] form_data -> {form_data}")
     return await client.post_form("/homework/operations/create", data=form_data)
 

@@ -12,7 +12,8 @@ import {
 	HomeworkSubjectView,
 } from '@/widgets'
 
-import { BookOpen, LayoutList, RefreshCw } from 'lucide-react'
+import { RefreshHomeworkButton } from '@/features/refreshHomework'
+import { BookOpen, LayoutList } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type GroupBy = 'status' | 'subject'
@@ -25,8 +26,6 @@ const TABS: { key: GroupBy; label: string; icon: React.ReactNode }[] = [
 export function HomeworkPage() {
 	const [groupBy, setGroupBy] = useState<GroupBy>('status')
 	const [selectedSpec, setSelectedSpec] = useState<Subject | null>(null)
-	const [isRefreshing, setIsRefreshing] = useState(false)
-
 	const { subjects: specList, status: specsStatus } = useSubjects()
 
 	const {
@@ -36,7 +35,6 @@ export function HomeworkPage() {
 		status,
 		error,
 		filterStatus,
-		refresh,
 		loadMore,
 		setFilter,
 	} = useHomework()
@@ -53,12 +51,6 @@ export function HomeworkPage() {
 		loadSubject(selectedSpec.id, selectedSpec.name)
 	}, [selectedSpec?.id])
 
-	const handleRefresh = () => {
-		setIsRefreshing(true)
-		refresh()
-		setTimeout(() => setIsRefreshing(false), 1000)
-	}
-
 	if (status === 'loading') {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
@@ -71,13 +63,7 @@ export function HomeworkPage() {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen gap-4'>
 				<p className='text-[#DC2626]'>{error}</p>
-				<button
-					type='button'
-					onClick={handleRefresh}
-					className='flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors'
-				>
-					<RefreshCw size={16} /> Повторить
-				</button>
+				<RefreshHomeworkButton className='flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors' />
 			</div>
 		)
 	}
@@ -87,17 +73,7 @@ export function HomeworkPage() {
 			<div className='p-4 space-y-4'>
 				<div className='flex items-center justify-between'>
 					<h1 className='text-2xl font-bold'>Домашние задания</h1>
-					<button
-						type='button'
-						onClick={handleRefresh}
-						className='flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] text-sm border border-white/10 transition-colors'
-					>
-						<RefreshCw
-							size={15}
-							className={isRefreshing ? 'animate-spin' : ''}
-						/>
-						Обновить
-					</button>
+					<RefreshHomeworkButton />
 				</div>
 
 				{counters && (
