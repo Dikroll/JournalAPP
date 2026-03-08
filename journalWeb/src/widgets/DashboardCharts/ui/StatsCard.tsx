@@ -58,7 +58,6 @@ export function StatsCard({
 			</div>
 
 			{data && data.length > 0 && (
-				// ref на этот div — получаем его реальную ширину
 				<div ref={ref} className='w-full px-6 pb-2' style={{ height: 128 }}>
 					{width > 0 && height > 0 && (
 						<LineChart

@@ -77,12 +77,13 @@ class UpstreamClient:
             self._token_expires_at = float(expires) if expires else time.time() + 6 * 3600
             log.info(f"[AUTH] login successful, expires at {self._token_expires_at}")
 
-    async def _request(self, method: str, path: str, **kwargs) -> dict | list:
+    async def _request(self, method: str, path: str, content_type_override: str | None = None, **kwargs) -> dict | list:
         if not self._token or self._is_token_expired():
             await self._login()
 
         log.debug(f"[{method}] {path}")
-        headers = {**DEFAULT_HEADERS, "Authorization": f"Bearer {self._token}"}
+        base_headers = {k: v for k, v in DEFAULT_HEADERS.items() if not (content_type_override and k == "Content-Type")}
+        headers = {**base_headers, "Authorization": f"Bearer {self._token}"}
 
         resp = await get_http_client().request(
             method,
@@ -105,7 +106,11 @@ class UpstreamClient:
             )
 
         if resp.status_code >= 400:
-            log.error(f"[{method}] {path} — {resp.status_code}: {resp.text}")
+            try:
+                req_body = resp.request.content
+            except Exception:
+                req_body = b"<streaming>"
+            log.error(f"[{method}] {path} — {resp.status_code}: {resp.text} | raw_bytes: {req_body!r}")
             raise HTTPException(status_code=resp.status_code, detail=resp.text)
         if not resp.content:
             return {}
@@ -118,6 +123,11 @@ class UpstreamClient:
 
     async def post(self, path: str, json: dict | None = None) -> dict | list:
         return await self._request("POST", path, json=json)
+
+    async def post_form(self, path: str, data: dict) -> dict | list:
+        # httpx выставит multipart/form-data автоматически при files=
+        files = {k: (None, str(v)) for k, v in data.items()}
+        return await self._request("POST", path, files=files, content_type_override="multipart/form-data")
 
     async def upload_file(self, file_content: bytes, filename: str, content_type: str) -> dict:
         """

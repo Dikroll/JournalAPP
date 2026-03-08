@@ -1,24 +1,23 @@
 import type { SubjectStats } from '@/entities/grades/hooks/useGradesGroups'
 import { GRADE_TYPE_CONFIG } from '@/entities/grades/hooks/useGradesGroups'
-import { useEffect, useState } from 'react'
+import { useLazyItems } from '@/shared/hooks/useLazyItems'
 
 interface Props {
 	bySubject: SubjectStats[]
 }
 
 export function GradesSubjectList({ bySubject }: Props) {
-	const [mounted, setMounted] = useState(false)
-	useEffect(() => {
-		setMounted(true)
-	}, [])
+	const { visibleCount, sentinelRef } = useLazyItems(bySubject.length)
 
 	if (bySubject.length === 0) {
 		return <p className='text-[#9CA3AF] text-sm text-center py-8'>Нет данных</p>
 	}
 
+	const visible = bySubject.slice(0, visibleCount)
+
 	return (
 		<div className='space-y-3'>
-			{bySubject.map(subj => (
+			{visible.map(subj => (
 				<div
 					key={subj.spec_id}
 					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-4 border border-white/10'
@@ -75,6 +74,17 @@ export function GradesSubjectList({ bySubject }: Props) {
 					</div>
 				</div>
 			))}
+
+			{visibleCount < bySubject.length && (
+				<div ref={sentinelRef} className='space-y-3 pt-1'>
+					{[0, 1].map(i => (
+						<div
+							key={i}
+							className='bg-white/5 rounded-[24px] animate-pulse h-24'
+						/>
+					))}
+				</div>
+			)}
 		</div>
 	)
 }

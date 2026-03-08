@@ -1,6 +1,7 @@
 import asyncio
 from datetime import date
 
+from app.logger import setup_logger
 from app.security import get_current_user
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from schemas import (
@@ -16,6 +17,7 @@ from schemas import (
 )
 from services.upstream_client import UpstreamClient, get_upstream_client
 
+log = setup_logger("homework")
 router = APIRouter(prefix="/homework", tags=["homework"])
 
 PAGE_SIZE = 6
@@ -215,16 +217,28 @@ async def submit_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    return await client.post("/homework/operations/create", json={
-        "id": body.id,
-        "filename": body.filename,
-        "file_path": body.file_path,
-        "tmp_file": body.tmp_file,
-        "mark": body.mark,
-        "creation_time": body.creation_time or date.today().isoformat(),
-        "stud_answer": body.stud_answer,
-        "auto_mark": body.auto_mark,
-    })
+    # Upstream ожидает старые имена полей: answerText, file, spentTimeHour, spentTimeMin
+    has_file = bool(body.file_path or body.tmp_file)
+
+    form_data = {
+        "id": str(body.id),
+        # текстовый ответ — поле называется answerText
+        "answerText": body.stud_answer or "",
+        # файл — пустая строка если не загружен
+        "file": "",
+        # время выполнения — обязательные поля, ставим 00 если не переданы
+        "spentTimeHour": str(body.spent_hours or 0).zfill(2),
+        "spentTimeMin": str(body.spent_minutes or 0).zfill(2),
+    }
+
+    # Если файл был загружен через /upload-file — добавляем его данные
+    if has_file:
+        form_data["file_path"] = body.file_path or ""
+        form_data["tmp_file"] = body.tmp_file or ""
+        form_data["filename"] = body.filename or ""
+
+    log.debug(f"[SUBMIT] form_data -> {form_data}")
+    return await client.post_form("/homework/operations/create", data=form_data)
 
 
 @router.post("/evaluate")
