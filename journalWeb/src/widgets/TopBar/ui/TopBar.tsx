@@ -1,62 +1,85 @@
-import { useUserStore } from "@/entities/user/model/store"
-import { pageConfig } from "@/shared/config/pageConfig"
-import { getAvatarUrl } from "@/shared/lib/avatarCache"
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { useUserStore } from '@/entities/user/model/store'
+import { pageConfig } from '@/shared/config/pageConfig'
+import { getAvatarUrl } from '@/shared/lib/avatarCache'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+
+function useStoreHydrated() {
+	const [hydrated, setHydrated] = useState(false)
+	useEffect(() => {
+		const already = useUserStore.persist.hasHydrated()
+		if (already) {
+			setHydrated(true)
+		} else {
+			const unsub = useUserStore.persist.onHydrate(() => {})
+			const unfinish = useUserStore.persist.onFinishHydration(() => {
+				setHydrated(true)
+			})
+			return () => {
+				unsub()
+				unfinish()
+			}
+		}
+	}, [])
+	return hydrated
+}
 
 export function TopBar() {
-  const fullName  = useUserStore((s) => s.user?.full_name)
-  const groupName = useUserStore((s) => s.user?.group.name)
-  const photoUrl  = useUserStore((s) => s.user?.photo_url)
+	const fullName = useUserStore(s => s.user?.full_name)
+	const groupName = useUserStore(s => s.user?.group.name)
+	const photoUrl = useUserStore(s => s.user?.photo_url)
+	const avatarUrl = useUserStore(s => s.avatarUrl)
+	const setAvatarUrl = useUserStore(s => s.setAvatarUrl)
 
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+	const hydrated = useStoreHydrated()
 
-  useEffect(() => {
-    if (!photoUrl) return
-    getAvatarUrl(photoUrl).then(setAvatarUrl)
-  }, [photoUrl])
+	useEffect(() => {
+		if (!hydrated) return
+		if (!photoUrl) return
+		if (avatarUrl) return
+		getAvatarUrl(photoUrl).then(setAvatarUrl)
+	}, [hydrated, photoUrl])
 
-  if (!fullName) return null
+	if (!fullName) return null
 
-  return (
-    <div className="px-4 pt-4 pb-2">
-      <div
-        className="bg-white/5 backdrop-blur-xl rounded-[24px] px-5 py-4 border border-white/10"
-        style={{ boxShadow: "0 4px 24px 0 rgba(0, 0, 0, 0.3)" }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            {/* Логотип */}
-            <h1 className="text-base font-semibold text-[#F2F2F2] tracking-wide flex items-center gap-[2px] mb-1">
-              <span className="bg-[#D50416] text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold">
-                IT
-              </span>
-              <span className="relative text-[#F2F2F2] font-semibold">
-                TOP
-                <span className="absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-[#D50416]" />
-              </span>
-              <span className="ml-[10px]">COLLEGE</span>
-            </h1>
+	return (
+		<div className='px-4 pt-4 pb-2'>
+			<div
+				className='bg-white/5 backdrop-blur-xl rounded-[24px] px-5 py-4 border border-white/10'
+				style={{ boxShadow: '0 4px 24px 0 rgba(0, 0, 0, 0.3)' }}
+			>
+				<div className='flex items-center justify-between'>
+					<div className='flex-1'>
+						<h1 className='text-base font-semibold text-[#F2F2F2] tracking-wide flex items-center gap-[2px] mb-1'>
+							<span className='bg-[#D50416] text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold'>
+								IT
+							</span>
+							<span className='relative text-[#F2F2F2] font-semibold'>
+								TOP
+								<span className='absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-[#D50416]' />
+							</span>
+							<span className='ml-[10px]'>COLLEGE</span>
+						</h1>
 
-            <p className="text-sm text-[#9CA3AF] mb-0.5">{fullName}</p>
-            <p className="text-xs text-[#9CA3AF]">{groupName}</p>
-          </div>
+						<p className='text-sm text-[#9CA3AF] mb-0.5'>{fullName}</p>
+						<p className='text-xs text-[#9CA3AF]'>{groupName}</p>
+					</div>
 
-          {avatarUrl && (
-            <Link to={pageConfig.profile}>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-[#F20519]/50">
-                <img
-                  src={avatarUrl}
-                  alt={fullName}
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </Link>
-          )}
-        </div>
-      </div>
-    </div>
-  )
+					{avatarUrl && (
+						<Link to={pageConfig.profile}>
+							<div className='flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-[#F20519]/50'>
+								<img
+									src={avatarUrl}
+									alt={fullName}
+									width={48}
+									height={48}
+									className='w-full h-full object-cover'
+								/>
+							</div>
+						</Link>
+					)}
+				</div>
+			</div>
+		</div>
+	)
 }

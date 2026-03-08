@@ -1,27 +1,39 @@
-import { ttl } from "@/shared/config/cache"
-import { useEffect } from "react"
-import { examApi } from "../api"
-import { useExamStore } from "../model/store"
+import { ttl } from '@/shared/config/cache'
+import { useEffect, useRef } from 'react'
+import { examApi } from '../api'
+import { useExamStore } from '../model/store'
 
 const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 export function useFutureExams() {
-  const { exams, status, loadedAt, setExams, setStatus, setLoadedAt } = useExamStore()
+	const exams = useExamStore(s => s.exams)
+	const status = useExamStore(s => s.status)
+	const loadedAt = useExamStore(s => s.loadedAt)
+	const setExams = useExamStore(s => s.setExams)
+	const setStatus = useExamStore(s => s.setStatus)
+	const setLoadedAt = useExamStore(s => s.setLoadedAt)
 
-  useEffect(() => {
-    if (status === "loading") return
-    if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+	const fetchingRef = useRef(false)
 
-    setStatus("loading")
-    examApi
-      .getFutureExams()
-      .then((data) => {
-        setExams(data)
-        setLoadedAt(Date.now())
-        setStatus("success")
-      })
-      .catch(() => setStatus("error"))
-  }, [])
+	useEffect(() => {
+		if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+		if (fetchingRef.current) return
 
-  return { exams, status }
+		fetchingRef.current = true
+		setStatus('loading')
+
+		examApi
+			.getFutureExams()
+			.then(data => {
+				setExams(data)
+				setLoadedAt(Date.now())
+				setStatus('success')
+			})
+			.catch(() => setStatus('error'))
+			.finally(() => {
+				fetchingRef.current = false
+			})
+	}, [loadedAt])
+
+	return { exams, status }
 }

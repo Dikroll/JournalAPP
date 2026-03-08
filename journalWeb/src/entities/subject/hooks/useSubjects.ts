@@ -1,27 +1,38 @@
-import { useEffect } from "react"
-import { subjectApi } from "../api"
-import { useSubjectStore } from "../model/store"
+import { useEffect } from 'react'
+import { subjectApi } from '../api'
+import { useSubjectStore } from '../model/store'
 
-const CACHE_TTL_MS = 60 * 60 * 1000 
+const CACHE_TTL_MS = 60 * 60 * 1000
+
+let fetching = false
 
 export function useSubjects() {
-  const { subjects, status, loadedAt, setSubjects, setStatus, setLoadedAt } =
-    useSubjectStore()
+	const subjects = useSubjectStore(s => s.subjects)
+	const status = useSubjectStore(s => s.status)
+	const loadedAt = useSubjectStore(s => s.loadedAt)
+	const setSubjects = useSubjectStore(s => s.setSubjects)
+	const setStatus = useSubjectStore(s => s.setStatus)
+	const setLoadedAt = useSubjectStore(s => s.setLoadedAt)
 
-  useEffect(() => {
-    if (status === "loading") return
-    if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+	useEffect(() => {
+		if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+		if (fetching) return
 
-    setStatus("loading")
-    subjectApi
-      .getAll()
-      .then((data) => {
-        setSubjects(data)
-        setLoadedAt(Date.now())
-        setStatus("success")
-      })
-      .catch(() => setStatus("error"))
-  }, [])
+		fetching = true
+		setStatus('loading')
 
-  return { subjects, status }
+		subjectApi
+			.getAll()
+			.then(data => {
+				setSubjects(data)
+				setLoadedAt(Date.now())
+				setStatus('success')
+			})
+			.catch(() => setStatus('error'))
+			.finally(() => {
+				fetching = false
+			})
+	}, [loadedAt])
+
+	return { subjects, status }
 }
