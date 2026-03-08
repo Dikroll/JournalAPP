@@ -1,57 +1,58 @@
-import type { LoadingState } from "@/shared/types"
-import { create } from "zustand"
-import type { GradeEntry } from "./types"
+import type { LoadingState } from '@/shared/types'
+import { create } from 'zustand'
+import type { GradeEntry } from './types'
 
-interface GradesState {
-  entries: GradeEntry[]
-  status: LoadingState
-  error: string | null
-  loadedAt: number | null
-
-  bySubject: Record<number, {
-    entries: GradeEntry[]
-    status: LoadingState
-    loadedAt: number | null
-  }>
-
-  setEntries: (entries: GradeEntry[]) => void
-  setStatus: (s: LoadingState) => void
-  setError: (e: string | null) => void
-  setLoadedAt: (t: number) => void
-
-  setSubjectEntries: (specId: number, entries: GradeEntry[]) => void
-  setSubjectStatus: (specId: number, status: LoadingState) => void
-
-  reset: () => void
+interface SubjectData {
+	entries: GradeEntry[]
+	status: LoadingState
+	loadedAt: number | null
 }
 
-export const useGradesStore = create<GradesState>()((set) => ({
-  entries: [],
-  status: "idle",
-  error: null,
-  loadedAt: null,
-  bySubject: {},
+interface GradesState {
+	entries: GradeEntry[]
+	status: LoadingState
+	error: string | null
+	loadedAt: number | null
+	bySubject: Record<number, SubjectData>
 
-  setEntries: (entries) => set({ entries }),
-  setStatus: (status) => set({ status }),
-  setError: (error) => set({ error }),
-  setLoadedAt: (loadedAt) => set({ loadedAt }),
+	update: (
+		patch: Partial<
+			Pick<GradesState, 'entries' | 'status' | 'error' | 'loadedAt'>
+		>,
+	) => void
+	updateSubject: (specId: number, patch: Partial<SubjectData>) => void
+	reset: () => void
+}
 
-  setSubjectEntries: (specId, entries) =>
-    set((state) => ({
-      bySubject: {
-        ...state.bySubject,
-        [specId]: { entries, status: "success", loadedAt: Date.now() },
-      },
-    })),
+export const useGradesStore = create<GradesState>()(set => ({
+	entries: [],
+	status: 'idle',
+	error: null,
+	loadedAt: null,
+	bySubject: {},
 
-  setSubjectStatus: (specId, status) =>
-    set((state) => ({
-      bySubject: {
-        ...state.bySubject,
-        [specId]: { ...(state.bySubject[specId] ?? { entries: [], loadedAt: null }), status },
-      },
-    })),
+	update: patch => set(patch),
 
-  reset: () => set({ entries: [], status: "idle", error: null, loadedAt: null, bySubject: {} }),
+	updateSubject: (specId, patch) =>
+		set(state => ({
+			bySubject: {
+				...state.bySubject,
+				[specId]: {
+					entries: [],
+					status: 'idle',
+					loadedAt: null,
+					...state.bySubject[specId],
+					...patch,
+				},
+			},
+		})),
+
+	reset: () =>
+		set({
+			entries: [],
+			status: 'idle',
+			error: null,
+			loadedAt: null,
+			bySubject: {},
+		}),
 }))

@@ -1,46 +1,81 @@
-import { useCallback, useEffect, useRef } from "react"
-import { gradesApi } from "../api"
-import { useGradesStore } from "../model/store"
+import { ttl } from '@/shared/config/cache'
+import { storage } from '@/shared/lib/storage'
+import { useEffect } from 'react'
+import { gradesApi } from '../api'
+import { useGradesStore } from '../model/store'
+import type { GradeEntry } from '../model/types'
 
-const AUTO_REFRESH_MS = 90 * 60 * 1000
+const CACHE_KEY = 'cache:grades:all'
+
+let fetching = false
 
 export function useGrades() {
-  const {
-    entries, status, error,
-    setEntries, setStatus, setError, setLoadedAt,
-  } = useGradesStore()
+	const { entries, status, error, loadedAt, update } = useGradesStore()
 
-  const loadingRef = useRef(false)
+	useEffect(() => {
+		if (fetching) return
+		if (
+			entries.length > 0 &&
+			loadedAt &&
+			Date.now() - loadedAt < ttl.ACTIVITY * 1000
+		)
+			return
 
-  const load = useCallback(async (force = false) => {
-    if (loadingRef.current) return
-    if (!force && status === "success") return
+		const cached = storage.get<GradeEntry[]>(CACHE_KEY)
+		if (cached) {
+			update({
+				entries: cached,
+				status: 'success',
+				loadedAt: Date.now(),
+				error: null,
+			})
+			return
+		}
 
-    loadingRef.current = true
-    setStatus("loading")
-    setError(null)
+		fetching = true
+		update({ status: 'loading', error: null })
+		gradesApi
+			.getAll()
+			.then(data => {
+				update({
+					entries: data,
+					status: 'success',
+					loadedAt: Date.now(),
+					error: null,
+				})
+				storage.set(CACHE_KEY, data, ttl.ACTIVITY)
+			})
+			.catch(() => {
+				update({ status: 'error', error: 'Не удалось загрузить оценки' })
+			})
+			.finally(() => {
+				fetching = false
+			})
+	}, [])
 
-    try {
-      const data = await gradesApi.getAll()
-      setEntries(data)
-      setLoadedAt(Date.now())
-      setStatus("success")
-    } catch {
-      setError("Не удалось загрузить оценки")
-      setStatus("error")
-    } finally {
-      loadingRef.current = false
-    }
-  }, [status])
+	const refresh = () => {
+		if (fetching) return
+		storage.remove(CACHE_KEY)
+		fetching = true
+		update({ status: 'loading', error: null })
+		gradesApi
+			.getAll()
+			.then(data => {
+				update({
+					entries: data,
+					status: 'success',
+					loadedAt: Date.now(),
+					error: null,
+				})
+				storage.set(CACHE_KEY, data, ttl.ACTIVITY)
+			})
+			.catch(() =>
+				update({ status: 'error', error: 'Не удалось загрузить оценки' }),
+			)
+			.finally(() => {
+				fetching = false
+			})
+	}
 
-  const refresh = useCallback(() => load(true), [load])
-
-  useEffect(() => { load() }, [])
-
-  useEffect(() => {
-    const timer = setInterval(() => load(true), AUTO_REFRESH_MS)
-    return () => clearInterval(timer)
-  }, [])
-
-  return { entries, status, error, refresh }
+	return { entries, status, error, refresh }
 }
