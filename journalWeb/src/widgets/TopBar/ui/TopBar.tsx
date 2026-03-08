@@ -26,9 +26,18 @@ export function TopBar() {
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h1 className="text-base font-semibold text-[#F2F2F2] mb-0.5">
-              IT TOP COLLEGE
+            {/* Логотип */}
+            <h1 className="text-base font-semibold text-[#F2F2F2] tracking-wide flex items-center gap-[2px] mb-1">
+              <span className="bg-[#D50416] text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold">
+                IT
+              </span>
+              <span className="relative text-[#F2F2F2] font-semibold">
+                TOP
+                <span className="absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-[#D50416]" />
+              </span>
+              <span className="ml-[10px]">COLLEGE</span>
             </h1>
+
             <p className="text-sm text-[#9CA3AF] mb-0.5">{fullName}</p>
             <p className="text-xs text-[#9CA3AF]">{groupName}</p>
           </div>

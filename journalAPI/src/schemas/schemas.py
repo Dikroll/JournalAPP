@@ -144,14 +144,14 @@ class HomeworkDeleteRequest(BaseModel):
 
 class HomeworkSubmitRequest(BaseModel):
     id: int
-    stud_answer: Optional[str] = None   
-    creation_time: Optional[str] = None  
-    filename: Optional[str] = None
-    file_path: Optional[str] = None
-    tmp_file: Optional[str] = None
-    mark: Optional[int] = None
-    auto_mark: bool = False
-
+    stud_answer: str | None = None
+    filename: str | None = None
+    file_path: str | None = None
+    tmp_file: str | None = None
+    mark: int | None = None
+    creation_time: str | None = None
+    spent_hours: int = 0    
+    spent_minutes: int = 0 
 
 
 class HomeworkEvaluateRequest(BaseModel):

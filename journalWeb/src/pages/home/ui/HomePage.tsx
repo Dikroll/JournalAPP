@@ -1,6 +1,6 @@
 import { useScheduleStore } from "@/entities/schedule/model/store"
 import { formatDateLong } from "@/shared/utils/dateUtils"
-import { DashboardCharts, ScheduleList } from "@/widgets"
+import { DashboardCharts, ScheduleList , FutureExams} from "@/widgets"
 
 export function HomePage() {
   const today = useScheduleStore((s) => s.today)
@@ -21,6 +21,10 @@ export function HomePage() {
         </div>
 
         <ScheduleList />
+        <div className="mt-5 mb-3">
+          <h1 className="text-lg font-bold leading-tight">Будущие экзамены</h1>
+        </div>
+        <FutureExams />
       </div>
     </div>
   )
