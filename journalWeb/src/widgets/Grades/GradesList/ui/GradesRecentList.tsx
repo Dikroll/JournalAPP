@@ -31,7 +31,7 @@ export function GradesRecentList({ byDate }: Props) {
           <div className="bg-white/5 backdrop-blur-xl rounded-[24px] p-3 border border-white/10"
             style={{ boxShadow: "0 4px 24px 0 rgba(0,0,0,0.3)" }}>
             {items.map((entry, idx) => (
-              <div key={`${entry.date}-${entry.lesson_number}-${entry.spec_id}`}>
+              <div key={`${entry.date}-${entry.lesson_number}-${entry.spec_id}-${idx}`}>
                 {idx > 0 && <div className="border-t border-white/5 my-1" />}
                 <GradeEntryRow entry={entry} />
               </div>
