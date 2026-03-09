@@ -1,16 +1,14 @@
 import { useUserStore } from '@/entities/user/model/store'
 import { pageConfig } from '@/shared/config/pageConfig'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function useStoreHydrated() {
-	const [hydrated, setHydrated] = useState(false)
+	const [hydrated, setHydrated] = useState(() =>
+		useUserStore.persist.hasHydrated(),
+	)
 	useEffect(() => {
-		const already = useUserStore.persist.hasHydrated()
-		if (already) {
-			setHydrated(true)
-			return
-		}
+		if (hydrated) return
 		const unsub = useUserStore.persist.onFinishHydration(() =>
 			setHydrated(true),
 		)
@@ -19,7 +17,7 @@ function useStoreHydrated() {
 	return hydrated
 }
 
-export function TopBar() {
+export const TopBar = memo(function TopBar() {
 	const fullName = useUserStore(s => s.user?.full_name)
 	const groupName = useUserStore(s => s.user?.group.name)
 	const photoUrl = useUserStore(s => s.user?.photo_url)
@@ -68,4 +66,4 @@ export function TopBar() {
 			</div>
 		</div>
 	)
-}
+})

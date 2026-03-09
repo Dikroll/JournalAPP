@@ -11,7 +11,7 @@ import {
 import { pageConfig } from '@/shared/config/pageConfig'
 import { ScrollToTop } from '@/shared/lib/scrollToTop'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { AppLayout, HomeLayout } from '../layouts'
+import { AppLayout } from '../layouts'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -33,10 +33,7 @@ export function AppRouter() {
 						</ProtectedRoute>
 					}
 				>
-					<Route element={<HomeLayout />}>
-						<Route index element={<HomePage />} />
-					</Route>
-
+					<Route index element={<HomePage />} />
 					<Route path='schedule' element={<SchedulePage />} />
 					<Route path='homework' element={<HomeworkPage />} />
 					<Route path='grades' element={<GradesPage />} />

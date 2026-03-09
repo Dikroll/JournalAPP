@@ -1,7 +1,7 @@
 import { CustomTooltip } from '@/shared/components/ui/CustomTooltip'
 import { useElementSize } from '@/shared/hooks/useElementSize'
 import { useTooltipTimeout } from '@/shared/utils/toollipUtils'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import React from 'react'
 import { Line, LineChart, Tooltip, XAxis } from 'recharts'
 
@@ -25,8 +25,9 @@ export function StatsCard({
 	color = '#F20519',
 }: StatsCardProps) {
 	const { ref, width, height } = useElementSize()
-	const hasPositiveTrend = trend !== undefined && trend > 0
-	const TrendIcon = hasPositiveTrend ? TrendingUp : TrendingDown
+	const isNeutral = trend === 0
+	const isPositive = trend !== undefined && trend > 0
+	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
 	const tooltip = useTooltipTimeout()
 
 	return (
@@ -44,13 +45,15 @@ export function StatsCard({
 					<div className='flex items-center gap-1.5'>
 						<div
 							className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium ${
-								hasPositiveTrend
-									? 'bg-[#10B981]/10 text-[#10B981]'
-									: 'bg-[#EF4444]/10 text-[#EF4444]'
+								isNeutral
+									? 'bg-white/10 text-[#9CA3AF]'
+									: isPositive
+										? 'bg-[#10B981]/10 text-[#10B981]'
+										: 'bg-[#EF4444]/10 text-[#EF4444]'
 							}`}
 						>
 							<TrendIcon size={11} />
-							{hasPositiveTrend ? '+' : ''}
+							{isPositive ? '+' : ''}
 							{trend}%
 						</div>
 						{trendLabel && (

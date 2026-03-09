@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom'
 
 export function ProfilePage() {
 	const user = useUser()
-	const myRank = useLeaderboardStore(s => s.group.data?.my_rank?.group)
+
+	const myRank = useLeaderboardStore(
+		s => s.group.data?.my_rank?.group?.position,
+	)
 
 	if (!user) {
 		return (
@@ -19,7 +22,7 @@ export function ProfilePage() {
 
 	return (
 		<div className='pb-24'>
-			<ProfileHeader user={user} rank={myRank?.position} />
+			<ProfileHeader user={user} rank={myRank} />
 
 			<div className='px-4 space-y-5'>
 				{user.is_debtor && (

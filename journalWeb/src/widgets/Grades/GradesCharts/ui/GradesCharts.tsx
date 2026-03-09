@@ -11,15 +11,20 @@ interface Props {
 }
 
 function TrendBadge({ trend }: { trend: number }) {
+	const isPositive = trend > 0
+	const isNeutral = trend === 0
+
 	return (
 		<span
 			className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-				trend > 0
-					? 'bg-[#10B981]/10 text-[#10B981]'
-					: 'bg-[#EF4444]/10 text-[#EF4444]'
+				isNeutral
+					? 'bg-white/10 text-[#9CA3AF]'
+					: isPositive
+						? 'bg-[#10B981]/10 text-[#10B981]'
+						: 'bg-[#EF4444]/10 text-[#EF4444]'
 			}`}
 		>
-			{trend > 0 ? '+' : ''}
+			{isPositive ? '+' : ''}
 			{trend}%
 		</span>
 	)

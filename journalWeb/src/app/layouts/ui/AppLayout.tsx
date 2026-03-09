@@ -1,7 +1,10 @@
-import { BottomBar } from '@/widgets'
-import { Outlet } from 'react-router-dom'
+import { BottomBar, TopBar } from '@/widgets'
+import { Outlet, useLocation } from 'react-router-dom'
 
 export function AppLayout() {
+	const location = useLocation()
+	const showTopBar = location.pathname === '/'
+
 	return (
 		<div
 			className='min-h-screen text-[#F2F2F2] relative'
@@ -70,6 +73,10 @@ export function AppLayout() {
 						borderRadius: '50%',
 					}}
 				/>
+			</div>
+
+			<div style={{ display: showTopBar ? 'block' : 'none' }}>
+				<TopBar />
 			</div>
 
 			<Outlet />
