@@ -1,48 +1,45 @@
-
+import httpx
 from app.cache import cache
-from app.security import get_current_user
-from fastapi import APIRouter, Depends, HTTPException
+from app.config import settings
+from fastapi import APIRouter, Response
 from fastapi.responses import Response
-from services.upstream_client import get_http_client
 
-router = APIRouter(prefix="/api/files", tags=["files"])
-FILE_CACHE_TTL = 60 * 60 * 24 * 7   
-BROWSER_MAX_AGE = 60 * 60 * 24      
+router = APIRouter(prefix="/files", tags=["files"])
+
+FS_BASE = "https://fs.top-academy.ru/api/v1/files"
+FILE_TTL = 60 * 60 * 24  
 
 
-@router.get("/{file_id}")
-async def proxy_file(
-    file_id: str,
-    user: dict = Depends(get_current_user),
-):
-    async def _fetch() -> dict:
-        client = get_http_client()
-        resp = await client.get(
-            f"https://fs.top-academy.ru/api/v1/files/{file_id}",
-            follow_redirects=True,  
-            headers={
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-                "Referer": "https://journal.top-academy.ru/",
-            },
-        )
+
+@router.get("/{file_token}")
+async def proxy_file(file_token: str):
+    async def fetch():
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{FS_BASE}/{file_token}", follow_redirects=True)
         if resp.status_code != 200:
-            raise HTTPException(status_code=resp.status_code, detail="File not found")
-        return {
-            "content": resp.content,
-            "media_type": resp.headers.get("content-type", "image/jpeg"),
-        }
+            return None
+        
+        content_type = resp.headers.get("content-type", "image/jpeg")
+        if "octet-stream" in content_type or content_type == "application/octet-stream":
+            content_type = "image/jpeg"
+        
+        return {"content": resp.content, "content_type": content_type}
 
     result = await cache.get_or_fetch(
-        key=f"file:{file_id}",
-        ttl=FILE_CACHE_TTL,
-        fetch=_fetch,
+        key=f"file:{file_token}",
+        ttl=FILE_TTL,
+        fetch=fetch,
     )
+
+    if result is None:
+        return Response(status_code=404)
 
     return Response(
         content=result["content"],
-        media_type=result["media_type"],
+        media_type=result["content_type"],
         headers={
-            "Cache-Control": f"public, max-age={BROWSER_MAX_AGE}",
-            "ETag": f'"{file_id}"',
-        },
+            "Cache-Control": "public, max-age=86400, immutable",
+            "Expires": "86400",
+            "Pragma": "cache",
+        }
     )

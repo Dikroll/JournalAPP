@@ -45,6 +45,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 	student,
 	isMe,
 }: Props) {
+	console.log('LeaderboardRow render:', student.student_id, student.position)
 	const rankColor =
 		RANK_COLORS[student.position] ??
 		(isMe ? 'text-[#F29F05]' : 'text-[#9CA3AF]')
@@ -89,8 +90,8 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 						alt={student.full_name}
 						width={40}
 						height={40}
-						loading='lazy'
-						decoding='async'
+						loading={student.position <= 3 ? 'eager' : 'lazy'}
+						fetchPriority={student.position === 1 ? 'high' : 'auto'}
 						className={`w-10 h-10 rounded-full object-cover border-2 ${
 							isMe ? 'border-[#F29F05]/50' : 'border-white/10'
 						}`}
