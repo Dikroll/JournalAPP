@@ -27,6 +27,9 @@ export { FutureExams } from './FeatureExams/ui/FeatuerExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'
+export { LogoutButton } from './Profile/ui/LogoutButton'
+export { ProfileAvatar } from './Profile/ui/ProfileAvatar'
+export { ProfileInfoCard } from './Profile/ui/ProfileInfoCard'
+export { ProfileRelativesCard } from './Profile/ui/ProfileRelativesCard'
 export { ProfileHeader } from './ProfileHeader/ui/ProfileHeader'
 export { ReviewsList } from './ReviewList/ui/ReviewList'
-export { UserCard } from './UserCard/ui/UserCard'

@@ -1,14 +1,16 @@
+import { CustomTooltip } from '@/shared/components/ui/CustomTooltip'
 import { useElementSize } from '@/shared/hooks/useElementSize'
+import { useTooltipTimeout } from '@/shared/utils/toollipUtils'
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import React from 'react'
-import { Line, LineChart } from 'recharts'
+import { Line, LineChart, Tooltip, XAxis } from 'recharts'
 
 interface StatsCardProps {
 	title: string
 	value: string | number
 	trend?: number
 	trendLabel?: string
-	data?: Array<{ value: number }>
+	data?: Array<{ value: number; label?: string }>
 	icon?: React.ReactNode
 	color?: string
 }
@@ -25,6 +27,7 @@ export function StatsCard({
 	const { ref, width, height } = useElementSize()
 	const hasPositiveTrend = trend !== undefined && trend > 0
 	const TrendIcon = hasPositiveTrend ? TrendingUp : TrendingDown
+	const tooltip = useTooltipTimeout()
 
 	return (
 		<div
@@ -65,7 +68,12 @@ export function StatsCard({
 							height={height}
 							data={data}
 							margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
+							onMouseMove={tooltip.show}
+							onMouseLeave={tooltip.hide}
+							onTouchStart={tooltip.show}
+							onTouchEnd={tooltip.hide}
 						>
+							<XAxis dataKey='label' hide />
 							<Line
 								type='monotone'
 								dataKey='value'
@@ -75,6 +83,10 @@ export function StatsCard({
 								strokeLinecap='round'
 								strokeLinejoin='round'
 								isAnimationActive={false}
+							/>
+							<Tooltip
+								content={<CustomTooltip visible={tooltip.visible} />}
+								cursor={{ stroke: 'rgba(255,255,255,0.08)' }}
 							/>
 						</LineChart>
 					)}

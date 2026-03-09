@@ -6,6 +6,7 @@ from routers import (
     auth,
     dashboard,
     feedback,
+    files,
     homework,
     library,
     market,
@@ -21,10 +22,8 @@ from services.upstream_client import get_http_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # при старте — инициализируем connection pool
     get_http_client()
     yield
-    # при остановке — закрываем все соединения
     from services.upstream_client import _http
     if _http and not _http.is_closed:
         await _http.aclose()
@@ -58,6 +57,7 @@ app.include_router(feedback.router)
 app.include_router(progress.router)
 app.include_router(market.router)
 app.include_router(library.router)
+app.include_router(files.router)
 
 
 @app.get("/health")

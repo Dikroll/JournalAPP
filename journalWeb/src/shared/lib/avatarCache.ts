@@ -1,47 +1,28 @@
-import { api } from '@/shared/api/instance'
-import { apiConfig } from '@/shared/config/apiConfig'
-import { storage } from '@/shared/lib/storage'
+const CACHE_NAME = 'avatars-v1'
 
-const AVATAR_TTL = 60 * 60 * 24 * 7
-const memoryCache = new Map<string, string>()
-const pending = new Map<string, Promise<string>>()
+const primed = new Set<string>()
 
-function storageKey(photoUrl: string) {
-	return `cache:avatar:${photoUrl}`
+export async function getAvatarUrl(url: string): Promise<string> {
+	if (!url) return ''
+	if (primed.has(url)) return url
+
+	try {
+		const cache = await caches.open(CACHE_NAME)
+		const hit = await cache.match(url)
+
+		if (!hit) {
+			await cache.add(url).catch(() => {})
+		}
+
+		primed.add(url)
+	} catch {}
+
+	return url
 }
 
-export async function getAvatarUrl(photoUrl: string): Promise<string> {
-	if (memoryCache.has(photoUrl)) return memoryCache.get(photoUrl)!
-
-	const cached = storage.get<string>(storageKey(photoUrl))
-	if (cached) {
-		memoryCache.set(photoUrl, cached)
-		return cached
-	}
-
-	if (pending.has(photoUrl)) return pending.get(photoUrl)!
-
-	const promise = api
-		.get(apiConfig.USER_AVATAR, { responseType: 'blob' })
-		.then(res => {
-			return new Promise<string>((resolve, reject) => {
-				const reader = new FileReader()
-				reader.onload = () => {
-					const dataUrl = reader.result as string
-					storage.set(storageKey(photoUrl), dataUrl, AVATAR_TTL)
-					memoryCache.set(photoUrl, dataUrl)
-					pending.delete(photoUrl)
-					resolve(dataUrl)
-				}
-				reader.onerror = reject
-				reader.readAsDataURL(res.data)
-			})
-		})
-		.catch(() => {
-			pending.delete(photoUrl)
-			return photoUrl
-		})
-
-	pending.set(photoUrl, promise)
-	return promise
+export async function clearAvatarCache(): Promise<void> {
+	primed.clear()
+	try {
+		await caches.delete(CACHE_NAME)
+	} catch {}
 }

@@ -1,6 +1,5 @@
 import { useUserStore } from '@/entities/user/model/store'
 import { pageConfig } from '@/shared/config/pageConfig'
-import { getAvatarUrl } from '@/shared/lib/avatarCache'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -10,16 +9,12 @@ function useStoreHydrated() {
 		const already = useUserStore.persist.hasHydrated()
 		if (already) {
 			setHydrated(true)
-		} else {
-			const unsub = useUserStore.persist.onHydrate(() => {})
-			const unfinish = useUserStore.persist.onFinishHydration(() => {
-				setHydrated(true)
-			})
-			return () => {
-				unsub()
-				unfinish()
-			}
+			return
 		}
+		const unsub = useUserStore.persist.onFinishHydration(() =>
+			setHydrated(true),
+		)
+		return unsub
 	}, [])
 	return hydrated
 }
@@ -28,17 +23,7 @@ export function TopBar() {
 	const fullName = useUserStore(s => s.user?.full_name)
 	const groupName = useUserStore(s => s.user?.group.name)
 	const photoUrl = useUserStore(s => s.user?.photo_url)
-	const avatarUrl = useUserStore(s => s.avatarUrl)
-	const setAvatarUrl = useUserStore(s => s.setAvatarUrl)
-
 	const hydrated = useStoreHydrated()
-
-	useEffect(() => {
-		if (!hydrated) return
-		if (!photoUrl) return
-		if (avatarUrl) return
-		getAvatarUrl(photoUrl).then(setAvatarUrl)
-	}, [hydrated, photoUrl])
 
 	if (!fullName) return null
 
@@ -60,19 +45,20 @@ export function TopBar() {
 							</span>
 							<span className='ml-[10px]'>COLLEGE</span>
 						</h1>
-
 						<p className='text-sm text-[#9CA3AF] mb-0.5'>{fullName}</p>
 						<p className='text-xs text-[#9CA3AF]'>{groupName}</p>
 					</div>
 
-					{avatarUrl && (
+					{photoUrl && hydrated && (
 						<Link to={pageConfig.profile}>
 							<div className='flex items-center justify-center w-12 h-12 rounded-full overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-[#F20519]/50'>
 								<img
-									src={avatarUrl}
+									src={photoUrl}
 									alt={fullName}
 									width={48}
 									height={48}
+									loading='eager'
+									decoding='async'
 									className='w-full h-full object-cover'
 								/>
 							</div>

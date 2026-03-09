@@ -1,66 +1,68 @@
-import { useScheduleMonth } from "@/entities/schedule/hooks/useScheduleMonth"
-import { MonthGrid } from "@/shared/components/ui/MonthGrid"
-import { useMonthNav } from "@/shared/hooks/useMonthNav"
-import { formatDateLong, getTodayString, toDateString } from "@/shared/utils/dateUtils"
-import { useState } from "react"
-import { LessonList } from "../../ScheduleList/ui/LessonList"
-
+import { useScheduleMonth } from '@/entities/schedule/hooks/useScheduleMonth'
+import { MonthGrid } from '@/shared/components/ui/MonthGrid'
+import { useMonthNav } from '@/shared/hooks/useMonthNav'
+import {
+	formatDateLong,
+	getTodayString,
+	toDateString,
+} from '@/shared/utils/dateUtils'
+import { useState } from 'react'
+import { LessonList } from '../../ScheduleList/ui/LessonList'
 
 export function ScheduleCalendar() {
-  const now = new Date()
-  const { year, month, prevMonth, nextMonth } = useMonthNav()
-  const [selectedDate, setSelectedDate] = useState<string>(getTodayString())
+	const { year, month, prevMonth, nextMonth } = useMonthNav()
+	const [selectedDate, setSelectedDate] = useState<string>(getTodayString())
 
-  const dateFilter = toDateString(year, month, 1)
-  const { lessons } = useScheduleMonth(dateFilter)
+	const dateFilter = toDateString(year, month, 1)
+	const { lessons } = useScheduleMonth(dateFilter)
 
-  const daysWithLessons = new Set(lessons.map((l) => l.date))
-  const selectedLessons = lessons.filter((l) => l.date === selectedDate)
+	const daysWithLessons = new Set(lessons.map(l => l.date))
+	const selectedLessons = lessons.filter(l => l.date === selectedDate)
 
-  return (
-    <div className="flex flex-col gap-4">
-      <MonthGrid
-        year={year}
-        month={month}
-        onPrevMonth={prevMonth}
-        onNextMonth={nextMonth}
-        renderDay={({ dateStr, day, isToday }) => {
-          const isWeekend = (() => {
-            const dow = new Date(`${dateStr}T00:00:00`).getDay()
-            return dow === 0 || dow === 6
-          })()
-          const hasLesson = daysWithLessons.has(dateStr)
-          const isSelected = dateStr === selectedDate
-          const isGray = !hasLesson || isWeekend
+	return (
+		<div className='flex flex-col gap-4'>
+			<MonthGrid
+				year={year}
+				month={month}
+				onPrevMonth={prevMonth}
+				onNextMonth={nextMonth}
+				renderDay={({ dateStr, day, isToday }) => {
+					const isWeekend = (() => {
+						const dow = new Date(`${dateStr}T00:00:00`).getDay()
+						return dow === 0 || dow === 6
+					})()
+					const hasLesson = daysWithLessons.has(dateStr)
+					const isSelected = dateStr === selectedDate
+					const isGray = !hasLesson || isWeekend
 
-          return (
-            <div
-              onClick={() => setSelectedDate(dateStr)}
-              className={`
+					return (
+						<div
+							onClick={() => setSelectedDate(dateStr)}
+							className={`
                 w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
                 transition-colors relative cursor-pointer
-                ${isSelected ? "bg-[#F20519]/70 text-white" : ""}
-                ${!isSelected && isGray ? "text-white/30" : ""}
-                ${!isSelected && !isGray ? "text-white hover:bg-white/10" : ""}
+                ${isSelected ? 'bg-[#F20519]/70 text-white' : ''}
+                ${!isSelected && isGray ? 'text-white/30' : ''}
+                ${!isSelected && !isGray ? 'text-white hover:bg-white/10' : ''}
               `}
-            >
-              {day}
-              {isToday && !isSelected && (
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#F20519]/70" />
-              )}
-            </div>
-          )
-        }}
-      />
+						>
+							{day}
+							{isToday && !isSelected && (
+								<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#F20519]/70' />
+							)}
+						</div>
+					)
+				}}
+			/>
 
-      {selectedDate && (
-        <div>
-          <p className="text-xs text-white/40 mb-2 px-1 capitalize">
-            {formatDateLong(selectedDate)}
-          </p>
-          <LessonList lessons={selectedLessons} forDate={selectedDate} />
-        </div>
-      )}
-    </div>
-  )
+			{selectedDate && (
+				<div>
+					<p className='text-xs text-white/40 mb-2 px-1 capitalize'>
+						{formatDateLong(selectedDate)}
+					</p>
+					<LessonList lessons={selectedLessons} forDate={selectedDate} />
+				</div>
+			)}
+		</div>
+	)
 }
