@@ -1,10 +1,6 @@
 import { useProfileDetails } from '@/entities/profile/hooks/useProfileDetails'
-import {
-	LogoutButton,
-	ProfileAvatar,
-	ProfileInfoCard,
-	ProfileRelativesCard,
-} from '@/widgets'
+import { LogoutButton } from '@/features/auth/ui/LogoutButton'
+import { ProfileAvatar, ProfileInfoCard, ProfileRelativesCard } from '@/widgets'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
