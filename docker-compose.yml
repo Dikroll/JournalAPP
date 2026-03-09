@@ -1,8 +1,8 @@
 services:
   backend:
     dns:
-        - 8.8.8.8
-        - 1.1.1.1
+      - 8.8.8.8
+      - 1.1.1.1
     build:
       context: ./journalAPI
     container_name: journal_backend
@@ -11,6 +11,9 @@ services:
     volumes:
       - ./journalAPI/src:/app/src
     restart: unless-stopped
+    env_file:
+      - ./journalAPI/.env
+
     networks:
       - app-network
 
@@ -21,10 +24,10 @@ services:
     ports:
       - '5173:5173'
     volumes:
-      - ./journalWeb/src:/app/src      
+      - ./journalWeb/src:/app/src
       - ./journalWeb/public:/app/public
       - ./journalWeb/index.html:/app/index.html
-      - /app/node_modules              
+      - /app/node_modules
     depends_on:
       - backend
     restart: unless-stopped
