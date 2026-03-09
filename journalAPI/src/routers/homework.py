@@ -140,7 +140,6 @@ async def get_all_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    """Все статусы + счётчики за один запрос. Используется для вкладки 'По статусу'."""
     counters_raw, *pages = await asyncio.gather(
         client.get("/count/homework", params={"type": 0, "group_id": group_id}),
         *[_fetch_page(client, s, group_id, page) for s in ALL_STATUSES],
@@ -188,7 +187,6 @@ async def upload_homework_file(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-
     ext = (file.filename or "").rsplit(".", 1)[-1].lower()
     if ext in ("txt", "csv"):
         raise HTTPException(status_code=400, detail=f"Формат .{ext} не поддерживается")
@@ -221,17 +219,21 @@ async def submit_homework(
     client: UpstreamClient = Depends(get_upstream_client),
     user: dict = Depends(get_current_user),
 ):
-    creation_time = body.creation_time or date.today().isoformat()
+    has_file = bool(body.file_path or body.tmp_file)
+
     form_data = {
         "id": str(body.id),
-        "filename": body.filename or "",
-        "file_path": body.file_path or "",
-        "tmp_file": body.tmp_file or "",
-        "mark": str(body.mark) if body.mark is not None else "",
-        "creation_time": creation_time,
-        "stud_answer": body.stud_answer or "",
-        "auto_mark": "false",
+        "answerText": body.stud_answer or "",
+        "file": "",
+        "spentTimeHour": "00",
+        "spentTimeMin": "00",
     }
+
+    if has_file:
+        form_data["file_path"] = body.file_path or ""
+        form_data["tmp_file"] = body.tmp_file or ""
+        form_data["filename"] = body.filename or ""
+
     log.debug(f"[SUBMIT] form_data -> {form_data}")
     return await client.post_form("/homework/operations/create", data=form_data)
 

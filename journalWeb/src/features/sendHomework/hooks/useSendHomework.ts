@@ -111,6 +111,7 @@ export function useSendHomework(
 					})
 					.catch(() => {})
 			}
+
 			invalidate()
 
 			setState(s => ({ ...s, step: 'success' }))
