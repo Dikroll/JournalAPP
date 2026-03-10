@@ -1,4 +1,4 @@
-import type { ProfileRelative } from '@/entities/profile/model/types'
+import type { ProfileRelative } from '@/entities/profile'
 import { AtSign, ChevronDown, Home, Phone, Users } from 'lucide-react'
 import { useState } from 'react'
 

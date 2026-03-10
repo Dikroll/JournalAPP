@@ -1,4 +1,4 @@
-import type { ProfileDetails } from '@/entities/profile/model/types'
+import type { ProfileDetails } from '@/entities/profile'
 
 interface Props {
 	details: ProfileDetails

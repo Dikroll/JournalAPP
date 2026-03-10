@@ -42,17 +42,6 @@ export const storage = {
 		}
 	},
 
-	getStale<T>(key: string): T | null {
-		try {
-			const raw = localStorage.getItem(key)
-			if (!raw) return null
-			const entry: CacheEntry<T> = JSON.parse(raw)
-			return entry.data
-		} catch {
-			return null
-		}
-	},
-
 	remove(key: string): void {
 		localStorage.removeItem(key)
 	},
@@ -64,9 +53,7 @@ export const storage = {
 		}
 		Object.keys(localStorage)
 			.filter(k => k.startsWith(prefix))
-			.forEach(k => {
-				localStorage.removeItem(k)
-			})
+			.forEach(k => localStorage.removeItem(k))
 	},
 }
 

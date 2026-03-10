@@ -1,14 +1,15 @@
-import { useDashboardCharts } from '@/entities/dashboard/hooks/useDashboardCharts'
-import { useDashboardChartsStore } from '@/entities/dashboard/model/store'
-import { useGrades } from '@/entities/grades/hooks/useGrades'
-import { useGradesBySubject } from '@/entities/grades/hooks/useGradesBySubject'
-import { useGradesGroups } from '@/entities/grades/hooks/useGradesGroups'
-import { useSubjects } from '@/entities/subject/hooks/useSubjects'
-import { SpecSelector } from '@/features/selectSpec/ui/SpecSelector'
-import type { Tab } from '@/widgets/Grades/GradesTabs/ui/GradesTabs'
-import { RefreshCw } from 'lucide-react'
-import { useState } from 'react'
-
+import {
+	useDashboardCharts,
+	useDashboardChartsStore,
+} from '@/entities/dashboard'
+import {
+	useGrades,
+	useGradesBySubject,
+	useGradesGroups,
+} from '@/entities/grades'
+import { useSubjects } from '@/entities/subject'
+import { SpecSelector } from '@/features/selectSpec'
+import type { Tab } from '@/widgets'
 import {
 	GradesCalendar,
 	GradesHeader,
@@ -17,6 +18,8 @@ import {
 	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
+import { RefreshCw } from 'lucide-react'
+import { useState } from 'react'
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')

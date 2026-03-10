@@ -1,5 +1,5 @@
-import type { UserInfo } from '@/entities/user/model/types'
-import { pageConfig } from '@/shared/config/pageConfig'
+import type { UserInfo } from '@/entities/user'
+import { pageConfig } from '@/shared/config'
 import { Coins, Diamond, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'

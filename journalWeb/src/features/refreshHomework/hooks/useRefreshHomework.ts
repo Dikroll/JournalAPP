@@ -1,4 +1,4 @@
-import { useHomeworkStore } from '@/entities/homework/model/store'
+import { useHomeworkStore } from '@/entities/homework'
 import { useCallback } from 'react'
 
 export function useRefreshHomework() {

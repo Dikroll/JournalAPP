@@ -1,35 +1,50 @@
-import { scheduleApi } from "@/entities/schedule/api"
-import { useScheduleStore } from "@/entities/schedule/model/store"
-import type { LessonItem } from "@/entities/schedule/model/types"
-import { ttl } from "@/shared/config/cache"
-import { cachedFetch } from "@/shared/lib/cachedFetch"
-import { CACHE_KEYS } from "@/shared/lib/storage"
-import { useEffect } from "react"
+import { ttl } from '@/shared/config/cacheConfig'
+import { isCacheValid } from '@/shared/lib/isCacheValid'
+import { useEffect, useRef } from 'react'
+import { scheduleApi } from '../api'
+import { useScheduleStore } from '../model/store'
 
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 export function useScheduleToday() {
-  const { today, status, error, setToday, setStatus, setError } = useScheduleStore()
+	const {
+		today,
+		todayStatus,
+		todayLoadedAt,
+		error,
+		setToday,
+		setTodayStatus,
+		setTodayLoadedAt,
+		setError,
+	} = useScheduleStore()
 
-  useEffect(() => {
-    setStatus("loading")
+	const fetchingRef = useRef(false)
 
-    cachedFetch<LessonItem[]>({
-      key: CACHE_KEYS.SCHEDULE_TODAY,
-      fetcher: () => scheduleApi.getToday(),
-      ttlSeconds: ttl.SCHEDULE,
-      onData: (data) => {
-        setToday(data)
-        setStatus("success")
-      },
-      onError: (err) => {
-        const msg =
-          (err as { response?: { data?: { detail?: string } } })?.response?.data
-            ?.detail ?? "Ошибка загрузки расписания"
-        setError(msg)
-        setStatus("error")
-      },
-    })
-  }, [])
+	useEffect(() => {
+		if (fetchingRef.current) return
+		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
 
-  return { today, status, error }
+		fetchingRef.current = true
+		setTodayStatus('loading')
+
+		scheduleApi
+			.getToday()
+			.then(data => {
+				setToday(data)
+				setTodayLoadedAt(Date.now())
+				setTodayStatus('success')
+			})
+			.catch(err => {
+				const msg =
+					(err as { response?: { data?: { detail?: string } } })?.response?.data
+						?.detail ?? 'Ошибка загрузки расписания'
+				setError(msg)
+				setTodayStatus('error')
+			})
+			.finally(() => {
+				fetchingRef.current = false
+			})
+	}, [todayLoadedAt])
+
+	return { today, status: todayStatus, error }
 }

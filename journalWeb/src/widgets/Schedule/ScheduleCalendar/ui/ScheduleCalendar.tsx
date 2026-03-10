@@ -1,11 +1,7 @@
-import { useScheduleMonth } from '@/entities/schedule/hooks/useScheduleMonth'
-import { MonthGrid } from '@/shared/components/ui/MonthGrid'
-import { useMonthNav } from '@/shared/hooks/useMonthNav'
-import {
-	formatDateLong,
-	getTodayString,
-	toDateString,
-} from '@/shared/utils/dateUtils'
+import { useScheduleMonth } from '@/entities/schedule'
+import { useMonthNav } from '@/shared/hooks'
+import { MonthGrid } from '@/shared/ui'
+import { formatDateLong, getTodayString, toDateString } from '@/shared/utils'
 import { useState } from 'react'
 import { LessonList } from '../../ScheduleList/ui/LessonList'
 
@@ -27,10 +23,8 @@ export function ScheduleCalendar() {
 				onPrevMonth={prevMonth}
 				onNextMonth={nextMonth}
 				renderDay={({ dateStr, day, isToday }) => {
-					const isWeekend = (() => {
-						const dow = new Date(`${dateStr}T00:00:00`).getDay()
-						return dow === 0 || dow === 6
-					})()
+					const dow = new Date(`${dateStr}T00:00:00`).getDay()
+					const isWeekend = dow === 0 || dow === 6
 					const hasLesson = daysWithLessons.has(dateStr)
 					const isSelected = dateStr === selectedDate
 					const isGray = !hasLesson || isWeekend
@@ -39,12 +33,12 @@ export function ScheduleCalendar() {
 						<div
 							onClick={() => setSelectedDate(dateStr)}
 							className={`
-                w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
-                transition-colors relative cursor-pointer
-                ${isSelected ? 'bg-[#F20519]/70 text-white' : ''}
-                ${!isSelected && isGray ? 'text-white/30' : ''}
-                ${!isSelected && !isGray ? 'text-white hover:bg-white/10' : ''}
-              `}
+								w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
+								transition-colors relative cursor-pointer
+								${isSelected ? 'bg-[#F20519]/70 text-white' : ''}
+								${!isSelected && isGray ? 'text-white/30' : ''}
+								${!isSelected && !isGray ? 'text-white hover:bg-white/10' : ''}
+							`}
 						>
 							{day}
 							{isToday && !isSelected && (

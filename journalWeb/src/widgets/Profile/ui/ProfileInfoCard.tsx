@@ -1,5 +1,5 @@
-import type { ProfileDetails } from '@/entities/profile/model/types'
-import { formatDate } from '@/shared/utils/dateUtils'
+import type { ProfileDetails } from '@/entities/profile'
+import { formatDate } from '@/shared/utils'
 import {
 	AtSign,
 	Calendar,

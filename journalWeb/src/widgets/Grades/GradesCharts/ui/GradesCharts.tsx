@@ -1,8 +1,8 @@
-import { useGradesCharts } from '@/entities/dashboard/hooks/useGradesCharts'
-import type { ChartPoint } from '@/entities/dashboard/model/types'
-import { CustomTooltip } from '@/shared/components/ui/CustomTooltip'
-import { useElementSize } from '@/shared/hooks/useElementSize'
-import { useTooltipTimeout } from '@/shared/utils/toollipUtils'
+import type { ChartPoint } from '@/entities/dashboard'
+import { useGradesCharts } from '@/entities/dashboard'
+import { useElementSize } from '@/shared/hooks'
+import { CustomTooltip } from '@/shared/ui/'
+import { useTooltipTimeout } from '@/shared/utils'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -13,7 +13,6 @@ interface Props {
 function TrendBadge({ trend }: { trend: number }) {
 	const isPositive = trend > 0
 	const isNeutral = trend === 0
-
 	return (
 		<span
 			className={`text-xs font-medium px-2 py-0.5 rounded-full ${

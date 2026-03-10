@@ -1,10 +1,5 @@
-import { userApi } from '@/entities/user/api'
-import { useUserStore } from '@/entities/user/model/store'
-import type { UserInfo } from '@/entities/user/model/types'
-import { useAuthStore } from '@/features/auth/model/store'
-import { ttl } from '@/shared/config/cache'
-import { cachedFetch } from '@/shared/lib/cachedFetch'
-import { CACHE_KEYS } from '@/shared/lib/storage'
+import { userApi, useUserStore } from '@/entities/user'
+import { useAuthStore } from '@/features/auth'
 import { useEffect } from 'react'
 
 export function useInitUser() {
@@ -17,12 +12,9 @@ export function useInitUser() {
 		if (!isAuthenticated) return
 		if (user) return
 
-		cachedFetch<UserInfo>({
-			key: CACHE_KEYS.USER_ME,
-			fetcher: () => userApi.getMe(),
-			ttlSeconds: ttl.USER_INFO,
-			onData: data => setUser(data),
-			onError: () => logout(),
-		})
+		userApi
+			.getMe()
+			.then(setUser)
+			.catch(() => logout())
 	}, [isAuthenticated])
 }

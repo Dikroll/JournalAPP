@@ -1,4 +1,5 @@
-import { ttl } from '@/shared/config/cache'
+import { ttl } from '@/shared/config'
+import { isCacheValid } from '@/shared/lib'
 import { useEffect, useRef } from 'react'
 import { examApi } from '../api'
 import { useExamStore } from '../model/store'
@@ -6,18 +7,14 @@ import { useExamStore } from '../model/store'
 const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 export function useFutureExams() {
-	const exams = useExamStore(s => s.exams)
-	const status = useExamStore(s => s.status)
-	const loadedAt = useExamStore(s => s.loadedAt)
-	const setExams = useExamStore(s => s.setExams)
-	const setStatus = useExamStore(s => s.setStatus)
-	const setLoadedAt = useExamStore(s => s.setLoadedAt)
+	const { exams, status, loadedAt, setExams, setStatus, setLoadedAt } =
+		useExamStore()
 
 	const fetchingRef = useRef(false)
 
 	useEffect(() => {
-		if (loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
 		if (fetchingRef.current) return
+		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
 		fetchingRef.current = true
 		setStatus('loading')

@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/features/auth/model/store'
+import { useAuthStore } from '@/features/auth'
 import {
 	GradesPage,
 	HomePage,
@@ -8,8 +8,8 @@ import {
 	ProfilePage,
 	SchedulePage,
 } from '@/pages'
-import { pageConfig } from '@/shared/config/pageConfig'
-import { ScrollToTop } from '@/shared/lib/scrollToTop'
+import { pageConfig } from '@/shared/config'
+import { ScrollToTop } from '@/shared/lib'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '../layouts'
 

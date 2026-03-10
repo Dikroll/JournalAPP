@@ -1,9 +1,13 @@
-import { homeworkApi } from '@/entities/homework/api'
-import type { HomeworkStatus } from '@/entities/homework/hooks/useHomeworkGroups'
-import { useHomeworkStore } from '@/entities/homework/model/store'
-import { useDownloadHomework } from '@/features/downloadHomework/hooks/useDownloadHomework'
-import { StudAnswerSheet } from '@/features/downloadHomework/ui/StudAnswerSheet'
-import { SendHomeworkSheet } from '@/features/sendHomework/ui/SendHomeworkSheet'
+import { homeworkApi, useHomeworkStore } from '@/entities/homework'
+
+import type { HomeworkStatus } from '@/entities/homework'
+import {
+	StudAnswerSheet,
+	useDownloadHomework,
+} from '@/features/downloadHomework'
+
+import { SendHomeworkSheet } from '@/features/sendHomework'
+
 import {
 	Download,
 	ExternalLink,

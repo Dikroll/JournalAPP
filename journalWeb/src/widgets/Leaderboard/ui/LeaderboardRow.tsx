@@ -1,4 +1,4 @@
-import type { LeaderboardStudent } from '@/entities/leaderboard/model/types'
+import type { LeaderboardStudent } from '@/entities/leaderboard'
 import { Coins, Crown, Medal } from 'lucide-react'
 import { memo } from 'react'
 
@@ -45,7 +45,6 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 	student,
 	isMe,
 }: Props) {
-	console.log('LeaderboardRow render:', student.student_id, student.position)
 	const rankColor =
 		RANK_COLORS[student.position] ??
 		(isMe ? 'text-[#F29F05]' : 'text-[#9CA3AF]')

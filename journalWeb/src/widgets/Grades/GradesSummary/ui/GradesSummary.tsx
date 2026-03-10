@@ -1,6 +1,6 @@
-import { lastValue } from '@/entities/dashboard/hooks/useDashboardCharts'
-import type { ChartPoint } from '@/entities/dashboard/model/types'
-import { GradesCharts } from '@/widgets/Grades/GradesCharts/ui/GradesCharts'
+import type { ChartPoint } from '@/entities/dashboard'
+import { lastValue } from '@/entities/dashboard'
+import { GradesCharts } from '@/widgets'
 import { CalendarDays, TrendingUp } from 'lucide-react'
 
 interface Props {

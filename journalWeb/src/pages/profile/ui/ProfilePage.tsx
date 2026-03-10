@@ -1,15 +1,12 @@
-import { useLeaderboardStore } from '@/entities/leaderboard/model/store'
-import { useUser } from '@/entities/user/hooks/useUser'
-import { pageConfig } from '@/shared/config/pageConfig'
+import { useLeaderboard } from '@/entities/leaderboard'
+import { useUser } from '@/entities/user'
+import { pageConfig } from '@/shared/config'
 import { Leaderboard, ProfileHeader, ReviewsList } from '@/widgets'
 import { Link } from 'react-router-dom'
 
 export function ProfilePage() {
 	const user = useUser()
-
-	const myRank = useLeaderboardStore(
-		s => s.group.data?.my_rank?.group?.position,
-	)
+	const { myRankGroup } = useLeaderboard()
 
 	if (!user) {
 		return (
@@ -22,7 +19,7 @@ export function ProfilePage() {
 
 	return (
 		<div className='pb-24'>
-			<ProfileHeader user={user} rank={myRank} />
+			<ProfileHeader user={user} rank={myRankGroup?.position} />
 
 			<div className='px-4 space-y-5'>
 				{user.is_debtor && (
@@ -46,7 +43,6 @@ export function ProfilePage() {
 				)}
 
 				<Leaderboard myStudentId={user.student_id} />
-
 				<ReviewsList />
 			</div>
 		</div>

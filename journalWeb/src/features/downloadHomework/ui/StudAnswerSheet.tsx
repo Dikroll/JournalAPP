@@ -1,4 +1,4 @@
-import { CatGame } from '@/features/playCatGame/ui/CatGame'
+import { CatGame } from '@/features/playCatGame'
 import { MessageSquare, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'

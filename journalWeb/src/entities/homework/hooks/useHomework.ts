@@ -1,4 +1,5 @@
-import { useUserStore } from '@/entities/user/model/store'
+import { useUserStore } from '@/entities/user'
+import { isCacheValid } from '@/shared/lib'
 import { useCallback, useEffect, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
@@ -16,7 +17,6 @@ export function useHomework() {
 		status,
 		error,
 		filterStatus,
-		loadedAt,
 		setItems,
 		appendItems,
 		setExpanded,
@@ -37,7 +37,7 @@ export function useHomework() {
 			if (loadingRef.current) return
 
 			const { loadedAt } = useHomeworkStore.getState()
-			if (!force && loadedAt && Date.now() - loadedAt < CACHE_TTL_MS) return
+			if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
 			loadingRef.current = true
 			setStatus('loading')
@@ -107,15 +107,6 @@ export function useHomework() {
 	useEffect(() => {
 		if (!groupId) return
 		loadAll()
-	}, [groupId, loadAll])
-
-	useEffect(() => {
-		if (!groupId) return
-		if (loadedAt === null) loadAll(true)
-	}, [loadedAt, groupId, loadAll])
-
-	useEffect(() => {
-		if (!groupId) return
 		const timer = setInterval(() => loadAll(true), AUTO_REFRESH_MS)
 		return () => clearInterval(timer)
 	}, [groupId, loadAll])

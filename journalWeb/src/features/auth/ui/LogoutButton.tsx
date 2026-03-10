@@ -1,8 +1,8 @@
-import { useUserStore } from '@/entities/user/model/store'
-import { useAuthStore } from '@/features/auth/model/store'
+import { useUserStore } from '@/entities/user'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../model/store'
 
 export function LogoutButton() {
 	const [open, setOpen] = useState(false)

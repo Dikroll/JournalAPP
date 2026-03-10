@@ -1,5 +1,5 @@
-import { useScheduleToday } from '@/entities/schedule/hooks/useScheduleToday'
-import { toMinutes, useCurrentMinutes } from '@/shared/hooks/useCurrentTime'
+import { useScheduleToday } from '@/entities/schedule'
+import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
 import { LessonCard } from './LessonCard'
 
 export function ScheduleList() {

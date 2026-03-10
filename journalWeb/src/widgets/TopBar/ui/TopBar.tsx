@@ -1,5 +1,5 @@
-import { useUserStore } from '@/entities/user/model/store'
-import { pageConfig } from '@/shared/config/pageConfig'
+import { useUserStore } from '@/entities/user'
+import { pageConfig } from '@/shared/config'
 import { memo, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 

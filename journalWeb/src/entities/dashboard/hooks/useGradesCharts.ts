@@ -1,5 +1,5 @@
 import type { ChartDataPoint, ChartPoint } from '../model/types'
-import { calcTrend, toChartData } from './useDashboardCharts'
+import { calcTrend, toChartData } from '../utils/chartUtils'
 
 export function useGradesCharts(
 	progress: ChartPoint[],

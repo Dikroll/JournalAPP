@@ -1,5 +1,5 @@
-import { api } from '@/shared/api/instance'
-import { apiConfig } from '@/shared/config/apiConfig'
+import { api } from '@/shared/api'
+import { apiConfig } from '@/shared/config'
 import type { LeaderboardResponse } from '../model/types'
 
 export const leaderboardApi = {

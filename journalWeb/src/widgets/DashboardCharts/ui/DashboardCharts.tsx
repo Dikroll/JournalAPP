@@ -3,7 +3,7 @@ import {
 	lastValue,
 	toChartData,
 	useDashboardCharts,
-} from '@/entities/dashboard/hooks/useDashboardCharts'
+} from '@/entities/dashboard'
 import { BookOpen, Users } from 'lucide-react'
 import { StatsCard } from './StatsCard'
 

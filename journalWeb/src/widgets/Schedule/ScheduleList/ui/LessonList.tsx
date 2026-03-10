@@ -1,6 +1,6 @@
-import type { LessonItem } from '@/entities/schedule/model/types'
-import { toMinutes, useCurrentMinutes } from '@/shared/hooks/useCurrentTime'
-import { getTodayString } from '@/shared/utils/dateUtils'
+import type { LessonItem } from '@/entities/schedule'
+import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
+import { getTodayString } from '@/shared/utils'
 import { LessonCard } from './LessonCard'
 
 interface Props {

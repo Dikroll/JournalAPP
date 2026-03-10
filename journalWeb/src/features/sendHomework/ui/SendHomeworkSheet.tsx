@@ -1,4 +1,4 @@
-import { useUserStore } from '@/entities/user/model/store'
+import { useUserStore } from '@/entities/user'
 import { CheckCircle, Loader2, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useSendHomework } from '../hooks/useSendHomework'
@@ -18,7 +18,7 @@ export function SendHomeworkSheet({
 	homeworkTheme,
 	onClose,
 }: Props) {
-	const userId = useUserStore(s => s.user?.id ?? null)
+	const userId = useUserStore(s => s.user?.student_id ?? null)
 
 	const {
 		file,

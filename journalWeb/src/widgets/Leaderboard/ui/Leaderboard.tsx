@@ -1,5 +1,5 @@
-import { useLeaderboardBoth } from '@/entities/leaderboard/hooks/useLeaderboard'
-import type { LeaderboardScope } from '@/entities/leaderboard/model/types'
+import type { LeaderboardScope } from '@/entities/leaderboard'
+import { useLeaderboard } from '@/entities/leaderboard'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { LeaderboardRow } from './LeaderboardRow'
@@ -7,7 +7,7 @@ import { LeaderboardRow } from './LeaderboardRow'
 export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 	const [scope, setScope] = useState<LeaderboardScope>('group')
 	const { groupStudents, streamStudents, myRankGroup, myRankStream, status } =
-		useLeaderboardBoth()
+		useLeaderboard()
 
 	const myRank = scope === 'group' ? myRankGroup : myRankStream
 

@@ -1,4 +1,4 @@
-import { useHomeworkStore } from '@/entities/homework/model/store'
+import { useHomeworkStore } from '@/entities/homework'
 import { useCallback, useState } from 'react'
 import { sendHomeworkApi } from '../api'
 
@@ -113,14 +113,18 @@ export function useSendHomework(
 			}
 
 			invalidate()
-
 			setState(s => ({ ...s, step: 'success' }))
 			onSuccess?.()
-		} catch (e: any) {
-			const detail = e?.response?.data?.detail
+		} catch (err: unknown) {
+			const response = (
+				err as { response?: { data?: { detail?: unknown; message?: string } } }
+			)?.response?.data
+			const detail = response?.detail
 			const msg = Array.isArray(detail)
-				? detail.map((d: any) => d.msg).join(', ')
-				: (detail ?? e?.response?.data?.message ?? 'Ошибка отправки')
+				? (detail as { msg: string }[]).map(d => d.msg).join(', ')
+				: typeof detail === 'string'
+					? detail
+					: (response?.message ?? 'Ошибка отправки')
 			setState(s => ({ ...s, step: 'error', error: msg }))
 		}
 	}, [state, homeworkId, studId, userId, invalidate, onSuccess])

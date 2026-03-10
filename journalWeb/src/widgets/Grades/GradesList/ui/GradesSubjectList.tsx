@@ -1,6 +1,6 @@
-import type { SubjectStats } from '@/entities/grades/hooks/useGradesGroups'
-import { GRADE_TYPE_CONFIG } from '@/entities/grades/hooks/useGradesGroups'
-import { useLazyItems } from '@/shared/hooks/useLazyItems'
+import type { SubjectStats } from '@/entities/grades'
+import { GRADE_TYPE_CONFIG } from '@/entities/grades'
+import { useLazyItems } from '@/shared/hooks'
 
 interface Props {
 	bySubject: SubjectStats[]
@@ -13,11 +13,9 @@ export function GradesSubjectList({ bySubject }: Props) {
 		return <p className='text-[#9CA3AF] text-sm text-center py-8'>Нет данных</p>
 	}
 
-	const visible = bySubject.slice(0, visibleCount)
-
 	return (
 		<div className='space-y-3'>
-			{visible.map(subj => (
+			{bySubject.slice(0, visibleCount).map(subj => (
 				<div
 					key={subj.spec_id}
 					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-4 border border-white/10'

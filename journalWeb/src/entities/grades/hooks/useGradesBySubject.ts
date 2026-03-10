@@ -1,5 +1,6 @@
+import { isCacheValid } from '@/shared/lib'
 import { useCallback } from 'react'
-import { gradesApi } from '../api/index'
+import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
 
 const CACHE_TTL_MS = 15 * 60 * 1000
@@ -13,12 +14,7 @@ export function useGradesBySubject() {
 		if (fetching.has(specId)) return
 
 		const existing = useGradesStore.getState().bySubject[specId]
-		if (
-			!force &&
-			existing?.loadedAt &&
-			Date.now() - existing.loadedAt < CACHE_TTL_MS
-		)
-			return
+		if (!force && isCacheValid(existing?.loadedAt ?? null, CACHE_TTL_MS)) return
 
 		fetching.add(specId)
 		updateSubject(specId, { status: 'loading' })

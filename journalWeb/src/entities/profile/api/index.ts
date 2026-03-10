@@ -1,6 +1,6 @@
-import { api } from '@/shared/api/instance'
-import { apiConfig } from '@/shared/config/apiConfig'
-import type { ProfileDetails } from '../model/profileTypes'
+import { api } from '@/shared/api'
+import { apiConfig } from '@/shared/config'
+import type { ProfileDetails } from '../model/types'
 
 export const profileApi = {
 	getDetails: () =>

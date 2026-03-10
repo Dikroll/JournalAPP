@@ -1,5 +1,5 @@
-import type { ReviewItem } from '@/entities/review/model/types'
-import { formatDate } from '@/shared/utils/dateUtils'
+import type { ReviewItem } from '@/entities/review'
+import { formatDate } from '@/shared/utils'
 
 interface Props {
 	review: ReviewItem
