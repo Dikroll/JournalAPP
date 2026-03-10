@@ -1,3 +1,4 @@
+import { CatGame } from '@/features/playCatGame/ui/CatGame'
 import { MessageSquare, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -26,9 +27,11 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 	}
 
 	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => e.key === 'Escape' && handleClose()
-		document.addEventListener('keydown', onKey)
-		return () => document.removeEventListener('keydown', onKey)
+		const fn = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') handleClose()
+		}
+		document.addEventListener('keydown', fn)
+		return () => document.removeEventListener('keydown', fn)
 	}, [])
 
 	useEffect(() => {
@@ -39,43 +42,38 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 		}
 	}, [])
 
-	// Touch drag
 	const onTouchStart = (e: React.TouchEvent) => {
 		dragStartY.current = e.touches[0].clientY
 		setDragging(true)
 	}
 	const onTouchMove = (e: React.TouchEvent) => {
-		const delta = e.touches[0].clientY - dragStartY.current
-		if (delta > 0) setDragY(delta)
+		const d = e.touches[0].clientY - dragStartY.current
+		if (d > 0) setDragY(d)
 	}
 	const onTouchEnd = () => {
 		setDragging(false)
 		if (dragY > 100) handleClose()
 		else setDragY(0)
 	}
-
-	// Mouse drag
 	const onMouseDown = (e: React.MouseEvent) => {
 		dragStartY.current = e.clientY
 		setDragging(true)
-
-		const onMouseMove = (ev: MouseEvent) => {
-			const delta = ev.clientY - dragStartY.current
-			if (delta > 0) setDragY(delta)
+		const move = (ev: MouseEvent) => {
+			const d = ev.clientY - dragStartY.current
+			if (d > 0) setDragY(d)
 		}
-		const onMouseUp = (ev: MouseEvent) => {
-			const delta = ev.clientY - dragStartY.current
+		const up = (ev: MouseEvent) => {
 			setDragging(false)
-			if (delta > 100) handleClose()
+			if (ev.clientY - dragStartY.current > 100) handleClose()
 			else setDragY(0)
-			window.removeEventListener('mousemove', onMouseMove)
-			window.removeEventListener('mouseup', onMouseUp)
+			window.removeEventListener('mousemove', move)
+			window.removeEventListener('mouseup', up)
 		}
-		window.addEventListener('mousemove', onMouseMove)
-		window.addEventListener('mouseup', onMouseUp)
+		window.addEventListener('mousemove', move)
+		window.addEventListener('mouseup', up)
 	}
 
-	const overlayOpacity = visible ? Math.max(0, 0.55 - dragY / 400) : 0
+	const overlayOpacity = visible ? Math.max(0, 0.6 - dragY / 400) : 0
 
 	return createPortal(
 		<div
@@ -92,25 +90,24 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 				style={{
 					transition: dragging
 						? 'none'
-						: 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+						: 'transform 0.3s cubic-bezier(0.32,0.72,0,1)',
 					transform: visible ? `translateY(${dragY}px)` : 'translateY(100%)',
-					height: '65vh',
 				}}
-				className='w-full max-w-lg bg-[#1C1C1E] border-t border-x border-white/10 rounded-t-3xl shadow-2xl flex flex-col'
+				className='w-full max-w-lg bg-[#1a1a24] border-t border-x border-white/10 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden'
 			>
-				{/* Drag handle — draggable zone */}
+				{/* Drag handle */}
 				<div
-					className='flex justify-center pt-3 pb-3 cursor-grab active:cursor-grabbing flex-shrink-0'
+					className='flex justify-center pt-3 pb-2 flex-shrink-0 cursor-grab active:cursor-grabbing'
 					onTouchStart={onTouchStart}
 					onTouchMove={onTouchMove}
 					onTouchEnd={onTouchEnd}
 					onMouseDown={onMouseDown}
 				>
-					<div className='w-10 h-1 rounded-full bg-white/25' />
+					<div className='w-10 h-1 rounded-full bg-white/20' />
 				</div>
 
 				{/* Header */}
-				<div className='flex items-center justify-between px-5 pb-4 flex-shrink-0'>
+				<div className='flex items-center justify-between px-4 pt-1 pb-3 flex-shrink-0'>
 					<div className='flex items-center gap-2.5'>
 						<div className='w-9 h-9 rounded-2xl bg-white/8 flex items-center justify-center'>
 							<MessageSquare size={16} className='text-[#9CA3AF]' />
@@ -133,14 +130,30 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 					</button>
 				</div>
 
-				{/* Divider */}
-				<div className='mx-5 h-px bg-white/8 flex-shrink-0' />
-
-				{/* Scrollable content */}
-				<div className='flex-1 overflow-y-auto px-5 py-5'>
+				{/* Answer — scrollable, max ~5 lines visible */}
+				<div
+					className='mx-4 mb-3 rounded-2xl bg-white/5 border border-white/8 px-4 py-3 flex-shrink-0 overflow-y-auto'
+					style={{ maxHeight: '9rem' }}
+				>
 					<p className='text-sm text-[#E5E7EB] leading-relaxed whitespace-pre-wrap break-words'>
 						{answer}
 					</p>
+				</div>
+
+				{/* Label */}
+				<div className='flex items-center gap-3 px-4 mb-2 flex-shrink-0'>
+					<div className='h-px flex-1 bg-white/8' />
+					<p className='text-[10px] text-[#3a3a52] tracking-widest uppercase select-none'>
+						пока ждёшь оценку...
+					</p>
+					<div className='h-px flex-1 bg-white/8' />
+				</div>
+
+				{/* Game — fixed comfortable height */}
+				<div className='px-3 pb-4 flex-shrink-0' style={{ height: '240px' }}>
+					<div className='w-full h-full rounded-2xl overflow-hidden'>
+						<CatGame />
+					</div>
 				</div>
 			</div>
 		</div>,
