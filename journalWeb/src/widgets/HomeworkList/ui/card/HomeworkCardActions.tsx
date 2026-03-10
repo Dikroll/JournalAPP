@@ -1,8 +1,16 @@
 import { homeworkApi } from '@/entities/homework/api'
 import type { HomeworkStatus } from '@/entities/homework/hooks/useHomeworkGroups'
 import { useHomeworkStore } from '@/entities/homework/model/store'
+import { useDownloadHomework } from '@/features/downloadHomework/hooks/useDownloadHomework'
+import { StudAnswerSheet } from '@/features/downloadHomework/ui/StudAnswerSheet'
 import { SendHomeworkSheet } from '@/features/sendHomework/ui/SendHomeworkSheet'
-import { Download, ExternalLink, Trash2, Upload } from 'lucide-react'
+import {
+	Download,
+	ExternalLink,
+	MessageSquare,
+	Trash2,
+	Upload,
+} from 'lucide-react'
 import { useState } from 'react'
 
 interface Props {
@@ -29,14 +37,17 @@ export function HomeworkCardActions({
 	const [isDeleting, setIsDeleting] = useState(false)
 
 	const { removeItem, invalidate } = useHomeworkStore()
+	const { downloadTask, viewAnswer, answerText, closeAnswerSheet } =
+		useDownloadHomework()
 
 	const isChecked = statusKey === 'checked'
 	const isReturned = statusKey === 'returned'
 	const isPending = statusKey === 'pending'
 	const showThreeButtons = isPending || isChecked
 
-	const studResultUrl =
-		studFileUrl ?? (studAnswer?.startsWith('http') ? studAnswer : null)
+	const studAnswerIsUrl = !!studAnswer?.startsWith('http')
+	const studResultUrl = studFileUrl ?? (studAnswerIsUrl ? studAnswer : null)
+	const hasAnswer = !!(studResultUrl || studAnswer)
 
 	const handleDelete = async () => {
 		if (!studId) return
@@ -55,7 +66,7 @@ export function HomeworkCardActions({
 	const DownloadTaskBtn = (
 		<button
 			type='button'
-			onClick={() => fileUrl && window.open(fileUrl, '_blank')}
+			onClick={() => downloadTask(fileUrl)}
 			disabled={!fileUrl}
 			title='Скачать задание'
 			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] border border-white/10 transition-colors text-xs'
@@ -68,12 +79,16 @@ export function HomeworkCardActions({
 	const ViewAnswerBtn = (
 		<button
 			type='button'
-			onClick={() => studResultUrl && window.open(studResultUrl, '_blank')}
-			disabled={!studResultUrl}
+			onClick={() => viewAnswer(studAnswer, studFileUrl)}
+			disabled={!hasAnswer}
 			title='Мой ответ'
 			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] border border-white/10 transition-colors text-xs'
 		>
-			<ExternalLink size={14} />
+			{!studAnswerIsUrl && !studFileUrl ? (
+				<MessageSquare size={14} />
+			) : (
+				<ExternalLink size={14} />
+			)}
 			<span>Ответ</span>
 		</button>
 	)
@@ -153,6 +168,14 @@ export function HomeworkCardActions({
 						</button>
 					</div>
 				</div>
+			)}
+
+			{answerText && (
+				<StudAnswerSheet
+					answer={answerText}
+					homeworkTheme={homeworkTheme}
+					onClose={closeAnswerSheet}
+				/>
 			)}
 
 			{sheetOpen && (
