@@ -6,6 +6,8 @@ export { TopBar } from './TopBar/ui/TopBar'
 export { DashboardCharts } from './DashboardCharts/ui/DashboardCharts'
 
 // Grades
+export type { Tab } from '@/widgets/Grades/GradesTabs/ui/GradesTabs'
+
 export { GradesCharts } from './Grades/GradesCharts/ui/GradesCharts'
 export { GradesHeader } from './Grades/GradesHeader/ui/GradesHeader'
 export { GradesCalendar } from './Grades/GradesList/ui/GradesCalendar'
@@ -27,6 +29,8 @@ export { FutureExams } from './FeatureExams/ui/FeatuerExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'
+export { ProfileAvatar } from './Profile/ui/ProfileAvatar'
+export { ProfileInfoCard } from './Profile/ui/ProfileInfoCard'
+export { ProfileRelativesCard } from './Profile/ui/ProfileRelativesCard'
 export { ProfileHeader } from './ProfileHeader/ui/ProfileHeader'
 export { ReviewsList } from './ReviewList/ui/ReviewList'
-export { UserCard } from './UserCard/ui/UserCard'

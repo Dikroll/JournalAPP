@@ -1,6 +1,7 @@
-export { GradesPage } from "./grades/ui/GradesPage"
-export { HomePage } from "./home/ui/HomePage"
-export { HomeworkPage } from "./homework/ui/HomeworkPage"
-export { LoginPage } from "./login/ui/LoginPage"
-export { ProfilePage } from "./profile/ui/ProfilePage"
-export { SchedulePage } from "./schedule/ui/SchedulePage"
+export { GradesPage } from './grades/ui/GradesPage'
+export { HomePage } from './home/ui/HomePage'
+export { HomeworkPage } from './homework/ui/HomeworkPage'
+export { LoginPage } from './login/ui/LoginPage'
+export { ProfilePage } from './profile/ui/ProfilePage'
+export { ProfileDetailsPage } from './profileDetail/ui/ProfileDetailPage'
+export { SchedulePage } from './schedule/ui/SchedulePage'

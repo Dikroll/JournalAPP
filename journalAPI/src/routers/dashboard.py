@@ -1,6 +1,7 @@
 import asyncio
 
 from app.cache import TTL, cache
+from app.config import settings
 from app.security import get_current_user
 from fastapi import APIRouter, Depends
 from schemas import (
@@ -31,9 +32,21 @@ def _rank(raw: dict) -> RankInfo:
     return RankInfo(position=u.studentPosition, total=u.totalCount, week_diff=u.weekDiff, month_diff=u.monthDiff)
 
 
+def _proxy_url(url: str | None) -> str | None:
+    if not url:
+        return None
+    token = url.rstrip("/").split("/")[-1]
+    return f"{settings.BASE_URL}/files/{token}"
+
 def _top(raw: list) -> list[LeaderEntry]:
     return [
-        LeaderEntry(student_id=e.id, full_name=e.full_name, photo_url=e.photo_path, position=e.position, points=e.amount)
+        LeaderEntry(
+            student_id=e.id,
+            full_name=e.full_name,
+            photo_url=_proxy_url(e.photo_path), 
+            position=e.position,
+            points=e.amount
+        )
         for e in [UpstreamLeaderEntry(**i) for i in raw]
         if e.id is not None
     ]

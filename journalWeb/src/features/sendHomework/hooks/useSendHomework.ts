@@ -1,4 +1,4 @@
-import { useHomeworkStore } from '@/entities/homework/model/store'
+import { useHomeworkStore } from '@/entities/homework'
 import { useCallback, useState } from 'react'
 import { sendHomeworkApi } from '../api'
 
@@ -20,8 +20,10 @@ export function useSendHomework(
 	studId: number | null,
 	userId: number | null,
 	onSuccess?: () => void,
+	onRefresh?: () => void,
 ) {
 	const invalidate = useHomeworkStore(s => s.invalidate)
+	const removeItem = useHomeworkStore(s => s.removeItem)
 
 	const [state, setState] = useState<State>({
 		file: null,
@@ -111,18 +113,35 @@ export function useSendHomework(
 					})
 					.catch(() => {})
 			}
+
+			removeItem(homeworkId)
 			invalidate()
+			onRefresh?.()
 
 			setState(s => ({ ...s, step: 'success' }))
 			onSuccess?.()
-		} catch (e: any) {
-			const detail = e?.response?.data?.detail
+		} catch (err: unknown) {
+			const response = (
+				err as { response?: { data?: { detail?: unknown; message?: string } } }
+			)?.response?.data
+			const detail = response?.detail
 			const msg = Array.isArray(detail)
-				? detail.map((d: any) => d.msg).join(', ')
-				: (detail ?? e?.response?.data?.message ?? 'Ошибка отправки')
+				? (detail as { msg: string }[]).map(d => d.msg).join(', ')
+				: typeof detail === 'string'
+					? detail
+					: (response?.message ?? 'Ошибка отправки')
 			setState(s => ({ ...s, step: 'error', error: msg }))
 		}
-	}, [state, homeworkId, studId, userId, invalidate, onSuccess])
+	}, [
+		state,
+		homeworkId,
+		studId,
+		userId,
+		invalidate,
+		removeItem,
+		onSuccess,
+		onRefresh,
+	])
 
 	const isLoading = state.step === 'uploading' || state.step === 'submitting'
 	const loadingLabel =

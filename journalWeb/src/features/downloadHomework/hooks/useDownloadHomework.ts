@@ -1,13 +1,26 @@
-
+import { useState } from 'react'
 
 export function useDownloadHomework() {
-  const downloadTask = (fileUrl: string | null) => {
-    if (fileUrl) window.open(fileUrl, "_blank")
-  }
+	const [answerText, setAnswerText] = useState<string | null>(null)
 
-  const viewAnswer = (studAnswer: string | null) => {
-    if (studAnswer) window.open(studAnswer, "_blank")
-  }
+	const downloadTask = (fileUrl: string | null) => {
+		if (fileUrl) window.open(fileUrl, '_blank')
+	}
 
-  return { downloadTask, viewAnswer }
+	const viewAnswer = (
+		studAnswer: string | null,
+		studFileUrl: string | null = null,
+	) => {
+		const url =
+			studFileUrl ?? (studAnswer?.startsWith('http') ? studAnswer : null)
+		if (url) {
+			window.open(url, '_blank')
+		} else if (studAnswer) {
+			setAnswerText(studAnswer)
+		}
+	}
+
+	const closeAnswerSheet = () => setAnswerText(null)
+
+	return { downloadTask, viewAnswer, answerText, closeAnswerSheet }
 }

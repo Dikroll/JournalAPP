@@ -3,16 +3,15 @@ import {
 	useHomeworkBySubject,
 	useHomeworkGroups,
 } from '@/entities/homework'
-import { useSubjects } from '@/entities/subject/hooks/useSubjects'
-import type { Subject } from '@/entities/subject/model/types'
-import { SpecSelector } from '@/features/selectSpec/ui/SpecSelector'
+import type { Subject } from '@/entities/subject'
+import { useSubjects } from '@/entities/subject'
+import { RefreshHomeworkButton } from '@/features/refreshHomework'
+import { SpecSelector } from '@/features/selectSpec'
 import {
 	HomeworkCountersBar,
 	HomeworkStatusView,
 	HomeworkSubjectView,
 } from '@/widgets'
-
-import { RefreshHomeworkButton } from '@/features/refreshHomework'
 import { BookOpen, LayoutList } from 'lucide-react'
 import { useEffect, useState } from 'react'
 

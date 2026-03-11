@@ -1,11 +1,14 @@
-const cache = new Map<string, string>()
+const preloaded = new Set<string>()
 
-export async function getCachedImageUrl(url: string): Promise<string> {
-  if (cache.has(url)) return cache.get(url) ?? ''
-  
-  const res = await fetch(url)
-  const blob = await res.blob()
-  const objectUrl = URL.createObjectURL(blob)
-  cache.set(url, objectUrl)
-  return objectUrl
+export function preloadImages(urls: (string | null)[]) {
+	urls.forEach(url => {
+		if (!url || preloaded.has(url)) return
+		preloaded.add(url)
+		const img = new Image()
+		img.src = url
+	})
+}
+
+export function getCachedImageUrl(url: string): string {
+	return url
 }

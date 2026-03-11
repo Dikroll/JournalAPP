@@ -1,4 +1,4 @@
-import type { Subject } from '@/entities/subject/model/types'
+import type { Subject } from '@/entities/subject'
 import { ChevronDown, Search, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useSpecSelectorStore } from '../models/store'

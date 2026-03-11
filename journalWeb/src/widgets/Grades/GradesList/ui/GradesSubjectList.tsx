@@ -1,23 +1,41 @@
-import type { SubjectStats } from '@/entities/grades/hooks/useGradesGroups'
-import { GRADE_TYPE_CONFIG } from '@/entities/grades/hooks/useGradesGroups'
-import { useLazyItems } from '@/shared/hooks/useLazyItems'
+import type { SubjectStats } from '@/entities/grades'
+import { GRADE_TYPE_CONFIG } from '@/entities/grades'
+import type { SortKey } from '@/features/sortSubjects'
+import {
+	SortSubjectsControl,
+	useSortSubjectsStore,
+} from '@/features/sortSubjects'
+import { useLazyItems } from '@/shared/hooks'
+
+function sortSubjects(subjects: SubjectStats[], key: SortKey): SubjectStats[] {
+	const arr = [...subjects]
+	if (key === 'alpha')
+		return arr.sort((a, b) => a.spec_name.localeCompare(b.spec_name, 'ru'))
+	if (key === 'grade-desc')
+		return arr.sort((a, b) => b.averageGrade - a.averageGrade)
+	if (key === 'grade-asc')
+		return arr.sort((a, b) => a.averageGrade - b.averageGrade)
+	return arr
+}
 
 interface Props {
 	bySubject: SubjectStats[]
 }
 
 export function GradesSubjectList({ bySubject }: Props) {
-	const { visibleCount, sentinelRef } = useLazyItems(bySubject.length)
+	const sortKey = useSortSubjectsStore(s => s.sortKey)
+	const sorted = sortSubjects(bySubject, sortKey)
+	const { visibleCount, sentinelRef } = useLazyItems(sorted.length)
 
 	if (bySubject.length === 0) {
 		return <p className='text-[#9CA3AF] text-sm text-center py-8'>Нет данных</p>
 	}
 
-	const visible = bySubject.slice(0, visibleCount)
-
 	return (
 		<div className='space-y-3'>
-			{visible.map(subj => (
+			<SortSubjectsControl />
+
+			{sorted.slice(0, visibleCount).map(subj => (
 				<div
 					key={subj.spec_id}
 					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-4 border border-white/10'
@@ -75,7 +93,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 				</div>
 			))}
 
-			{visibleCount < bySubject.length && (
+			{visibleCount < sorted.length && (
 				<div ref={sentinelRef} className='space-y-3 pt-1'>
 					{[0, 1].map(i => (
 						<div

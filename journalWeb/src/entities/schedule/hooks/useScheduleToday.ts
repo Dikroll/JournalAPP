@@ -1,35 +1,48 @@
-import { scheduleApi } from "@/entities/schedule/api"
-import { useScheduleStore } from "@/entities/schedule/model/store"
-import type { LessonItem } from "@/entities/schedule/model/types"
-import { ttl } from "@/shared/config/cache"
-import { cachedFetch } from "@/shared/lib/cachedFetch"
-import { CACHE_KEYS } from "@/shared/lib/storage"
-import { useEffect } from "react"
+import { ttl } from '@/shared/config/cacheConfig'
+import { isCacheValid } from '@/shared/lib/isCacheValid'
+import { useEffect } from 'react'
+import { scheduleApi } from '../api'
+import { useScheduleStore } from '../model/store'
 
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000
+
+let fetching = false
 
 export function useScheduleToday() {
-  const { today, status, error, setToday, setStatus, setError } = useScheduleStore()
+	const today = useScheduleStore(s => s.today)
+	const todayStatus = useScheduleStore(s => s.todayStatus)
+	const todayLoadedAt = useScheduleStore(s => s.todayLoadedAt)
+	const error = useScheduleStore(s => s.error)
+	const setToday = useScheduleStore(s => s.setToday)
+	const setTodayStatus = useScheduleStore(s => s.setTodayStatus)
+	const setTodayLoadedAt = useScheduleStore(s => s.setTodayLoadedAt)
+	const setError = useScheduleStore(s => s.setError)
 
-  useEffect(() => {
-    setStatus("loading")
+	useEffect(() => {
+		if (fetching) return
+		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
 
-    cachedFetch<LessonItem[]>({
-      key: CACHE_KEYS.SCHEDULE_TODAY,
-      fetcher: () => scheduleApi.getToday(),
-      ttlSeconds: ttl.SCHEDULE,
-      onData: (data) => {
-        setToday(data)
-        setStatus("success")
-      },
-      onError: (err) => {
-        const msg =
-          (err as { response?: { data?: { detail?: string } } })?.response?.data
-            ?.detail ?? "Ошибка загрузки расписания"
-        setError(msg)
-        setStatus("error")
-      },
-    })
-  }, [])
+		fetching = true
+		setTodayStatus('loading')
 
-  return { today, status, error }
+		scheduleApi
+			.getToday()
+			.then(data => {
+				setToday(data)
+				setTodayLoadedAt(Date.now())
+				setTodayStatus('success')
+			})
+			.catch(err => {
+				const msg =
+					(err as { response?: { data?: { detail?: string } } })?.response?.data
+						?.detail ?? 'Ошибка загрузки расписания'
+				setError(msg)
+				setTodayStatus('error')
+			})
+			.finally(() => {
+				fetching = false
+			})
+	}, [todayLoadedAt])
+
+	return { today, status: todayStatus, error }
 }

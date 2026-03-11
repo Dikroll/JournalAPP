@@ -1,16 +1,27 @@
-import { useElementSize } from '@/shared/hooks/useElementSize'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { useElementSize } from '@/shared/hooks'
+import { CustomTooltip } from '@/shared/ui'
+import { useTooltipTimeout } from '@/shared/utils'
+import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import React from 'react'
-import { Line, LineChart } from 'recharts'
+import { Line, LineChart, Tooltip, XAxis } from 'recharts'
 
 interface StatsCardProps {
 	title: string
 	value: string | number
 	trend?: number
 	trendLabel?: string
-	data?: Array<{ value: number }>
+	data?: Array<{ value: number; label?: string }>
 	icon?: React.ReactNode
 	color?: string
+}
+
+const tooltipWrapperStyle = {
+	outline: 'none',
+	border: 'none',
+	pointerEvents: 'none' as const,
+	overflow: 'visible' as const,
+	zIndex: 50,
+	transform: 'translateY(-100%) translateY(-12px)',
 }
 
 export function StatsCard({
@@ -23,8 +34,10 @@ export function StatsCard({
 	color = '#F20519',
 }: StatsCardProps) {
 	const { ref, width, height } = useElementSize()
-	const hasPositiveTrend = trend !== undefined && trend > 0
-	const TrendIcon = hasPositiveTrend ? TrendingUp : TrendingDown
+	const isNeutral = trend === 0
+	const isPositive = trend !== undefined && trend > 0
+	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
+	const tooltip = useTooltipTimeout()
 
 	return (
 		<div
@@ -41,13 +54,15 @@ export function StatsCard({
 					<div className='flex items-center gap-1.5'>
 						<div
 							className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium ${
-								hasPositiveTrend
-									? 'bg-[#10B981]/10 text-[#10B981]'
-									: 'bg-[#EF4444]/10 text-[#EF4444]'
+								isNeutral
+									? 'bg-white/10 text-[#9CA3AF]'
+									: isPositive
+										? 'bg-[#10B981]/10 text-[#10B981]'
+										: 'bg-[#EF4444]/10 text-[#EF4444]'
 							}`}
 						>
 							<TrendIcon size={11} />
-							{hasPositiveTrend ? '+' : ''}
+							{isPositive ? '+' : ''}
 							{trend}%
 						</div>
 						{trendLabel && (
@@ -57,15 +72,25 @@ export function StatsCard({
 				)}
 			</div>
 
+			{/* overflow:visible чтобы тултип не обрезался краем карточки */}
 			{data && data.length > 0 && (
-				<div ref={ref} className='w-full px-6 pb-2' style={{ height: 128 }}>
+				<div
+					ref={ref}
+					className='w-full px-6 pb-2'
+					style={{ height: 128, overflow: 'visible' }}
+				>
 					{width > 0 && height > 0 && (
 						<LineChart
 							width={width}
 							height={height}
 							data={data}
 							margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
+							onMouseMove={tooltip.show}
+							onMouseLeave={tooltip.hide}
+							onTouchStart={tooltip.show}
+							onTouchEnd={tooltip.hide}
 						>
+							<XAxis dataKey='label' hide />
 							<Line
 								type='monotone'
 								dataKey='value'
@@ -75,6 +100,11 @@ export function StatsCard({
 								strokeLinecap='round'
 								strokeLinejoin='round'
 								isAnimationActive={false}
+							/>
+							<Tooltip
+								content={<CustomTooltip visible={tooltip.visible} />}
+								cursor={{ stroke: 'rgba(255,255,255,0.08)' }}
+								wrapperStyle={tooltipWrapperStyle}
 							/>
 						</LineChart>
 					)}

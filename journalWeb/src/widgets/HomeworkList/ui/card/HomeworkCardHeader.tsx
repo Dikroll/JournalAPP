@@ -1,5 +1,5 @@
-import { STATUS_CONFIG } from '@/entities/homework/config'
-import type { HomeworkItemWithStatus } from '@/entities/homework/hooks/useHomeworkGroups'
+import type { HomeworkItemWithStatus } from '@/entities/homework'
+import { STATUS_CONFIG } from '@/entities/homework'
 
 interface Props {
 	hw: HomeworkItemWithStatus

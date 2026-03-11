@@ -1,5 +1,5 @@
-import type { GradeEntryExpanded } from '@/entities/grades/hooks/useGradesGroups'
-import { useLazyItems } from '@/shared/hooks/useLazyItems'
+import type { GradeEntryExpanded } from '@/entities/grades'
+import { useLazyItems } from '@/shared/hooks'
 import { useEffect, useRef, useState } from 'react'
 import { GradeEntryRow } from './GradeEntryRow'
 

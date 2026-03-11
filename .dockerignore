@@ -1,7 +1,6 @@
 .DS_Store
 Thumbs.db
 
-.*
 !.well-known
 
 node_modules
@@ -14,10 +13,7 @@ __pycache__
 *.pyc
 *.pyo
 
-.env
-.env.local
-.env.production
-.env.development
+
 
 *.log
 *.sqlite3
