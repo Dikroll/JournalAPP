@@ -46,6 +46,7 @@ const tooltipWrapperStyle = {
 	pointerEvents: 'none' as const,
 	overflow: 'visible' as const,
 	zIndex: 50,
+	transform: 'translateY(-100%) translateY(-12px)',
 }
 
 function ProgressChart({ data }: { data: any[] }) {

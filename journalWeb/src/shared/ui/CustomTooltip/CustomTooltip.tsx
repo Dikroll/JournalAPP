@@ -19,13 +19,13 @@ export function CustomTooltip({
 	return (
 		<div
 			style={{
-				background: 'rgba(42,44,50,0.92)',
-				backdropFilter: 'blur(12px)',
-				border: '1px solid rgba(255,255,255,0.08)',
-				borderRadius: '14px',
-				padding: '8px 14px',
-				minWidth: '80px',
-				boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+				background: 'rgba(28,30,36,0.97)',
+				backdropFilter: 'blur(16px)',
+				border: '1px solid rgba(255,255,255,0.10)',
+				borderRadius: '12px',
+				padding: '6px 12px',
+				minWidth: '64px',
+				boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
 				pointerEvents: 'none',
 			}}
 		>
@@ -33,8 +33,8 @@ export function CustomTooltip({
 				<p
 					style={{
 						color: '#6B7280',
-						fontSize: '11px',
-						marginBottom: '3px',
+						fontSize: '10px',
+						marginBottom: '2px',
 						whiteSpace: 'nowrap',
 					}}
 				>
@@ -44,7 +44,7 @@ export function CustomTooltip({
 			<p
 				style={{
 					color: '#F2F2F2',
-					fontSize: '14px',
+					fontSize: '13px',
 					fontWeight: 600,
 					whiteSpace: 'nowrap',
 				}}

@@ -15,6 +15,15 @@ interface StatsCardProps {
 	color?: string
 }
 
+const tooltipWrapperStyle = {
+	outline: 'none',
+	border: 'none',
+	pointerEvents: 'none' as const,
+	overflow: 'visible' as const,
+	zIndex: 50,
+	transform: 'translateY(-100%) translateY(-12px)',
+}
+
 export function StatsCard({
 	title,
 	value,
@@ -63,8 +72,13 @@ export function StatsCard({
 				)}
 			</div>
 
+			{/* overflow:visible чтобы тултип не обрезался краем карточки */}
 			{data && data.length > 0 && (
-				<div ref={ref} className='w-full px-6 pb-2' style={{ height: 128 }}>
+				<div
+					ref={ref}
+					className='w-full px-6 pb-2'
+					style={{ height: 128, overflow: 'visible' }}
+				>
 					{width > 0 && height > 0 && (
 						<LineChart
 							width={width}
@@ -90,6 +104,7 @@ export function StatsCard({
 							<Tooltip
 								content={<CustomTooltip visible={tooltip.visible} />}
 								cursor={{ stroke: 'rgba(255,255,255,0.08)' }}
+								wrapperStyle={tooltipWrapperStyle}
 							/>
 						</LineChart>
 					)}

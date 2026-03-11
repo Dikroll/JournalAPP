@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-export function useTooltipTimeout(ms = 3000) {
+export function useTooltipTimeout(ms = 2000) {
 	const [visible, setVisible] = useState(false)
 	const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
