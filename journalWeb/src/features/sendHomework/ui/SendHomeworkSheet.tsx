@@ -1,3 +1,4 @@
+import { useHomework } from '@/entities/homework'
 import { useUserStore } from '@/entities/user'
 import { CheckCircle, Loader2, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
@@ -19,6 +20,7 @@ export function SendHomeworkSheet({
 	onClose,
 }: Props) {
 	const userId = useUserStore(s => s.user?.student_id ?? null)
+	const { refresh } = useHomework()
 
 	const {
 		file,
@@ -33,11 +35,16 @@ export function SendHomeworkSheet({
 		setMark,
 		submit,
 		reset,
-	} = useSendHomework(homeworkId, studId, userId, () =>
-		setTimeout(() => {
-			reset()
-			onClose()
-		}, 1500),
+	} = useSendHomework(
+		homeworkId,
+		studId,
+		userId,
+		() =>
+			setTimeout(() => {
+				reset()
+				onClose()
+			}, 1500),
+		refresh,
 	)
 
 	const isSuccess = step === 'success'

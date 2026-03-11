@@ -1,13 +1,10 @@
-import { homeworkApi, useHomeworkStore } from '@/entities/homework'
-
 import type { HomeworkStatus } from '@/entities/homework'
+import { useDeleteHomework } from '@/features/deleteHomework'
 import {
 	StudAnswerSheet,
 	useDownloadHomework,
 } from '@/features/downloadHomework'
-
 import { SendHomeworkSheet } from '@/features/sendHomework'
-
 import {
 	Download,
 	ExternalLink,
@@ -38,9 +35,8 @@ export function HomeworkCardActions({
 }: Props) {
 	const [sheetOpen, setSheetOpen] = useState(false)
 	const [showDeleteWarning, setShowDeleteWarning] = useState(false)
-	const [isDeleting, setIsDeleting] = useState(false)
 
-	const { removeItem, invalidate } = useHomeworkStore()
+	const { deleteHomework, isDeleting } = useDeleteHomework(studId, homeworkId)
 	const { downloadTask, viewAnswer, answerText, closeAnswerSheet } =
 		useDownloadHomework()
 
@@ -53,18 +49,8 @@ export function HomeworkCardActions({
 	const studResultUrl = studFileUrl ?? (studAnswerIsUrl ? studAnswer : null)
 	const hasAnswer = !!(studResultUrl || studAnswer)
 
-	const handleDelete = async () => {
-		if (!studId) return
-		setIsDeleting(true)
-		try {
-			await homeworkApi.deleteSubmission(studId)
-			removeItem(homeworkId)
-			invalidate()
-		} catch {
-		} finally {
-			setIsDeleting(false)
-			setShowDeleteWarning(false)
-		}
+	const handleDelete = () => {
+		deleteHomework(() => setShowDeleteWarning(false))
 	}
 
 	const DownloadTaskBtn = (

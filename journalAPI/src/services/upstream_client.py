@@ -1,6 +1,5 @@
 import asyncio
 import time
-from contextlib import asynccontextmanager
 
 import httpx
 from app.config import settings
@@ -19,7 +18,9 @@ DEFAULT_HEADERS = {
     "Referer": "https://journal.top-academy.ru/",
 }
 
-_clients: dict[str, "UpstreamClient"] = {}
+_MAX_CLIENTS = 500
+
+_clients: dict[str, tuple["UpstreamClient", float]] = {}  
 
 _http: httpx.AsyncClient | None = None
 
@@ -30,7 +31,7 @@ def get_http_client() -> httpx.AsyncClient:
         _http = httpx.AsyncClient(
             timeout=httpx.Timeout(10.0),
             limits=httpx.Limits(max_connections=50, max_keepalive_connections=20),
-            http2=True,  
+            http2=True,
         )
     return _http
 
@@ -64,18 +65,21 @@ class UpstreamClient:
             )
 
             if resp.status_code != 200:
-                log.error(f"[AUTH] failed — {resp.status_code}: {resp.text}")
+                log.error(f"[AUTH] failed for '{self.username}' — status {resp.status_code}")
                 raise HTTPException(status_code=401, detail="Invalid credentials for upstream")
 
             data = resp.json()
             self._token = data.get("token") or data.get("access_token") or data.get("jwt")
-            log.debug(f"[AUTH] full response: {data}")
+
+            log.debug(f"[AUTH] response keys: {list(data.keys())}")
+
             if not self._token:
-                raise HTTPException(status_code=502, detail=f"Unexpected auth response: {data}")
+                log.error(f"[AUTH] no token field in response, keys: {list(data.keys())}")
+                raise HTTPException(status_code=502, detail="Unexpected auth response from upstream")
 
             expires = data.get("expires_in_access") or data.get("expires_in")
             self._token_expires_at = float(expires) if expires else time.time() + 6 * 3600
-            log.info(f"[AUTH] login successful, expires at {self._token_expires_at}")
+            log.info(f"[AUTH] login successful for '{self.username}'")
 
     async def _request(self, method: str, path: str, content_type_override: str | None = None, **kwargs) -> dict | list:
         if not self._token or self._is_token_expired():
@@ -106,18 +110,16 @@ class UpstreamClient:
             )
 
         if resp.status_code >= 400:
-            try:
-                req_body = resp.request.content
-            except Exception:
-                req_body = b"<streaming>"
-            log.error(f"[{method}] {path} — {resp.status_code}: {resp.text} | raw_bytes: {req_body!r}")
+            log.error(f"[{method}] {path} — {resp.status_code} (body length: {len(resp.content)})")
             raise HTTPException(status_code=resp.status_code, detail=resp.text)
+
         if not resp.content:
             return {}
 
         data = resp.json()
         log.debug(f"[{method}] {path} — OK, items: {len(data) if isinstance(data, list) else 1}")
         return data
+
     async def get(self, path: str, params: dict | None = None) -> dict | list:
         return await self._request("GET", path, params=params)
 
@@ -125,7 +127,6 @@ class UpstreamClient:
         return await self._request("POST", path, json=json)
 
     async def post_form(self, path: str, data: dict) -> dict | list:
-        # httpx выставит multipart/form-data автоматически при files=
         files = {k: (None, str(v)) for k, v in data.items()}
         return await self._request("POST", path, files=files, content_type_override="multipart/form-data")
 
@@ -145,7 +146,7 @@ class UpstreamClient:
             json={},
         )
         if token_resp.status_code >= 400:
-            log.error(f"[FILE-TOKEN] {token_resp.status_code}: {token_resp.text}")
+            log.error(f"[FILE-TOKEN] {token_resp.status_code}")
             raise HTTPException(status_code=502, detail="Failed to get file token from upstream")
 
         creds = token_resp.json()
@@ -153,8 +154,7 @@ class UpstreamClient:
         fs_token: str = creds.get("token", "")
         directory: str = (creds.get("dir") or {}).get("homeworkDirId", {}).get("src", "")
 
-        log.debug(f"[FILE-TOKEN] fs_url={fs_url} dir={directory}")
-
+        log.debug(f"[FILE-TOKEN] fs_url={fs_url}")
 
         upload_headers = {
             "Authorization": f"Bearer {fs_token}",
@@ -171,12 +171,12 @@ class UpstreamClient:
             data={"directory": directory},
         )
         if upload_resp.status_code >= 400:
-            log.error(f"[FILE-UPLOAD] {upload_resp.status_code}: {upload_resp.text}")
+            log.error(f"[FILE-UPLOAD] {upload_resp.status_code}")
             raise HTTPException(status_code=502, detail="Failed to upload file to file server")
 
         results = upload_resp.json()
         result = results[0] if isinstance(results, list) else results
-        log.info(f"[FILE-UPLOAD] success: link={result.get('link')}")
+        log.info(f"[FILE-UPLOAD] success for '{self.username}'")
 
         return {
             "filename": filename,
@@ -185,11 +185,29 @@ class UpstreamClient:
         }
 
 
+def _evict_clients() -> None:
+    """Удаляет половину самых давно использованных клиентов при переполнении."""
+    if len(_clients) < _MAX_CLIENTS:
+        return
+    sorted_by_lru = sorted(_clients.items(), key=lambda x: x[1][1])
+    to_remove = sorted_by_lru[: len(_clients) // 2]
+    for username, _ in to_remove:
+        del _clients[username]
+    log.info(f"[CLIENT-CACHE] evicted {len(to_remove)} stale clients, remaining: {len(_clients)}")
+
+
 def get_upstream_client(user: dict = Depends(get_current_user)) -> UpstreamClient:
     username = user["username"]
-    if username not in _clients:
-        log.debug(f"[CACHE] creating new client for '{username}'")
-        _clients[username] = UpstreamClient(username, user["password"])
-    else:
-        log.debug(f"[CACHE] reusing client for '{username}'")
-    return _clients[username]
+    now = time.time()
+
+    if username in _clients:
+        client, _ = _clients[username]
+        _clients[username] = (client, now)
+        log.debug(f"[CLIENT-CACHE] reusing client for '{username}'")
+        return client
+
+    _evict_clients()
+    log.debug(f"[CLIENT-CACHE] creating new client for '{username}'")
+    client = UpstreamClient(username, user["password"])
+    _clients[username] = (client, now)
+    return client
