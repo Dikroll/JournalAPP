@@ -33,10 +33,20 @@ export function useHomeworkGroups(
 				const isExpanded = expandedStatuses.has(numKey)
 				const loadedCount = all.length
 				const realTotal = counters ? counters[s] : loadedCount
+
+				// Показываем PREVIEW_SIZE только если ещё ни разу не грузили больше.
+				// Как только loadedCount > PREVIEW_SIZE — значит пользователь уже
+				// нажимал "показать ещё", показываем всё загруженное.
+				const visibleItems =
+					isExpanded || loadedCount > PREVIEW_SIZE
+						? all
+						: all.slice(0, PREVIEW_SIZE)
+
+				// hasMore: есть ещё не загруженные на сервере
 				const hasMore = !isExpanded && loadedCount < realTotal
 
 				acc[s] = {
-					items: isExpanded ? all : all.slice(0, PREVIEW_SIZE),
+					items: visibleItems,
 					total: realTotal,
 					isExpanded,
 					hasMore,
@@ -69,8 +79,13 @@ export function useHomeworkGroups(
 				const isExpanded = expandedStatuses.has(numKey)
 				const loadedCount = all.length
 
+				const visibleItems =
+					isExpanded || loadedCount > PREVIEW_SIZE
+						? all
+						: all.slice(0, PREVIEW_SIZE)
+
 				result[subject][s] = {
-					items: isExpanded ? all : all.slice(0, PREVIEW_SIZE),
+					items: visibleItems,
 					total: loadedCount,
 					isExpanded,
 					hasMore: false,

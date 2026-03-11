@@ -1,30 +1,28 @@
 import { ttl } from '@/shared/config/cacheConfig'
 import { isCacheValid } from '@/shared/lib/isCacheValid'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { scheduleApi } from '../api'
 import { useScheduleStore } from '../model/store'
 
 const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
-export function useScheduleToday() {
-	const {
-		today,
-		todayStatus,
-		todayLoadedAt,
-		error,
-		setToday,
-		setTodayStatus,
-		setTodayLoadedAt,
-		setError,
-	} = useScheduleStore()
+let fetching = false
 
-	const fetchingRef = useRef(false)
+export function useScheduleToday() {
+	const today = useScheduleStore(s => s.today)
+	const todayStatus = useScheduleStore(s => s.todayStatus)
+	const todayLoadedAt = useScheduleStore(s => s.todayLoadedAt)
+	const error = useScheduleStore(s => s.error)
+	const setToday = useScheduleStore(s => s.setToday)
+	const setTodayStatus = useScheduleStore(s => s.setTodayStatus)
+	const setTodayLoadedAt = useScheduleStore(s => s.setTodayLoadedAt)
+	const setError = useScheduleStore(s => s.setError)
 
 	useEffect(() => {
-		if (fetchingRef.current) return
+		if (fetching) return
 		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
 
-		fetchingRef.current = true
+		fetching = true
 		setTodayStatus('loading')
 
 		scheduleApi
@@ -42,7 +40,7 @@ export function useScheduleToday() {
 				setTodayStatus('error')
 			})
 			.finally(() => {
-				fetchingRef.current = false
+				fetching = false
 			})
 	}, [todayLoadedAt])
 

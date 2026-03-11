@@ -23,7 +23,6 @@ import { useState } from 'react'
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')
-	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null)
 
 	const { entries, status, error, refresh } = useGrades()
@@ -52,12 +51,6 @@ export function GradesPage() {
 
 	const { byDate, bySubject, byMonth } = useGradesGroups(sourceEntries)
 
-	const handleRefresh = () => {
-		setIsRefreshing(true)
-		refresh()
-		setTimeout(() => setIsRefreshing(false), 1000)
-	}
-
 	const isLoading = status === 'loading' || status === 'idle'
 	const showCharts = chartsStatus === 'success' && progress.length > 0
 
@@ -67,7 +60,7 @@ export function GradesPage() {
 				<p className='text-[#DC2626]'>{error}</p>
 				<button
 					type='button'
-					onClick={handleRefresh}
+					onClick={refresh}
 					className='flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors'
 				>
 					<RefreshCw size={16} /> Повторить
@@ -79,7 +72,7 @@ export function GradesPage() {
 	return (
 		<div className='min-h-screen text-[#F2F2F2] pb-28'>
 			<div className='p-4 space-y-4'>
-				<GradesHeader isRefreshing={isRefreshing} onRefresh={handleRefresh} />
+				<GradesHeader />
 
 				{showCharts && (
 					<GradesSummary progress={progress} attendance={attendance} />

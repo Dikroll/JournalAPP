@@ -1,9 +1,12 @@
+import { useMidnightRefresh } from '@/shared/hooks/useMidnightRefresh'
 import { BottomBar, TopBar } from '@/widgets'
 import { Outlet, useLocation } from 'react-router-dom'
 
 export function AppLayout() {
 	const location = useLocation()
 	const showTopBar = location.pathname === '/'
+
+	useMidnightRefresh()
 
 	return (
 		<div

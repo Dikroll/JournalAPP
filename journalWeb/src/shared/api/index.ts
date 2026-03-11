@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/features/auth'
 import type { InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { API_BASE_URL } from '../config/env'
@@ -26,7 +27,7 @@ api.interceptors.response.use(
 	res => res,
 	err => {
 		if (err.response?.status === 401) {
-			localStorage.removeItem('access_token')
+			useAuthStore.getState().logout()
 			window.location.hash = '#/login'
 		}
 		return Promise.reject(err)
