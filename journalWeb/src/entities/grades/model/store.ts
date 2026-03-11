@@ -34,18 +34,23 @@ export const useGradesStore = create<GradesState>()(set => ({
 	update: patch => set(patch),
 
 	updateSubject: (specId, patch) =>
-		set(state => ({
-			bySubject: {
-				...state.bySubject,
-				[specId]: {
-					entries: [],
-					status: 'idle',
-					loadedAt: null,
-					...state.bySubject[specId],
-					...patch,
+		set(state => {
+			const current = state.bySubject[specId] ?? {
+				entries: [],
+				status: 'idle',
+				loadedAt: null,
+			}
+
+			return {
+				bySubject: {
+					...state.bySubject,
+					[specId]: {
+						...current,
+						...patch,
+					},
 				},
-			},
-		})),
+			}
+		}),
 
 	reset: () =>
 		set({

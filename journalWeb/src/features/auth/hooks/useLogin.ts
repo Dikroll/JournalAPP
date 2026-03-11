@@ -1,17 +1,24 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { authApi } from "../api"
-import { useAuthStore } from "../model/store"
-import type { LoginRequest } from "../model/types"
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { authApi } from '../api'
+import { useAuthStore } from '../model/store'
+import type { LoginRequest } from '../model/types'
 
 export function useLogin() {
-	const [username, setUsername] = useState("")
-	const [password, setPassword] = useState("")
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState(false)
 
-	const setToken = useAuthStore((s) => s.setToken)
+	const setToken = useAuthStore(s => s.setToken)
+	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const navigate = useNavigate()
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate('/', { replace: true })
+		}
+	}, [isAuthenticated])
 
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -23,11 +30,10 @@ export function useLogin() {
 		try {
 			const { access_token } = await authApi.login(payload)
 			setToken(access_token)
-			navigate("/")
 		} catch (err: unknown) {
 			const msg =
 				(err as { response?: { data?: { detail?: string } } })?.response?.data
-					?.detail ?? "Ошибка входа"
+					?.detail ?? 'Ошибка входа'
 			setError(msg)
 		} finally {
 			setLoading(false)

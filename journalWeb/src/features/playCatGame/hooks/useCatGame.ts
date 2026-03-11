@@ -826,7 +826,9 @@ function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
 	ctx.restore()
 }
 
-export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
+export function useCatGame(
+	canvasRef: React.RefObject<HTMLCanvasElement | null>,
+) {
 	const world = useRef<World>(mkWorld())
 	const tap = useRef(false)
 

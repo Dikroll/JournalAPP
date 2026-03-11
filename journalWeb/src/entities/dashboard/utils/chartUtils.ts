@@ -17,9 +17,9 @@ export function lastValue(data: ChartPoint[]): number | null {
 
 export function toChartData(data: ChartPoint[]): ChartDataPoint[] {
 	return data
-		.filter(d => d.points != null)
+		.filter((d): d is ChartPoint & { points: number } => d.points != null)
 		.map(d => ({
-			value: d.points as number,
+			value: d.points,
 			label: formatMonthShort(d.date),
 		}))
 }

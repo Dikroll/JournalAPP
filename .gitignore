@@ -9,8 +9,12 @@ staticfiles/images/*.jpg
 .git/
 .venv
 tests/
+android/
+ios/
 docs/
 
+.env
+package-lock.json*
 logs
 *.log
 npm-debug.log*

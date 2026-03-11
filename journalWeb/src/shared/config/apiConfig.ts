@@ -26,7 +26,7 @@ class ApiConfig {
 	readonly HOMEWORK_COUNTERS = '/homework/counters'
 	readonly HOMEWORK_LIST = '/homework/list'
 	readonly HOMEWORK_ALL = '/homework/all'
-	readonly HOMEWORK_EVALUATE: '/homework/evaluate'
+	readonly HOMEWORK_EVALUATE = '/homework/evaluate'
 	readonly HOMEWORK_SYNC = '/homework/sync'
 	readonly HOMEWORK_SUBMIT = '/homework/submit'
 	readonly HOMEWORK_FILE_UPLOAD = '/homework/upload-file'
