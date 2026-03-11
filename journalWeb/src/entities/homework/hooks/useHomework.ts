@@ -7,6 +7,9 @@ import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
 const AUTO_REFRESH_MS = 90 * 60 * 1000
 const CACHE_TTL_MS = 15 * 60 * 1000
 
+let isLoadingAll = false
+const isLoadingMore = new Set<number>()
+
 export function useHomework() {
 	const groupId = useUserStore(s => s.user?.group?.id)
 
@@ -28,59 +31,61 @@ export function useHomework() {
 		setKnownSpecs,
 	} = useHomeworkStore()
 
-	const loadingRef = useRef(false)
-	const loadingMoreRef = useRef<Set<number>>(new Set())
+	const groupIdRef = useRef(groupId)
 
-	const loadAll = useCallback(
-		async (force = false) => {
-			if (!groupId) return
-			if (loadingRef.current) return
+	useEffect(() => {
+		groupIdRef.current = groupId
+	}, [groupId])
 
-			const { loadedAt } = useHomeworkStore.getState()
-			if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
+	const loadAll = useCallback(async (force = false) => {
+		const groupId = groupIdRef.current
+		if (!groupId) return
+		if (isLoadingAll) return
 
-			loadingRef.current = true
-			setStatus('loading')
-			setError(null)
+		const { loadedAt } = useHomeworkStore.getState()
+		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
-			try {
-				const { counters, items } = await homeworkApi.getAll(groupId)
-				setCounters(counters)
+		isLoadingAll = true
+		setStatus('loading')
+		setError(null)
 
-				const specsMap = new Map<number, string>()
-				Object.values(items)
-					.flat()
-					.forEach(hw => {
-						if (hw.spec_id != null && hw.spec_name) {
-							specsMap.set(hw.spec_id, hw.spec_name)
-						}
-					})
-				setKnownSpecs(
-					Array.from(specsMap.entries())
-						.map(([specId, specName]) => ({ specId, specName }))
-						.sort((a, b) => a.specName.localeCompare(b.specName, 'ru')),
-				)
+		try {
+			const { counters, items } = await homeworkApi.getAll(groupId)
+			setCounters(counters)
 
-				Object.entries(items).forEach(([statusKey, list]) => {
-					setItems(Number(statusKey), list)
+			const specsMap = new Map<number, string>()
+			Object.values(items)
+				.flat()
+				.forEach(hw => {
+					if (hw.spec_id != null && hw.spec_name) {
+						specsMap.set(hw.spec_id, hw.spec_name)
+					}
 				})
-				setLoadedAt(Date.now())
-				setStatus('success')
-			} catch {
-				setError('Не удалось загрузить домашние задания')
-				setStatus('error')
-			} finally {
-				loadingRef.current = false
-			}
-		},
-		[groupId],
-	)
+			setKnownSpecs(
+				Array.from(specsMap.entries())
+					.map(([specId, specName]) => ({ specId, specName }))
+					.sort((a, b) => a.specName.localeCompare(b.specName, 'ru')),
+			)
+
+			Object.entries(items).forEach(([statusKey, list]) => {
+				setItems(Number(statusKey), list)
+			})
+			setLoadedAt(Date.now())
+			setStatus('success')
+		} catch {
+			setError('Не удалось загрузить домашние задания')
+			setStatus('error')
+		} finally {
+			isLoadingAll = false
+		}
+	}, [])
 
 	const loadMore = useCallback(
 		async (statusKey: number) => {
+			const groupId = groupIdRef.current
 			if (!groupId) return
-			if (loadingMoreRef.current.has(statusKey)) return
-			loadingMoreRef.current.add(statusKey)
+			if (isLoadingMore.has(statusKey)) return
+			isLoadingMore.add(statusKey)
 
 			try {
 				const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
@@ -96,10 +101,10 @@ export function useHomework() {
 				}
 			} catch {
 			} finally {
-				loadingMoreRef.current.delete(statusKey)
+				isLoadingMore.delete(statusKey)
 			}
 		},
-		[groupId, appendItems, setExpanded],
+		[appendItems, setExpanded],
 	)
 
 	const refresh = useCallback(() => loadAll(true), [loadAll])
@@ -109,7 +114,7 @@ export function useHomework() {
 		loadAll()
 		const timer = setInterval(() => loadAll(true), AUTO_REFRESH_MS)
 		return () => clearInterval(timer)
-	}, [groupId, loadAll])
+	}, [groupId])
 
 	return {
 		items,

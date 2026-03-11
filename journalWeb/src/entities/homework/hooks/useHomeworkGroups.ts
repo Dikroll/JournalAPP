@@ -1,9 +1,5 @@
+import { STATUS_KEY_MAP, STATUS_MAP, STATUS_ORDER } from '@/entities/homework'
 import { useMemo } from 'react'
-import {
-	STATUS_KEY_MAP,
-	STATUS_MAP,
-	STATUS_ORDER,
-} from '../configs/homeworkConfig'
 import { PREVIEW_SIZE } from '../model/store'
 import type {
 	GroupData,
@@ -33,16 +29,11 @@ export function useHomeworkGroups(
 				const isExpanded = expandedStatuses.has(numKey)
 				const loadedCount = all.length
 				const realTotal = counters ? counters[s] : loadedCount
-
-				// Показываем PREVIEW_SIZE только если ещё ни разу не грузили больше.
-				// Как только loadedCount > PREVIEW_SIZE — значит пользователь уже
-				// нажимал "показать ещё", показываем всё загруженное.
 				const visibleItems =
 					isExpanded || loadedCount > PREVIEW_SIZE
 						? all
 						: all.slice(0, PREVIEW_SIZE)
 
-				// hasMore: есть ещё не загруженные на сервере
 				const hasMore = !isExpanded && loadedCount < realTotal
 
 				acc[s] = {

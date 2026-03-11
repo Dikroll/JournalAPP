@@ -1,35 +1,25 @@
 import { useEffect, useRef } from 'react'
 
-// ── World constants ────────────────────────────────────────────────────────
 export const GW = 600
 export const GH = 220
 const GROUND = 170
 
 const CAT_X = 72
-const CAT_W = 36
-const CAT_H = 44
-const CAT_FLOOR = GROUND - CAT_H // 126 — cat top at rest
+const CAT_W = 38
+const CAT_H = 46
+const CAT_FLOOR = GROUND - CAT_H
 
-// Cat physics — rise = 80px above rest, g=1.0
-// v0 = -sqrt(2·g·rise), air-time = 2·|v0|/g ≈ 25 frames
 const G = 1.0
-const JUMP_V = -Math.sqrt(2 * G * 85) // ≈ -12.65
+const JUMP_V = -Math.sqrt(2 * G * 85)
 
-// Runner dog sits at GROUND-46 (top y = 124)
-const RUNNER_TOP = GROUND - 46 // 124
+const RUNNER_TOP = GROUND - 48
 
-// Jumper dog is shorter (h≈28) so its top at ground = GROUND-28 = 142
-// It runs normally and jumps when it reaches TRIGGER_X from the cat.
-// Peak y = 80 on canvas (well above cat top=126), rise = 142-80 = 62
-// v0_jump = -sqrt(2·DOG_G·62) ≈ -10.85, tPeak ≈ 11.4 frames
-// At dogSpd≈7, trigger = CAT_X + 10 + 7*11.4 ≈ 162
-// Dog appears at GW+10, runs ~440px before trigger — clearly visible approach
 const DOG_G = G * 0.95
 const JUMP_PEAK_Y = 80
-const JUMPER_FLOOR = GROUND - 28 // 142
-const JUMPER_RISE = JUMPER_FLOOR - JUMP_PEAK_Y // 62
-const JUMPER_V0 = -Math.sqrt(2 * DOG_G * JUMPER_RISE) // -10.85
-const JUMPER_T_PEAK = -JUMPER_V0 / DOG_G // 11.4 frames
+const JUMPER_FLOOR = GROUND - 30
+const JUMPER_RISE = JUMPER_FLOOR - JUMP_PEAK_Y
+const JUMPER_V0 = -Math.sqrt(2 * DOG_G * JUMPER_RISE)
+const JUMPER_T_PEAK = -JUMPER_V0 / DOG_G
 
 type Kind = 'runner' | 'jumper'
 interface Dog {
@@ -89,7 +79,6 @@ function mkWorld(p?: Partial<World>): World {
 	}
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
 function rr(
 	ctx: CanvasRenderingContext2D,
 	x: number,
@@ -112,11 +101,10 @@ function rr(
 	ctx.closePath()
 }
 
-// ── Scene ──────────────────────────────────────────────────────────────────
 function drawSky(ctx: CanvasRenderingContext2D) {
 	const g = ctx.createLinearGradient(0, 0, 0, GROUND)
-	g.addColorStop(0, '#0c0c16')
-	g.addColorStop(1, '#181824')
+	g.addColorStop(0, '#0c0c1a')
+	g.addColorStop(1, '#16162a')
 	ctx.fillStyle = g
 	ctx.fillRect(0, 0, GW, GROUND)
 }
@@ -165,7 +153,6 @@ function drawHUD(ctx: CanvasRenderingContext2D, score: number, hi: number) {
 	ctx.fillText(String(score).padStart(5, '0'), GW - 8, 17)
 }
 
-// ── Cat ────────────────────────────────────────────────────────────────────
 function drawCat(
 	ctx: CanvasRenderingContext2D,
 	catY: number,
@@ -173,11 +160,13 @@ function drawCat(
 	dead: boolean,
 	idle: boolean,
 ) {
-	const x = CAT_X,
-		y = catY
-	const spd = idle ? 20 : 14,
-		ph = f % spd < spd / 2
+	const x = CAT_X
+	const y = catY
+	const spd = idle ? 20 : 14
+	const ph = f % spd < spd / 2
 	const wag = dead ? 0 : Math.sin(f * (idle ? 0.05 : 0.18)) * 10
+	const airborne = !idle && catY < CAT_FLOOR - 2
+
 	ctx.save()
 
 	// tail
@@ -185,83 +174,98 @@ function drawCat(
 	ctx.lineWidth = 4
 	ctx.lineCap = 'round'
 	ctx.beginPath()
-	ctx.moveTo(x + 2, y + 26)
-	ctx.quadraticCurveTo(x - 18, y + 36 + wag, x - 12, y + 18 + wag * 0.5)
+	ctx.moveTo(x + 3, y + 28)
+	ctx.quadraticCurveTo(x - 20, y + 38 + wag, x - 14, y + 20 + wag * 0.5)
 	ctx.stroke()
 	ctx.fillStyle = '#404040'
 	ctx.beginPath()
-	ctx.arc(x - 12, y + 18 + wag * 0.5, 4.5, 0, Math.PI * 2)
+	ctx.arc(x - 14, y + 20 + wag * 0.5, 4.5, 0, Math.PI * 2)
 	ctx.fill()
 
 	// body
-	ctx.fillStyle = '#242424'
-	rr(ctx, x, y + 16, CAT_W, 22, 8)
+	const bodyGrad = ctx.createLinearGradient(x, y + 16, x + CAT_W, y + 42)
+	bodyGrad.addColorStop(0, '#1a1a1a')
+	bodyGrad.addColorStop(0.5, '#262626')
+	bodyGrad.addColorStop(1, '#141414')
+	ctx.fillStyle = bodyGrad
+	rr(ctx, x + 1, y + 18, CAT_W - 2, 24, 9)
 	ctx.fill()
-	ctx.fillStyle = '#2c2c2c'
+	// belly highlight
+	ctx.fillStyle = 'rgba(80,80,80,0.25)'
 	ctx.beginPath()
-	ctx.ellipse(x + 14, y + 24, 9, 7, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 16, y + 27, 10, 7, 0, 0, Math.PI * 2)
 	ctx.fill()
 
 	// neck
-	ctx.fillStyle = '#242424'
-	ctx.fillRect(x + 18, y + 8, 14, 12)
+	ctx.fillStyle = '#1a1a1a'
+	ctx.fillRect(x + 20, y + 10, 13, 12)
 
 	// head
-	rr(ctx, x + 14, y, 22, 20, 7)
+	const headGrad = ctx.createLinearGradient(x + 14, y, x + 38, y + 22)
+	headGrad.addColorStop(0, '#2a2a2a')
+	headGrad.addColorStop(1, '#141414')
+	ctx.fillStyle = headGrad
+	rr(ctx, x + 14, y + 1, 24, 20, 8)
 	ctx.fill()
 
 	// ears
-	ctx.fillStyle = '#242424'
+	ctx.fillStyle = '#202020'
+	ctx.beginPath()
+	ctx.moveTo(x + 16, y + 3)
+	ctx.lineTo(x + 11, y - 12)
+	ctx.lineTo(x + 23, y + 2)
+	ctx.closePath()
+	ctx.fill()
+	ctx.fillStyle = '#5a1a1a'
 	ctx.beginPath()
 	ctx.moveTo(x + 16, y + 2)
-	ctx.lineTo(x + 12, y - 10)
-	ctx.lineTo(x + 22, y + 1)
-	ctx.closePath()
-	ctx.fill()
-	ctx.beginPath()
-	ctx.moveTo(x + 30, y + 2)
-	ctx.lineTo(x + 36, y - 10)
-	ctx.lineTo(x + 34, y + 1)
-	ctx.closePath()
-	ctx.fill()
-	ctx.fillStyle = '#4a1e1e'
-	ctx.beginPath()
-	ctx.moveTo(x + 17, y + 1)
-	ctx.lineTo(x + 14, y - 7)
+	ctx.lineTo(x + 13, y - 8)
 	ctx.lineTo(x + 21, y + 1)
 	ctx.closePath()
 	ctx.fill()
+
+	ctx.fillStyle = '#202020'
 	ctx.beginPath()
-	ctx.moveTo(x + 30, y + 1)
-	ctx.lineTo(x + 35, y - 7)
+	ctx.moveTo(x + 30, y + 3)
+	ctx.lineTo(x + 37, y - 12)
+	ctx.lineTo(x + 35, y + 2)
+	ctx.closePath()
+	ctx.fill()
+	ctx.fillStyle = '#5a1a1a'
+	ctx.beginPath()
+	ctx.moveTo(x + 30, y + 2)
+	ctx.lineTo(x + 35, y - 8)
 	ctx.lineTo(x + 33, y + 1)
 	ctx.closePath()
 	ctx.fill()
 
 	if (!dead) {
-		// eyes
+		// eyes — smaller, normal cat size
 		ctx.fillStyle = '#dde0ec'
 		ctx.beginPath()
-		ctx.ellipse(x + 22, y + 8, 4, 4.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 22, y + 9, 3.2, 3.6, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 31, y + 8, 4, 4.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 31, y + 9, 3.2, 3.6, 0, 0, Math.PI * 2)
 		ctx.fill()
+		// pupils (vertical slit)
 		ctx.fillStyle = '#0a0a10'
 		ctx.beginPath()
-		ctx.ellipse(x + 22, y + 8, 1.5, 3.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 22, y + 9, 1.2, 2.8, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 31, y + 8, 1.5, 3.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 31, y + 9, 1.2, 2.8, 0, 0, Math.PI * 2)
 		ctx.fill()
-		ctx.fillStyle = 'rgba(255,255,255,.8)'
+		// shine
+		ctx.fillStyle = 'rgba(255,255,255,0.8)'
 		ctx.beginPath()
-		ctx.arc(x + 23, y + 6, 1.1, 0, Math.PI * 2)
+		ctx.arc(x + 23, y + 7.5, 1, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.arc(x + 32, y + 6, 1.1, 0, Math.PI * 2)
+		ctx.arc(x + 32, y + 7.5, 1, 0, Math.PI * 2)
 		ctx.fill()
-		// nose+mouth
+
+		// nose
 		ctx.fillStyle = '#b84060'
 		ctx.beginPath()
 		ctx.moveTo(x + 26, y + 13)
@@ -269,6 +273,8 @@ function drawCat(
 		ctx.lineTo(x + 28, y + 11)
 		ctx.closePath()
 		ctx.fill()
+
+		// mouth
 		ctx.strokeStyle = '#903050'
 		ctx.lineWidth = 1.4
 		ctx.lineCap = 'round'
@@ -280,8 +286,9 @@ function drawCat(
 		ctx.moveTo(x + 26, y + 13)
 		ctx.quadraticCurveTo(x + 29, y + 16, x + 31, y + 15)
 		ctx.stroke()
+
 		// whiskers
-		ctx.strokeStyle = 'rgba(180,185,210,.5)'
+		ctx.strokeStyle = 'rgba(180,185,210,0.5)'
 		ctx.lineWidth = 1
 		ctx.beginPath()
 		ctx.moveTo(x + 21, y + 12)
@@ -299,144 +306,217 @@ function drawCat(
 		ctx.moveTo(x + 31, y + 14)
 		ctx.lineTo(x + 44, y + 16)
 		ctx.stroke()
-		// legs
+
 		ctx.fillStyle = '#1e1e1e'
-		const fA = ph ? 0.25 : -0.25,
-			bA = ph ? -0.2 : 0.2
-		ctx.beginPath()
-		ctx.ellipse(x + 28, y + 36 + (ph ? 2 : 0), 4.5, 8, fA, 0, Math.PI * 2)
-		ctx.fill()
-		ctx.beginPath()
-		ctx.ellipse(x + 20, y + 36 + (ph ? 0 : 2), 4.5, 8, -fA, 0, Math.PI * 2)
-		ctx.fill()
-		ctx.beginPath()
-		ctx.ellipse(x + 8, y + 35 + (ph ? 0 : 2), 4, 7, bA, 0, Math.PI * 2)
-		ctx.fill()
-		ctx.beginPath()
-		ctx.ellipse(x + 1, y + 35 + (ph ? 2 : 0), 3.5, 7, -bA, 0, Math.PI * 2)
-		ctx.fill()
+		if (airborne) {
+			ctx.beginPath()
+			ctx.ellipse(x + 28, y + 36, 4.5, 9, -0.4, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 18, y + 36, 4.5, 9, 0.4, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 8, y + 34, 4, 8, 0.5, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 1, y + 34, 3.5, 8, -0.5, 0, Math.PI * 2)
+			ctx.fill()
+		} else {
+			const fA = ph ? 0.28 : -0.28,
+				bA = ph ? -0.22 : 0.22
+			ctx.beginPath()
+			ctx.ellipse(x + 28, y + 36 + (ph ? 2 : 0), 4.5, 8, fA, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 20, y + 36 + (ph ? 0 : 2), 4.5, 8, -fA, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 8, y + 35 + (ph ? 0 : 2), 4, 7, bA, 0, Math.PI * 2)
+			ctx.fill()
+			ctx.beginPath()
+			ctx.ellipse(x + 1, y + 35 + (ph ? 2 : 0), 3.5, 7, -bA, 0, Math.PI * 2)
+			ctx.fill()
+		}
 		ctx.fillStyle = '#2e2e2e'
 		ctx.beginPath()
-		ctx.ellipse(x + 28, y + 44, 5.5, 3, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 28, y + 45, 5.5, 3, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 19, y + 44, 5.5, 3, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 19, y + 45, 5.5, 3, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 8, y + 42, 5, 3, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 8, y + 43, 5, 2.5, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 1, y + 42, 4.5, 3, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 1, y + 43, 4.5, 2.5, 0, 0, Math.PI * 2)
 		ctx.fill()
 	} else {
 		ctx.strokeStyle = '#cc3333'
 		ctx.lineWidth = 2.2
 		ctx.lineCap = 'round'
 		ctx.beginPath()
-		ctx.moveTo(x + 19, y + 4)
-		ctx.lineTo(x + 25, y + 12)
+		ctx.moveTo(x + 19, y + 5)
+		ctx.lineTo(x + 25, y + 13)
 		ctx.stroke()
 		ctx.beginPath()
-		ctx.moveTo(x + 25, y + 4)
-		ctx.lineTo(x + 19, y + 12)
+		ctx.moveTo(x + 25, y + 5)
+		ctx.lineTo(x + 19, y + 13)
 		ctx.stroke()
 		ctx.beginPath()
-		ctx.moveTo(x + 28, y + 4)
-		ctx.lineTo(x + 34, y + 12)
+		ctx.moveTo(x + 28, y + 5)
+		ctx.lineTo(x + 34, y + 13)
 		ctx.stroke()
 		ctx.beginPath()
-		ctx.moveTo(x + 34, y + 4)
-		ctx.lineTo(x + 28, y + 12)
+		ctx.moveTo(x + 34, y + 5)
+		ctx.lineTo(x + 28, y + 13)
 		ctx.stroke()
 		ctx.fillStyle = '#1e1e1e'
 		ctx.beginPath()
-		ctx.ellipse(x + 24, y + 42, 7, 3.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 24, y + 44, 7, 3.5, 0, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 8, y + 42, 7, 3.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x + 8, y + 44, 7, 3.5, 0, 0, Math.PI * 2)
 		ctx.fill()
 	}
+
 	ctx.restore()
 }
 
-// ── Runner dog ─────────────────────────────────────────────────────────────
 function drawRunner(ctx: CanvasRenderingContext2D, d: Dog) {
-	const x = d.x,
-		y = RUNNER_TOP,
-		ph = d.f % 12 < 6
+	const x = d.x
+	const y = RUNNER_TOP
+	const ph = d.f % 12 < 6
+
 	ctx.save()
+
 	const tw = Math.sin(d.f * 0.3) * 12
-	ctx.strokeStyle = '#7a5010'
-	ctx.lineWidth = 4
+	ctx.strokeStyle = '#92400e'
+	ctx.lineWidth = 5
 	ctx.lineCap = 'round'
 	ctx.beginPath()
 	ctx.moveTo(x + 38, y + 18)
-	ctx.quadraticCurveTo(x + 52, y + 8 + tw, x + 48, y - 6 + tw * 0.5)
+	ctx.quadraticCurveTo(x + 54, y + 8 + tw, x + 50, y - 6 + tw * 0.5)
 	ctx.stroke()
-	ctx.fillStyle = '#9a6818'
+	const tg = ctx.createRadialGradient(
+		x + 50,
+		y - 6 + tw * 0.5,
+		1,
+		x + 50,
+		y - 6 + tw * 0.5,
+		5,
+	)
+	tg.addColorStop(0, '#fde68a')
+	tg.addColorStop(1, '#d97706')
+	ctx.fillStyle = tg
 	ctx.beginPath()
-	ctx.arc(x + 48, y - 6 + tw * 0.5, 4, 0, Math.PI * 2)
+	ctx.arc(x + 50, y - 6 + tw * 0.5, 5, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = '#b07a18'
-	rr(ctx, x + 4, y + 14, 34, 20, 8)
+
+	const bodyGrad = ctx.createLinearGradient(x + 4, y + 14, x + 38, y + 36)
+	bodyGrad.addColorStop(0, '#b45309')
+	bodyGrad.addColorStop(0.5, '#d97706')
+	bodyGrad.addColorStop(1, '#92400e')
+	ctx.fillStyle = bodyGrad
+	rr(ctx, x + 4, y + 14, 34, 22, 9)
 	ctx.fill()
-	ctx.fillStyle = '#cca040'
+	const bellyGrad = ctx.createRadialGradient(
+		x + 18,
+		y + 25,
+		2,
+		x + 18,
+		y + 25,
+		13,
+	)
+	bellyGrad.addColorStop(0, 'rgba(253,230,138,0.5)')
+	bellyGrad.addColorStop(1, 'rgba(253,230,138,0)')
+	ctx.fillStyle = bellyGrad
 	ctx.beginPath()
-	ctx.ellipse(x + 18, y + 22, 12, 7, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 18, y + 25, 13, 8, 0, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = '#b07a18'
-	ctx.fillRect(x + 4, y + 6, 12, 12)
-	rr(ctx, x - 8, y, 22, 18, 7)
+
+	ctx.fillStyle = '#b45309'
+	ctx.fillRect(x + 4, y + 6, 13, 13)
+
+	const headGrad = ctx.createLinearGradient(x - 8, y, x + 14, y + 20)
+	headGrad.addColorStop(0, '#d97706')
+	headGrad.addColorStop(1, '#92400e')
+	ctx.fillStyle = headGrad
+	rr(ctx, x - 8, y, 22, 20, 7)
 	ctx.fill()
-	ctx.fillStyle = '#cca040'
-	rr(ctx, x - 14, y + 7, 14, 10, 4)
+
+	ctx.fillStyle = '#fde68a'
+	rr(ctx, x - 16, y + 8, 14, 11, 4)
 	ctx.fill()
 	ctx.fillStyle = '#1a0808'
 	ctx.beginPath()
-	ctx.ellipse(x - 15, y + 10, 3.5, 2.5, 0, 0, Math.PI * 2)
+	ctx.ellipse(x - 14, y + 11, 3.5, 2.5, 0, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = 'rgba(255,255,255,.35)'
+	ctx.fillStyle = 'rgba(255,255,255,0.4)'
 	ctx.beginPath()
-	ctx.arc(x - 16, y + 9, 1, 0, Math.PI * 2)
+	ctx.arc(x - 15, y + 10, 1.2, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = '#7a5010'
+
+	ctx.fillStyle = '#92400e'
 	ctx.beginPath()
 	ctx.moveTo(x - 4, y + 2)
-	ctx.quadraticCurveTo(x - 14, y + 8, x - 10, y + 20)
-	ctx.quadraticCurveTo(x - 4, y + 22, x + 2, y + 16)
+	ctx.quadraticCurveTo(x - 16, y + 8, x - 12, y + 22)
+	ctx.quadraticCurveTo(x - 6, y + 24, x + 2, y + 18)
 	ctx.quadraticCurveTo(x + 2, y + 6, x - 4, y + 2)
 	ctx.fill()
-	ctx.fillStyle = '#120808'
+	ctx.fillStyle = 'rgba(251,191,36,0.3)'
 	ctx.beginPath()
-	ctx.arc(x - 2, y + 8, 3.5, 0, Math.PI * 2)
+	ctx.moveTo(x - 4, y + 4)
+	ctx.quadraticCurveTo(x - 12, y + 9, x - 9, y + 19)
+	ctx.quadraticCurveTo(x - 5, y + 20, x + 1, y + 15)
+	ctx.quadraticCurveTo(x, y + 7, x - 4, y + 4)
 	ctx.fill()
-	ctx.fillStyle = 'rgba(255,255,255,.65)'
+
+	ctx.fillStyle = '#1a0808'
+	ctx.beginPath()
+	ctx.arc(x - 2, y + 8, 4, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.fillStyle = '#7c3500'
+	ctx.beginPath()
+	ctx.arc(x - 2, y + 8, 2.8, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.fillStyle = '#1a0808'
+	ctx.beginPath()
+	ctx.arc(x - 2, y + 8, 1.8, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.fillStyle = 'rgba(255,255,255,0.8)'
 	ctx.beginPath()
 	ctx.arc(x - 3, y + 7, 1.2, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.strokeStyle = '#4a2808'
-	ctx.lineWidth = 2
+
+	ctx.strokeStyle = '#dc2626'
+	ctx.lineWidth = 3
 	ctx.lineCap = 'round'
 	ctx.beginPath()
-	ctx.moveTo(x - 6, y + 3)
-	ctx.lineTo(x + 2, y + 5)
+	ctx.moveTo(x - 2, y + 3)
+	ctx.lineTo(x + 8, y + 5)
 	ctx.stroke()
-	ctx.fillStyle = '#120808'
+	ctx.fillStyle = '#fbbf24'
+	ctx.beginPath()
+	ctx.arc(x + 3, y + 6, 2.5, 0, Math.PI * 2)
+	ctx.fill()
+
+	ctx.strokeStyle = '#7c3500'
+	ctx.lineWidth = 1.5
+	ctx.lineCap = 'round'
 	ctx.beginPath()
 	ctx.moveTo(x - 6, y + 16)
-	ctx.quadraticCurveTo(x - 12, y + 22, x - 8, y + 24)
-	ctx.quadraticCurveTo(x - 4, y + 26, x, y + 22)
-	ctx.lineTo(x - 2, y + 16)
-	ctx.closePath()
-	ctx.fill()
-	ctx.fillStyle = '#d04060'
+	ctx.quadraticCurveTo(x - 10, y + 21, x - 6, y + 22)
+	ctx.quadraticCurveTo(x - 2, y + 23, x, y + 18)
+	ctx.stroke()
+	ctx.fillStyle = '#f87171'
 	ctx.beginPath()
-	ctx.moveTo(x - 10, y + 21)
-	ctx.quadraticCurveTo(x - 11, y + 29, x - 7, y + 30)
-	ctx.quadraticCurveTo(x - 3, y + 31, x - 2, y + 26)
-	ctx.quadraticCurveTo(x - 6, y + 24, x - 10, y + 21)
+	ctx.moveTo(x - 10, y + 22)
+	ctx.quadraticCurveTo(x - 11, y + 30, x - 7, y + 31)
+	ctx.quadraticCurveTo(x - 3, y + 32, x - 2, y + 27)
+	ctx.quadraticCurveTo(x - 6, y + 25, x - 10, y + 22)
 	ctx.fill()
-	ctx.fillStyle = '#9a6818'
+
+	ctx.fillStyle = '#b45309'
 	ctx.beginPath()
 	ctx.ellipse(
 		x + 6,
@@ -481,26 +561,26 @@ function drawRunner(ctx: CanvasRenderingContext2D, d: Dog) {
 		Math.PI * 2,
 	)
 	ctx.fill()
-	ctx.fillStyle = '#cca040'
+	ctx.fillStyle = '#d97706'
 	ctx.beginPath()
-	ctx.ellipse(x + 6, y + 40, 5.5, 3, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 6, y + 41, 5.5, 3, 0, 0, Math.PI * 2)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 14, y + 40, 5.5, 3, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 14, y + 41, 5.5, 3, 0, 0, Math.PI * 2)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 24, y + 38, 5, 3, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 24, y + 39, 5, 2.8, 0, 0, Math.PI * 2)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 32, y + 38, 5, 3, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 32, y + 39, 5, 2.8, 0, 0, Math.PI * 2)
 	ctx.fill()
+
 	ctx.restore()
 }
 
-// ── Jumper dog ─────────────────────────────────────────────────────────────
 function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
-	const x = d.x,
-		y = d.y
+	const x = d.x
+	const y = d.y
 	const airborne = d.jumped && d.y < JUMPER_FLOOR - 2
 	const tilt = airborne ? Math.atan2(d.vy, -d.spd) * 0.45 : 0
 
@@ -509,130 +589,166 @@ function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
 	ctx.rotate(tilt)
 	ctx.translate(-(x + 18), -(y + 14))
 
-	// tail
+	// ── tail ──
 	const tw = Math.sin(d.f * 0.28) * 10
-	ctx.strokeStyle = '#909090'
+	ctx.strokeStyle = '#6b7280'
 	ctx.lineWidth = 4
 	ctx.lineCap = 'round'
 	ctx.beginPath()
 	ctx.moveTo(x + 32, y + 12)
-	ctx.quadraticCurveTo(x + 44, y + 2 + tw, x + 40, y - 8 + tw * 0.5)
+	ctx.quadraticCurveTo(x + 46, y + 2 + tw, x + 42, y - 8 + tw * 0.5)
 	ctx.stroke()
-	ctx.fillStyle = '#b0b0b0'
+	const ttg = ctx.createRadialGradient(
+		x + 42,
+		y - 8 + tw * 0.5,
+		1,
+		x + 42,
+		y - 8 + tw * 0.5,
+		5,
+	)
+	ttg.addColorStop(0, '#e5e7eb')
+	ttg.addColorStop(1, '#9ca3af')
+	ctx.fillStyle = ttg
 	ctx.beginPath()
-	ctx.arc(x + 40, y - 8 + tw * 0.5, 4, 0, Math.PI * 2)
+	ctx.arc(x + 42, y - 8 + tw * 0.5, 5, 0, Math.PI * 2)
 	ctx.fill()
 
-	// body
-	ctx.fillStyle = '#d0d0d0'
-	rr(ctx, x + 2, y + 8, 28, 14, 7)
+	const bodyGrad = ctx.createLinearGradient(x + 2, y + 8, x + 30, y + 24)
+	bodyGrad.addColorStop(0, '#d1d5db')
+	bodyGrad.addColorStop(0.5, '#e5e7eb')
+	bodyGrad.addColorStop(1, '#9ca3af')
+	ctx.fillStyle = bodyGrad
+	rr(ctx, x + 2, y + 8, 28, 16, 7)
 	ctx.fill()
-	ctx.fillStyle = '#ececec'
+	const bGrad = ctx.createRadialGradient(x + 14, y + 15, 2, x + 14, y + 15, 10)
+	bGrad.addColorStop(0, 'rgba(255,255,255,0.45)')
+	bGrad.addColorStop(1, 'rgba(255,255,255,0)')
+	ctx.fillStyle = bGrad
 	ctx.beginPath()
-	ctx.ellipse(x + 14, y + 14, 9, 5, 0, 0, Math.PI * 2)
+	ctx.ellipse(x + 14, y + 15, 10, 6, 0, 0, Math.PI * 2)
 	ctx.fill()
 
-	// neck+head
-	ctx.fillStyle = '#d0d0d0'
+	ctx.fillStyle = '#d1d5db'
 	ctx.fillRect(x, y + 2, 10, 10)
-	rr(ctx, x - 14, y - 2, 18, 16, 6)
+	const headGrad = ctx.createLinearGradient(x - 14, y - 2, x + 4, y + 14)
+	headGrad.addColorStop(0, '#e5e7eb')
+	headGrad.addColorStop(1, '#9ca3af')
+	ctx.fillStyle = headGrad
+	rr(ctx, x - 14, y - 2, 18, 17, 6)
 	ctx.fill()
 
-	// snout
-	ctx.fillStyle = '#ececec'
-	rr(ctx, x - 20, y + 6, 10, 8, 3)
+	ctx.fillStyle = '#f3f4f6'
+	rr(ctx, x - 21, y + 5, 11, 9, 3)
 	ctx.fill()
-	ctx.fillStyle = '#1a1a1a'
+	ctx.fillStyle = '#374151'
 	ctx.beginPath()
-	ctx.ellipse(x - 21, y + 8, 3, 2, 0, 0, Math.PI * 2)
+	ctx.ellipse(x - 20, y + 8, 3.2, 2.2, 0, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = 'rgba(255,255,255,.4)'
+	ctx.fillStyle = 'rgba(255,255,255,0.5)'
 	ctx.beginPath()
-	ctx.arc(x - 22, y + 7, 1, 0, Math.PI * 2)
+	ctx.arc(x - 21, y + 7, 1.1, 0, Math.PI * 2)
 	ctx.fill()
 
-	// ears — perked up when airborne, flat when running
 	if (airborne) {
-		ctx.fillStyle = '#b0b0b0'
+		ctx.fillStyle = '#9ca3af'
 		ctx.beginPath()
 		ctx.moveTo(x - 10, y + 0)
-		ctx.lineTo(x - 15, y - 12)
+		ctx.lineTo(x - 16, y - 14)
 		ctx.lineTo(x - 2, y - 1)
 		ctx.closePath()
 		ctx.fill()
 		ctx.beginPath()
 		ctx.moveTo(x + 2, y - 1)
-		ctx.lineTo(x + 5, y - 12)
+		ctx.lineTo(x + 6, y - 14)
 		ctx.lineTo(x + 10, y + 0)
 		ctx.closePath()
 		ctx.fill()
-		ctx.fillStyle = '#d8a0a0'
+		ctx.fillStyle = '#fca5a5'
 		ctx.beginPath()
 		ctx.moveTo(x - 10, y + 0)
-		ctx.lineTo(x - 13, y - 8)
+		ctx.lineTo(x - 14, y - 9)
 		ctx.lineTo(x - 3, y - 1)
 		ctx.closePath()
 		ctx.fill()
 		ctx.beginPath()
 		ctx.moveTo(x + 2, y - 1)
-		ctx.lineTo(x + 5, y - 8)
+		ctx.lineTo(x + 5, y - 9)
 		ctx.lineTo(x + 9, y + 0)
 		ctx.closePath()
 		ctx.fill()
 	} else {
-		// floppy ears while running
-		ctx.fillStyle = '#aaaaaa'
+		ctx.fillStyle = '#9ca3af'
 		ctx.beginPath()
 		ctx.moveTo(x - 6, y + 0)
-		ctx.quadraticCurveTo(x - 14, y + 6, x - 10, y + 16)
-		ctx.quadraticCurveTo(x - 5, y + 18, x - 1, y + 12)
-		ctx.quadraticCurveTo(x - 2, y + 4, x - 6, y + 0)
+		ctx.quadraticCurveTo(x - 15, y + 7, x - 11, y + 17)
+		ctx.quadraticCurveTo(x - 6, y + 19, x - 1, y + 13)
+		ctx.quadraticCurveTo(x - 2, y + 5, x - 6, y + 0)
+		ctx.fill()
+		ctx.fillStyle = 'rgba(252,165,165,0.5)'
+		ctx.beginPath()
+		ctx.moveTo(x - 6, y + 2)
+		ctx.quadraticCurveTo(x - 12, y + 8, x - 9, y + 14)
+		ctx.quadraticCurveTo(x - 6, y + 15, x - 2, y + 11)
+		ctx.quadraticCurveTo(x - 2, y + 6, x - 6, y + 2)
 		ctx.fill()
 	}
 
-	// eye
-	ctx.fillStyle = '#141414'
+	ctx.strokeStyle = '#7c3aed'
+	ctx.lineWidth = 3
+	ctx.lineCap = 'round'
+	ctx.beginPath()
+	ctx.moveTo(x - 2, y + 2)
+	ctx.lineTo(x + 8, y + 4)
+	ctx.stroke()
+	ctx.fillStyle = '#a78bfa'
+	ctx.beginPath()
+	ctx.arc(x + 3, y + 5, 2.2, 0, Math.PI * 2)
+	ctx.fill()
+
+	ctx.fillStyle = '#111827'
 	ctx.beginPath()
 	ctx.arc(x - 8, y + 6, 4, 0, Math.PI * 2)
 	ctx.fill()
-	ctx.fillStyle = '#ffffff'
+	ctx.fillStyle = '#1d4ed8'
 	ctx.beginPath()
-	ctx.arc(x - 9, y + 5, 1.6, 0, Math.PI * 2)
+	ctx.arc(x - 8, y + 6, 2.8, 0, Math.PI * 2)
 	ctx.fill()
-	// excited ring when airborne
+	ctx.fillStyle = '#111827'
+	ctx.beginPath()
+	ctx.arc(x - 8, y + 6, 1.6, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.fillStyle = 'rgba(255,255,255,0.9)'
+	ctx.beginPath()
+	ctx.arc(x - 9, y + 5, 1.2, 0, Math.PI * 2)
+	ctx.fill()
 	if (airborne) {
-		ctx.strokeStyle = '#aaa'
-		ctx.lineWidth = 0.8
+		ctx.strokeStyle = 'rgba(167,139,250,0.7)'
+		ctx.lineWidth = 1
 		ctx.beginPath()
 		ctx.arc(x - 8, y + 6, 5.5, 0, Math.PI * 2)
 		ctx.stroke()
 	}
-
-	// mouth
-	ctx.fillStyle = '#141414'
 	if (airborne) {
+		ctx.fillStyle = '#111827'
 		ctx.beginPath()
-		ctx.arc(x - 14, y + 13, 4, 0, Math.PI)
+		ctx.arc(x - 15, y + 13, 4, 0, Math.PI)
 		ctx.fill()
-		ctx.fillStyle = '#d04060'
+		ctx.fillStyle = '#ef4444'
 		ctx.beginPath()
-		ctx.ellipse(x - 14, y + 15, 2.5, 3.5, 0, 0, Math.PI * 2)
+		ctx.ellipse(x - 15, y + 15, 2.5, 3.5, 0, 0, Math.PI * 2)
 		ctx.fill()
 	} else {
-		// closed mouth running
-		ctx.strokeStyle = '#888'
+		ctx.strokeStyle = '#6b7280'
 		ctx.lineWidth = 1.5
 		ctx.lineCap = 'round'
 		ctx.beginPath()
-		ctx.moveTo(x - 18, y + 11)
-		ctx.quadraticCurveTo(x - 14, y + 14, x - 10, y + 11)
+		ctx.moveTo(x - 19, y + 11)
+		ctx.quadraticCurveTo(x - 15, y + 14, x - 11, y + 11)
 		ctx.stroke()
 	}
 
-	// legs
-	ctx.fillStyle = '#b8b8b8'
+	ctx.fillStyle = '#c4c4c4'
 	if (airborne) {
-		// splayed in leap
 		ctx.beginPath()
 		ctx.ellipse(x + 2, y + 22, 3.5, 8, -0.5, 0, Math.PI * 2)
 		ctx.fill()
@@ -692,10 +808,24 @@ function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
 		)
 		ctx.fill()
 	}
+
+	ctx.fillStyle = '#e5e7eb'
+	ctx.beginPath()
+	ctx.ellipse(x + 2, y + 28, 4.5, 2.5, 0, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.beginPath()
+	ctx.ellipse(x + 8, y + 27, 4.5, 2.5, 0, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.beginPath()
+	ctx.ellipse(x + 18, y + 25, 4, 2.2, 0, 0, Math.PI * 2)
+	ctx.fill()
+	ctx.beginPath()
+	ctx.ellipse(x + 24, y + 25, 4, 2.2, 0, 0, Math.PI * 2)
+	ctx.fill()
+
 	ctx.restore()
 }
 
-// ── Hook ──────────────────────────────────────────────────────────────────
 export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 	const world = useRef<World>(mkWorld())
 	const tap = useRef(false)
@@ -743,7 +873,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 			drawSky(ctx)
 			drawStars(ctx, w.stars, w.frame)
 
-			// consume tap immediately
 			if (tap.current) {
 				tap.current = false
 				if (w.grounded) {
@@ -760,11 +889,10 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 			drawGround(ctx, w.frame)
 			w.frame++
 
-			// idle screen
 			if (!w.on) {
 				drawCat(ctx, CAT_FLOOR, w.frame, false, true)
 				drawHUD(ctx, 0, w.hi)
-				ctx.fillStyle = 'rgba(130,150,200,.38)'
+				ctx.fillStyle = 'rgba(167,139,250,.5)'
 				ctx.font = '12px monospace'
 				ctx.textAlign = 'center'
 				ctx.fillText('тапни чтобы начать', GW / 2, GH - 8)
@@ -773,7 +901,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 			}
 
 			if (!w.dead) {
-				// ── cat physics ──
 				w.catVY += G
 				w.catY += w.catVY
 				if (w.catY >= CAT_FLOOR) {
@@ -786,7 +913,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 					w.catVY = 0
 				}
 
-				// speed ramp
 				w.spd = 5.2 + Math.floor(w.score / 350) * 0.35
 
 				// ── spawn ──
@@ -794,12 +920,7 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 				if (w.nextDog <= 0) {
 					const isJumper = Math.random() < 0.32
 					if (isJumper) {
-						// Dog runs in from right at normal speed.
-						// When it reaches triggerX it jumps automatically.
-						// triggerX = CAT_X + 10 + spd * JUMPER_T_PEAK
-						// so peak of arc coincides with cat position.
 						const dogSpd = w.spd + 2.5
-						const triggerX = CAT_X + 10 + dogSpd * JUMPER_T_PEAK
 						w.dogs.push({
 							x: GW + 10,
 							y: JUMPER_FLOOR,
@@ -809,11 +930,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 							kind: 'jumper',
 							jumped: false,
 						})
-						// Store triggerX in spd field... instead use a separate approach:
-						// We'll detect trigger inside the update loop by checking x <= triggerX
-						// Tag it as a jumper with jumped=false, and jump when x crosses triggerX
-						// We need to store triggerX. Use a trick: encode in the y field temporarily? No.
-						// Better: just compute triggerX fresh each frame from spd.
 					} else {
 						w.dogs.push({
 							x: GW + 10,
@@ -828,7 +944,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 					w.nextDog = 72 + Math.floor(Math.random() * 100)
 				}
 
-				// ── update dogs ──
 				w.dogs = w.dogs
 					.map(d => {
 						const newX = d.x - d.spd
@@ -838,9 +953,7 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 							return { ...d, x: newX, f: newF }
 						}
 
-						// jumper: check trigger
 						let { y, vy, jumped } = d
-						// trigger: start jump when dog reaches the right x so peak is at cat
 						const triggerX = CAT_X + 10 + d.spd * JUMPER_T_PEAK
 						if (!jumped && newX <= triggerX) {
 							jumped = true
@@ -860,19 +973,25 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 					})
 					.filter(d => d.x + 60 > 0)
 
-				// ── collision AABB (5px inset) ──
-				const cL = CAT_X + 5,
-					cR = CAT_X + CAT_W - 5
-				const cT = w.catY + 4,
-					cB = w.catY + CAT_H - 4
+				const cL = CAT_X + 8
+				const cR = CAT_X + CAT_W - 6
+				const cT = w.catY + 8
+				const cB = w.catY + CAT_H - 6
 
 				for (const d of w.dogs) {
-					const dW = d.kind === 'runner' ? 42 : 30
-					const dH = d.kind === 'runner' ? 46 : 26
-					const dL = d.x + 4,
-						dR = d.x + dW
-					const dT = d.y + 4,
-						dB = d.y + dH
+					let dL: number, dR: number, dT: number, dB: number
+					if (d.kind === 'runner') {
+						dL = d.x + 5
+						dR = d.x + 34
+						dT = RUNNER_TOP + 8
+						dB = RUNNER_TOP + 36
+					} else {
+						// body rr(x+2, y+8, 28, 16) → spans x+2..x+30, y+8..y+24
+						dL = d.x + 3
+						dR = d.x + 29
+						dT = d.y + 8
+						dB = d.y + 23
+					}
 					if (dR > cL && dL < cR && dB > cT && dT < cB) {
 						w.dead = true
 						w.hi = Math.max(w.hi, w.score)
@@ -882,7 +1001,6 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 				w.score++
 			}
 
-			// draw
 			for (const d of w.dogs)
 				d.kind === 'runner' ? drawRunner(ctx, d) : drawJumper(ctx, d)
 			drawCat(ctx, w.catY, w.frame, w.dead, false)
@@ -893,7 +1011,7 @@ export function useCatGame(canvasRef: React.RefObject<HTMLCanvasElement>) {
 				ctx.font = 'bold 15px monospace'
 				ctx.textAlign = 'center'
 				ctx.fillText('GAME OVER', GW / 2, GH / 2 - 6)
-				ctx.fillStyle = 'rgba(130,150,200,.5)'
+				ctx.fillStyle = 'rgba(167,139,250,.6)'
 				ctx.font = '11px monospace'
 				ctx.fillText('тапни — играть снова', GW / 2, GH / 2 + 12)
 			}
