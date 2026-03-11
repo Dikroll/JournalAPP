@@ -10,15 +10,4 @@ export default defineConfig({
 			'@': path.resolve(__dirname, 'src'),
 		},
 	},
-	server: {
-		host: true,
-		port: 5173,
-		proxy: {
-			'^/(auth|user|schedule|dashboard|homework|news|reviews|payment|feedback|market|library|progress|health|api)':
-				{
-					target: 'http://backend:8000',
-					changeOrigin: true,
-				},
-		},
-	},
 })
