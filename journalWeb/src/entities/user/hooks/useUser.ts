@@ -7,10 +7,24 @@ export function useUser() {
 
 	useEffect(() => {
 		if (user) return
+
+		let cancelled = false
+
 		userApi
 			.getMe()
-			.then(setUser)
-			.catch(() => {})
+			.then(data => {
+				if (!cancelled) setUser(data)
+			})
+			.catch(err => {
+				const status = err?.response?.status
+				if (status && status !== 401) {
+					console.warn('[useUser] failed to fetch user:', status)
+				}
+			})
+
+		return () => {
+			cancelled = true
+		}
 	}, [])
 
 	return user

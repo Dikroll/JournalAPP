@@ -1,4 +1,5 @@
 import type { ProfileDetails } from '@/entities/profile'
+import { getCachedImageUrl } from '@/shared/lib'
 
 interface Props {
 	details: ProfileDetails
@@ -11,14 +12,16 @@ export function ProfileAvatar({ details }: Props) {
 		.join('')
 		.slice(0, 2)
 
+	const photoUrl = getCachedImageUrl(details.photo_url)
+
 	return (
 		<div
 			className='bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/8 p-5 flex items-center gap-4'
 			style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.25)' }}
 		>
-			{details.photo_url ? (
+			{photoUrl ? (
 				<img
-					src={details.photo_url}
+					src={photoUrl}
 					alt={details.full_name}
 					width={64}
 					height={64}

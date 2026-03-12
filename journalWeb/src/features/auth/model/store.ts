@@ -4,8 +4,10 @@ import { persist } from 'zustand/middleware'
 interface AuthState {
 	token: string | null
 	isAuthenticated: boolean
+	_hasHydrated: boolean
 	setToken: (token: string) => void
 	logout: () => void
+	setHasHydrated: (val: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -13,9 +15,32 @@ export const useAuthStore = create<AuthState>()(
 		set => ({
 			token: null,
 			isAuthenticated: false,
+			_hasHydrated: false,
 			setToken: token => set({ token, isAuthenticated: true }),
 			logout: () => set({ token: null, isAuthenticated: false }),
+			setHasHydrated: val => set({ _hasHydrated: val }),
 		}),
-		{ name: 'auth-store' },
+		{
+			name: 'auth-store',
+			// _hasHydrated — только runtime, не пишем в localStorage
+			partialize: state => ({
+				token: state.token,
+				isAuthenticated: state.isAuthenticated,
+			}),
+		},
 	),
 )
+
+// Подписываемся снаружи — стор уже точно создан
+useAuthStore.persist.onFinishHydration(state => {
+	useAuthStore.setState({
+		_hasHydrated: true,
+		isAuthenticated: !!state.token,
+	})
+})
+
+// На случай если гидрация уже произошла синхронно (SSR / fast hydrate)
+if (useAuthStore.persist.hasHydrated()) {
+	const { token } = useAuthStore.getState()
+	useAuthStore.setState({ _hasHydrated: true, isAuthenticated: !!token })
+}

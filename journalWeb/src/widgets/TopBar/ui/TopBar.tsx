@@ -1,5 +1,6 @@
 import { useUserStore } from '@/entities/user'
 import { pageConfig } from '@/shared/config'
+import { getCachedImageUrl } from '@/shared/lib'
 import { memo, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -20,15 +21,15 @@ function useStoreHydrated() {
 export const TopBar = memo(function TopBar() {
 	const fullName = useUserStore(s => s.user?.full_name)
 	const groupName = useUserStore(s => s.user?.group.name)
-	const photoUrl = useUserStore(s => s.user?.photo_url)
+	const photoUrl = getCachedImageUrl(useUserStore(s => s.user?.photo_url))
 	const hydrated = useStoreHydrated()
 
 	if (!fullName) return null
 
 	return (
-		<div className='px-4 pt-4 pb-2'>
+		<div className='px-4 pt-3 pb-2'>
 			<div
-				className='bg-white/5 backdrop-blur-xl rounded-[24px] px-5 py-4 border border-white/10'
+				className='bg-white/5 backdrop-blur-xl rounded-[24px] px-5 py-5 border border-white/10'
 				style={{ boxShadow: '0 4px 24px 0 rgba(0, 0, 0, 0.3)' }}
 			>
 				<div className='flex items-center justify-between'>

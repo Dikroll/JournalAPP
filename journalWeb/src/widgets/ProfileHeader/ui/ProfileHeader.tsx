@@ -1,5 +1,6 @@
 import type { UserInfo } from '@/entities/user'
 import { pageConfig } from '@/shared/config'
+import { getCachedImageUrl } from '@/shared/lib'
 import { Coins, Diamond, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
@@ -33,9 +34,9 @@ export const ProfileHeader = memo(
 
 					<div className='relative flex items-center gap-4 mb-5'>
 						<div className='shrink-0'>
-							{user.photo_url ? (
+							{getCachedImageUrl(user.photo_url) ? (
 								<img
-									src={user.photo_url}
+									src={getCachedImageUrl(user.photo_url)!}
 									alt={user.full_name}
 									width={64}
 									height={64}

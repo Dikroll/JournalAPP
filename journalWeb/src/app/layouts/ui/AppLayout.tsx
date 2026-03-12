@@ -11,7 +11,11 @@ export function AppLayout() {
 	return (
 		<div
 			className='min-h-screen text-[#F2F2F2] relative'
-			style={{ backgroundColor: '#1F2024', paddingBottom: '120px' }}
+			style={{
+				backgroundColor: '#1F2024',
+				paddingBottom: 'calc(120px + env(safe-area-inset-bottom))',
+				paddingTop: '8px',
+			}}
 		>
 			<div className='fixed inset-0 pointer-events-none overflow-hidden'>
 				<div

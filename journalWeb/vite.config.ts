@@ -10,4 +10,19 @@ export default defineConfig({
 			'@': path.resolve(__dirname, 'src'),
 		},
 	},
+	server: {
+		proxy: {
+			'/api': {
+				target: 'https://msapi-top-journal.ru',
+				changeOrigin: true,
+				rewrite: path => path.replace(/^\/api/, ''),
+			},
+			// Файлы тоже проксируем — бэкенд отдаёт localhost:8000/files/...
+			// fixUrl заменяет хост на localhost:5173, Vite проксирует дальше
+			'/files': {
+				target: 'https://msapi-top-journal.ru',
+				changeOrigin: true,
+			},
+		},
+	},
 })
