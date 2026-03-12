@@ -1,12 +1,7 @@
 const preloaded = new Set<string>()
 
-// Всегда реальный домен API — даже в dev где API_BASE_URL = '/api'
 const API_ORIGIN = 'https://msapi-top-journal.ru'
 
-/**
- * Бэкенд возвращает photo_url с localhost:8000 вместо реального хоста.
- * Заменяем на реальный API домен напрямую — без proxy.
- */
 export function fixUrl(url: string | null | undefined): string | null {
 	if (!url) return null
 
@@ -19,9 +14,7 @@ export function fixUrl(url: string | null | undefined): string | null {
 			parsed.port = ''
 			return parsed.toString()
 		}
-	} catch {
-		// не валидный URL — вернём как есть
-	}
+	} catch {}
 
 	return url
 }

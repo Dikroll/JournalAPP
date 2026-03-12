@@ -22,7 +22,6 @@ export const useAuthStore = create<AuthState>()(
 		}),
 		{
 			name: 'auth-store',
-			// _hasHydrated — только runtime, не пишем в localStorage
 			partialize: state => ({
 				token: state.token,
 				isAuthenticated: state.isAuthenticated,
@@ -31,7 +30,6 @@ export const useAuthStore = create<AuthState>()(
 	),
 )
 
-// Подписываемся снаружи — стор уже точно создан
 useAuthStore.persist.onFinishHydration(state => {
 	useAuthStore.setState({
 		_hasHydrated: true,
@@ -39,7 +37,6 @@ useAuthStore.persist.onFinishHydration(state => {
 	})
 })
 
-// На случай если гидрация уже произошла синхронно (SSR / fast hydrate)
 if (useAuthStore.persist.hasHydrated()) {
 	const { token } = useAuthStore.getState()
 	useAuthStore.setState({ _hasHydrated: true, isAuthenticated: !!token })

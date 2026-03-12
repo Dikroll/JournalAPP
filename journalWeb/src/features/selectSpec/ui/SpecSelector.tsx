@@ -62,9 +62,7 @@ export function SpecSelector({
 
 	return (
 		<div ref={ref} className='relative'>
-			{/* Фиксированная высота h-12 — не меняется при открытии */}
 			<div className='w-full flex items-center h-12 bg-white/5 border border-white/10 rounded-2xl text-sm hover:bg-white/8 overflow-hidden'>
-				{/* Левая зона — поиск */}
 				<div
 					className='flex items-center gap-2 min-w-0 px-4 h-full cursor-pointer'
 					style={{ flex: '1 1 0' }}
@@ -93,7 +91,6 @@ export function SpecSelector({
 					)}
 				</div>
 
-				{/* Правая зона — закрытие, широкая */}
 				<div
 					className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-white/5 text-[#6B7280] hover:text-[#F2F2F2] transition-colors flex-shrink-0'
 					style={{ minWidth: '80px' }}
