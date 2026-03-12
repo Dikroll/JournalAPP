@@ -1,5 +1,6 @@
 import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { STATUS_CONFIG } from '@/entities/homework'
+import { GraduationCap } from 'lucide-react'
 
 interface Props {
 	hw: HomeworkItemWithStatus
@@ -32,11 +33,17 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
 				<p className='text-sm text-[#9CA3AF] line-clamp-2 mt-0.5'>
 					{hw.theme ?? 'Без темы'}
 				</p>
+				<div className='flex items-center gap-1.5 mt-1 text-[12px]'>
+					<GraduationCap size={13} className='text-[#F2F2F2] flex-shrink-0' />
+					<span className='text-[#F2F2F2] truncate'>{hw.teacher}</span>
+				</div>
 			</div>
 
 			{isChecked && grade != null && (
 				<div
-					className={`ml-3 flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${gradeStyle!.badge}`}
+					className={`ml-3 flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${
+						gradeStyle!.badge
+					}`}
 				>
 					{grade}
 				</div>
