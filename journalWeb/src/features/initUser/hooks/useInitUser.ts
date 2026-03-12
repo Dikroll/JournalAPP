@@ -17,6 +17,9 @@ export function useInitUser() {
 		userApi
 			.getMe()
 			.then(setUser)
-			.catch(() => logout())
+			.catch(err => {
+				const status = err?.response?.status
+				if (status === 401) logout()
+			})
 	}, [hasHydrated, isAuthenticated])
 }

@@ -25,10 +25,13 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 api.interceptors.response.use(
 	res => res,
-	err => {
-		if (err.response?.status === 401) {
+	async err => {
+		const status = err.response?.status
+		if (!status) {
+			return Promise.reject(err)
+		}
+		if (status === 401) {
 			useAuthStore.getState().logout()
-			window.location.hash = '#/login'
 		}
 		return Promise.reject(err)
 	},
