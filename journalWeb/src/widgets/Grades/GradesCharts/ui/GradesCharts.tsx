@@ -17,10 +17,10 @@ function TrendBadge({ trend }: { trend: number }) {
 		<span
 			className={`text-xs font-medium px-2 py-0.5 rounded-full ${
 				isNeutral
-					? 'bg-white/10 text-[#9CA3AF]'
+					? 'bg-app-surface-strong text-app-muted'
 					: isPositive
-						? 'bg-[#10B981]/10 text-[#10B981]'
-						: 'bg-[#EF4444]/10 text-[#EF4444]'
+					? 'bg-checked-subtle text-status-checked'
+					: 'bg-overdue-bg text-status-overdue'
 			}`}
 		>
 			{isPositive ? '+' : ''}
@@ -37,7 +37,7 @@ const axisProps = {
 	fontSize: 12,
 	tickLine: false,
 	axisLine: false,
-	tick: { fill: '#9CA3AF' },
+	tick: { fill: 'var(--color-text-muted)' },
 } as const
 
 const tooltipWrapperStyle = {
@@ -76,17 +76,17 @@ function ProgressChart({ data }: { data: any[] }) {
 					/>
 					<Tooltip
 						content={<CustomTooltip visible={tooltip.visible} />}
-						cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }}
+						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
 						isAnimationActive={false}
 						wrapperStyle={tooltipWrapperStyle}
 					/>
 					<Line
 						type='monotone'
 						dataKey='value'
-						stroke='#F20519'
+						stroke='var(--color-brand)'
 						strokeWidth={3}
-						dot={{ fill: '#F20519', r: 4, strokeWidth: 0 }}
-						activeDot={{ r: 6, strokeWidth: 0, fill: '#F20519' }}
+						dot={{ fill: 'var(--color-brand)', r: 4, strokeWidth: 0 }}
+						activeDot={{ r: 6, strokeWidth: 0, fill: 'var(--color-brand)' }}
 						isAnimationActive={false}
 					/>
 				</LineChart>
@@ -128,7 +128,7 @@ function AttendanceChart({ data }: { data: any[] }) {
 					/>
 					<Bar
 						dataKey='value'
-						fill='#F29F05'
+						fill='var(--color-pending)'
 						radius={[8, 8, 0, 0]}
 						isAnimationActive={false}
 					/>
@@ -146,11 +146,11 @@ export function GradesCharts({ progress, attendance }: Props) {
 		<div className='space-y-3'>
 			{progressData.length > 0 && (
 				<div
-					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-5 border border-white/10'
-					style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)' }}
+					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border'
+					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-[#F2F2F2]'>
+						<h3 className='text-base font-bold text-app-text'>
 							Динамика оценок
 						</h3>
 						{progressTrend != null && <TrendBadge trend={progressTrend} />}
@@ -160,11 +160,11 @@ export function GradesCharts({ progress, attendance }: Props) {
 			)}
 			{attendanceData.length > 0 && (
 				<div
-					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-5 border border-white/10'
-					style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)' }}
+					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border'
+					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-[#F2F2F2]'>
+						<h3 className='text-base font-bold text-app-text'>
 							Динамика посещаемости
 						</h3>
 						{attendanceTrend != null && <TrendBadge trend={attendanceTrend} />}

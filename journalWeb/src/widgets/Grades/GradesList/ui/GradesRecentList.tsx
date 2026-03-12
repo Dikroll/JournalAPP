@@ -51,14 +51,14 @@ function DateCard({
 
 	return (
 		<div className='space-y-2'>
-			<div className='text-sm font-medium text-[#9CA3AF] px-1'>
+			<div className='text-sm font-medium text-app-muted px-1'>
 				{formatDate(date)}
 			</div>
 			<div
 				ref={cardRef}
-				className='bg-white/5 rounded-[24px] p-3 border border-white/10'
+				className='bg-app-surface rounded-[24px] p-3 border border-app-border'
 				style={{
-					boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)',
+					boxShadow: 'var(--shadow-card)',
 					minHeight: visible ? undefined : estimatedHeight,
 				}}
 			>
@@ -67,7 +67,7 @@ function DateCard({
 						<div
 							key={`${entry.date}-${entry.lesson_number}-${entry.spec_id}-${idx}`}
 						>
-							{idx > 0 && <div className='border-t border-white/5 my-1' />}
+							{idx > 0 && <div className='border-t border-app-border my-1' />}
 							<GradeEntryRow entry={entry} />
 						</div>
 					))}
@@ -81,7 +81,7 @@ export function GradesRecentList({ byDate }: Props) {
 
 	if (byDate.length === 0) {
 		return (
-			<p className='text-[#9CA3AF] text-sm text-center py-8'>Нет записей</p>
+			<p className='text-app-muted text-sm text-center py-8'>Нет записей</p>
 		)
 	}
 
@@ -96,7 +96,7 @@ export function GradesRecentList({ byDate }: Props) {
 					{[0, 1].map(i => (
 						<div
 							key={i}
-							className='bg-white/5 rounded-[24px] animate-pulse h-20'
+							className='bg-app-surface rounded-[24px] animate-pulse h-20'
 						/>
 					))}
 				</div>

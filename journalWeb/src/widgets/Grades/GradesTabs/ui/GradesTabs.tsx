@@ -23,8 +23,8 @@ export function GradesTabs({ active, onChange }: Props) {
 					onClick={() => onChange(key)}
 					className={`flex-1 flex items-center justify-center gap-1.5 h-10 px-2 rounded-2xl text-xs font-medium transition-colors whitespace-nowrap ${
 						active === key
-							? 'bg-white/15 text-[#F2F2F2] border border-white/20'
-							: 'bg-white/5 text-[#6B7280] border border-white/10 hover:text-[#F2F2F2] hover:bg-white/8'
+							? 'bg-app-surface-strong text-app-text border border-app-border-strong'
+							: 'bg-app-surface text-app-muted border border-app-border hover:text-app-text hover:bg-app-surface-hover'
 					}`}
 				>
 					{icon}

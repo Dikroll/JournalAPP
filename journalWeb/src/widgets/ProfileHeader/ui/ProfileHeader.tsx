@@ -77,7 +77,7 @@ export const ProfileHeader = memo(
 								value: coins.toLocaleString(),
 							},
 							{
-								icon: <TrendingUp size={15} className='text-[#10B981]' />,
+								icon: <TrendingUp size={15} className='text-status-checked' />,
 								label: 'Рейтинг',
 								value: rank ? `#${rank}` : '—',
 							},

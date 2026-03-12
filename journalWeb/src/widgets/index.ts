@@ -25,7 +25,7 @@ export { ScheduleCalendar } from './Schedule/ScheduleCalendar/ui/ScheduleCalenda
 export { ScheduleList } from './Schedule/ScheduleList/ui/ScheduleList'
 
 // Exams
-export { FutureExams } from './FeatureExams/ui/FeatuerExams'
+export { FutureExams } from './FutureExams/ui/FutureExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'

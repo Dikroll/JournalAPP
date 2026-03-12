@@ -62,7 +62,9 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 					entry.flatMarks.map(({ type, value }) => (
 						<div
 							key={type}
-							className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border ${getGradeColor(value)}`}
+							className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border ${getGradeColor(
+								value,
+							)}`}
 						>
 							{value}
 						</div>

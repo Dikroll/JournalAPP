@@ -59,7 +59,7 @@ export function HomeworkCardActions({
 			onClick={() => downloadTask(fileUrl)}
 			disabled={!fileUrl}
 			title='Скачать задание'
-			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] border border-white/10 transition-colors text-xs'
+			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs'
 		>
 			<Download size={14} />
 			<span>Задание</span>
@@ -72,7 +72,7 @@ export function HomeworkCardActions({
 			onClick={() => viewAnswer(studAnswer, studFileUrl)}
 			disabled={!hasAnswer}
 			title='Мой ответ'
-			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] border border-white/10 transition-colors text-xs'
+			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs'
 		>
 			{!studAnswerIsUrl && !studFileUrl ? (
 				<MessageSquare size={14} />
@@ -89,8 +89,8 @@ export function HomeworkCardActions({
 			onClick={() => setSheetOpen(true)}
 			className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-medium transition-colors ${
 				red
-					? 'bg-[#DC2626]/15 hover:bg-[#DC2626]/25 text-[#DC2626] border border-[#DC2626]/30'
-					: 'bg-white/10 hover:bg-white/15 text-[#F2F2F2] border border-white/20'
+					? 'bg-overdue-bg hover:bg-overdue-border text-status-overdue border border-overdue-border'
+					: 'bg-app-surface-strong hover:bg-app-surface-active text-app-text border border-app-border-strong'
 			}`}
 		>
 			<Upload size={14} />
@@ -104,7 +104,7 @@ export function HomeworkCardActions({
 			onClick={() => setShowDeleteWarning(true)}
 			disabled={!studId}
 			title='Удалить сданное ДЗ'
-			className='flex items-center justify-center px-3 py-2.5 bg-white/5 hover:bg-[#DC2626]/15 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-[#9CA3AF] hover:text-[#DC2626] border border-white/10 hover:border-[#DC2626]/30 transition-colors'
+			className='flex items-center justify-center px-3 py-2.5 bg-app-surface hover:bg-overdue-bg disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-status-overdue border border-app-border hover:border-overdue-border transition-colors'
 		>
 			<Trash2 size={14} />
 		</button>
@@ -135,8 +135,8 @@ export function HomeworkCardActions({
 			</div>
 
 			{showDeleteWarning && (
-				<div className='mt-3 p-3 bg-[#DC2626]/10 border border-[#DC2626]/30 rounded-2xl'>
-					<p className='text-sm text-[#F2F2F2] mb-3'>
+				<div className='mt-3 p-3 bg-overdue-bg border border-overdue-border rounded-2xl'>
+					<p className='text-sm text-app-text mb-3'>
 						Удалить сданное задание? Это действие нельзя отменить.
 					</p>
 					<div className='flex gap-2'>
@@ -144,7 +144,7 @@ export function HomeworkCardActions({
 							type='button'
 							onClick={() => setShowDeleteWarning(false)}
 							disabled={isDeleting}
-							className='flex-1 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-[#F2F2F2] text-sm transition-colors'
+							className='flex-1 px-4 py-2 bg-app-surface hover:bg-app-surface-hover rounded-xl text-app-text text-sm transition-colors'
 						>
 							Отмена
 						</button>
@@ -152,7 +152,7 @@ export function HomeworkCardActions({
 							type='button'
 							onClick={handleDelete}
 							disabled={isDeleting}
-							className='flex-1 px-4 py-2 bg-[#DC2626] hover:bg-[#DC2626]/90 rounded-xl text-white text-sm font-medium transition-colors disabled:opacity-50'
+							className='flex-1 px-4 py-2 bg-status-overdue hover:opacity-90 rounded-xl text-white text-sm font-medium transition-colors disabled:opacity-50'
 						>
 							{isDeleting ? 'Удаляем...' : 'Удалить'}
 						</button>

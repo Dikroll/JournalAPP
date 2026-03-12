@@ -22,20 +22,20 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
 						className={`${config.textColor} flex-shrink-0`}
 					/>
 					<span
-						className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.textColor} bg-white/5`}
+						className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.textColor} bg-app-surface`}
 					>
 						{config.label}
 					</span>
 				</div>
-				<h3 className='text-base font-semibold text-[#F2F2F2] leading-snug'>
+				<h3 className='text-base font-semibold text-app-text leading-snug'>
 					{hw.spec_name}
 				</h3>
-				<p className='text-sm text-[#9CA3AF] line-clamp-2 mt-0.5'>
+				<p className='text-sm text-app-muted line-clamp-2 mt-0.5'>
 					{hw.theme ?? 'Без темы'}
 				</p>
 				<div className='flex items-center gap-1.5 mt-1 text-[12px]'>
-					<GraduationCap size={13} className='text-[#F2F2F2] flex-shrink-0' />
-					<span className='text-[#F2F2F2] truncate'>{hw.teacher}</span>
+					<GraduationCap size={13} className='text-app-text flex-shrink-0' />
+					<span className='text-app-text truncate'>{hw.teacher}</span>
 				</div>
 			</div>
 

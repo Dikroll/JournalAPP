@@ -29,7 +29,7 @@ export function HomeworkStatusSection({
 
 	return (
 		<div>
-			<h3 className='text-sm text-[#9CA3AF] flex items-center gap-1.5 mb-2'>
+			<h3 className='text-sm text-app-muted flex items-center gap-1.5 mb-2'>
 				<Icon size={13} className={textColor} />
 				{label}
 				<span className='text-xs'>
@@ -49,7 +49,7 @@ export function HomeworkStatusSection({
 					type='button'
 					disabled={isLoading}
 					onClick={onLoadMore}
-					className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm text-[#9CA3AF] hover:text-[#F2F2F2] transition-colors disabled:opacity-50'
+					className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors disabled:opacity-50'
 				>
 					{isLoading ? (
 						<>

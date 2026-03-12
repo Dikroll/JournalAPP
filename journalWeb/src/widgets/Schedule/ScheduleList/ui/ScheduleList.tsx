@@ -7,13 +7,13 @@ export function ScheduleList() {
 	const nowMinutes = useCurrentMinutes()
 
 	if (status === 'loading' && today.length === 0)
-		return <p className='text-[#9CA3AF] text-sm'>Загрузка...</p>
+		return <p className='text-app-muted text-sm'>Загрузка...</p>
 
 	if (status === 'error')
-		return <p className='text-[#DC2626] text-sm'>{error}</p>
+		return <p className='text-status-overdue text-sm'>{error}</p>
 
 	if (today.length === 0)
-		return <p className='text-[#9CA3AF] text-sm'>Пар сегодня нет</p>
+		return <p className='text-app-muted text-sm'>Пар сегодня нет</p>
 
 	return (
 		<ul className='flex flex-col gap-3 mb-4'>

@@ -35,14 +35,14 @@ export function ScheduleCalendar() {
 							className={`
 								w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
 								transition-colors relative cursor-pointer
-								${isSelected ? 'bg-[#F20519]/70 text-white' : ''}
-								${!isSelected && isGray ? 'text-white/30' : ''}
-								${!isSelected && !isGray ? 'text-white hover:bg-white/10' : ''}
+								${isSelected ? 'bg-brand text-white' : ''}
+								${!isSelected && isGray ? 'text-app-faint' : ''}
+								${!isSelected && !isGray ? 'text-app-text hover:bg-app-surface-hover' : ''}
 							`}
 						>
 							{day}
 							{isToday && !isSelected && (
-								<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#F20519]/70' />
+								<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand' />
 							)}
 						</div>
 					)
@@ -51,7 +51,7 @@ export function ScheduleCalendar() {
 
 			{selectedDate && (
 				<div>
-					<p className='text-xs text-white/40 mb-2 px-1 capitalize'>
+					<p className='text-xs text-app-muted mb-2 px-1 capitalize'>
 						{formatDateLong(selectedDate)}
 					</p>
 					<LessonList lessons={selectedLessons} forDate={selectedDate} />

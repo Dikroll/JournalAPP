@@ -15,7 +15,7 @@ export function ReviewsList() {
 				{[1, 2].map(i => (
 					<div
 						key={i}
-						className='bg-white/5 rounded-[20px] h-24 animate-pulse border border-white/10'
+						className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
 					/>
 				))}
 			</div>
@@ -28,8 +28,8 @@ export function ReviewsList() {
 
 	return (
 		<div>
-			<h3 className='text-[#F2F2F2] text-base font-semibold mb-3 flex items-center gap-2'>
-				<MessageSquare size={18} className='text-[#F29F05]' />
+			<h3 className='text-app-text text-base font-semibold mb-3 flex items-center gap-2'>
+				<MessageSquare size={18} className='text-status-comment' />
 				Отзывы преподавателей
 			</h3>
 
@@ -42,7 +42,7 @@ export function ReviewsList() {
 			{reviews.length > INITIAL_SHOW && (
 				<button
 					onClick={() => setExpanded(v => !v)}
-					className='mt-3 w-full py-3 rounded-[18px] bg-white/5 border border-white/10 text-[#9CA3AF] text-sm font-medium transition-colors hover:bg-white/10'
+					className='mt-3 w-full py-3 rounded-[18px] bg-app-surface border border-app-border text-app-muted text-sm font-medium transition-colors hover:bg-app-surface-hover'
 				>
 					{expanded
 						? 'Свернуть'

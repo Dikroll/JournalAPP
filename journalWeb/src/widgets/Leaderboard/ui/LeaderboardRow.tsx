@@ -111,7 +111,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 
 			<div className='flex-1 min-w-0'>
 				<p
-					className={`text-sm font-semibold truncate ${isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'}`}
+					className={`text-sm font-semibold truncate ${
+						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
+					}`}
 				>
 					{shortName}
 					{isMe ? ' (Вы)' : ''}
@@ -130,7 +132,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 					className={isMe ? 'text-[#FFD700]' : 'text-[#F29F05]'}
 				/>
 				<span
-					className={`text-sm font-bold ${isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'}`}
+					className={`text-sm font-bold ${
+						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
+					}`}
 				>
 					{student.points.toLocaleString()}
 				</span>
