@@ -6,31 +6,10 @@ A modern journal system for IT-TOP.
 
 Currently in **developer testing**
 
-## Requirements
+npm run dev
 
-Make sure the following tools are installed:
+### capacitor build
 
-- Docker
-- Node.js
-- npm
-
-## Installation
-
-1. Clone the repository and go to the project folder.
-
-2. Install frontend dependencies:
-
-```bash
-cd journalWeb
-npm install
-```
-
-3. Start the project with Docker:
-
-```bash
-docker compose up --build
-```
-
-## Run Application
-
-http://localhost:5173
+npm run build
+npx cap sync
+npx cap open ios / android
