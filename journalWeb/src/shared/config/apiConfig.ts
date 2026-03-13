@@ -66,6 +66,8 @@ class ApiConfig {
 	readonly LIBRARY_COUNTERS = '/library/counters'
 	readonly LIBRARY_MATERIALS = '/library/materials'
 	readonly LIBRARY_MATERIALS_ALL = '/library/materials/all'
+	//examProgress
+	readonly PROGRESS_EXAMS = '/progress/exams'
 }
 
 export const apiConfig = new ApiConfig()
