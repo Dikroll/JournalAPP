@@ -13,8 +13,10 @@ export function AppLayout() {
 			className='min-h-screen text-app-text relative'
 			style={{
 				backgroundColor: 'var(--color-bg)',
-				paddingBottom: 'calc(100px + env(safe-area-inset-bottom))',
 				paddingTop: 'env(safe-area-inset-top)',
+				paddingBottom: 'calc(80px + env(safe-area-inset-bottom))',
+				paddingLeft: 'env(safe-area-inset-left)',
+				paddingRight: 'env(safe-area-inset-right)',
 			}}
 		>
 			<div className='fixed inset-0 pointer-events-none overflow-hidden'>
@@ -81,7 +83,9 @@ export function AppLayout() {
 				<TopBar />
 			</div>
 
-			<Outlet />
+			<div className='pt-4'>
+				<Outlet />
+			</div>
 			<BottomBar />
 		</div>
 	)

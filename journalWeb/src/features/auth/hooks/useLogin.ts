@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
-import { useAuthStore } from '../model/store'
+import { useAuthStore, useHydrationStore } from '../model/store'
 import type { LoginRequest } from '../model/types'
 
 export function useLogin() {
@@ -13,15 +13,17 @@ export function useLogin() {
 
 	const setToken = useAuthStore(s => s.setToken)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
+	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const navigate = useNavigate()
 	const navigatedRef = useRef(false)
 
 	useEffect(() => {
+		if (!hasHydrated) return
 		if (isAuthenticated && !navigatedRef.current) {
 			navigatedRef.current = true
 			navigate('/', { replace: true })
 		}
-	}, [isAuthenticated, navigate])
+	}, [isAuthenticated, hasHydrated, navigate])
 
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -53,6 +55,8 @@ export function useLogin() {
 				setError('Неверный логин или пароль')
 			} else if (status === 422) {
 				setError('Проверьте правильность введённых данных')
+			} else if (status === 429) {
+				setError('Слишком много попыток. Подождите минуту')
 			} else if (status && status >= 500) {
 				setError('Ошибка сервера. Попробуйте позже')
 			} else if (!status) {
