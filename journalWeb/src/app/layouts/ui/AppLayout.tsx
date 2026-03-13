@@ -83,9 +83,10 @@ export function AppLayout() {
 				<TopBar />
 			</div>
 
-			<div className='pt-4'>
+			<div>
 				<Outlet />
 			</div>
+
 			<BottomBar />
 		</div>
 	)

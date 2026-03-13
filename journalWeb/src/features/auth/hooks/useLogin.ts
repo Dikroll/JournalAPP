@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
 import { useAuthStore, useHydrationStore } from '../model/store'
@@ -15,25 +15,32 @@ export function useLogin() {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const navigate = useNavigate()
-	const navigatedRef = useRef(false)
 
-	useEffect(() => {
-		if (!hasHydrated) return
-		if (isAuthenticated && !navigatedRef.current) {
-			navigatedRef.current = true
-			navigate('/', { replace: true })
-		}
-	}, [isAuthenticated, hasHydrated, navigate])
+	const submittingRef = useRef(false)
+
+	const handleSuccess = (token: string) => {
+		setToken(token)
+		navigate('/', { replace: true })
+	}
+
+	if (hasHydrated && isAuthenticated) {
+		navigate('/', { replace: true })
+	}
 
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
+		if (submittingRef.current) return
+		submittingRef.current = true
+
 		if (!username.trim()) {
 			setError('Введите логин')
+			submittingRef.current = false
 			return
 		}
 		if (!password) {
 			setError('Введите пароль')
+			submittingRef.current = false
 			return
 		}
 
@@ -44,7 +51,7 @@ export function useLogin() {
 
 		try {
 			const { access_token } = await authApi.login(payload)
-			setToken(access_token)
+			handleSuccess(access_token)
 		} catch (err: unknown) {
 			const status = (err as { response?: { status?: number } })?.response
 				?.status
@@ -66,6 +73,7 @@ export function useLogin() {
 			}
 		} finally {
 			setLoading(false)
+			submittingRef.current = false
 		}
 	}
 

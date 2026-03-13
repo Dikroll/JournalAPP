@@ -30,7 +30,7 @@ export const useAuthStore = create<AuthState>()(
 				token: state.token,
 				isAuthenticated: state.isAuthenticated,
 			}),
-			onRehydrateStorage: () => (state, error) => {
+			onRehydrateStorage: () => error => {
 				if (error) {
 					console.warn('[auth-store] hydration error', error)
 				}
