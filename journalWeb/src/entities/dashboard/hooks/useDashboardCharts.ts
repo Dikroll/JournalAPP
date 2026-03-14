@@ -8,7 +8,10 @@ export { calcTrend, lastValue, toChartData } from '../utils/chartUtils'
 
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 
-let fetchStarted = false
+export let fetchStarted = false
+export function resetFetchStarted() {
+	fetchStarted = false
+}
 
 export function useDashboardCharts() {
 	const {
@@ -42,6 +45,9 @@ export function useDashboardCharts() {
 			.catch(() => {
 				fetchStarted = false
 				setStatus('error')
+			})
+			.finally(() => {
+				fetchStarted = false
 			})
 	}, [loadedAt])
 

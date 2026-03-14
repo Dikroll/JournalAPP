@@ -1,4 +1,5 @@
 import { userApi, useUserStore } from '@/entities/user'
+import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
@@ -13,6 +14,8 @@ export function useLogin() {
 	const [loading, setLoading] = useState(false)
 
 	const setToken = useAuthStore(s => s.setToken)
+	const saveAccount = useAuthStore(s => s.saveAccount)
+	const accounts = useAuthStore(s => s.accounts)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const setUser = useUserStore(s => s.setUser)
@@ -20,7 +23,8 @@ export function useLogin() {
 
 	const submittingRef = useRef(false)
 
-	if (hasHydrated && isAuthenticated) {
+	const isAddingAccount = window.location.hash.includes('addAccount=true')
+	if (hasHydrated && isAuthenticated && !isAddingAccount) {
 		navigate('/', { replace: true })
 	}
 
@@ -48,17 +52,19 @@ export function useLogin() {
 
 		try {
 			const { access_token } = await authApi.login(payload)
+			setToken(access_token)
 
-			// Сначала грузим юзера — потом навигируем.
-			// Так AppLayout получит данные сразу и не будет дёргаться.
 			try {
-				// Временно ставим токен чтобы API запрос прошёл
-				setToken(access_token)
 				const userData = await userApi.getMe()
 				setUser(userData)
-			} catch {
-				// Не критично — useInitUser подхватит позже
-			}
+				saveAccount({
+					username: username.trim(),
+					token: access_token,
+					fullName: userData.full_name,
+					groupName: userData.group.name,
+					avatarUrl: fixUrl(userData.photo_url),
+				})
+			} catch {}
 
 			navigate('/', { replace: true })
 		} catch (err: unknown) {

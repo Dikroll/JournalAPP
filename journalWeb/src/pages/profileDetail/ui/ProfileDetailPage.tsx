@@ -1,7 +1,10 @@
 import { useProfileDetails } from '@/entities/profile'
-import { LogoutButton } from '@/features/auth'
+import { useAuthStore } from '@/features/auth'
+import { AccountSwitcher } from '@/features/changeUser'
+import { pageConfig } from '@/shared/config'
 import { ProfileAvatar, ProfileInfoCard, ProfileRelativesCard } from '@/widgets'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Users } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Skeleton() {
@@ -21,6 +24,12 @@ function Skeleton() {
 export function ProfileDetailsPage() {
 	const navigate = useNavigate()
 	const { details, status } = useProfileDetails()
+	const [showSwitcher, setShowSwitcher] = useState(false)
+	const accounts = useAuthStore(s => s.accounts)
+
+	const handleAddAccount = () => {
+		navigate(`${pageConfig.login}?addAccount=true`)
+	}
 
 	return (
 		<div className='pb-6'>
@@ -31,7 +40,19 @@ export function ProfileDetailsPage() {
 				>
 					<ArrowLeft size={18} />
 				</button>
-				<h1 className='text-base font-bold text-[#F2F2F2]'>Детали профиля</h1>
+				<h1 className='text-base font-bold text-[#F2F2F2] flex-1'>
+					Детали профиля
+				</h1>
+				{/* Кнопка смены аккаунта — показываем если есть сохранённые */}
+				{accounts.length > 0 && (
+					<button
+						onClick={() => setShowSwitcher(true)}
+						className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white/5 border border-white/8 text-[#9CA3AF] text-xs hover:bg-white/8 transition-colors'
+					>
+						<Users size={14} />
+						Аккаунты
+					</button>
+				)}
 			</div>
 
 			<div className='px-4 space-y-3'>
@@ -46,10 +67,26 @@ export function ProfileDetailsPage() {
 						<ProfileAvatar details={details} />
 						<ProfileInfoCard details={details} />
 						<ProfileRelativesCard relatives={details.relatives} />
-						<LogoutButton />
+
+						{/* Кнопка аккаунтов внизу страницы */}
+						<button
+							type='button'
+							onClick={() => setShowSwitcher(true)}
+							className='w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-white/5 border border-white/8 text-[#9CA3AF] text-sm font-medium active:bg-white/10 transition-colors'
+						>
+							<Users size={16} />
+							Управление аккаунтами
+						</button>
 					</>
 				)}
 			</div>
+
+			{showSwitcher && (
+				<AccountSwitcher
+					onClose={() => setShowSwitcher(false)}
+					onAddAccount={handleAddAccount}
+				/>
+			)}
 		</div>
 	)
 }

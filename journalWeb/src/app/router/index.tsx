@@ -67,7 +67,16 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 		)
 	}
 
-	return isAuthenticated ? <Navigate to='/' replace /> : <>{children}</>
+	const searchParams = new URLSearchParams(
+		window.location.hash.split('?')[1] ?? '',
+	)
+	const isAddingAccount = searchParams.get('addAccount') === 'true'
+
+	if (isAuthenticated && !isAddingAccount) {
+		return <Navigate to='/' replace />
+	}
+
+	return <>{children}</>
 }
 
 export function AppRouter() {
