@@ -1,3 +1,4 @@
+import { userApi, useUserStore } from '@/entities/user'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
@@ -14,14 +15,10 @@ export function useLogin() {
 	const setToken = useAuthStore(s => s.setToken)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
+	const setUser = useUserStore(s => s.setUser)
 	const navigate = useNavigate()
 
 	const submittingRef = useRef(false)
-
-	const handleSuccess = (token: string) => {
-		setToken(token)
-		navigate('/', { replace: true })
-	}
 
 	if (hasHydrated && isAuthenticated) {
 		navigate('/', { replace: true })
@@ -51,7 +48,19 @@ export function useLogin() {
 
 		try {
 			const { access_token } = await authApi.login(payload)
-			handleSuccess(access_token)
+
+			// Сначала грузим юзера — потом навигируем.
+			// Так AppLayout получит данные сразу и не будет дёргаться.
+			try {
+				// Временно ставим токен чтобы API запрос прошёл
+				setToken(access_token)
+				const userData = await userApi.getMe()
+				setUser(userData)
+			} catch {
+				// Не критично — useInitUser подхватит позже
+			}
+
+			navigate('/', { replace: true })
 		} catch (err: unknown) {
 			const status = (err as { response?: { status?: number } })?.response
 				?.status

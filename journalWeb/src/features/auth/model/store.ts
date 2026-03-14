@@ -30,11 +30,11 @@ export const useAuthStore = create<AuthState>()(
 				token: state.token,
 				isAuthenticated: state.isAuthenticated,
 			}),
-			onRehydrateStorage: () => error => {
+			// Правильная сигнатура: (state) => (error) => void
+			onRehydrateStorage: () => (_state, error) => {
 				if (error) {
 					console.warn('[auth-store] hydration error', error)
 				}
-
 				useHydrationStore.setState({ hasHydrated: true })
 			},
 		},
