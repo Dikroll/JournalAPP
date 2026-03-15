@@ -15,7 +15,6 @@ export function useLogin() {
 
 	const setToken = useAuthStore(s => s.setToken)
 	const saveAccount = useAuthStore(s => s.saveAccount)
-	const accounts = useAuthStore(s => s.accounts)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const setUser = useUserStore(s => s.setUser)

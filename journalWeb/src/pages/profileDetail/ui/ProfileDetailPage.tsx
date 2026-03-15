@@ -43,7 +43,6 @@ export function ProfileDetailsPage() {
 				<h1 className='text-base font-bold text-[#F2F2F2] flex-1'>
 					Детали профиля
 				</h1>
-				{/* Кнопка смены аккаунта — показываем если есть сохранённые */}
 				{accounts.length > 0 && (
 					<button
 						onClick={() => setShowSwitcher(true)}
@@ -67,16 +66,6 @@ export function ProfileDetailsPage() {
 						<ProfileAvatar details={details} />
 						<ProfileInfoCard details={details} />
 						<ProfileRelativesCard relatives={details.relatives} />
-
-						{/* Кнопка аккаунтов внизу страницы */}
-						<button
-							type='button'
-							onClick={() => setShowSwitcher(true)}
-							className='w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-white/5 border border-white/8 text-[#9CA3AF] text-sm font-medium active:bg-white/10 transition-colors'
-						>
-							<Users size={16} />
-							Управление аккаунтами
-						</button>
 					</>
 				)}
 			</div>
