@@ -6,6 +6,7 @@ export { TopBar } from './TopBar/ui/TopBar'
 export { DashboardCharts } from './DashboardCharts/ui/DashboardCharts'
 
 // Grades
+export { GradesExamList } from './Grades/GradesList/ui/GradesExamList'
 export type { Tab } from '@/widgets/Grades/GradesTabs/ui/GradesTabs'
 
 export { GradesCalendar } from './Grades/GradesCalendar/ui/GradesCalendar'

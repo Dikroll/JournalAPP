@@ -1,8 +1,12 @@
 import { useProfileDetails } from '@/entities/profile'
-import { useAuthStore } from '@/features/auth'
+import { LogoutButton, useAuthStore } from '@/features/auth'
 import { AccountSwitcher } from '@/features/changeUser'
 import { pageConfig } from '@/shared/config'
-import { ProfileAvatar, ProfileInfoCard, ProfileRelativesCard } from '@/widgets'
+import {
+	ProfileAvatar,
+	ProfileInfoCard,
+	ProfileRelativesCard,
+} from '@/widgets'
 import { ArrowLeft, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -24,6 +28,7 @@ function Skeleton() {
 export function ProfileDetailsPage() {
 	const navigate = useNavigate()
 	const { details, status } = useProfileDetails()
+
 	const [showSwitcher, setShowSwitcher] = useState(false)
 	const accounts = useAuthStore(s => s.accounts)
 
@@ -40,9 +45,11 @@ export function ProfileDetailsPage() {
 				>
 					<ArrowLeft size={18} />
 				</button>
+
 				<h1 className='text-base font-bold text-[#F2F2F2] flex-1'>
 					Детали профиля
 				</h1>
+
 				{accounts.length > 0 && (
 					<button
 						onClick={() => setShowSwitcher(true)}
@@ -56,16 +63,21 @@ export function ProfileDetailsPage() {
 
 			<div className='px-4 space-y-3'>
 				{status === 'loading' && <Skeleton />}
+
 				{status === 'error' && (
 					<p className='text-center text-[#EF4444] text-sm py-12'>
 						Не удалось загрузить данные
 					</p>
 				)}
+
 				{details && (
 					<>
 						<ProfileAvatar details={details} />
 						<ProfileInfoCard details={details} />
 						<ProfileRelativesCard relatives={details.relatives} />
+
+						{/* добавили logout из первого варианта */}
+						<LogoutButton />
 					</>
 				)}
 			</div>

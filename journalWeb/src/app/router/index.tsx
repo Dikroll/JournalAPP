@@ -8,6 +8,7 @@ import {
 	ProfileDetailsPage,
 	ProfilePage,
 	SchedulePage,
+	PaymentPage,
 } from '@/pages'
 import { pageConfig } from '@/shared/config'
 import { ScrollToTop } from '@/shared/lib'
@@ -107,6 +108,7 @@ export function AppRouter() {
 					<Route path='grades' element={<GradesPage />} />
 					<Route path='profile' element={<ProfilePage />} />
 					<Route path='profile/details' element={<ProfileDetailsPage />} />
+					<Route path='payment' element={<PaymentPage />} />
 				</Route>
 
 				<Route path='*' element={<Navigate to='/' replace />} />
