@@ -48,6 +48,7 @@ class ApiConfig {
 	readonly PAYMENT_SCHEDULE = '/payment/schedule'
 	readonly PAYMENT_HISTORY = '/payment/history'
 	readonly PAYMENT_SUMMARY = '/payment/summary'
+	readonly PAYMENT_INDEX = '/payment/index'
 
 	// feedback
 	readonly FEEDBACK_PENDING = '/feedback/pending'
