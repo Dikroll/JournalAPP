@@ -16,7 +16,6 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`
 	}
-
 	if (config.data instanceof FormData) {
 		delete config.headers['Content-Type']
 	}
@@ -27,12 +26,19 @@ api.interceptors.response.use(
 	res => res,
 	async err => {
 		const status = err.response?.status
-		if (!status) {
+
+		if (!status) return Promise.reject(err)
+
+		if (status === 401) {
+			const url = err.config?.url ?? ''
+			const isLoginEndpoint = url.includes('/auth/login')
+			if (isLoginEndpoint) {
+				return Promise.reject(err)
+			}
+
 			return Promise.reject(err)
 		}
-		if (status === 401) {
-			useAuthStore.getState().logout()
-		}
+
 		return Promise.reject(err)
 	},
 )

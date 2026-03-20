@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/features/auth'
+import { useHydrationStore } from '@/features/auth/model/store'
 import {
 	GradesPage,
 	HomePage,
@@ -16,14 +17,14 @@ import { AppLayout } from '../layouts'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
-	const hasHydrated = useAuthStore(s => s._hasHydrated)
+	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 
 	if (!hasHydrated) {
 		return (
 			<div
 				style={{
-					minHeight: '100vh',
-					backgroundColor: '#1F2024',
+					minHeight: '100dvh',
+					backgroundColor: 'var(--color-bg, #1F2024)',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
@@ -45,7 +46,38 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 		)
 	}
 
-	return isAuthenticated ? children : <Navigate to={pageConfig.login} replace />
+	return isAuthenticated ? (
+		<>{children}</>
+	) : (
+		<Navigate to={pageConfig.login} replace />
+	)
+}
+
+function PublicRoute({ children }: { children: React.ReactNode }) {
+	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
+	const hasHydrated = useHydrationStore(s => s.hasHydrated)
+
+	if (!hasHydrated) {
+		return (
+			<div
+				style={{
+					minHeight: '100dvh',
+					backgroundColor: 'var(--color-bg, #1F2024)',
+				}}
+			/>
+		)
+	}
+
+	const searchParams = new URLSearchParams(
+		window.location.hash.split('?')[1] ?? '',
+	)
+	const isAddingAccount = searchParams.get('addAccount') === 'true'
+
+	if (isAuthenticated && !isAddingAccount) {
+		return <Navigate to='/' replace />
+	}
+
+	return <>{children}</>
 }
 
 export function AppRouter() {
@@ -53,7 +85,14 @@ export function AppRouter() {
 		<HashRouter>
 			<ScrollToTop />
 			<Routes>
-				<Route path={pageConfig.login} element={<LoginPage />} />
+				<Route
+					path={pageConfig.login}
+					element={
+						<PublicRoute>
+							<LoginPage />
+						</PublicRoute>
+					}
+				/>
 
 				<Route
 					path='/'

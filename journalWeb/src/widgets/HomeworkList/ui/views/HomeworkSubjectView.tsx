@@ -12,6 +12,8 @@ import {
 import type { Subject } from '@/entities/subject'
 import { HomeworkCard } from '@/widgets'
 import { ChevronDown, RefreshCw } from 'lucide-react'
+import { HomeworkCardPhoto } from '../card/HomeworkCardPhoto'
+import type { HomeworkViewMode } from '../shared/HomeworkToggleView'
 
 interface Props {
 	bySubject: Record<string, Record<HomeworkStatus, GroupData>>
@@ -19,6 +21,7 @@ interface Props {
 	selectedSpec: Subject | null
 	specList: Subject[]
 	subjects: Record<number, SubjectData>
+	viewMode: HomeworkViewMode
 	onLoadSubject: (specId: number, specName: string) => void
 	onLoadMoreForSubject: (specId: number, statusKey: number) => void
 }
@@ -29,10 +32,12 @@ export function HomeworkSubjectView({
 	selectedSpec,
 	specList,
 	subjects,
+	viewMode,
 	onLoadSubject,
 	onLoadMoreForSubject,
 }: Props) {
 	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
+	const CardComponent = viewMode === 'photo' ? HomeworkCardPhoto : HomeworkCard
 
 	const specNames = selectedSpec
 		? Object.keys(bySubject).filter(n => n === selectedSpec.name)
@@ -97,7 +102,7 @@ export function HomeworkSubjectView({
 									</h3>
 									<div className='space-y-3'>
 										{displayItems.map(hw => (
-											<HomeworkCard key={hw.id} hw={hw as any} />
+											<CardComponent key={hw.id} hw={hw as any} />
 										))}
 									</div>
 									{hasMore && specId != null && (

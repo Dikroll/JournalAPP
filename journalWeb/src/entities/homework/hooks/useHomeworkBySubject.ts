@@ -1,5 +1,5 @@
 import { useUserStore } from '@/entities/user'
-import { isCacheValid } from '@/shared/lib'
+import { isCacheValid, preloadImages } from '@/shared/lib'
 import { useCallback, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, useHomeworkStore } from '../model/store'
@@ -40,11 +40,18 @@ export function useHomeworkBySubject() {
 				)
 
 				const parsedItems: Record<number, HomeworkItem[]> = {}
+				const photoUrls: string[] = []
+
 				for (const [key, list] of Object.entries(items)) {
 					parsedItems[Number(key)] = list
+					list.forEach(hw => {
+						if (hw.photo_url) photoUrls.push(hw.photo_url)
+					})
 				}
 
 				setSubjectData(specId, specName, counters, parsedItems)
+
+				if (photoUrls.length > 0) preloadImages(photoUrls)
 			} catch {
 				setSubjectStatus(specId, 'error')
 			} finally {
@@ -73,6 +80,11 @@ export function useHomeworkBySubject() {
 					nextPage,
 				)
 				appendSubjectItems(specId, statusKey, newItems, nextPage)
+
+				const newPhotos = newItems
+					.map(hw => hw.photo_url)
+					.filter(Boolean) as string[]
+				if (newPhotos.length > 0) preloadImages(newPhotos)
 
 				if (newItems.length < PAGE_SIZE) {
 					setSubjectExpanded(specId, statusKey, true)

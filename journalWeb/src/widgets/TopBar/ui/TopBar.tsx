@@ -27,9 +27,9 @@ export const TopBar = memo(function TopBar() {
 	if (!fullName) return null
 
 	return (
-		<div className='px-4 pt-2 pb-2'>
+		<div className='px-4 pt-2 pb-1'>
 			<div
-				className='bg-app-surface backdrop-blur-xl rounded-[24px] px-5 py-5 border border-app-border'
+				className='bg-app-surface backdrop-blur-xl rounded-[24px] px-5 py-4 border border-app-border'
 				style={{ boxShadow: 'var(--shadow-card)' }}
 			>
 				<div className='flex items-center justify-between'>

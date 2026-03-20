@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { userApi, useUserStore } from '@/entities/user'
+import { fixUrl } from '@/shared/lib/imageCache'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
-import { useAuthStore } from '../model/store'
+import { useAuthStore, useHydrationStore } from '../model/store'
 import type { LoginRequest } from '../model/types'
 
 export function useLogin() {
@@ -12,26 +14,33 @@ export function useLogin() {
 	const [loading, setLoading] = useState(false)
 
 	const setToken = useAuthStore(s => s.setToken)
+	const saveAccount = useAuthStore(s => s.saveAccount)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
+	const hasHydrated = useHydrationStore(s => s.hasHydrated)
+	const setUser = useUserStore(s => s.setUser)
 	const navigate = useNavigate()
-	const navigatedRef = useRef(false)
 
-	useEffect(() => {
-		if (isAuthenticated && !navigatedRef.current) {
-			navigatedRef.current = true
-			navigate('/', { replace: true })
-		}
-	}, [isAuthenticated, navigate])
+	const submittingRef = useRef(false)
+
+	const isAddingAccount = window.location.hash.includes('addAccount=true')
+	if (hasHydrated && isAuthenticated && !isAddingAccount) {
+		navigate('/', { replace: true })
+	}
 
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
+		if (submittingRef.current) return
+		submittingRef.current = true
+
 		if (!username.trim()) {
 			setError('Введите логин')
+			submittingRef.current = false
 			return
 		}
 		if (!password) {
 			setError('Введите пароль')
+			submittingRef.current = false
 			return
 		}
 
@@ -43,6 +52,20 @@ export function useLogin() {
 		try {
 			const { access_token } = await authApi.login(payload)
 			setToken(access_token)
+
+			try {
+				const userData = await userApi.getMe()
+				setUser(userData)
+				saveAccount({
+					username: username.trim(),
+					token: access_token,
+					fullName: userData.full_name,
+					groupName: userData.group.name,
+					avatarUrl: fixUrl(userData.photo_url),
+				})
+			} catch {}
+
+			navigate('/', { replace: true })
 		} catch (err: unknown) {
 			const status = (err as { response?: { status?: number } })?.response
 				?.status
@@ -53,6 +76,8 @@ export function useLogin() {
 				setError('Неверный логин или пароль')
 			} else if (status === 422) {
 				setError('Проверьте правильность введённых данных')
+			} else if (status === 429) {
+				setError('Слишком много попыток. Подождите минуту')
 			} else if (status && status >= 500) {
 				setError('Ошибка сервера. Попробуйте позже')
 			} else if (!status) {
@@ -62,6 +87,7 @@ export function useLogin() {
 			}
 		} finally {
 			setLoading(false)
+			submittingRef.current = false
 		}
 	}
 

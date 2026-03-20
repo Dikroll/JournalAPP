@@ -1,34 +1,19 @@
 import type { GradeEntryExpanded } from '@/entities/grades'
+import { useMonthNav } from '@/shared/hooks'
+import {
+	RU_DAYS_SHORT,
+	RU_MONTHS,
+	getDaysInMonth,
+	getFirstDayOfMonth,
+	getTodayString,
+	toDateString,
+} from '@/shared/utils'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import { GradeEntryRow } from './GradeEntryRow'
+import { GradeEntryRow } from '../../GradesList/ui/GradeEntryRow'
 
 interface Props {
 	byMonth: Record<string, Record<string, GradeEntryExpanded[]>>
-}
-
-const RU_MONTHS = [
-	'Январь',
-	'Февраль',
-	'Март',
-	'Апрель',
-	'Май',
-	'Июнь',
-	'Июль',
-	'Август',
-	'Сентябрь',
-	'Октябрь',
-	'Ноябрь',
-	'Декабрь',
-]
-const RU_DAYS_SHORT = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-
-function getDaysInMonth(year: number, month: number) {
-	return new Date(year, month + 1, 0).getDate()
-}
-
-function getFirstDayOfMonth(year: number, month: number) {
-	return (new Date(year, month, 1).getDay() + 6) % 7
 }
 
 export function GradesCalendar({ byMonth }: Props) {
@@ -38,29 +23,24 @@ export function GradesCalendar({ byMonth }: Props) {
 		months[months.length - 1] ??
 		`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 
-	const [currentMonth, setCurrentMonth] = useState(defaultMonth)
+	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth)
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
-	const [yearStr, monthStr] = currentMonth.split('-')
-	const year = Number(yearStr)
-	const month = Number(monthStr) - 1
+	const yearStr = String(year)
+	const monthStr = String(month + 1).padStart(2, '0')
+	const currentMonth = `${yearStr}-${monthStr}`
 
 	const daysInMonth = getDaysInMonth(year, month)
 	const firstDay = getFirstDayOfMonth(year, month)
 	const datesWithData = byMonth[currentMonth] ?? {}
+	const todayStr = getTodayString()
 
-	const prevMonth = () => {
-		const d = new Date(year, month - 1, 1)
-		setCurrentMonth(
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
-		)
+	const handlePrevMonth = () => {
+		prevMonth()
 		setSelectedDate(null)
 	}
-	const nextMonth = () => {
-		const d = new Date(year, month + 1, 1)
-		setCurrentMonth(
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
-		)
+	const handleNextMonth = () => {
+		nextMonth()
 		setSelectedDate(null)
 	}
 
@@ -77,7 +57,7 @@ export function GradesCalendar({ byMonth }: Props) {
 				<div className='flex items-center justify-between mb-4'>
 					<button
 						type='button'
-						onClick={prevMonth}
+						onClick={handlePrevMonth}
 						className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface hover:bg-app-surface-hover text-app-muted transition-colors'
 					>
 						<ChevronLeft size={16} />
@@ -87,7 +67,7 @@ export function GradesCalendar({ byMonth }: Props) {
 					</span>
 					<button
 						type='button'
-						onClick={nextMonth}
+						onClick={handleNextMonth}
 						className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface hover:bg-app-surface-hover text-app-muted transition-colors'
 					>
 						<ChevronRight size={16} />
@@ -111,19 +91,11 @@ export function GradesCalendar({ byMonth }: Props) {
 					))}
 					{Array.from({ length: daysInMonth }).map((_, i) => {
 						const day = i + 1
-						const dateStr = `${yearStr}-${monthStr}-${String(day).padStart(
-							2,
-							'0',
-						)}`
+						const dateStr = toDateString(year, month, day)
 						const hasData = !!datesWithData[dateStr]
 						const entries = datesWithData[dateStr] ?? []
 						const isSelected = selectedDate === dateStr
-						const isToday =
-							dateStr ===
-							`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-								2,
-								'0',
-							)}-${String(now.getDate()).padStart(2, '0')}`
+						const isToday = dateStr === todayStr
 
 						const hasAbsence = entries.some(e => !e.attended)
 						const allMarks = entries.flatMap(e => e.flatMarks.map(m => m.value))
@@ -144,28 +116,23 @@ export function GradesCalendar({ byMonth }: Props) {
 								type='button'
 								disabled={!hasData}
 								onClick={() => setSelectedDate(isSelected ? null : dateStr)}
-								className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm transition-colors ${
-									isSelected
-										? 'bg-comment-subtle text-status-comment'
-										: hasData
-										? 'hover:bg-app-surface-hover text-app-text'
-										: 'text-app-faint'
-								} ${
-									isToday && !isSelected ? 'ring-1 ring-app-border-strong' : ''
-								}`}
+								className={`
+									relative aspect-square flex flex-col items-center justify-center
+									rounded-full text-xs font-semibold transition-colors
+									${isSelected ? 'bg-brand text-white' : ''}
+									${!isSelected && hasData ? 'text-app-text hover:bg-app-surface-hover' : ''}
+									${!isSelected && !hasData ? 'text-app-faint' : ''}
+								`}
 							>
-								<span
-									className={`text-xs font-medium leading-none ${
-										isSelected ? 'text-status-comment' : ''
-									}`}
-								>
-									{day}
-								</span>
-								{hasData && (
+								<span className='leading-none'>{day}</span>
+								{hasData && !isSelected && (
 									<span
 										className='mt-0.5 w-1 h-1 rounded-full'
 										style={{ backgroundColor: dotColor }}
 									/>
+								)}
+								{isToday && !isSelected && (
+									<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand' />
 								)}
 							</button>
 						)
