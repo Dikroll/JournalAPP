@@ -1,19 +1,26 @@
 import { useUserStore } from '@/entities/user'
+import { pageConfig } from '@/shared/config'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../model/store'
+interface Props {
+	onBeforeLogout?: () => void
+}
 
-export function LogoutButton() {
+export function LogoutButton({ onBeforeLogout }: Props) {
 	const [open, setOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const logout = useAuthStore(s => s.logout)
 	const clearUser = useUserStore(s => s.clearUser)
 	const navigate = useNavigate()
 
 	const confirm = () => {
+		setLoading(true)
+		onBeforeLogout?.()
 		clearUser()
 		logout()
-		navigate('/login', { replace: true })
+		navigate(pageConfig.login, { replace: true })
 	}
 
 	return (
@@ -34,7 +41,7 @@ export function LogoutButton() {
 						background: 'rgba(0,0,0,0.6)',
 						backdropFilter: 'blur(4px)',
 					}}
-					onClick={() => setOpen(false)}
+					onClick={() => !loading && setOpen(false)}
 				>
 					<div
 						className='w-full rounded-t-[28px] p-6 space-y-3'
@@ -62,14 +69,16 @@ export function LogoutButton() {
 
 						<button
 							onClick={confirm}
-							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 transition-colors'
+							disabled={loading}
+							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 transition-colors disabled:opacity-50'
 						>
-							Выйти
+							{loading ? 'Выходим...' : 'Выйти'}
 						</button>
 
 						<button
 							onClick={() => setOpen(false)}
-							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors'
+							disabled={loading}
+							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors disabled:opacity-40'
 						>
 							Отмена
 						</button>

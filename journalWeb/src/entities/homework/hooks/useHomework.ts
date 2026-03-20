@@ -10,6 +10,11 @@ const CACHE_TTL_MS = 15 * 60 * 1000
 let isLoadingAll = false
 const isLoadingMore = new Set<number>()
 
+export function resetHomeworkFetch() {
+	isLoadingAll = false
+	isLoadingMore.clear()
+}
+
 export function useHomework() {
 	const groupId = useUserStore(s => s.user?.group?.id)
 
@@ -62,7 +67,6 @@ export function useHomework() {
 					if (hw.spec_id != null && hw.spec_name) {
 						specsMap.set(hw.spec_id, hw.spec_name)
 					}
-					// collect all photo_url for preloading
 					if (hw.photo_url) photoUrls.push(hw.photo_url)
 				})
 
@@ -79,7 +83,6 @@ export function useHomework() {
 			setLoadedAt(Date.now())
 			setStatus('success')
 
-			// preload all cover images so switching to photo mode uses browser cache
 			if (photoUrls.length > 0) preloadImages(photoUrls)
 		} catch {
 			setError('Не удалось загрузить домашние задания')
@@ -105,7 +108,6 @@ export function useHomework() {
 					nextPage,
 				)
 				appendItems(statusKey, newItems, nextPage)
-				// preload photos from newly loaded page
 				const newPhotos = newItems
 					.map(hw => hw.photo_url)
 					.filter(Boolean) as string[]

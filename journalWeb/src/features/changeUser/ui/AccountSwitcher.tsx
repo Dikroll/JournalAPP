@@ -1,7 +1,6 @@
 import { useUserStore } from '@/entities/user'
 import { useAuthStore, type SavedAccount } from '@/features/auth/model/store'
 import { useSwitchUser } from '@/features/changeUser/hooks/useSwitchUser'
-import { resetAllStores } from '@/shared/lib/resetAllStores'
 import { LogOut, Plus, RefreshCw, Trash2, UserRound } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -9,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 interface Props {
 	onClose: () => void
 	onAddAccount: () => void
+	onReset: () => void
 }
 
 interface AccountRowProps {
@@ -133,14 +133,14 @@ function LogoutConfirm({
 	)
 }
 
-export function AccountSwitcher({ onClose, onAddAccount }: Props) {
+export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 	const accounts = useAuthStore(s => s.accounts)
 	const activeUsername = useAuthStore(s => s.activeUsername)
 	const removeAccount = useAuthStore(s => s.removeAccount)
 	const logout = useAuthStore(s => s.logout)
 	const clearUser = useUserStore(s => s.clearUser)
 	const navigate = useNavigate()
-	const { switchTo, switching } = useSwitchUser()
+	const { switchTo, switching } = useSwitchUser(onReset)
 	const [switchingTo, setSwitchingTo] = useState<string | null>(null)
 	const [confirmLogout, setConfirmLogout] = useState(false)
 
@@ -153,15 +153,34 @@ export function AccountSwitcher({ onClose, onAddAccount }: Props) {
 	}
 
 	const handleRemove = (username: string) => {
-		removeAccount(username)
+		const isActive = username === activeUsername
+
+		if (isActive) {
+			const remainingAccounts = useAuthStore
+				.getState()
+				.accounts.filter(a => a.username !== username)
+			removeAccount(username)
+			onReset()
+			clearUser()
+			logout()
+			onClose()
+			if (remainingAccounts.length === 0) {
+				navigate('/login', { replace: true })
+			}
+		} else {
+			removeAccount(username)
+		}
 	}
 
 	const handleLogout = () => {
-		resetAllStores()
+		const remainingAccounts = useAuthStore
+			.getState()
+			.accounts.filter(a => a.username !== activeUsername)
+		onReset()
 		clearUser()
 		logout()
 		onClose()
-		if (useAuthStore.getState().accounts.length === 0) {
+		if (remainingAccounts.length === 0) {
 			navigate('/login', { replace: true })
 		}
 	}

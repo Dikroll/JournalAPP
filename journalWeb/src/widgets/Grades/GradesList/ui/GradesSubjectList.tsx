@@ -1,22 +1,10 @@
 import type { SubjectStats } from '@/entities/grades'
-import { GRADE_TYPE_CONFIG } from '@/entities/grades'
-import type { SortKey } from '@/features/sortSubjects'
+import { GRADE_TYPE_CONFIG, sortSubjects } from '@/entities/grades'
 import {
 	SortSubjectsControl,
 	useSortSubjectsStore,
 } from '@/features/sortSubjects'
 import { useLazyItems } from '@/shared/hooks'
-
-function sortSubjects(subjects: SubjectStats[], key: SortKey): SubjectStats[] {
-	const arr = [...subjects]
-	if (key === 'alpha')
-		return arr.sort((a, b) => a.spec_name.localeCompare(b.spec_name, 'ru'))
-	if (key === 'grade-desc')
-		return arr.sort((a, b) => b.averageGrade - a.averageGrade)
-	if (key === 'grade-asc')
-		return arr.sort((a, b) => a.averageGrade - b.averageGrade)
-	return arr
-}
 
 interface Props {
 	bySubject: SubjectStats[]

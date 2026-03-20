@@ -10,8 +10,8 @@ import {
 	STATUS_ORDER,
 } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
-import { HomeworkCard } from '@/widgets'
 import { ChevronDown, RefreshCw } from 'lucide-react'
+import { HomeworkCard } from '../card/HomeworkCard'
 import { HomeworkCardPhoto } from '../card/HomeworkCardPhoto'
 import type { HomeworkViewMode } from '../shared/HomeworkToggleView'
 

@@ -3,31 +3,34 @@ import { useDashboardChartsStore } from '@/entities/dashboard/model/store'
 import { useExamStore } from '@/entities/exam/model/store'
 import { resetGradesFetch } from '@/entities/grades/hooks/useGrades'
 import { useGradesStore } from '@/entities/grades/model/store'
+import { resetHomeworkFetch } from '@/entities/homework/hooks/useHomework'
 import { useHomeworkStore } from '@/entities/homework/model/store'
 import { useLeaderboardStore } from '@/entities/leaderboard/model/store'
 import { useProfileDetailsStore } from '@/entities/profile/model/store'
 import { useReviewStore } from '@/entities/review/model/store'
+import { resetScheduleTodayFetch } from '@/entities/schedule/hooks/useScheduleToday'
 import { useScheduleStore } from '@/entities/schedule/model/store'
+import { resetSubjectsFetch } from '@/entities/subject/hooks/useSubjects'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
 import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
 import { storage } from '@/shared/lib/storage'
 
 export function resetAllStores(): void {
-	// Сторы с reset()
-	useHomeworkStore.getState().reset()
+	resetDashboardFetch()
+	resetGradesFetch()
+	resetHomeworkFetch()
+	resetInitUserFetch()
+	resetScheduleTodayFetch()
+	resetSubjectsFetch()
 
-	// Persist сторы — сбрасываем через setState И чистим localStorage
+	useHomeworkStore.getState().reset()
+	useGradesStore.getState().reset()
+
 	useUserStore.setState({ user: null })
 	useExamStore.setState({ exams: [], status: 'idle', loadedAt: null })
 	useSubjectStore.setState({ subjects: [], status: 'idle', loadedAt: null })
 
-	// Сбрасываем модульные флаги fetchStarted — иначе после смены аккаунта фетч не запустится
-	resetDashboardFetch()
-	resetGradesFetch()
-	resetInitUserFetch()
-
-	// In-memory сторы
 	useDashboardChartsStore.setState({
 		progress: [],
 		attendance: [],
@@ -49,26 +52,9 @@ export function resetAllStores(): void {
 		monthLoadedAt: {},
 	})
 	useProfileDetailsStore.setState({ details: null, status: 'idle' })
-
-	// Grades
-	const gradesState = useGradesStore.getState()
-	if (typeof (gradesState as any).reset === 'function') {
-		;(gradesState as any).reset()
-	} else {
-		useGradesStore.setState({
-			entries: [],
-			status: 'idle',
-			error: null,
-			loadedAt: null,
-			bySubject: {},
-		})
-	}
-
-	// Чистим persist ключи из localStorage
 	;['user-store', 'exam-store', 'subject-store'].forEach(k =>
 		localStorage.removeItem(k),
 	)
 
-	// Чистим кэш
 	storage.clear('cache:')
 }

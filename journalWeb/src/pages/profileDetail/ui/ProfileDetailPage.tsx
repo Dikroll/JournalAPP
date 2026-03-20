@@ -1,12 +1,9 @@
+import { resetAllStores } from '@/app/lib/resetAllStores'
 import { useProfileDetails } from '@/entities/profile'
 import { useAuthStore } from '@/features/auth'
 import { AccountSwitcher } from '@/features/changeUser'
 import { pageConfig } from '@/shared/config'
-import {
-	ProfileAvatar,
-	ProfileInfoCard,
-	ProfileRelativesCard,
-} from '@/widgets'
+import { ProfileAvatar, ProfileInfoCard, ProfileRelativesCard } from '@/widgets'
 import { ArrowLeft, CreditCard, Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -50,7 +47,7 @@ export function ProfileDetailsPage() {
 					Детали профиля
 				</h1>
 
-				{accounts.length > 0 && (
+				{accounts.length >= 0 && (
 					<button
 						onClick={() => setShowSwitcher(true)}
 						className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white/5 border border-white/8 text-[#9CA3AF] text-xs hover:bg-white/8 transition-colors'
@@ -86,7 +83,9 @@ export function ProfileDetailsPage() {
 								</div>
 								<div>
 									<p className='text-sm font-medium text-[#F2F2F2]'>Оплата</p>
-									<p className='text-xs text-[#9CA3AF]'>История и график платежей</p>
+									<p className='text-xs text-[#9CA3AF]'>
+										История и график платежей
+									</p>
 								</div>
 							</div>
 							<ArrowLeft size={16} className='text-[#9CA3AF] rotate-180' />
@@ -99,6 +98,7 @@ export function ProfileDetailsPage() {
 				<AccountSwitcher
 					onClose={() => setShowSwitcher(false)}
 					onAddAccount={handleAddAccount}
+					onReset={resetAllStores}
 				/>
 			)}
 		</div>

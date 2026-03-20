@@ -1,22 +1,10 @@
+import { getDaysUntilDeadline } from '@/shared/utils'
 import { Calendar, Clock } from 'lucide-react'
-
 interface Props {
 	issuedDate: string
 	deadline: string
 	isOverdue: boolean
 	isNew?: boolean
-}
-
-function getDaysUntilDeadline(deadline: string): number | null {
-	try {
-		const deadlineDate = new Date(deadline)
-		if (isNaN(deadlineDate.getTime())) return null
-		const now = new Date()
-		const diffMs = deadlineDate.setHours(0, 0, 0, 0) - now.setHours(0, 0, 0, 0)
-		return Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-	} catch {
-		return null
-	}
 }
 
 export function HomeworkCardDates({

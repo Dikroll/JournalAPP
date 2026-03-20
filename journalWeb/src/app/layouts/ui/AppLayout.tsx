@@ -1,4 +1,4 @@
-import { useMidnightRefresh } from '@/shared/hooks/useMidnightRefresh'
+import { useMidnightRefresh } from '@/app/hooks/useMidnightRefresh'
 import { BottomBar, TopBar } from '@/widgets'
 import { Outlet, useLocation } from 'react-router-dom'
 

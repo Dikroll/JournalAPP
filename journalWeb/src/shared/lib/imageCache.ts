@@ -1,6 +1,10 @@
-const preloaded = new Set<string>()
+import { API_BASE_URL } from '../config/env'
 
-const API_ORIGIN = 'https://msapi-top-journal.ru'
+const API_ORIGIN = API_BASE_URL.startsWith('http')
+	? API_BASE_URL
+	: 'https://msapi-top-journal.ru'
+
+const preloaded = new Set<string>()
 
 export function fixUrl(url: string | null | undefined): string | null {
 	if (!url) return null

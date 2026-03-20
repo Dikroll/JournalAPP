@@ -3,8 +3,8 @@ import type {
 	HomeworkStatus,
 } from '@/entities/homework'
 import { STATUS_CONFIG } from '@/entities/homework'
+import { ShowMoreBtn } from '@/shared/ui'
 import { HomeworkCard } from '@/widgets'
-import { ChevronDown, RefreshCw } from 'lucide-react'
 
 interface Props {
 	status: HomeworkStatus
@@ -45,22 +45,11 @@ export function HomeworkStatusSection({
 			</div>
 
 			{hasMore && (
-				<button
-					type='button'
-					disabled={isLoading}
+				<ShowMoreBtn
 					onClick={onLoadMore}
-					className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors disabled:opacity-50'
-				>
-					{isLoading ? (
-						<>
-							<RefreshCw size={14} className='animate-spin' /> Загрузка...
-						</>
-					) : (
-						<>
-							<ChevronDown size={16} /> Показать ещё ({total - items.length}+)
-						</>
-					)}
-				</button>
+					isLoading={isLoading}
+					remaining={total - items.length}
+				/>
 			)}
 		</div>
 	)

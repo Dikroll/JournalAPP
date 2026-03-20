@@ -18,4 +18,5 @@ export type {
 	HomeworkItem,
 	HomeworkItemWithStatus,
 	HomeworkStatus,
+	UploadFileResponse,
 } from './model/types'

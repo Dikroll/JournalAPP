@@ -1,4 +1,5 @@
 import { useFutureExams } from '@/entities/exam'
+import { formatDate } from '@/shared/utils'
 import { CalendarDays } from 'lucide-react'
 
 export function FutureExams() {
@@ -39,11 +40,7 @@ export function FutureExams() {
 								{exam.spec}
 							</div>
 							<div className='text-app-muted text-xs'>
-								{new Date(exam.date + 'T00:00:00').toLocaleDateString('ru-RU', {
-									day: 'numeric',
-									month: 'long',
-									year: 'numeric',
-								})}
+								{formatDate(exam.date)}
 							</div>
 						</div>
 					</li>

@@ -1,24 +1,11 @@
 import type { GradeEntryExpanded } from '@/entities/grades'
 import { useLazyItems } from '@/shared/hooks'
+import { formatDateRelative } from '@/shared/utils'
 import { useEffect, useRef, useState } from 'react'
 import { GradeEntryRow } from './GradeEntryRow'
 
 interface Props {
 	byDate: Array<{ date: string; items: GradeEntryExpanded[] }>
-}
-
-function formatDate(dateStr: string): string {
-	const date = new Date(`${dateStr}T00:00:00`)
-	const today = new Date()
-	const yesterday = new Date(today)
-	yesterday.setDate(today.getDate() - 1)
-	if (date.toDateString() === today.toDateString()) return 'Сегодня'
-	if (date.toDateString() === yesterday.toDateString()) return 'Вчера'
-	return date.toLocaleDateString('ru-RU', {
-		day: 'numeric',
-		month: 'long',
-		weekday: 'short',
-	})
 }
 
 function DateCard({
@@ -52,7 +39,7 @@ function DateCard({
 	return (
 		<div className='space-y-2'>
 			<div className='text-sm font-medium text-app-muted px-1'>
-				{formatDate(date)}
+				{formatDateRelative(date)}
 			</div>
 			<div
 				ref={cardRef}

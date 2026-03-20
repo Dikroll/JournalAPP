@@ -1,9 +1,3 @@
-export interface UploadFileResponse {
-	filename: string
-	file_path: string
-	tmp_file: string
-}
-
 export interface SubmitHomeworkPayload {
 	id: number
 	stud_answer: string | null

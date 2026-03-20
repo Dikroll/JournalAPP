@@ -1,6 +1,7 @@
 import type { ProfileRelative } from '@/entities/profile'
 import { AtSign, ChevronDown, Home, Phone, Users } from 'lucide-react'
 import { useState } from 'react'
+import { Divider, InfoRow } from './shared/ProfileInfoParts'
 
 function phoneTypeLabel(type: number) {
 	const map: Record<number, string> = {
@@ -9,30 +10,6 @@ function phoneTypeLabel(type: number) {
 		2: 'Рабочий',
 	}
 	return map[type] ?? 'Телефон'
-}
-
-function Divider() {
-	return <div className='h-px bg-app-border' />
-}
-
-function InfoRow({
-	icon,
-	label,
-	value,
-}: {
-	icon: React.ReactNode
-	label: string
-	value: string
-}) {
-	return (
-		<div className='flex items-start gap-3 py-3'>
-			<div className='mt-0.5 text-app-muted'>{icon}</div>
-			<div className='flex-1 min-w-0'>
-				<p className='text-[11px] text-app-muted mb-0.5'>{label}</p>
-				<p className='text-sm font-medium text-app-text break-words'>{value}</p>
-			</div>
-		</div>
-	)
 }
 
 function RelativeItem({

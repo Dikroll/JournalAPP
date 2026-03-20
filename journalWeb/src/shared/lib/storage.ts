@@ -71,4 +71,5 @@ export const CACHE_KEYS = {
 	LEADERBOARD_GROUP: 'cache:leaderboard:group',
 	LEADERBOARD_STREAM: 'cache:leaderboard:stream',
 	REVIEWS: 'cache:reviews',
+	GRADES_ALL: 'cache:grades:all',
 }

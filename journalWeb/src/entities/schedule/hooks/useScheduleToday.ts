@@ -7,6 +7,9 @@ import { useScheduleStore } from '../model/store'
 const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 let fetching = false
+export function resetScheduleTodayFetch() {
+	fetching = false
+}
 
 export function useScheduleToday() {
 	const today = useScheduleStore(s => s.today)

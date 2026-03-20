@@ -1,6 +1,7 @@
+import type { UploadFileResponse } from '@/entities/homework'
 import { api } from '@/shared/api'
 import { apiConfig } from '@/shared/config'
-import type { SubmitHomeworkPayload, UploadFileResponse } from '../model/types'
+import type { SubmitHomeworkPayload } from '../model/types'
 
 export interface EvaluateHomeworkPayload {
 	id: null

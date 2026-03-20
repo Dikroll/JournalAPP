@@ -37,15 +37,7 @@ export function LessonCard({ lesson, isCurrent = false }: Props) {
 						{lesson.lesson}
 					</span>
 				</div>
-				<p
-					className='flex-1 font-semibold text-app-text leading-snug text-[13px]'
-					style={{
-						display: '-webkit-box',
-						WebkitLineClamp: 3,
-						WebkitBoxOrient: 'vertical',
-						overflow: 'hidden',
-					}}
-				>
+				<p className=' line-clamp-3 flex-1 font-semibold text-app-text leading-snug text-[13px]'>
 					{lesson.subject}
 				</p>
 			</div>

@@ -9,6 +9,7 @@ import {
 } from '@/entities/grades'
 import { useSubjects } from '@/entities/subject'
 import { SpecSelector } from '@/features/selectSpec'
+import { SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
 	GradesCalendar,
@@ -19,6 +20,7 @@ import {
 	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
+
 import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
@@ -47,8 +49,8 @@ export function GradesPage() {
 		selectedSubjectCache?.status === 'success'
 			? selectedSubjectCache.entries
 			: selectedSpecId != null
-				? entries.filter(e => e.spec_id === selectedSpecId)
-				: entries
+			? entries.filter(e => e.spec_id === selectedSpecId)
+			: entries
 
 	const { byDate, bySubject, byMonth } = useGradesGroups(sourceEntries)
 
@@ -94,12 +96,7 @@ export function GradesPage() {
 					<GradesExamList />
 				) : isLoading ? (
 					<div className='space-y-3'>
-						{[0, 1, 2].map(i => (
-							<div
-								key={i}
-								className='bg-white/5 rounded-[24px] animate-pulse h-20'
-							/>
-						))}
+						<SkeletonList count={3} height={80} />
 					</div>
 				) : (
 					<>

@@ -1,6 +1,5 @@
+import type { SortKey } from '@/entities/grades'
 import { create } from 'zustand'
-
-export type SortKey = 'alpha' | 'grade-desc' | 'grade-asc'
 
 interface SortSubjectsState {
 	sortKey: SortKey

@@ -1,11 +1,10 @@
 import { ttl } from '@/shared/config'
+import { CACHE_KEYS } from '@/shared/lib'
 import { storage } from '@/shared/lib/storage'
 import { useEffect } from 'react'
 import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
 import type { GradeEntry } from '../model/types'
-
-const CACHE_KEY = 'cache:grades:all'
 
 let fetching = false
 export function resetGradesFetch() {
@@ -24,7 +23,7 @@ export function useGrades() {
 		)
 			return
 
-		const cached = storage.get<GradeEntry[]>(CACHE_KEY)
+		const cached = storage.get<GradeEntry[]>(CACHE_KEYS.GRADES_ALL)
 		if (cached) {
 			update({
 				entries: cached,
@@ -46,7 +45,7 @@ export function useGrades() {
 					loadedAt: Date.now(),
 					error: null,
 				})
-				storage.set(CACHE_KEY, data, ttl.ACTIVITY)
+				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY)
 			})
 			.catch(() => {
 				update({ status: 'error', error: 'Не удалось загрузить оценки' })
@@ -58,7 +57,7 @@ export function useGrades() {
 
 	const refresh = () => {
 		if (fetching) return
-		storage.remove(CACHE_KEY)
+		storage.remove(CACHE_KEYS.GRADES_ALL)
 		fetching = true
 		update({ status: 'loading', error: null })
 		gradesApi
@@ -70,7 +69,7 @@ export function useGrades() {
 					loadedAt: Date.now(),
 					error: null,
 				})
-				storage.set(CACHE_KEY, data, ttl.ACTIVITY)
+				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY)
 			})
 			.catch(() =>
 				update({ status: 'error', error: 'Не удалось загрузить оценки' }),
