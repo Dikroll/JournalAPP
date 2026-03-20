@@ -1,5 +1,5 @@
 import { useUserStore } from '@/entities/user'
-import { isCacheValid } from '@/shared/lib'
+import { isCacheValid, preloadImages } from '@/shared/lib'
 import { useCallback, useEffect, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
@@ -54,13 +54,18 @@ export function useHomework() {
 			setCounters(counters)
 
 			const specsMap = new Map<number, string>()
+			const photoUrls: (string | null)[] = []
+
 			Object.values(items)
 				.flat()
 				.forEach(hw => {
 					if (hw.spec_id != null && hw.spec_name) {
 						specsMap.set(hw.spec_id, hw.spec_name)
 					}
+					// collect all photo_url for preloading
+					if (hw.photo_url) photoUrls.push(hw.photo_url)
 				})
+
 			setKnownSpecs(
 				Array.from(specsMap.entries())
 					.map(([specId, specName]) => ({ specId, specName }))
@@ -70,8 +75,12 @@ export function useHomework() {
 			Object.entries(items).forEach(([statusKey, list]) => {
 				setItems(Number(statusKey), list)
 			})
+
 			setLoadedAt(Date.now())
 			setStatus('success')
+
+			// preload all cover images so switching to photo mode uses browser cache
+			if (photoUrls.length > 0) preloadImages(photoUrls)
 		} catch {
 			setError('Не удалось загрузить домашние задания')
 			setStatus('error')
@@ -96,6 +105,12 @@ export function useHomework() {
 					nextPage,
 				)
 				appendItems(statusKey, newItems, nextPage)
+				// preload photos from newly loaded page
+				const newPhotos = newItems
+					.map(hw => hw.photo_url)
+					.filter(Boolean) as string[]
+				if (newPhotos.length > 0) preloadImages(newPhotos)
+
 				if (newItems.length < PAGE_SIZE) {
 					setExpanded(statusKey, true)
 				}

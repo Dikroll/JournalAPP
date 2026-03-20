@@ -20,6 +20,8 @@ export { HomeworkStatusView } from '@/widgets/HomeworkList/ui/views/HomeworkStat
 export { HomeworkSubjectView } from '@/widgets/HomeworkList/ui/views/HomeworkSubjectView'
 export { HomeworkCard } from './HomeworkList/ui/card/HomeworkCard'
 export { HomeworkCountersBar } from './HomeworkList/ui/shared/HomeworkCounterBar'
+export { HomeworkViewToggle } from './HomeworkList/ui/shared/HomeworkToggleView'
+export type { HomeworkViewMode } from './HomeworkList/ui/shared/HomeworkToggleView'
 // Schedule
 export { ScheduleCalendar } from './Schedule/ScheduleCalendar/ui/ScheduleCalendar'
 export { ScheduleList } from './Schedule/ScheduleList/ui/ScheduleList'

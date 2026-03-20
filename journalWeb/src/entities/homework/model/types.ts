@@ -42,6 +42,10 @@ export interface HomeworkItem {
 	stud_id: number | null
 	stud_file_url: string | null
 	stud_filename: string | null
+	/** Проксированный URL обложки задания (из cover_image апи).
+	 *  Формат: /api/files/<token> — обслуживается через files.py с кэшем 24ч.
+	 *  null если у задания нет обложки. */
+	photo_url: string | null
 }
 
 export interface HomeworkAllResponse {

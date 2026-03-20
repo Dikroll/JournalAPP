@@ -5,6 +5,11 @@ const API_ORIGIN = 'https://msapi-top-journal.ru'
 export function fixUrl(url: string | null | undefined): string | null {
 	if (!url) return null
 
+	// Relative path like /files/<token> — prepend API origin
+	if (url.startsWith('/')) {
+		return `${API_ORIGIN}${url}`
+	}
+
 	try {
 		const parsed = new URL(url)
 		if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {

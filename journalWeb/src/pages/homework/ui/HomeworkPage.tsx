@@ -12,19 +12,30 @@ import {
 	HomeworkStatusView,
 	HomeworkSubjectView,
 } from '@/widgets'
-import { BookOpen, LayoutList } from 'lucide-react'
+import { BookOpen, LayoutGrid, LayoutList, List } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type GroupBy = 'status' | 'subject'
+export type HomeworkViewMode = 'list' | 'photo'
 
-const TABS: { key: GroupBy; label: string; icon: React.ReactNode }[] = [
+const GROUP_TABS: { key: GroupBy; label: string; icon: React.ReactNode }[] = [
 	{ key: 'status', label: 'По статусу', icon: <LayoutList size={13} /> },
 	{ key: 'subject', label: 'По предметам', icon: <BookOpen size={13} /> },
+]
+
+const VIEW_TABS: {
+	key: HomeworkViewMode
+	label: string
+	icon: React.ReactNode
+}[] = [
+	{ key: 'list', label: 'Список', icon: <List size={13} /> },
+	{ key: 'photo', label: 'Фото', icon: <LayoutGrid size={13} /> },
 ]
 
 export function HomeworkPage() {
 	const [groupBy, setGroupBy] = useState<GroupBy>('status')
 	const [selectedSpec, setSelectedSpec] = useState<Subject | null>(null)
+	const [viewMode, setViewMode] = useState<HomeworkViewMode>('list')
 	const { subjects: specList, status: specsStatus } = useSubjects()
 
 	const {
@@ -69,7 +80,7 @@ export function HomeworkPage() {
 
 	return (
 		<div className='min-h-screen text-[#F2F2F2] pb-28'>
-			<div className='p-4 space-y-4'>
+			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
 					<h1 className='text-2xl font-bold'>Домашние задания</h1>
 					<RefreshHomeworkButton />
@@ -84,7 +95,7 @@ export function HomeworkPage() {
 				)}
 
 				<div className='flex gap-2'>
-					{TABS.map(({ key, label, icon }) => (
+					{GROUP_TABS.map(({ key, label, icon }) => (
 						<button
 							key={key}
 							type='button'
@@ -93,6 +104,24 @@ export function HomeworkPage() {
 								groupBy === key
 									? 'bg-white/15 text-[#F2F2F2] border border-white/20'
 									: 'bg-white/5 text-[#6B7280] border border-white/10 hover:text-[#F2F2F2] hover:bg-white/8'
+							}`}
+						>
+							{icon}
+							{label}
+						</button>
+					))}
+				</div>
+
+				<div className='flex gap-0 bg-app-surface border border-app-border rounded-2xl p-1'>
+					{VIEW_TABS.map(({ key, label, icon }) => (
+						<button
+							key={key}
+							type='button'
+							onClick={() => setViewMode(key)}
+							className={`flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl text-xs font-medium transition-all duration-200 ${
+								viewMode === key
+									? 'bg-app-surface-active text-app-text shadow-sm'
+									: 'text-app-muted hover:text-app-text'
 							}`}
 						>
 							{icon}
@@ -116,6 +145,7 @@ export function HomeworkPage() {
 						filterStatus={filterStatus}
 						selectedSpec={selectedSpec}
 						subjectData={selectedSpec ? subjects[selectedSpec.id] : undefined}
+						viewMode={viewMode}
 						onLoadMore={loadMore}
 						onLoadMoreForSubject={loadMoreForSubject}
 					/>
@@ -126,6 +156,7 @@ export function HomeworkPage() {
 						selectedSpec={selectedSpec}
 						specList={specList}
 						subjects={subjects}
+						viewMode={viewMode}
 						onLoadSubject={loadSubject}
 						onLoadMoreForSubject={loadMoreForSubject}
 					/>
