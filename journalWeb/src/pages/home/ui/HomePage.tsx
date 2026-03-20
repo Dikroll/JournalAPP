@@ -12,11 +12,11 @@ export function HomePage() {
 				<DashboardCharts />
 
 				<div className='mt-5 mb-3'>
-					<h1 className='text-lg font-bold leading-tight'>
+					<h1 className='text-lg font-bold leading-tight text-app-text'>
 						Расписание на сегодня
 					</h1>
 					{dateStr && (
-						<p className='text-xs text-[#6B7280] mt-0.5 capitalize'>
+						<p className='text-xs text-app-muted mt-0.5 capitalize'>
 							{formatDateLong(dateStr)}
 						</p>
 					)}
@@ -25,7 +25,7 @@ export function HomePage() {
 				<ScheduleList />
 
 				<div className='mt-5 mb-3'>
-					<h1 className='text-lg font-bold leading-tight'>Будущие экзамены</h1>
+					<h1 className='text-lg font-bold leading-tight text-app-text'>Будущие экзамены</h1>
 				</div>
 
 				<FutureExams />

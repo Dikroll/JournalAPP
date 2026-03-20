@@ -41,21 +41,21 @@ export function StatsCard({
 
 	return (
 		<div
-			className='bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 flex flex-col overflow-hidden aspect-square'
-			style={{ boxShadow: '0 4px 24px 0 rgba(0, 0, 0, 0.3)' }}
+			className='bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border flex flex-col overflow-hidden aspect-square'
+			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
 			<div className='flex flex-col p-4 flex-1'>
 				<div className='flex items-center justify-between mb-2'>
-					<h3 className='text-xs text-[#9CA3AF]'>{title}</h3>
-					{icon && <div className='text-[#9CA3AF]'>{icon}</div>}
+					<h3 className='text-xs text-app-muted'>{title}</h3>
+					{icon && <div className='text-app-muted'>{icon}</div>}
 				</div>
-				<div className='text-2xl font-bold text-[#F2F2F2] mb-1'>{value}</div>
+				<div className='text-2xl font-bold text-app-text mb-1'>{value}</div>
 				{trend !== undefined && (
 					<div className='flex items-center gap-1.5'>
 						<div
 							className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium ${
 								isNeutral
-									? 'bg-white/10 text-[#9CA3AF]'
+									? 'bg-app-surface-strong text-app-muted'
 									: isPositive
 										? 'bg-[#10B981]/10 text-[#10B981]'
 										: 'bg-[#EF4444]/10 text-[#EF4444]'
@@ -66,13 +66,12 @@ export function StatsCard({
 							{trend}%
 						</div>
 						{trendLabel && (
-							<span className='text-[10px] text-[#9CA3AF]'>{trendLabel}</span>
+							<span className='text-[10px] text-app-muted'>{trendLabel}</span>
 						)}
 					</div>
 				)}
 			</div>
 
-			{/* overflow:visible чтобы тултип не обрезался краем карточки */}
 			{data && data.length > 0 && (
 				<div
 					ref={ref}
@@ -103,7 +102,7 @@ export function StatsCard({
 							/>
 							<Tooltip
 								content={<CustomTooltip visible={tooltip.visible} />}
-								cursor={{ stroke: 'rgba(255,255,255,0.08)' }}
+								cursor={{ stroke: 'var(--color-border-strong)' }}
 								wrapperStyle={tooltipWrapperStyle}
 							/>
 						</LineChart>

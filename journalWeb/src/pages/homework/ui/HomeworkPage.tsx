@@ -64,7 +64,7 @@ export function HomeworkPage() {
 	if (status === 'loading') {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
-				<p className='text-[#9CA3AF]'>Загрузка...</p>
+				<p className='text-app-muted'>Загрузка...</p>
 			</div>
 		)
 	}
@@ -72,17 +72,17 @@ export function HomeworkPage() {
 	if (status === 'error') {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen gap-4'>
-				<p className='text-[#DC2626]'>{error}</p>
-				<RefreshHomeworkButton className='flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors' />
+				<p className='text-status-overdue'>{error}</p>
+				<RefreshHomeworkButton className='flex items-center gap-2 px-4 py-2.5 bg-app-surface rounded-2xl text-app-text text-sm border border-app-border transition-colors' />
 			</div>
 		)
 	}
 
 	return (
-		<div className='min-h-screen text-[#F2F2F2] pb-28'>
+		<div className='min-h-screen text-app-text pb-28'>
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
-					<h1 className='text-2xl font-bold'>Домашние задания</h1>
+					<h1 className='text-2xl font-bold text-app-text'>Домашние задания</h1>
 					<RefreshHomeworkButton />
 				</div>
 
@@ -102,8 +102,8 @@ export function HomeworkPage() {
 							onClick={() => setGroupBy(key)}
 							className={`flex-1 flex items-center justify-center gap-1.5 h-10 px-2 rounded-2xl text-xs font-medium transition-colors whitespace-nowrap ${
 								groupBy === key
-									? 'bg-white/15 text-[#F2F2F2] border border-white/20'
-									: 'bg-white/5 text-[#6B7280] border border-white/10 hover:text-[#F2F2F2] hover:bg-white/8'
+									? 'bg-app-surface-strong text-app-text border border-app-border-strong'
+									: 'bg-app-surface text-app-muted border border-app-border hover:text-app-text hover:bg-app-surface-hover'
 							}`}
 						>
 							{icon}

@@ -31,13 +31,13 @@ export function ScheduleCalendar() {
 
 					return (
 						<div
-							onClick={() => setSelectedDate(dateStr)}
+							onClick={() => hasLesson && setSelectedDate(dateStr)}
 							className={`
 								w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
-								transition-colors relative cursor-pointer
+								transition-colors relative
 								${isSelected ? 'bg-brand text-white' : ''}
 								${!isSelected && isGray ? 'text-app-faint' : ''}
-								${!isSelected && !isGray ? 'text-app-text hover:bg-app-surface-hover' : ''}
+								${!isSelected && !isGray ? 'text-app-text hover:bg-app-surface-hover cursor-pointer' : 'cursor-default'}
 							`}
 						>
 							{day}

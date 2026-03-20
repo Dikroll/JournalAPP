@@ -2,10 +2,10 @@ import { useExamResults } from '@/entities/exam/hooks/useExamResults'
 import { CheckCircle, Clock } from 'lucide-react'
 
 function getMarkColor(mark: number) {
-  if (mark >= 4) return 'text-[#10B981] bg-[#10B981]/10 border-[#10B981]/30'
-  if (mark === 3) return 'text-[#F59E0B] bg-[#F59E0B]/10 border-[#F59E0B]/30'
-  if (mark > 0) return 'text-[#DC2626] bg-[#DC2626]/10 border-[#DC2626]/30'
-  return 'text-[#9CA3AF] bg-white/5 border-white/10'
+  if (mark >= 4) return 'text-status-checked bg-checked-subtle border-status-checked/30'
+  if (mark === 3) return 'text-status-pending bg-pending-subtle border-status-pending/30'
+  if (mark > 0) return 'text-status-overdue bg-overdue-bg border-status-overdue/30'
+  return 'text-app-muted bg-app-surface-strong border-app-border'
 }
 
 function formatDate(dateStr: string | null) {
@@ -29,7 +29,7 @@ export function GradesExamList() {
   }
 
   if (status === 'error') {
-    return <p className='text-[#DC2626] text-sm text-center py-8'>Не удалось загрузить экзамены</p>
+    return <p className='text-status-overdue text-sm text-center py-8'>Не удалось загрузить экзамены</p>
   }
 
   if (exams.length === 0) {
@@ -51,18 +51,18 @@ export function GradesExamList() {
                 <div className='flex items-center justify-between py-2'>
                   <div className='flex-1 min-w-0 mr-3'>
                     <div className='flex items-center gap-2 mb-1'>
-                      <h4 className='text-sm font-semibold text-[#F2F2F2] truncate'>{exam.spec}</h4>
-                      <span className='text-xs text-[#6B7280] flex-shrink-0'>{exam.mark_type}</span>
+                      <h4 className='text-sm font-semibold text-app-text truncate'>{exam.spec}</h4>
+                      <span className='text-xs text-app-muted flex-shrink-0'>{exam.mark_type}</span>
                     </div>
-                    <p className='text-xs text-[#9CA3AF] truncate mb-1'>{exam.teacher}</p>
+                    <p className='text-xs text-app-muted truncate mb-1'>{exam.teacher}</p>
                     {exam.date && (
                       <div className='flex items-center gap-1'>
-                        <CheckCircle size={12} className='text-[#10B981]' />
-                        <span className='text-xs text-[#10B981]'>{formatDate(exam.date)}</span>
+                        <CheckCircle size={12} className='text-status-checked' />
+                        <span className='text-xs text-status-checked'>{formatDate(exam.date)}</span>
                       </div>
                     )}
                     {exam.comment && (
-                      <p className='text-xs text-[#9CA3AF] mt-1 truncate'>{exam.comment}</p>
+                      <p className='text-xs text-app-muted mt-1 truncate'>{exam.comment}</p>
                     )}
                   </div>
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border ${getMarkColor(exam.mark)}`}>
@@ -84,11 +84,11 @@ export function GradesExamList() {
                 {idx > 0 && <div className='border-t border-app-border my-1' />}
                 <div className='flex items-center justify-between py-2'>
                   <div className='flex-1 min-w-0 mr-3'>
-                    <h4 className='text-sm font-semibold text-[#F2F2F2] truncate mb-1'>{exam.spec}</h4>
-                    <p className='text-xs text-[#9CA3AF] truncate'>{exam.teacher}</p>
+                    <h4 className='text-sm font-semibold text-app-text truncate mb-1'>{exam.spec}</h4>
+                    <p className='text-xs text-app-muted truncate'>{exam.teacher}</p>
                   </div>
-                  <div className='w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/10'>
-                    <Clock size={16} className='text-[#9CA3AF]' />
+                  <div className='w-10 h-10 rounded-xl flex items-center justify-center bg-app-surface-strong border border-app-border'>
+                    <Clock size={16} className='text-app-muted' />
                   </div>
                 </div>
               </div>

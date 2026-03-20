@@ -29,24 +29,24 @@ export function MonthGrid({ year, month, onPrevMonth, onNextMonth, renderDay }: 
 
   return (
     <div
-      className="bg-white/5 backdrop-blur-xl rounded-[24px] p-4 border border-white/10"
-      style={{ boxShadow: "0 4px 24px 0 rgba(0,0,0,0.3)" }}
+      className="bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border"
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="flex items-center justify-between mb-4">
         <button
           type="button"
           onClick={onPrevMonth}
-          className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-[#9CA3AF] transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors"
         >
           <ChevronLeft size={16} />
         </button>
-        <span className="text-sm font-semibold text-[#F2F2F2]">
+        <span className="text-sm font-semibold text-app-text">
           {RU_MONTHS[month]} {year}
         </span>
         <button
           type="button"
           onClick={onNextMonth}
-          className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-[#9CA3AF] transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors"
         >
           <ChevronRight size={16} />
         </button>
@@ -54,7 +54,7 @@ export function MonthGrid({ year, month, onPrevMonth, onNextMonth, renderDay }: 
 
       <div className="grid grid-cols-7 mb-1">
         {RU_DAYS_SHORT.map((d) => (
-          <div key={d} className="text-center text-[10px] text-[#6B7280] font-medium py-1">{d}</div>
+          <div key={d} className="text-center text-[10px] text-app-muted font-medium py-1">{d}</div>
         ))}
       </div>
 

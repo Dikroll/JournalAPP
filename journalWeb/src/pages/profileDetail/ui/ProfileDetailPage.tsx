@@ -1,5 +1,5 @@
 import { useProfileDetails } from '@/entities/profile'
-import { LogoutButton, useAuthStore } from '@/features/auth'
+import { useAuthStore } from '@/features/auth'
 import { AccountSwitcher } from '@/features/changeUser'
 import { pageConfig } from '@/shared/config'
 import {
@@ -7,9 +7,9 @@ import {
 	ProfileInfoCard,
 	ProfileRelativesCard,
 } from '@/widgets'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, CreditCard, Users } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Skeleton() {
 	return (
@@ -76,8 +76,21 @@ export function ProfileDetailsPage() {
 						<ProfileInfoCard details={details} />
 						<ProfileRelativesCard relatives={details.relatives} />
 
-						{/* добавили logout из первого варианта */}
-						<LogoutButton />
+						<Link
+							to={pageConfig.payment}
+							className='flex items-center justify-between bg-white/5 rounded-[20px] p-4 border border-white/10 active:scale-95 transition-transform'
+						>
+							<div className='flex items-center gap-3'>
+								<div className='w-9 h-9 rounded-[12px] bg-white/5 border border-white/10 flex items-center justify-center'>
+									<CreditCard size={18} className='text-[#9CA3AF]' />
+								</div>
+								<div>
+									<p className='text-sm font-medium text-[#F2F2F2]'>Оплата</p>
+									<p className='text-xs text-[#9CA3AF]'>История и график платежей</p>
+								</div>
+							</div>
+							<ArrowLeft size={16} className='text-[#9CA3AF] rotate-180' />
+						</Link>
 					</>
 				)}
 			</div>

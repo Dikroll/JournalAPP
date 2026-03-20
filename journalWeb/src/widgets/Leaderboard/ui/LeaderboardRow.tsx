@@ -36,19 +36,14 @@ const RANK_COLORS: Record<number, string> = {
 	3: 'text-[#CD7F32]',
 }
 
-const AVATAR_CLASS: Record<number, string> = {
-	1: 'bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/30',
-	2: 'bg-[#C0C0C0]/10 text-[#C0C0C0] border-[#C0C0C0]/30',
-	3: 'bg-[#CD7F32]/10 text-[#CD7F32] border-[#CD7F32]/30',
-}
-
 export const LeaderboardRow = memo(function LeaderboardRow({
 	student,
 	isMe,
 }: Props) {
 	const rankColor =
 		RANK_COLORS[student.position] ??
-		(isMe ? 'text-[#F29F05]' : 'text-[#9CA3AF]')
+		(isMe ? 'text-[#F29F05]' : 'text-app-muted')
+
 	const shortName = student.full_name
 		.split(' ')
 		.map((p, i) => (i === 0 ? p : p[0] + '.'))
@@ -58,13 +53,11 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 		.map(p => p[0])
 		.join('')
 		.slice(0, 2)
-	const fallbackClass =
-		AVATAR_CLASS[student.position] ??
-		(isMe
-			? 'bg-[#F29F05]/10 text-[#F2F2F2] border-[#F29F05]/30'
-			: 'bg-white/10 text-[#F2F2F2] border-white/10')
 
-	// Фиксируем localhost:8000 → реальный хост
+	const fallbackClass = isMe
+		? 'bg-[#F29F05]/10 text-[#F29F05] border-[#F29F05]/30'
+		: 'bg-app-surface-strong text-app-text border-app-border'
+
 	const photoUrl = getCachedImageUrl(student.photo_url)
 
 	return (
@@ -72,17 +65,15 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 			className={`rounded-[18px] p-3 border flex items-center gap-3 ${
 				isMe
 					? 'bg-[#F29F05]/10 border-[#F29F05]/30'
-					: 'bg-white/5 border-white/10'
+					: 'bg-app-surface border-app-border'
 			}`}
 			style={{
 				boxShadow: isMe
 					? '0 4px 20px 0 rgba(242,159,5,0.15)'
-					: '0 2px 12px 0 rgba(0,0,0,0.2)',
+					: 'var(--shadow-card)',
 			}}
 		>
-			<span
-				className={`w-6 text-center text-base font-bold shrink-0 ${rankColor}`}
-			>
+			<span className={`w-6 text-center text-base font-bold shrink-0 ${rankColor}`}>
 				{student.position}
 			</span>
 
@@ -96,7 +87,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 						loading={student.position <= 3 ? 'eager' : 'lazy'}
 						fetchPriority={student.position === 1 ? 'high' : 'auto'}
 						className={`w-10 h-10 rounded-full object-cover border-2 ${
-							isMe ? 'border-[#F29F05]/50' : 'border-white/10'
+							isMe ? 'border-[#F29F05]/50' : 'border-app-border'
 						}`}
 					/>
 				) : (
@@ -110,11 +101,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 			</div>
 
 			<div className='flex-1 min-w-0'>
-				<p
-					className={`text-sm font-semibold truncate ${
-						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
-					}`}
-				>
+				<p className={`text-sm font-semibold truncate ${isMe ? 'text-[#F29F05]' : 'text-app-text'}`}>
 					{shortName}
 					{isMe ? ' (Вы)' : ''}
 				</p>
@@ -124,18 +111,11 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border shrink-0 ${
 					isMe
 						? 'bg-[#F29F05]/20 border-[#F29F05]/40'
-						: 'bg-white/5 border-white/10'
+						: 'bg-app-surface-strong border-app-border'
 				}`}
 			>
-				<Coins
-					size={13}
-					className={isMe ? 'text-[#FFD700]' : 'text-[#F29F05]'}
-				/>
-				<span
-					className={`text-sm font-bold ${
-						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
-					}`}
-				>
+				<Coins size={13} className={isMe ? 'text-[#FFD700]' : 'text-[#F29F05]'} />
+				<span className={`text-sm font-bold ${isMe ? 'text-[#F29F05]' : 'text-app-text'}`}>
 					{student.points.toLocaleString()}
 				</span>
 			</div>

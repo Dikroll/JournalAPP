@@ -13,29 +13,25 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 			<div className='flex-1 min-w-0 mr-3'>
 				<div className='flex items-center gap-2 mb-1'>
 					{showSubject && (
-						<h4 className='text-sm font-semibold text-[#F2F2F2] truncate'>
+						<h4 className='text-sm font-semibold text-app-text truncate'>
 							{entry.spec_name}
 						</h4>
 					)}
-					<span className='text-xs text-[#6B7280] flex-shrink-0'>
+					<span className='text-xs text-app-muted flex-shrink-0'>
 						Пара {entry.lesson_number}
 					</span>
 				</div>
-				<p className='text-xs text-[#9CA3AF] truncate mb-1.5'>{entry.theme}</p>
+				<p className='text-xs text-app-muted truncate mb-1.5'>{entry.theme}</p>
 				<div className='flex items-center gap-2 flex-wrap'>
 					{entry.attended ? (
 						<div className='flex items-center gap-1'>
-							<CheckCircle size={12} className='text-[#10B981]' />
-							<span className='text-xs font-medium text-[#10B981]'>
-								Посетил
-							</span>
+							<CheckCircle size={12} className='text-status-checked' />
+							<span className='text-xs font-medium text-status-checked'>Посетил</span>
 						</div>
 					) : (
 						<div className='flex items-center gap-1'>
-							<XCircle size={12} className='text-[#DC2626]' />
-							<span className='text-xs font-medium text-[#DC2626]'>
-								Пропуск
-							</span>
+							<XCircle size={12} className='text-status-overdue' />
+							<span className='text-xs font-medium text-status-overdue'>Пропуск</span>
 						</div>
 					)}
 					{entry.flatMarks.map(({ type }) => (
@@ -51,20 +47,18 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 
 			<div className='flex items-center gap-1 flex-shrink-0'>
 				{!entry.attended ? (
-					<div className='w-10 h-10 rounded-xl flex items-center justify-center bg-[#DC2626]/10 border border-[#DC2626]/30'>
-						<XCircle size={20} className='text-[#DC2626]' />
+					<div className='w-10 h-10 rounded-xl flex items-center justify-center bg-overdue-bg border border-status-overdue/30'>
+						<XCircle size={20} className='text-status-overdue' />
 					</div>
 				) : entry.flatMarks.length === 0 ? (
-					<div className='w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 border border-white/10'>
-						<Clock size={16} className='text-[#9CA3AF]' />
+					<div className='w-10 h-10 rounded-xl flex items-center justify-center bg-app-surface-strong border border-app-border'>
+						<Clock size={16} className='text-app-muted' />
 					</div>
 				) : (
 					entry.flatMarks.map(({ type, value }) => (
 						<div
 							key={type}
-							className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border ${getGradeColor(
-								value,
-							)}`}
+							className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border ${getGradeColor(value)}`}
 						>
 							{value}
 						</div>
