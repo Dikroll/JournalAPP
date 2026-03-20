@@ -26,7 +26,7 @@ class ApiConfig {
 	readonly HOMEWORK_COUNTERS = '/homework/counters'
 	readonly HOMEWORK_LIST = '/homework/list'
 	readonly HOMEWORK_ALL = '/homework/all'
-	readonly HOMEWORK_EVALUATE: '/homework/evaluate'
+	readonly HOMEWORK_EVALUATE = '/homework/evaluate'
 	readonly HOMEWORK_SYNC = '/homework/sync'
 	readonly HOMEWORK_SUBMIT = '/homework/submit'
 	readonly HOMEWORK_FILE_UPLOAD = '/homework/upload-file'
@@ -48,6 +48,7 @@ class ApiConfig {
 	readonly PAYMENT_SCHEDULE = '/payment/schedule'
 	readonly PAYMENT_HISTORY = '/payment/history'
 	readonly PAYMENT_SUMMARY = '/payment/summary'
+	readonly PAYMENT_INDEX = '/payment/index'
 
 	// feedback
 	readonly FEEDBACK_PENDING = '/feedback/pending'
@@ -66,6 +67,8 @@ class ApiConfig {
 	readonly LIBRARY_COUNTERS = '/library/counters'
 	readonly LIBRARY_MATERIALS = '/library/materials'
 	readonly LIBRARY_MATERIALS_ALL = '/library/materials/all'
+	//examProgress
+	readonly PROGRESS_EXAMS = '/progress/exams'
 }
 
 export const apiConfig = new ApiConfig()

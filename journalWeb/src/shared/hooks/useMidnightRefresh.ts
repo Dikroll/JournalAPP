@@ -2,7 +2,6 @@ import { useGradesStore } from '@/entities/grades'
 import { useScheduleStore } from '@/entities/schedule'
 import { useEffect, useRef } from 'react'
 
-/** Локальная дата клиента 'YYYY-MM-DD' — без UTC сдвига */
 function getLocalDateString() {
 	const now = new Date()
 	const y = now.getFullYear()
@@ -24,7 +23,6 @@ export function useMidnightRefresh() {
 	const lastDateRef = useRef(getLocalDateString())
 
 	useEffect(() => {
-		// Проверяем дату при возврате на вкладку — никаких запросов, только сравнение строк
 		function handleVisibilityChange() {
 			if (document.visibilityState !== 'visible') return
 			const today = getLocalDateString()
@@ -34,7 +32,6 @@ export function useMidnightRefresh() {
 			}
 		}
 
-		// Таймер до локальной полуночи — если вкладка открыта всю ночь
 		function scheduleNextMidnight() {
 			const now = new Date()
 			const tomorrow = new Date(

@@ -11,14 +11,18 @@ export default defineConfig({
 		},
 	},
 	server: {
-		host: true,
-		port: 5173,
 		proxy: {
-			'^/(auth|user|schedule|dashboard|homework|news|reviews|payment|feedback|market|library|progress|health|api)':
-				{
-					target: 'http://backend:8000',
-					changeOrigin: true,
-				},
+			'/api': {
+				target: 'https://msapi-top-journal.ru',
+				changeOrigin: true,
+				rewrite: path => path.replace(/^\/api/, ''),
+			},
+			// Файлы тоже проксируем — бэкенд отдаёт localhost:8000/files/...
+			// fixUrl заменяет хост на localhost:5173, Vite проксирует дальше
+			'/files': {
+				target: 'https://msapi-top-journal.ru',
+				changeOrigin: true,
+			},
 		},
 	},
 })

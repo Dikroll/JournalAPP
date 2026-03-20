@@ -6,6 +6,7 @@ export { TopBar } from './TopBar/ui/TopBar'
 export { DashboardCharts } from './DashboardCharts/ui/DashboardCharts'
 
 // Grades
+export { GradesExamList } from './Grades/GradesList/ui/GradesExamList'
 export type { Tab } from '@/widgets/Grades/GradesTabs/ui/GradesTabs'
 
 export { GradesCharts } from './Grades/GradesCharts/ui/GradesCharts'
@@ -25,7 +26,7 @@ export { ScheduleCalendar } from './Schedule/ScheduleCalendar/ui/ScheduleCalenda
 export { ScheduleList } from './Schedule/ScheduleList/ui/ScheduleList'
 
 // Exams
-export { FutureExams } from './FeatureExams/ui/FeatuerExams'
+export { FutureExams } from './FutureExams/ui/FutureExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'

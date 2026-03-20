@@ -24,8 +24,8 @@ export function HomeworkCard({ hw }: Props) {
 	const cardBg = gradeStyle
 		? gradeStyle.bg
 		: isOverdue
-			? 'bg-[#DC2626]/5'
-			: 'bg-white/5'
+		? 'bg-overdue-subtle'
+		: 'bg-app-surface'
 
 	const hasComment = !!hw.comment
 	const commentAlwaysVisible = isReturned
@@ -33,7 +33,7 @@ export function HomeworkCard({ hw }: Props) {
 	return (
 		<div
 			className={`${cardBg} backdrop-blur-xl rounded-[24px] p-5 border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0`}
-			style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)' }}
+			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
 			<HomeworkCardHeader hw={hw} gradeStyle={gradeStyle} grade={grade} />
 
@@ -50,13 +50,15 @@ export function HomeworkCard({ hw }: Props) {
 						<button
 							type='button'
 							onClick={() => setCommentOpen(v => !v)}
-							className='flex items-center gap-1.5 text-xs text-[#F29F05] hover:text-[#F29F05]/80 transition-colors mb-2'
+							className='flex items-center gap-1.5 text-xs text-status-comment hover:opacity-80 transition-opacity mb-2'
 						>
 							<MessageSquare size={13} />
 							<span>Комментарий преподавателя</span>
 							<ChevronDown
 								size={13}
-								className={`transition-transform duration-200 ${commentOpen ? 'rotate-180' : ''}`}
+								className={`transition-transform duration-200 ${
+									commentOpen ? 'rotate-180' : ''
+								}`}
 							/>
 						</button>
 					)}
@@ -64,11 +66,11 @@ export function HomeworkCard({ hw }: Props) {
 						<div
 							className={`p-3 rounded-2xl border ${
 								isReturned
-									? 'bg-[#6B7280]/10 border-[#6B7280]/30'
-									: 'bg-[#F29F05]/10 border-[#F29F05]/20'
+									? 'bg-returned-subtle border-returned-border'
+									: 'bg-comment-subtle border-comment-border'
 							}`}
 						>
-							<p className='text-sm text-[#F2F2F2]'>{hw.comment}</p>
+							<p className='text-sm text-app-text'>{hw.comment}</p>
 						</div>
 					)}
 				</div>

@@ -12,6 +12,7 @@ import { SpecSelector } from '@/features/selectSpec'
 import type { Tab } from '@/widgets'
 import {
 	GradesCalendar,
+	GradesExamList,
 	GradesHeader,
 	GradesRecentList,
 	GradesSubjectList,
@@ -89,7 +90,9 @@ export function GradesPage() {
 			</div>
 
 			<div className='px-4'>
-				{isLoading ? (
+				{activeTab === 'exams' ? (
+					<GradesExamList />
+				) : isLoading ? (
 					<div className='space-y-3'>
 						{[0, 1, 2].map(i => (
 							<div

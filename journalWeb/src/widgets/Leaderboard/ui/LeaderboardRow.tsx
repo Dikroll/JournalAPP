@@ -1,4 +1,5 @@
 import type { LeaderboardStudent } from '@/entities/leaderboard'
+import { getCachedImageUrl } from '@/shared/lib'
 import { Coins, Crown, Medal } from 'lucide-react'
 import { memo } from 'react'
 
@@ -63,6 +64,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 			? 'bg-[#F29F05]/10 text-[#F2F2F2] border-[#F29F05]/30'
 			: 'bg-white/10 text-[#F2F2F2] border-white/10')
 
+	// Фиксируем localhost:8000 → реальный хост
+	const photoUrl = getCachedImageUrl(student.photo_url)
+
 	return (
 		<div
 			className={`rounded-[18px] p-3 border flex items-center gap-3 ${
@@ -83,9 +87,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 			</span>
 
 			<div className='relative shrink-0'>
-				{student.photo_url ? (
+				{photoUrl ? (
 					<img
-						src={student.photo_url}
+						src={photoUrl}
 						alt={student.full_name}
 						width={40}
 						height={40}
@@ -107,7 +111,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 
 			<div className='flex-1 min-w-0'>
 				<p
-					className={`text-sm font-semibold truncate ${isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'}`}
+					className={`text-sm font-semibold truncate ${
+						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
+					}`}
 				>
 					{shortName}
 					{isMe ? ' (Вы)' : ''}
@@ -126,7 +132,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 					className={isMe ? 'text-[#FFD700]' : 'text-[#F29F05]'}
 				/>
 				<span
-					className={`text-sm font-bold ${isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'}`}
+					className={`text-sm font-bold ${
+						isMe ? 'text-[#F29F05]' : 'text-[#F2F2F2]'
+					}`}
 				>
 					{student.points.toLocaleString()}
 				</span>

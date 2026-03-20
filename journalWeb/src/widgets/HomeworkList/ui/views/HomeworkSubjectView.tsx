@@ -9,7 +9,6 @@ import {
 	STATUS_KEY_MAP,
 	STATUS_ORDER,
 } from '@/entities/homework'
-
 import type { Subject } from '@/entities/subject'
 import { HomeworkCard } from '@/widgets'
 import { ChevronDown, RefreshCw } from 'lucide-react'
@@ -40,7 +39,7 @@ export function HomeworkSubjectView({
 		: Object.keys(bySubject).sort((a, b) => a.localeCompare(b, 'ru'))
 
 	if (!specNames.length) {
-		return <p className='text-[#9CA3AF] text-sm'>Нет данных по предметам</p>
+		return <p className='text-app-muted text-sm'>Нет данных по предметам</p>
 	}
 
 	return (
@@ -59,7 +58,7 @@ export function HomeworkSubjectView({
 
 				return (
 					<div key={specName}>
-						<h2 className='text-base font-bold text-[#F2F2F2] mb-3'>
+						<h2 className='text-base font-bold text-app-text mb-3'>
 							{specName}
 						</h2>
 
@@ -88,7 +87,7 @@ export function HomeworkSubjectView({
 
 							return (
 								<div key={s} className='mb-4'>
-									<h3 className='text-sm text-[#9CA3AF] flex items-center gap-1.5 mb-2'>
+									<h3 className='text-sm text-app-muted flex items-center gap-1.5 mb-2'>
 										<Icon size={13} className={textColor} />
 										{label}
 										<span className='text-xs'>
@@ -110,7 +109,7 @@ export function HomeworkSubjectView({
 													? onLoadSubject(specId, specName)
 													: onLoadMoreForSubject(specId, numKey)
 											}
-											className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm text-[#9CA3AF] hover:text-[#F2F2F2] transition-colors disabled:opacity-50'
+											className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors disabled:opacity-50'
 										>
 											{isLoadingSubject ? (
 												<>

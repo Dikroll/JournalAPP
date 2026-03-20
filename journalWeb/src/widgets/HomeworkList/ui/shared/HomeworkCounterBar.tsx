@@ -10,43 +10,43 @@ const ITEMS = [
 	{
 		key: 'total',
 		label: 'Всего',
-		color: 'text-[#F2F2F2]',
-		ring: 'ring-white/40',
+		color: 'text-app-text',
+		ring: 'ring-app-border-strong',
 		status: null,
 	},
 	{
 		key: 'new',
 		label: 'Новых',
-		color: 'text-[#3B82F6]',
-		ring: 'ring-[#3B82F6]',
+		color: 'text-status-new',
+		ring: 'ring-status-new',
 		status: 'new' as HomeworkStatus,
 	},
 	{
 		key: 'pending',
 		label: 'На проверке',
-		color: 'text-[#F59E0B]',
-		ring: 'ring-[#F59E0B]',
+		color: 'text-status-pending',
+		ring: 'ring-status-pending',
 		status: 'pending' as HomeworkStatus,
 	},
 	{
 		key: 'checked',
 		label: 'Проверено',
-		color: 'text-[#10B981]',
-		ring: 'ring-[#10B981]',
+		color: 'text-status-checked',
+		ring: 'ring-status-checked',
 		status: 'checked' as HomeworkStatus,
 	},
 	{
 		key: 'overdue',
 		label: 'Просрочено',
-		color: 'text-[#DC2626]',
-		ring: 'ring-[#DC2626]',
+		color: 'text-status-overdue',
+		ring: 'ring-status-overdue',
 		status: 'overdue' as HomeworkStatus,
 	},
 	{
 		key: 'returned',
 		label: 'Возвращено',
-		color: 'text-[#6B7280]',
-		ring: 'ring-[#6B7280]',
+		color: 'text-status-returned',
+		ring: 'ring-status-returned',
 		status: 'returned' as HomeworkStatus,
 	},
 ] as const
@@ -69,14 +69,14 @@ export function HomeworkCountersBar({
 							className={[
 								'flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 active:scale-95',
 								isActive
-									? `bg-white/10 ring-2 ${ring}`
-									: 'bg-white/5 border border-white/10 hover:bg-white/8',
+									? `bg-app-surface-active ring-2 ${ring}`
+									: 'bg-app-surface border border-app-border hover:bg-app-surface-hover',
 							].join(' ')}
 						>
 							<div className={`text-lg font-bold ${color}`}>
 								{counters[key]}
 							</div>
-							<div className='text-xs text-[#9CA3AF]'>{label}</div>
+							<div className='text-xs text-app-muted'>{label}</div>
 						</button>
 					)
 				})}

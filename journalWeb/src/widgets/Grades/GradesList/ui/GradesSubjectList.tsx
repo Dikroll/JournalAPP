@@ -28,7 +28,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 	const { visibleCount, sentinelRef } = useLazyItems(sorted.length)
 
 	if (bySubject.length === 0) {
-		return <p className='text-[#9CA3AF] text-sm text-center py-8'>Нет данных</p>
+		return <p className='text-app-muted text-sm text-center py-8'>Нет данных</p>
 	}
 
 	return (
@@ -38,15 +38,15 @@ export function GradesSubjectList({ bySubject }: Props) {
 			{sorted.slice(0, visibleCount).map(subj => (
 				<div
 					key={subj.spec_id}
-					className='bg-white/5 backdrop-blur-xl rounded-[24px] p-4 border border-white/10'
-					style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)' }}
+					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border'
+					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-start justify-between gap-3 mb-4'>
-						<h3 className='text-sm font-semibold text-[#F2F2F2] leading-snug'>
+						<h3 className='text-sm font-semibold text-app-text leading-snug'>
 							{subj.spec_name}
 						</h3>
-						<div className='shrink-0 px-3 py-1.5 rounded-xl bg-[#F29F05]/20 border border-[#F29F05]/30'>
-							<span className='text-lg font-bold text-[#F29F05]'>
+						<div className='shrink-0 px-3 py-1.5 rounded-xl bg-comment-subtle border border-comment-border'>
+							<span className='text-lg font-bold text-status-comment'>
 								{subj.averageGrade > 0 ? subj.averageGrade.toFixed(1) : '—'}
 							</span>
 						</div>
@@ -65,19 +65,19 @@ export function GradesSubjectList({ bySubject }: Props) {
 												type === 'final'
 													? 'bg-[#A855F7]/20 border-[#A855F7]'
 													: value >= 5
-														? 'bg-[#10B981]/20 border-[#10B981]'
-														: value >= 4
-															? 'bg-[#3B82F6]/20 border-[#3B82F6]'
-															: value >= 3
-																? 'bg-[#F59E0B]/20 border-[#F59E0B]'
-																: 'bg-[#DC2626]/20 border-[#DC2626]'
+													? 'bg-checked-subtle border-status-checked'
+													: value >= 4
+													? 'bg-new-subtle border-status-new'
+													: value >= 3
+													? 'bg-pending-subtle border-status-pending'
+													: 'bg-overdue-bg border-status-overdue'
 											}`}
 										>
-											<span className='text-white font-bold text-lg'>
+											<span className='text-app-text font-bold text-lg'>
 												{value}
 											</span>
 										</div>
-										<div className='text-xs text-[#9CA3AF] whitespace-nowrap'>
+										<div className='text-xs text-app-muted whitespace-nowrap'>
 											{entry.date.slice(8, 10)}.{entry.date.slice(5, 7)}
 										</div>
 										<span
@@ -98,7 +98,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 					{[0, 1].map(i => (
 						<div
 							key={i}
-							className='bg-white/5 rounded-[24px] animate-pulse h-24'
+							className='bg-app-surface rounded-[24px] animate-pulse h-24'
 						/>
 					))}
 				</div>

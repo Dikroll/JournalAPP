@@ -1,20 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 @import './theme.css';
 
-
 ::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
-html, body {
-  scrollbar-width: none; 
-  overflow-x: hidden;
-  overscroll-behavior-x: none;
-
-}
+html,
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	scrollbar-width: none;
+	overflow-x: hidden;
+	overscroll-behavior-x: none;
+
+	padding-top: env(safe-area-inset-top);
+	padding-bottom: env(safe-area-inset-bottom);
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		sans-serif;
+}
+
+* {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+input,
+textarea,
+[contenteditable] {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+*:focus,
+*:focus-visible {
+	outline: none !important;
 }
 
 svg:focus,
@@ -23,5 +48,5 @@ svg:focus-visible,
 .recharts-wrapper:focus-visible,
 .recharts-wrapper *:focus,
 .recharts-wrapper *:focus-visible {
-  outline: none !important;
+	outline: none !important;
 }

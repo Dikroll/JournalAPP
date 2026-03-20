@@ -41,10 +41,10 @@ export function HomeworkStatusView({
 					const { label, icon: Icon, textColor } = STATUS_CONFIG[s]
 					return (
 						<div key={s}>
-							<h2 className='text-base font-semibold text-[#F2F2F2] mb-3 flex items-center gap-2'>
+							<h2 className='text-base font-semibold text-app-text mb-3 flex items-center gap-2'>
 								<Icon size={18} className={textColor} />
 								{label}
-								<span className='text-sm text-[#9CA3AF] font-normal'>
+								<span className='text-sm text-app-muted font-normal'>
 									({group.total}
 									{group.hasMore ? '+' : ''})
 								</span>
@@ -72,7 +72,7 @@ export function HomeworkStatusView({
 				{[0, 1, 2].map(i => (
 					<div
 						key={i}
-						className='bg-white/5 rounded-[20px] h-24 animate-pulse'
+						className='bg-app-surface rounded-[20px] h-24 animate-pulse'
 					/>
 				))}
 			</div>
@@ -98,10 +98,10 @@ export function HomeworkStatusView({
 
 				return (
 					<div key={s}>
-						<h2 className='text-base font-semibold text-[#F2F2F2] mb-3 flex items-center gap-2'>
+						<h2 className='text-base font-semibold text-app-text mb-3 flex items-center gap-2'>
 							<Icon size={18} className={textColor} />
 							{label}
-							<span className='text-sm text-[#9CA3AF] font-normal'>
+							<span className='text-sm text-app-muted font-normal'>
 								({total}
 								{hasMore ? '+' : ''})
 							</span>
@@ -128,7 +128,7 @@ function ShowMoreBtn({ onClick }: { onClick: () => void }) {
 		<button
 			type='button'
 			onClick={onClick}
-			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm text-[#9CA3AF] hover:text-[#F2F2F2] transition-colors'
+			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors'
 		>
 			<ChevronDown size={16} />
 			Показать ещё

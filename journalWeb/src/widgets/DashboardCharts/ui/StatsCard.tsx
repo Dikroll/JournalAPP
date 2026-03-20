@@ -10,7 +10,7 @@ interface StatsCardProps {
 	value: string | number
 	trend?: number
 	trendLabel?: string
-	data?: Array<{ value: number; label?: string }>
+	data?: Array<{ value: number | null; label?: string }>
 	icon?: React.ReactNode
 	color?: string
 }

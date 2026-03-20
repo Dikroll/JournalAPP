@@ -14,7 +14,7 @@ export function LessonList({ lessons, forDate }: Props) {
 	const isToday = !forDate || forDate === todayStr
 
 	if (lessons.length === 0)
-		return <p className='text-[#9CA3AF] text-sm'>Пар нет</p>
+		return <p className='text-app-muted text-sm'>Пар нет</p>
 
 	return (
 		<ul className='flex flex-col gap-3'>

@@ -12,7 +12,7 @@ function phoneTypeLabel(type: number) {
 }
 
 function Divider() {
-	return <div className='h-px bg-white/5' />
+	return <div className='h-px bg-app-border' />
 }
 
 function InfoRow({
@@ -26,12 +26,10 @@ function InfoRow({
 }) {
 	return (
 		<div className='flex items-start gap-3 py-3'>
-			<div className='mt-0.5 text-[#9CA3AF]'>{icon}</div>
+			<div className='mt-0.5 text-app-muted'>{icon}</div>
 			<div className='flex-1 min-w-0'>
-				<p className='text-[11px] text-[#6B7280] mb-0.5'>{label}</p>
-				<p className='text-sm font-medium text-[#F2F2F2] break-words'>
-					{value}
-				</p>
+				<p className='text-[11px] text-app-muted mb-0.5'>{label}</p>
+				<p className='text-sm font-medium text-app-text break-words'>{value}</p>
 			</div>
 		</div>
 	)
@@ -57,8 +55,7 @@ function RelativeItem({
 		relative.emails.length > 0
 
 	return (
-		<div className='border border-white/8 rounded-[20px] overflow-hidden bg-white/3'>
-			{/* header — ФИО всегда видно */}
+		<div className='border border-app-border rounded-[20px] overflow-hidden bg-app-surface'>
 			<div className='flex items-center gap-3 p-4'>
 				<div
 					className='w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0'
@@ -72,19 +69,19 @@ function RelativeItem({
 					{initials}
 				</div>
 				<div className='flex-1 min-w-0'>
-					<p className='text-sm font-semibold text-[#F2F2F2]'>
+					<p className='text-sm font-semibold text-app-text'>
 						{relative.full_name}
 					</p>
-					<p className='text-xs text-[#9CA3AF]'>{relative.relationship}</p>
+					<p className='text-xs text-app-muted'>{relative.relationship}</p>
 				</div>
 				{hasDetails && (
 					<button
-						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 transition-colors'
+						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-app-surface active:bg-app-surface-hover transition-colors'
 						onClick={() => setOpen(v => !v)}
 					>
 						<ChevronDown
 							size={16}
-							className='text-[#6B7280] transition-transform duration-200'
+							className='text-app-muted transition-transform duration-200'
 							style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
 						/>
 					</button>
@@ -99,7 +96,7 @@ function RelativeItem({
 						transition: 'max-height 0.3s ease',
 					}}
 				>
-					<div className='px-4 pb-4 border-t border-white/5'>
+					<div className='px-4 pb-4 border-t border-app-border'>
 						{relative.address && (
 							<InfoRow
 								icon={<Home size={15} />}
@@ -139,15 +136,15 @@ export function ProfileRelativesCard({ relatives }: Props) {
 
 	return (
 		<div
-			className='bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/8 overflow-hidden'
-			style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.25)' }}
+			className='bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
+			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
 			<div className='flex items-center gap-2 px-5 pt-5 pb-3'>
-				<Users size={16} className='text-[#9CA3AF]' />
-				<p className='text-[11px] font-semibold text-[#6B7280] uppercase tracking-wider'>
+				<Users size={16} className='text-app-muted' />
+				<p className='text-[11px] font-semibold text-app-muted uppercase tracking-wider'>
 					Родственники
 				</p>
-				<span className='ml-auto text-xs font-semibold text-[#F2F2F2] bg-white/10 px-2 py-0.5 rounded-full'>
+				<span className='ml-auto text-xs font-semibold text-app-text bg-app-surface-strong px-2 py-0.5 rounded-full'>
 					{relatives.length}
 				</span>
 			</div>
