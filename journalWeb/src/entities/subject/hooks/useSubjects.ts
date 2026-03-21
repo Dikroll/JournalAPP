@@ -6,6 +6,7 @@ import { useSubjectStore } from '../model/store'
 const CACHE_TTL_MS = 60 * 60 * 1000
 
 let fetching = false
+
 export function resetSubjectsFetch() {
 	fetching = false
 }

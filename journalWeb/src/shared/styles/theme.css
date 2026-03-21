@@ -1,331 +1,318 @@
 /* 
    DARK THEME (default)
-  */
+*/
 :root {
 	color-scheme: dark;
 
-	/* ── Brand ─────────────────────────────────────────────── */
 	--color-brand: #d50416;
 	--color-brand-hover: #b8031b;
-	--color-brand-subtle: rgba(242, 5, 25, 0.1);
-	--color-brand-border: rgba(242, 5, 25, 0.3);
+	--color-brand-subtle: rgba(213, 4, 22, 0.12);
+	--color-brand-border: rgba(213, 4, 22, 0.35);
 
-	/*  Backgrounds  */
-	--color-bg: #1f2024;
-	--color-surface: rgba(255, 255, 255, 0.05);
-	--color-surface-hover: rgba(255, 255, 255, 0.08);
-	--color-surface-active: rgba(255, 255, 255, 0.1);
-	--color-surface-strong: rgba(255, 255, 255, 0.15);
-	--color-overlay-nav: rgba(255, 255, 255, 0.05);
+	--color-bg: #16171c;
+	--color-surface: rgba(255, 255, 255, 0.055);
+	--color-surface-hover: rgba(255, 255, 255, 0.09);
+	--color-surface-active: rgba(255, 255, 255, 0.12);
+	--color-surface-strong: rgba(255, 255, 255, 0.1);
+	--color-overlay-nav: rgba(22, 23, 28, 0.9);
 
-	/* Borders */
-	--color-border: rgba(255, 255, 255, 0.1);
-	--color-border-strong: rgba(255, 255, 255, 0.2);
+	--color-border: rgba(255, 255, 255, 0.09);
+	--color-border-strong: rgba(255, 255, 255, 0.18);
 
-	/* Text */
-	--color-text: #f2f2f2;
-	--color-text-muted: #9ca3af;
-	--color-text-faint: rgba(242, 242, 242, 0.5);
+	--color-text: #f0f0f0;
+	--color-text-muted: #8a94a6;
+	--color-text-faint: rgba(240, 240, 240, 0.38);
 
-	/*  Status: New (синий) */
-	--color-new: #3b82f6;
-	--color-new-subtle: rgba(59, 130, 246, 0.1);
-	--color-new-border: rgba(59, 130, 246, 0.4);
+	--color-new: #4d9ef7;
+	--color-new-subtle: rgba(77, 158, 247, 0.12);
+	--color-new-border: rgba(77, 158, 247, 0.35);
 
-	/* Status: Pending */
-	--color-pending: #f59e0b;
-	--color-pending-subtle: rgba(245, 158, 11, 0.1);
-	--color-pending-border: rgba(245, 158, 11, 0.4);
+	--color-pending: #f0a020;
+	--color-pending-subtle: rgba(240, 160, 32, 0.12);
+	--color-pending-border: rgba(240, 160, 32, 0.35);
 
-	/*  Status: Checked (зелёный) */
-	--color-checked: #10b981;
-	--color-checked-subtle: rgba(16, 185, 129, 0.1);
-	--color-checked-border: rgba(16, 185, 129, 0.4);
+	--color-checked: #22c98a;
+	--color-checked-subtle: rgba(34, 201, 138, 0.12);
+	--color-checked-border: rgba(34, 201, 138, 0.35);
 
-	/* Status: Overdue ) */
-	--color-overdue: #dc2626;
-	--color-overdue-subtle: rgba(220, 38, 38, 0.05);
-	--color-overdue-bg: rgba(220, 38, 38, 0.1);
-	--color-overdue-border: rgba(220, 38, 38, 0.3);
+	--color-overdue: #e03535;
+	--color-overdue-subtle: rgba(224, 53, 53, 0.06);
+	--color-overdue-bg: rgba(224, 53, 53, 0.1);
+	--color-overdue-border: rgba(224, 53, 53, 0.3);
 
-	/*Status: Returned*/
-	--color-returned: #6b7280;
-	--color-returned-subtle: rgba(107, 114, 128, 0.1);
-	--color-returned-border: rgba(107, 114, 128, 0.3);
+	--color-returned: #7c8899;
+	--color-returned-subtle: rgba(124, 136, 153, 0.1);
+	--color-returned-border: rgba(124, 136, 153, 0.28);
 
-	/* Teacher comment */
-	--color-comment: #f29f05;
-	--color-comment-subtle: rgba(242, 159, 5, 0.1);
-	--color-comment-border: rgba(242, 159, 5, 0.2);
+	--color-comment: #f0a020;
+	--color-comment-subtle: rgba(240, 160, 32, 0.1);
+	--color-comment-border: rgba(240, 160, 32, 0.22);
 
-	/* Grades */
-	--color-grade-5-bg: rgba(16, 185, 129, 0.08);
-	--color-grade-5-border: rgba(16, 185, 129, 0.4);
-	--color-grade-5-badge: #10b981;
+	--color-grade-5-bg: rgba(34, 201, 138, 0.12);
+	--color-grade-5-border: rgba(34, 201, 138, 0.35);
+	--color-grade-5-badge: #22c98a;
 
-	--color-grade-4-bg: rgba(59, 130, 246, 0.08);
-	--color-grade-4-border: rgba(59, 130, 246, 0.4);
-	--color-grade-4-badge: #3b82f6;
+	--color-grade-4-bg: rgba(77, 158, 247, 0.12);
+	--color-grade-4-border: rgba(77, 158, 247, 0.35);
+	--color-grade-4-badge: #4d9ef7;
 
-	--color-grade-3-bg: rgba(245, 158, 11, 0.08);
-	--color-grade-3-border: rgba(245, 158, 11, 0.4);
-	--color-grade-3-badge: #f59e0b;
+	--color-grade-3-bg: rgba(240, 160, 32, 0.12);
+	--color-grade-3-border: rgba(240, 160, 32, 0.35);
+	--color-grade-3-badge: #f0a020;
 
-	--color-grade-2-bg: rgba(220, 38, 38, 0.08);
-	--color-grade-2-border: rgba(220, 38, 38, 0.4);
-	--color-grade-2-badge: #dc2626;
+	--color-grade-2-bg: rgba(224, 53, 53, 0.12);
+	--color-grade-2-border: rgba(224, 53, 53, 0.35);
+	--color-grade-2-badge: #e03535;
 
-	/* Shadows */
-	--shadow-card: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
-	--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
-		0 4px 16px 0 rgba(218, 199, 201, 0.1);
+	--shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.35);
+	--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.55),
+		0 2px 12px 0 rgba(0, 0, 0, 0.3);
 
-	/*  Ambient glow */
 	--glow-top: radial-gradient(
 		ellipse,
-		rgba(60, 63, 70, 0.5) 0%,
+		rgba(50, 54, 68, 0.45) 0%,
 		transparent 70%
 	);
-	--glow-br: radial-gradient(circle, rgba(50, 53, 60, 0.6) 0%, transparent 70%);
+	--glow-br: radial-gradient(circle, rgba(40, 44, 58, 0.5) 0%, transparent 70%);
 	--glow-bl: radial-gradient(
 		circle,
-		rgba(242, 5, 25, 0.1) 0%,
-		rgba(242, 5, 25, 0.04) 40%,
+		rgba(213, 4, 22, 0.08) 0%,
+		rgba(213, 4, 22, 0.03) 40%,
 		transparent 70%
 	);
 	--glow-tr: radial-gradient(
 		circle,
-		rgba(242, 5, 25, 0.06) 0%,
+		rgba(213, 4, 22, 0.05) 0%,
 		transparent 65%
 	);
 	--glow-mid: radial-gradient(
 		ellipse,
-		rgba(180, 185, 195, 0.04) 0%,
+		rgba(140, 148, 170, 0.03) 0%,
 		transparent 70%
 	);
 }
 
-/* 
+/*
    LIGHT THEME
-   */
+   Концепция: тёплый бежевый фон с лёгким кремовым оттенком,
+   glow-паттерн как в тёмной теме — красный снизу-слева, тёплый нейтральный сверху.
+   Белые карточки хорошо контрастируют с бежем.
+*/
 .light,
 [data-theme='light'] {
 	color-scheme: light;
 
-	/*  Brand  */
-	--color-brand: #d50416;
-	--color-brand-hover: #b8031b;
-	--color-brand-subtle: rgba(213, 4, 22, 0.08);
-	--color-brand-border: rgba(213, 4, 22, 0.25);
+	--color-brand: #c20312;
+	--color-brand-hover: #a8020f;
+	--color-brand-subtle: rgba(194, 3, 18, 0.08);
+	--color-brand-border: rgba(194, 3, 18, 0.22);
 
-	/*  Backgrounds  */
-	--color-bg: #f4f5f7;
-	--color-surface: rgba(255, 255, 255, 0.8);
-	--color-surface-hover: rgba(255, 255, 255, 0.95);
-	--color-surface-active: rgba(255, 255, 255, 1);
-	--color-surface-strong: rgba(0, 0, 0, 0.06);
-	--color-overlay-nav: rgba(255, 255, 255, 0.75);
+	/* Бежевый тёплый фон */
+	--color-bg: #e8e2d9;
 
-	/*  Borders  */
-	--color-border: rgba(0, 0, 0, 0.08);
-	--color-border-strong: rgba(0, 0, 0, 0.15);
+	/* Карточки — чистый белый */
+	--color-surface: #ffffff;
+	--color-surface-hover: #f7f5f2;
+	--color-surface-active: #eeeae4;
+	/* Вложенные — видимо теплее фона */
+	--color-surface-strong: #ddd8d0;
+	/* Навбар — плотный белый */
+	--color-overlay-nav: #ffffff;
 
-	/*  Text  */
-	--color-text: #111318;
-	--color-text-muted: #6b7280;
-	--color-text-faint: rgba(17, 19, 24, 0.4);
+	/* Бордеры — тёплые, не холодные серые */
+	--color-border: rgba(60, 45, 30, 0.1);
+	--color-border-strong: rgba(60, 45, 30, 0.18);
 
-	/*  Status: New  */
-	--color-new: #2563eb;
-	--color-new-subtle: rgba(37, 99, 235, 0.08);
-	--color-new-border: rgba(37, 99, 235, 0.3);
+	/* Текст */
+	--color-text: #1a1410;
+	--color-text-muted: #5c5248;
+	--color-text-faint: rgba(26, 20, 16, 0.3);
 
-	/*  Status: Pending  */
-	--color-pending: #d97706;
-	--color-pending-subtle: rgba(217, 119, 6, 0.08);
-	--color-pending-border: rgba(217, 119, 6, 0.3);
+	/* Статусы — насыщенные */
+	--color-new: #1256c0;
+	--color-new-subtle: #dce8ff;
+	--color-new-border: rgba(18, 86, 192, 0.25);
 
-	/*  Status: Checked  */
-	--color-checked: #059669;
-	--color-checked-subtle: rgba(5, 150, 105, 0.08);
-	--color-checked-border: rgba(5, 150, 105, 0.3);
+	--color-pending: #a85e00;
+	--color-pending-subtle: #ffedcc;
+	--color-pending-border: rgba(168, 94, 0, 0.25);
 
-	/*  Status: Overdue  */
-	--color-overdue: #dc2626;
-	--color-overdue-subtle: rgba(220, 38, 38, 0.04);
-	--color-overdue-bg: rgba(220, 38, 38, 0.08);
-	--color-overdue-border: rgba(220, 38, 38, 0.25);
+	--color-checked: #086e47;
+	--color-checked-subtle: #d0f2e4;
+	--color-checked-border: rgba(8, 110, 71, 0.25);
 
-	/*  Status: Returned  */
-	--color-returned: #6b7280;
-	--color-returned-subtle: rgba(107, 114, 128, 0.08);
-	--color-returned-border: rgba(107, 114, 128, 0.25);
+	--color-overdue: #aa1818;
+	--color-overdue-subtle: rgba(170, 24, 24, 0.04);
+	--color-overdue-bg: #fce4e4;
+	--color-overdue-border: rgba(170, 24, 24, 0.22);
 
-	/*  Teacher comment  */
-	--color-comment: #b45309;
-	--color-comment-subtle: rgba(180, 83, 9, 0.08);
-	--color-comment-border: rgba(180, 83, 9, 0.2);
+	--color-returned: #5a5248;
+	--color-returned-subtle: #ede9e3;
+	--color-returned-border: rgba(90, 82, 72, 0.22);
 
-	/*  Grades  */
-	--color-grade-5-bg: rgba(5, 150, 105, 0.06);
-	--color-grade-5-border: rgba(5, 150, 105, 0.3);
-	--color-grade-5-badge: #059669;
+	--color-comment: #8c4e00;
+	--color-comment-subtle: #fff0cc;
+	--color-comment-border: rgba(140, 78, 0, 0.22);
 
-	--color-grade-4-bg: rgba(37, 99, 235, 0.06);
-	--color-grade-4-border: rgba(37, 99, 235, 0.3);
-	--color-grade-4-badge: #2563eb;
+	/* Оценки — solid */
+	--color-grade-5-bg: #d0f2e4;
+	--color-grade-5-border: rgba(8, 110, 71, 0.3);
+	--color-grade-5-badge: #086e47;
 
-	--color-grade-3-bg: rgba(217, 119, 6, 0.06);
-	--color-grade-3-border: rgba(217, 119, 6, 0.3);
-	--color-grade-3-badge: #d97706;
+	--color-grade-4-bg: #dce8ff;
+	--color-grade-4-border: rgba(18, 86, 192, 0.3);
+	--color-grade-4-badge: #1256c0;
 
-	--color-grade-2-bg: rgba(220, 38, 38, 0.06);
-	--color-grade-2-border: rgba(220, 38, 38, 0.3);
-	--color-grade-2-badge: #dc2626;
+	--color-grade-3-bg: #ffedcc;
+	--color-grade-3-border: rgba(168, 94, 0, 0.3);
+	--color-grade-3-badge: #a85e00;
 
-	/*  Shadows  */
-	--shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.08),
-		0 1px 4px 0 rgba(0, 0, 0, 0.05);
-	--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.12),
-		0 2px 8px 0 rgba(213, 4, 22, 0.08);
+	--color-grade-2-bg: #fce4e4;
+	--color-grade-2-border: rgba(170, 24, 24, 0.3);
+	--color-grade-2-badge: #aa1818;
 
-	/*  Ambient glow (light versions)  */
+	/* Тени — тёплые */
+	--shadow-card: 0 1px 4px 0 rgba(30, 20, 10, 0.08),
+		0 4px 18px 0 rgba(30, 20, 10, 0.09);
+	--shadow-nav: 0 4px 20px 0 rgba(30, 20, 10, 0.14),
+		0 1px 4px 0 rgba(30, 20, 10, 0.08);
+
+	/* Glow-паттерн как в тёмной теме:
+	   - сверху: нейтральный тёплый туман
+	   - снизу-слева: красный glow (бренд)
+	   - сверху-справа: лёгкий красный отсвет
+	   - середина: совсем лёгкий тёплый */
 	--glow-top: radial-gradient(
 		ellipse,
-		rgba(200, 205, 215, 0.4) 0%,
+		rgba(180, 160, 130, 0.3) 0%,
 		transparent 70%
 	);
 	--glow-br: radial-gradient(
 		circle,
-		rgba(210, 215, 225, 0.5) 0%,
+		rgba(160, 140, 110, 0.2) 0%,
 		transparent 70%
 	);
 	--glow-bl: radial-gradient(
 		circle,
-		rgba(213, 4, 22, 0.06) 0%,
-		rgba(213, 4, 22, 0.02) 40%,
+		rgba(194, 3, 18, 0.12) 0%,
+		rgba(194, 3, 18, 0.05) 40%,
 		transparent 70%
 	);
 	--glow-tr: radial-gradient(
 		circle,
-		rgba(213, 4, 22, 0.04) 0%,
+		rgba(194, 3, 18, 0.07) 0%,
 		transparent 65%
 	);
 	--glow-mid: radial-gradient(
 		ellipse,
-		rgba(150, 155, 165, 0.06) 0%,
+		rgba(200, 185, 160, 0.12) 0%,
 		transparent 70%
 	);
 }
 
-/* AUTP */
 @media (prefers-color-scheme: light) {
 	:root:not(.dark):not([data-theme='dark']) {
 		color-scheme: light;
 
-		--color-brand: #d50416;
-		--color-brand-hover: #b8031b;
-		--color-brand-subtle: rgba(213, 4, 22, 0.08);
-		--color-brand-border: rgba(213, 4, 22, 0.25);
+		--color-brand: #c20312;
+		--color-brand-hover: #a8020f;
+		--color-brand-subtle: rgba(194, 3, 18, 0.08);
+		--color-brand-border: rgba(194, 3, 18, 0.22);
 
-		--color-bg: #f4f5f7;
-		--color-surface: rgba(255, 255, 255, 0.8);
-		--color-surface-hover: rgba(255, 255, 255, 0.95);
-		--color-surface-active: rgba(255, 255, 255, 1);
-		--color-surface-strong: rgba(0, 0, 0, 0.06);
-		--color-overlay-nav: rgba(255, 255, 255, 0.75);
+		--color-bg: #e8e2d9;
+		--color-surface: #ffffff;
+		--color-surface-hover: #f7f5f2;
+		--color-surface-active: #eeeae4;
+		--color-surface-strong: #ddd8d0;
+		--color-overlay-nav: #ffffff;
 
-		--color-border: rgba(0, 0, 0, 0.08);
-		--color-border-strong: rgba(0, 0, 0, 0.15);
+		--color-border: rgba(60, 45, 30, 0.1);
+		--color-border-strong: rgba(60, 45, 30, 0.18);
 
-		--color-text: #111318;
-		--color-text-muted: #6b7280;
-		--color-text-faint: rgba(17, 19, 24, 0.4);
+		--color-text: #1a1410;
+		--color-text-muted: #5c5248;
+		--color-text-faint: rgba(26, 20, 16, 0.3);
 
-		--color-new: #2563eb;
-		--color-new-subtle: rgba(37, 99, 235, 0.08);
-		--color-new-border: rgba(37, 99, 235, 0.3);
+		--color-new: #1256c0;
+		--color-new-subtle: #dce8ff;
+		--color-new-border: rgba(18, 86, 192, 0.25);
 
-		--color-pending: #d97706;
-		--color-pending-subtle: rgba(217, 119, 6, 0.08);
-		--color-pending-border: rgba(217, 119, 6, 0.3);
+		--color-pending: #a85e00;
+		--color-pending-subtle: #ffedcc;
+		--color-pending-border: rgba(168, 94, 0, 0.25);
 
-		--color-checked: #059669;
-		--color-checked-subtle: rgba(5, 150, 105, 0.08);
-		--color-checked-border: rgba(5, 150, 105, 0.3);
+		--color-checked: #086e47;
+		--color-checked-subtle: #d0f2e4;
+		--color-checked-border: rgba(8, 110, 71, 0.25);
 
-		--color-overdue: #dc2626;
-		--color-overdue-subtle: rgba(220, 38, 38, 0.04);
-		--color-overdue-bg: rgba(220, 38, 38, 0.08);
-		--color-overdue-border: rgba(220, 38, 38, 0.25);
+		--color-overdue: #aa1818;
+		--color-overdue-subtle: rgba(170, 24, 24, 0.04);
+		--color-overdue-bg: #fce4e4;
+		--color-overdue-border: rgba(170, 24, 24, 0.22);
 
-		--color-returned: #6b7280;
-		--color-returned-subtle: rgba(107, 114, 128, 0.08);
-		--color-returned-border: rgba(107, 114, 128, 0.25);
+		--color-returned: #5a5248;
+		--color-returned-subtle: #ede9e3;
+		--color-returned-border: rgba(90, 82, 72, 0.22);
 
-		--color-comment: #b45309;
-		--color-comment-subtle: rgba(180, 83, 9, 0.08);
-		--color-comment-border: rgba(180, 83, 9, 0.2);
+		--color-comment: #8c4e00;
+		--color-comment-subtle: #fff0cc;
+		--color-comment-border: rgba(140, 78, 0, 0.22);
 
-		--color-grade-5-bg: rgba(5, 150, 105, 0.06);
-		--color-grade-5-border: rgba(5, 150, 105, 0.3);
-		--color-grade-5-badge: #059669;
-		--color-grade-4-bg: rgba(37, 99, 235, 0.06);
-		--color-grade-4-border: rgba(37, 99, 235, 0.3);
-		--color-grade-4-badge: #2563eb;
-		--color-grade-3-bg: rgba(217, 119, 6, 0.06);
-		--color-grade-3-border: rgba(217, 119, 6, 0.3);
-		--color-grade-3-badge: #d97706;
-		--color-grade-2-bg: rgba(220, 38, 38, 0.06);
-		--color-grade-2-border: rgba(220, 38, 38, 0.3);
-		--color-grade-2-badge: #dc2626;
+		--color-grade-5-bg: #d0f2e4;
+		--color-grade-5-border: rgba(8, 110, 71, 0.3);
+		--color-grade-5-badge: #086e47;
+		--color-grade-4-bg: #dce8ff;
+		--color-grade-4-border: rgba(18, 86, 192, 0.3);
+		--color-grade-4-badge: #1256c0;
+		--color-grade-3-bg: #ffedcc;
+		--color-grade-3-border: rgba(168, 94, 0, 0.3);
+		--color-grade-3-badge: #a85e00;
+		--color-grade-2-bg: #fce4e4;
+		--color-grade-2-border: rgba(170, 24, 24, 0.3);
+		--color-grade-2-badge: #aa1818;
 
-		--shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.08),
-			0 1px 4px 0 rgba(0, 0, 0, 0.05);
-		--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.12),
-			0 2px 8px 0 rgba(213, 4, 22, 0.08);
+		--shadow-card: 0 1px 4px 0 rgba(30, 20, 10, 0.08),
+			0 4px 18px 0 rgba(30, 20, 10, 0.09);
+		--shadow-nav: 0 4px 20px 0 rgba(30, 20, 10, 0.14),
+			0 1px 4px 0 rgba(30, 20, 10, 0.08);
 
 		--glow-top: radial-gradient(
 			ellipse,
-			rgba(200, 205, 215, 0.4) 0%,
+			rgba(180, 160, 130, 0.3) 0%,
 			transparent 70%
 		);
 		--glow-br: radial-gradient(
 			circle,
-			rgba(210, 215, 225, 0.5) 0%,
+			rgba(160, 140, 110, 0.2) 0%,
 			transparent 70%
 		);
 		--glow-bl: radial-gradient(
 			circle,
-			rgba(213, 4, 22, 0.06) 0%,
-			rgba(213, 4, 22, 0.02) 40%,
+			rgba(194, 3, 18, 0.12) 0%,
+			rgba(194, 3, 18, 0.05) 40%,
 			transparent 70%
 		);
 		--glow-tr: radial-gradient(
 			circle,
-			rgba(213, 4, 22, 0.04) 0%,
+			rgba(194, 3, 18, 0.07) 0%,
 			transparent 65%
 		);
 		--glow-mid: radial-gradient(
 			ellipse,
-			rgba(150, 155, 165, 0.06) 0%,
+			rgba(200, 185, 160, 0.12) 0%,
 			transparent 70%
 		);
 	}
 }
 
-/* 
-   UTILITY CLASSES 
-*/
+/* ── Utility classes ─────────────────────────────────────── */
 
-/* card —  bg-white/5 + border border-white/10 */
 .card {
 	background: var(--color-surface);
 	border: 1px solid var(--color-border);
 	box-shadow: var(--shadow-card);
 }
 
-/* nav bar */
 .nav-bar {
 	background: var(--color-overlay-nav);
 	border: 1px solid var(--color-border);

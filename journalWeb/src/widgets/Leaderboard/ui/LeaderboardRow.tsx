@@ -11,17 +11,17 @@ interface Props {
 function RankBadge({ rank }: { rank: number }) {
 	if (rank === 1)
 		return (
-			<div className='absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#FFD700] to-[#FFA500] rounded-full flex items-center justify-center shadow'>
+			<div className='absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#FFD700] to-[#F59E0B] rounded-full flex items-center justify-center shadow-sm'>
 				<Crown size={10} className='text-white' />
 			</div>
 		)
 	if (rank <= 3)
 		return (
 			<div
-				className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center shadow ${
+				className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center shadow-sm ${
 					rank === 2
-						? 'bg-gradient-to-br from-[#C0C0C0] to-[#A8A8A8]'
-						: 'bg-gradient-to-br from-[#CD7F32] to-[#8B4513]'
+						? 'bg-gradient-to-br from-[#C0C0C0] to-[#9CA3AF]'
+						: 'bg-gradient-to-br from-[#CD7F32] to-[#92400E]'
 				}`}
 			>
 				<Medal size={10} className='text-white' />
@@ -31,18 +31,26 @@ function RankBadge({ rank }: { rank: number }) {
 }
 
 const RANK_COLORS: Record<number, string> = {
-	1: 'text-[#FFD700]',
-	2: 'text-[#C0C0C0]',
-	3: 'text-[#CD7F32]',
+	1: '#D97706',
+	2: '#9CA3AF',
+	3: '#B45309',
+}
+
+// Оранжевые токены — одинаковые в тёмной и светлой теме через inline стили
+const AMBER = {
+	bg: 'rgba(245, 158, 11, 0.10)',
+	border: 'rgba(245, 158, 11, 0.28)',
+	text: '#D97706',
+	badgeBg: 'rgba(245, 158, 11, 0.15)',
+	badgeBorder: 'rgba(245, 158, 11, 0.30)',
+	shadow: '0 2px 14px 0 rgba(245, 158, 11, 0.14)',
 }
 
 export const LeaderboardRow = memo(function LeaderboardRow({
 	student,
 	isMe,
 }: Props) {
-	const rankColor =
-		RANK_COLORS[student.position] ??
-		(isMe ? 'text-[#F29F05]' : 'text-app-muted')
+	const rankColor = RANK_COLORS[student.position]
 
 	const shortName = student.full_name
 		.split(' ')
@@ -54,29 +62,36 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 		.join('')
 		.slice(0, 2)
 
-	const fallbackClass = isMe
-		? 'bg-[#F29F05]/10 text-[#F29F05] border-[#F29F05]/30'
-		: 'bg-app-surface-strong text-app-text border-app-border'
-
 	const photoUrl = getCachedImageUrl(student.photo_url)
 
 	return (
 		<div
-			className={`rounded-[18px] p-3 border flex items-center gap-3 ${
+			className='rounded-[18px] p-3 flex items-center gap-3'
+			style={
 				isMe
-					? 'bg-[#F29F05]/10 border-[#F29F05]/30'
-					: 'bg-app-surface border-app-border'
-			}`}
-			style={{
-				boxShadow: isMe
-					? '0 4px 20px 0 rgba(242,159,5,0.15)'
-					: 'var(--shadow-card)',
-			}}
+					? {
+							background: AMBER.bg,
+							border: `1px solid ${AMBER.border}`,
+							boxShadow: AMBER.shadow,
+					  }
+					: {
+							background: 'var(--color-surface)',
+							border: '1px solid var(--color-border)',
+							boxShadow: 'var(--shadow-card)',
+					  }
+			}
 		>
-			<span className={`w-6 text-center text-base font-bold shrink-0 ${rankColor}`}>
+			{/* Позиция */}
+			<span
+				className='w-6 text-center text-base font-bold shrink-0'
+				style={{
+					color: isMe ? AMBER.text : rankColor ?? 'var(--color-text-muted)',
+				}}
+			>
 				{student.position}
 			</span>
 
+			{/* Аватар */}
 			<div className='relative shrink-0'>
 				{photoUrl ? (
 					<img
@@ -86,13 +101,29 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 						height={40}
 						loading={student.position <= 3 ? 'eager' : 'lazy'}
 						fetchPriority={student.position === 1 ? 'high' : 'auto'}
-						className={`w-10 h-10 rounded-full object-cover border-2 ${
-							isMe ? 'border-[#F29F05]/50' : 'border-app-border'
-						}`}
+						className='w-10 h-10 rounded-full object-cover'
+						style={{
+							border: isMe
+								? `2px solid ${AMBER.border}`
+								: '2px solid var(--color-border)',
+						}}
 					/>
 				) : (
 					<div
-						className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 ${fallbackClass}`}
+						className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold'
+						style={
+							isMe
+								? {
+										background: AMBER.bg,
+										border: `2px solid ${AMBER.border}`,
+										color: AMBER.text,
+								  }
+								: {
+										background: 'var(--color-surface-strong)',
+										border: '2px solid var(--color-border)',
+										color: 'var(--color-text)',
+								  }
+						}
 					>
 						{initials}
 					</div>
@@ -100,22 +131,42 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				<RankBadge rank={student.position} />
 			</div>
 
+			{/* Имя */}
 			<div className='flex-1 min-w-0'>
-				<p className={`text-sm font-semibold truncate ${isMe ? 'text-[#F29F05]' : 'text-app-text'}`}>
+				<p
+					className='text-sm font-semibold truncate'
+					style={{ color: isMe ? AMBER.text : 'var(--color-text)' }}
+				>
 					{shortName}
-					{isMe ? ' (Вы)' : ''}
+					{isMe && (
+						<span className='ml-1 text-xs font-normal opacity-60'>(Вы)</span>
+					)}
 				</p>
 			</div>
 
+			{/* Очки */}
 			<div
-				className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border shrink-0 ${
+				className='flex items-center gap-1 px-2.5 py-1.5 rounded-xl shrink-0'
+				style={
 					isMe
-						? 'bg-[#F29F05]/20 border-[#F29F05]/40'
-						: 'bg-app-surface-strong border-app-border'
-				}`}
+						? {
+								background: AMBER.badgeBg,
+								border: `1px solid ${AMBER.badgeBorder}`,
+						  }
+						: {
+								background: 'var(--color-surface-strong)',
+								border: '1px solid var(--color-border)',
+						  }
+				}
 			>
-				<Coins size={13} className={isMe ? 'text-[#FFD700]' : 'text-[#F29F05]'} />
-				<span className={`text-sm font-bold ${isMe ? 'text-[#F29F05]' : 'text-app-text'}`}>
+				<Coins
+					size={13}
+					style={{ color: isMe ? '#FFD700' : 'var(--color-comment)' }}
+				/>
+				<span
+					className='text-sm font-bold'
+					style={{ color: isMe ? AMBER.text : 'var(--color-text)' }}
+				>
 					{student.points.toLocaleString()}
 				</span>
 			</div>

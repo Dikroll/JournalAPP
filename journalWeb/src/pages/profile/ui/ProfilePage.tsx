@@ -1,7 +1,5 @@
-import { resetAllStores } from '@/app/lib/resetAllStores'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useUser } from '@/entities/user'
-import { LogoutButton } from '@/features/auth'
 import { pageConfig } from '@/shared/config'
 import { Leaderboard, ProfileHeader, ReviewsList } from '@/widgets'
 import { Link } from 'react-router-dom'
@@ -46,8 +44,6 @@ export function ProfilePage() {
 
 				<Leaderboard myStudentId={user.student_id} />
 				<ReviewsList />
-
-				<LogoutButton onBeforeLogout={resetAllStores} />
 			</div>
 		</div>
 	)

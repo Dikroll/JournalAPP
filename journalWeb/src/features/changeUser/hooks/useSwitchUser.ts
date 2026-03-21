@@ -23,7 +23,6 @@ export function useSwitchUser(onReset: () => void) {
 				try {
 					const userData = await userApi.getMe()
 					setUser(userData)
-
 					saveAccount({
 						username,
 						token: useAuthStore.getState().token!,

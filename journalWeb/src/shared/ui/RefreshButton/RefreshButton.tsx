@@ -14,8 +14,9 @@ export function RefreshButton({ isRefreshing, onRefresh, className }: Props) {
 			disabled={isRefreshing}
 			className={
 				className ??
-				'flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 rounded-2xl text-[#9CA3AF] hover:text-[#F2F2F2] text-sm border border-white/10 transition-colors disabled:opacity-50'
+				'flex items-center gap-1.5 px-3 py-2 bg-app-surface-strong hover:bg-app-surface-active border border-app-border-strong rounded-2xl text-app-muted hover:text-app-text text-sm transition-colors disabled:opacity-50'
 			}
+			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
 			<RefreshCw size={15} className={isRefreshing ? 'animate-spin' : ''} />
 			Обновить

@@ -19,32 +19,37 @@ export const STATUS_CONFIG: Record<
 	overdue: {
 		label: 'Просроченные',
 		icon: AlertTriangle,
-		borderColor: 'border-l-[#DC2626] border-b-[#DC2626]',
-		textColor: 'text-[#DC2626]',
+		borderColor:
+			'border-l-[color:var(--color-overdue)] border-b-[color:var(--color-overdue)]',
+		textColor: 'text-status-overdue',
 	},
 	new: {
 		label: 'Новые',
 		icon: Sparkles,
-		borderColor: 'border-l-[#3B82F6] border-b-[#3B82F6]',
-		textColor: 'text-[#3B82F6]',
+		borderColor:
+			'border-l-[color:var(--color-new)] border-b-[color:var(--color-new)]',
+		textColor: 'text-status-new',
 	},
 	pending: {
 		label: 'На проверке',
 		icon: BookOpen,
-		borderColor: 'border-l-[#F59E0B] border-b-[#F59E0B]',
-		textColor: 'text-[#F59E0B]',
+		borderColor:
+			'border-l-[color:var(--color-pending)] border-b-[color:var(--color-pending)]',
+		textColor: 'text-status-pending',
 	},
 	checked: {
 		label: 'Проверенные',
 		icon: CheckCircle,
-		borderColor: 'border-l-[#10B981] border-b-[#10B981]',
-		textColor: 'text-[#10B981]',
+		borderColor:
+			'border-l-[color:var(--color-checked)] border-b-[color:var(--color-checked)]',
+		textColor: 'text-status-checked',
 	},
 	returned: {
 		label: 'Возвращённые',
 		icon: RotateCcw,
-		borderColor: 'border-l-[#6B7280] border-b-[#6B7280]',
-		textColor: 'text-[#6B7280]',
+		borderColor:
+			'border-l-[color:var(--color-returned)] border-b-[color:var(--color-returned)]',
+		textColor: 'text-status-returned',
 	},
 }
 
@@ -54,35 +59,14 @@ export function getGradeStyle(grade: number | null | undefined): {
 } {
 	if (grade == null) {
 		return {
-			bg: 'bg-white/5',
-			badge: 'bg-white/10 text-[#9CA3AF] border-white/20',
+			bg: 'bg-app-surface',
+			badge: 'bg-app-surface-strong text-app-muted border-app-border-strong',
 		}
 	}
-	if (grade >= 5)
-		return {
-			bg: 'bg-[#10B981]/8',
-			badge: 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30',
-		}
-	if (grade >= 4)
-		return {
-			bg: 'bg-[#3B82F6]/8',
-			badge: 'bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30',
-		}
-	if (grade >= 3)
-		return {
-			bg: 'bg-[#F59E0B]/8',
-			badge: 'bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30',
-		}
-	if (grade >= 2)
-		return {
-			bg: 'bg-[#F97316]/8',
-			badge: 'bg-[#F97316]/20 text-[#F97316] border-[#F97316]/30',
-		}
-
-	return {
-		bg: 'bg-[#DC2626]/8',
-		badge: 'bg-[#DC2626]/20 text-[#DC2626] border-[#DC2626]/30',
-	}
+	if (grade >= 5) return { bg: 'grade-bg-5', badge: 'grade-badge-5' }
+	if (grade >= 4) return { bg: 'grade-bg-4', badge: 'grade-badge-4' }
+	if (grade >= 3) return { bg: 'grade-bg-3', badge: 'grade-badge-3' }
+	return { bg: 'grade-bg-2', badge: 'grade-badge-2' }
 }
 
 export const STATUS_ORDER: HomeworkStatus[] = [

@@ -45,3 +45,39 @@ svg:focus-visible,
 .recharts-wrapper *:focus-visible {
 	outline: none !important;
 }
+
+/* ── Grade utility classes ── */
+
+.grade-bg-5 {
+	background: var(--color-grade-5-bg);
+}
+.grade-bg-4 {
+	background: var(--color-grade-4-bg);
+}
+.grade-bg-3 {
+	background: var(--color-grade-3-bg);
+}
+.grade-bg-2 {
+	background: var(--color-grade-2-bg);
+}
+
+.grade-badge-5 {
+	background: var(--color-grade-5-bg);
+	color: var(--color-grade-5-badge);
+	border-color: var(--color-grade-5-border);
+}
+.grade-badge-4 {
+	background: var(--color-grade-4-bg);
+	color: var(--color-grade-4-badge);
+	border-color: var(--color-grade-4-border);
+}
+.grade-badge-3 {
+	background: var(--color-grade-3-bg);
+	color: var(--color-grade-3-badge);
+	border-color: var(--color-grade-3-border);
+}
+.grade-badge-2 {
+	background: var(--color-grade-2-bg);
+	color: var(--color-grade-2-badge);
+	border-color: var(--color-grade-2-border);
+}

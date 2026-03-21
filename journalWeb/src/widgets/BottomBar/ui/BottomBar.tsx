@@ -28,24 +28,21 @@ export function BottomBar() {
 								<>
 									{isActive && (
 										<span
-											className='absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] w-5 rounded-full bg-app-text/70'
-											style={{ boxShadow: '0 0 8px 1px var(--color-returned)' }}
+											className='absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] w-5 rounded-full'
+											style={{ background: 'var(--color-brand)' }}
 										/>
 									)}
 
 									<Icon
 										size={22}
-										strokeWidth={isActive ? 2 : 1.5}
-										className={`transition-all duration-300 ${
-											isActive ? 'text-returned' : 'text-app-faint'
-										}`}
+										strokeWidth={isActive ? 2.2 : 1.5}
+										style={{
+											color: isActive
+												? 'var(--color-brand)'
+												: 'var(--color-text-muted)',
+											transition: 'color 0.25s ease',
+										}}
 									/>
-
-									<span
-										className={`text-[10px] font-medium transition-all duration-300 leading-none ${
-											isActive ? 'text-returned' : 'text-app-muted'
-										}`}
-									></span>
 								</>
 							)}
 						</NavLink>

@@ -24,7 +24,7 @@ export function HomeworkCard({ hw }: Props) {
 	const cardBg = gradeStyle
 		? gradeStyle.bg
 		: isOverdue
-		? 'bg-overdue-subtle'
+		? 'bg-app-surface'
 		: 'bg-app-surface'
 
 	const hasComment = !!hw.comment
