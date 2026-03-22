@@ -1,5 +1,8 @@
+export { AvatarPlaceholder } from './AvatarPlaceholder/AvatarPlaceholder'
 export { CustomTooltip } from './CustomTooltip/CustomTooltip'
+export { ErrorView } from './ErrorView/ErrorView'
 export { MonthGrid } from './MonthGrid/MonthGrid'
+export { PageHeader } from './PageHeader/PageHeader'
 export { RefreshButton } from './RefreshButton/RefreshButton'
 export { ShowMoreBtn } from './ShowMoreBtn/ShowMoreBtn'
 export { SkeletonList } from './SkeletonList/SkeletonList'

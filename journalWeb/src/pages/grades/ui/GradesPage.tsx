@@ -9,7 +9,7 @@ import {
 } from '@/entities/grades'
 import { useSubjects } from '@/entities/subject'
 import { SpecSelector } from '@/features/selectSpec'
-import { SkeletonList } from '@/shared/ui'
+import { ErrorView, SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
 	GradesCalendar,
@@ -20,8 +20,6 @@ import {
 	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
-
-import { RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 
 export function GradesPage() {
@@ -59,15 +57,8 @@ export function GradesPage() {
 
 	if (status === 'error') {
 		return (
-			<div className='flex flex-col items-center justify-center min-h-screen gap-4'>
-				<p className='text-[#DC2626]'>{error}</p>
-				<button
-					type='button'
-					onClick={refresh}
-					className='flex items-center gap-2 px-4 py-2.5 bg-white/10 rounded-2xl text-[#F2F2F2] text-sm border border-white/20 transition-colors'
-				>
-					<RefreshCw size={16} /> Повторить
-				</button>
+			<div className='flex flex-col items-center justify-center min-h-screen'>
+				<ErrorView message={error ?? undefined} onRetry={refresh} />
 			</div>
 		)
 	}
@@ -95,9 +86,7 @@ export function GradesPage() {
 				{activeTab === 'exams' ? (
 					<GradesExamList />
 				) : isLoading ? (
-					<div className='space-y-3'>
-						<SkeletonList count={3} height={80} />
-					</div>
+					<SkeletonList count={3} height={80} />
 				) : (
 					<>
 						{activeTab === 'recent' && <GradesRecentList byDate={byDate} />}

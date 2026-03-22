@@ -1,21 +1,20 @@
 import { ttl } from '@/shared/config'
 import { CACHE_KEYS } from '@/shared/lib'
 import { storage } from '@/shared/lib/storage'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
 import type { GradeEntry } from '../model/types'
 
-let fetching = false
-export function resetGradesFetch() {
-	fetching = false
-}
+export function resetGradesFetch() {}
 
 export function useGrades() {
 	const { entries, status, error, loadedAt, update } = useGradesStore()
 
+	const fetchingRef = useRef(false)
+
 	useEffect(() => {
-		if (fetching) return
+		if (fetchingRef.current) return
 		if (
 			entries.length > 0 &&
 			loadedAt &&
@@ -34,8 +33,9 @@ export function useGrades() {
 			return
 		}
 
-		fetching = true
+		fetchingRef.current = true
 		update({ status: 'loading', error: null })
+
 		gradesApi
 			.getAll()
 			.then(data => {
@@ -51,14 +51,14 @@ export function useGrades() {
 				update({ status: 'error', error: 'Не удалось загрузить оценки' })
 			})
 			.finally(() => {
-				fetching = false
+				fetchingRef.current = false
 			})
 	}, [])
 
 	const refresh = () => {
-		if (fetching) return
+		if (fetchingRef.current) return
 		storage.remove(CACHE_KEYS.GRADES_ALL)
-		fetching = true
+		fetchingRef.current = true
 		update({ status: 'loading', error: null })
 		gradesApi
 			.getAll()
@@ -75,7 +75,7 @@ export function useGrades() {
 				update({ status: 'error', error: 'Не удалось загрузить оценки' }),
 			)
 			.finally(() => {
-				fetching = false
+				fetchingRef.current = false
 			})
 	}
 

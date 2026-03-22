@@ -1,16 +1,8 @@
 import type { ProfileRelative } from '@/entities/profile'
 import { AtSign, ChevronDown, Home, Phone, Users } from 'lucide-react'
 import { useState } from 'react'
+import { phoneTypeLabel } from './ProfileInfoCard'
 import { Divider, InfoRow } from './shared/ProfileInfoParts'
-
-function phoneTypeLabel(type: number) {
-	const map: Record<number, string> = {
-		0: 'Мобильный',
-		1: 'Домашний',
-		2: 'Рабочий',
-	}
-	return map[type] ?? 'Телефон'
-}
 
 function RelativeItem({
 	relative,
@@ -81,8 +73,8 @@ function RelativeItem({
 								value={relative.address}
 							/>
 						)}
-						{relative.phones.map((p, i) => (
-							<div key={i}>
+						{relative.phones.map(p => (
+							<div key={p.number}>
 								<Divider />
 								<InfoRow
 									icon={<Phone size={15} />}
@@ -91,8 +83,8 @@ function RelativeItem({
 								/>
 							</div>
 						))}
-						{relative.emails.map((e, i) => (
-							<div key={i}>
+						{relative.emails.map(e => (
+							<div key={e}>
 								<Divider />
 								<InfoRow icon={<AtSign size={15} />} label='Email' value={e} />
 							</div>
@@ -127,7 +119,7 @@ export function ProfileRelativesCard({ relatives }: Props) {
 			</div>
 			<div className='px-4 pb-4 space-y-2'>
 				{relatives.map((r, i) => (
-					<RelativeItem key={i} relative={r} index={i} />
+					<RelativeItem key={r.full_name} relative={r} index={i} />
 				))}
 			</div>
 		</div>

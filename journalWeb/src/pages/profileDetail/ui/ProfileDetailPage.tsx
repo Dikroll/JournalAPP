@@ -1,8 +1,9 @@
 import { resetAllStores } from '@/app/lib/resetAllStores'
 import { useProfileDetails } from '@/entities/profile'
-import { useAuthStore } from '@/features/auth'
 import { AccountSwitcher } from '@/features/changeUser'
 import { pageConfig } from '@/shared/config'
+import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
+import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import {
 	ProfileAvatar,
 	ProfileInfoCard,
@@ -13,26 +14,12 @@ import { ArrowLeft, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function Skeleton() {
-	return (
-		<div className='space-y-3'>
-			{[88, 180, 200].map((h, i) => (
-				<div
-					key={i}
-					className='bg-app-surface-strong rounded-[24px] animate-pulse'
-					style={{ height: h }}
-				/>
-			))}
-		</div>
-	)
-}
-
 export function ProfileDetailsPage() {
 	const navigate = useNavigate()
 	const { details, status } = useProfileDetails()
-
 	const [showSwitcher, setShowSwitcher] = useState(false)
-	const accounts = useAuthStore(s => s.accounts)
+
+	useSwipeBack()
 
 	const handleAddAccount = () => {
 		navigate(`${pageConfig.login}?addAccount=true`)
@@ -50,30 +37,24 @@ export function ProfileDetailsPage() {
 					<ArrowLeft size={18} />
 				</button>
 
-				<h1 className='text-base font-bold text-app-text flex-1'>
-					Детали профиля
-				</h1>
+				<PageHeader title='Детали профиля' />
 
-				{accounts.length >= 0 && (
-					<button
-						type='button'
-						onClick={() => setShowSwitcher(true)}
-						className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover transition-colors'
-						style={{ boxShadow: 'var(--shadow-card)' }}
-					>
-						<Users size={14} />
-						Аккаунты
-					</button>
-				)}
+				<button
+					type='button'
+					onClick={() => setShowSwitcher(true)}
+					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover transition-colors'
+					style={{ boxShadow: 'var(--shadow-card)' }}
+				>
+					<Users size={14} />
+					Аккаунты
+				</button>
 			</div>
 
 			<div className='px-4 space-y-3'>
-				{status === 'loading' && <Skeleton />}
+				{status === 'loading' && <SkeletonList count={3} height={120} />}
 
 				{status === 'error' && (
-					<p className='text-center text-status-overdue text-sm py-12'>
-						Не удалось загрузить данные
-					</p>
+					<ErrorView message='Не удалось загрузить данные' />
 				)}
 
 				{details && (

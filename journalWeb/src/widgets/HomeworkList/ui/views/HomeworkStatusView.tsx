@@ -10,7 +10,7 @@ import {
 	STATUS_ORDER,
 } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
-import { ChevronDown } from 'lucide-react'
+import { ShowMoreBtn } from '@/shared/ui'
 import { HomeworkCard } from '../card/HomeworkCard'
 import { HomeworkCardPhoto } from '../card/HomeworkCardPhoto'
 import type { HomeworkViewMode } from '../shared/HomeworkToggleView'
@@ -60,7 +60,11 @@ export function HomeworkStatusView({
 								))}
 							</div>
 							{group.hasMore && (
-								<ShowMoreBtn onClick={() => onLoadMore(STATUS_KEY_MAP[s])} />
+								// ✅ используем ShowMoreBtn из shared/ui
+								<ShowMoreBtn
+									onClick={() => onLoadMore(STATUS_KEY_MAP[s])}
+									remaining={group.total - group.items.length}
+								/>
 							)}
 						</div>
 					)
@@ -119,24 +123,12 @@ export function HomeworkStatusView({
 						{hasMore && (
 							<ShowMoreBtn
 								onClick={() => onLoadMoreForSubject(selectedSpec.id, numKey)}
+								remaining={total - displayItems.length}
 							/>
 						)}
 					</div>
 				)
 			})}
 		</div>
-	)
-}
-
-function ShowMoreBtn({ onClick }: { onClick: () => void }) {
-	return (
-		<button
-			type='button'
-			onClick={onClick}
-			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors'
-		>
-			<ChevronDown size={16} />
-			Показать ещё
-		</button>
 	)
 }

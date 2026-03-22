@@ -20,12 +20,13 @@ export function CustomTooltip({
 		<div
 			style={{
 				background: 'rgba(28,30,36,0.97)',
-				backdropFilter: 'blur(16px)',
+				backdropFilter: 'var(--blur-card)',
+				WebkitBackdropFilter: 'var(--blur-card)',
 				border: '1px solid rgba(255,255,255,0.10)',
 				borderRadius: '12px',
 				padding: '6px 12px',
 				minWidth: '64px',
-				boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+				boxShadow: 'var(--shadow-tooltip)',
 				pointerEvents: 'none',
 			}}
 		>

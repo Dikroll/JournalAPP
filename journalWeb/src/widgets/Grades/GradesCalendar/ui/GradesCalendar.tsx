@@ -56,22 +56,42 @@ export function GradesCalendar({ byMonth }: Props) {
 							disabled={!hasData}
 							onClick={() => setSelectedDate(isSelected ? null : dateStr)}
 							className={`
-								relative aspect-square w-full flex flex-col items-center justify-center
+								relative flex items-center justify-center
 								rounded-full text-xs font-semibold transition-colors
-								${isSelected ? 'bg-brand text-white' : ''}
-								${!isSelected && hasData ? 'text-app-text hover:bg-app-surface-hover' : ''}
-								${!isSelected && !hasData ? 'text-app-faint' : ''}
+								disabled:cursor-default
+								${
+									isSelected
+										? 'bg-brand text-white'
+										: hasData
+										? 'text-app-text hover:bg-app-surface-hover'
+										: 'text-app-faint'
+								}
 							`}
+							style={{ width: 36, height: 36 }}
 						>
-							<span className='leading-none'>{day}</span>
-							{dotColor && !isSelected && (
+							{day}
+
+							{isToday && !isSelected && (
 								<span
-									className='mt-0.5 w-1 h-1 rounded-full'
-									style={{ backgroundColor: dotColor }}
+									className='absolute inset-0 rounded-full pointer-events-none'
+									style={{
+										boxShadow: '0 0 0 1.5px var(--color-brand)',
+									}}
 								/>
 							)}
-							{isToday && !isSelected && (
-								<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand' />
+
+							{dotColor && !isSelected && (
+								<span
+									className='absolute rounded-full pointer-events-none'
+									style={{
+										width: 4,
+										height: 4,
+										bottom: 3,
+										left: '50%',
+										transform: 'translateX(-50%)',
+										backgroundColor: dotColor,
+									}}
+								/>
 							)}
 						</button>
 					)

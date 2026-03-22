@@ -7,13 +7,7 @@ import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
 const AUTO_REFRESH_MS = 90 * 60 * 1000
 const CACHE_TTL_MS = 15 * 60 * 1000
 
-let isLoadingAll = false
-const isLoadingMore = new Set<number>()
-
-export function resetHomeworkFetch() {
-	isLoadingAll = false
-	isLoadingMore.clear()
-}
+export function resetHomeworkFetch() {}
 
 export function useHomework() {
 	const groupId = useUserStore(s => s.user?.group?.id)
@@ -38,24 +32,27 @@ export function useHomework() {
 
 	const groupIdRef = useRef(groupId)
 
+	const isLoadingAllRef = useRef(false)
+	const isLoadingMoreRef = useRef(new Set<number>())
+
 	useEffect(() => {
 		groupIdRef.current = groupId
 	}, [groupId])
 
 	const loadAll = useCallback(async (force = false) => {
-		const groupId = groupIdRef.current
-		if (!groupId) return
-		if (isLoadingAll) return
+		const gid = groupIdRef.current
+		if (!gid) return
+		if (isLoadingAllRef.current) return
 
 		const { loadedAt } = useHomeworkStore.getState()
 		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
-		isLoadingAll = true
+		isLoadingAllRef.current = true
 		setStatus('loading')
 		setError(null)
 
 		try {
-			const { counters, items } = await homeworkApi.getAll(groupId)
+			const { counters, items } = await homeworkApi.getAll(gid)
 			setCounters(counters)
 
 			const specsMap = new Map<number, string>()
@@ -88,26 +85,23 @@ export function useHomework() {
 			setError('Не удалось загрузить домашние задания')
 			setStatus('error')
 		} finally {
-			isLoadingAll = false
+			isLoadingAllRef.current = false
 		}
 	}, [])
 
 	const loadMore = useCallback(
 		async (statusKey: number) => {
-			const groupId = groupIdRef.current
-			if (!groupId) return
-			if (isLoadingMore.has(statusKey)) return
-			isLoadingMore.add(statusKey)
+			const gid = groupIdRef.current
+			if (!gid) return
+			if (isLoadingMoreRef.current.has(statusKey)) return
+			isLoadingMoreRef.current.add(statusKey)
 
 			try {
 				const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
 				const nextPage = currentPage + 1
-				const newItems = await homeworkApi.getByStatus(
-					statusKey,
-					groupId,
-					nextPage,
-				)
+				const newItems = await homeworkApi.getByStatus(statusKey, gid, nextPage)
 				appendItems(statusKey, newItems, nextPage)
+
 				const newPhotos = newItems
 					.map(hw => hw.photo_url)
 					.filter(Boolean) as string[]
@@ -118,7 +112,7 @@ export function useHomework() {
 				}
 			} catch {
 			} finally {
-				isLoadingMore.delete(statusKey)
+				isLoadingMoreRef.current.delete(statusKey)
 			}
 		},
 		[appendItems, setExpanded],
@@ -131,7 +125,7 @@ export function useHomework() {
 		loadAll()
 		const timer = setInterval(() => loadAll(true), AUTO_REFRESH_MS)
 		return () => clearInterval(timer)
-	}, [groupId])
+	}, [groupId, loadAll])
 
 	return {
 		items,

@@ -61,7 +61,7 @@ export function SendHomeworkSheet({
 
 			<div
 				className='relative w-full max-w-sm bg-white/5 backdrop-blur-xl rounded-[24px] border border-white/10 px-5 py-5'
-				style={{ boxShadow: '0 4px 24px 0 rgba(0,0,0,0.3)' }}
+				style={{ boxShadow: 'var(--shadow-modal)' }}
 			>
 				<div className='flex items-start justify-between mb-5'>
 					<div className='flex-1 pr-3'>

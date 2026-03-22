@@ -82,8 +82,8 @@ export function HomeworkCard({ hw }: Props) {
 				statusKey={hw.statusKey}
 				fileUrl={hw.file_url}
 				studAnswer={hw.stud_answer}
-				studFileUrl={(hw as any).stud_file_url ?? null}
-				studId={(hw as any).stud_id ?? null}
+				studFileUrl={hw.stud_file_url ?? null}
+				studId={hw.stud_id ?? null}
 			/>
 		</div>
 	)

@@ -1,55 +1,14 @@
 import type { SubjectStats } from '@/entities/grades'
-import { GRADE_TYPE_CONFIG } from '@/entities/grades'
-import type { SortKey } from '@/features/sortSubjects'
+import {
+	GRADE_TYPE_CONFIG,
+	gradeCircleStyle,
+	sortSubjects,
+} from '@/entities/grades'
 import {
 	SortSubjectsControl,
 	useSortSubjectsStore,
 } from '@/features/sortSubjects'
 import { useLazyItems } from '@/shared/hooks'
-
-function sortSubjects(subjects: SubjectStats[], key: SortKey): SubjectStats[] {
-	const arr = [...subjects]
-	if (key === 'alpha')
-		return arr.sort((a, b) => a.spec_name.localeCompare(b.spec_name, 'ru'))
-	if (key === 'grade-desc')
-		return arr.sort((a, b) => b.averageGrade - a.averageGrade)
-	if (key === 'grade-asc')
-		return arr.sort((a, b) => a.averageGrade - b.averageGrade)
-	return arr
-}
-
-function gradeCircleStyle(type: string, value: number): React.CSSProperties {
-	if (type === 'final') {
-		return {
-			background: 'rgba(168, 85, 247, 0.15)',
-			borderColor: 'rgba(168, 85, 247, 0.55)',
-			color: '#a855f7',
-		}
-	}
-	if (value >= 5)
-		return {
-			background: 'var(--color-grade-5-bg)',
-			borderColor: 'var(--color-grade-5-border)',
-			color: 'var(--color-grade-5-badge)',
-		}
-	if (value >= 4)
-		return {
-			background: 'var(--color-grade-4-bg)',
-			borderColor: 'var(--color-grade-4-border)',
-			color: 'var(--color-grade-4-badge)',
-		}
-	if (value >= 3)
-		return {
-			background: 'var(--color-grade-3-bg)',
-			borderColor: 'var(--color-grade-3-border)',
-			color: 'var(--color-grade-3-badge)',
-		}
-	return {
-		background: 'var(--color-grade-2-bg)',
-		borderColor: 'var(--color-grade-2-border)',
-		color: 'var(--color-grade-2-badge)',
-	}
-}
 
 interface Props {
 	bySubject: SubjectStats[]
@@ -111,13 +70,10 @@ export function GradesSubjectList({ bySubject }: Props) {
 										<div className='text-xs text-app-muted whitespace-nowrap'>
 											{entry.date.slice(8, 10)}.{entry.date.slice(5, 7)}
 										</div>
+
 										<span
 											className='px-1.5 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap'
-											style={{
-												background: 'var(--color-surface-strong)',
-												color: 'var(--color-text-muted)',
-												borderColor: 'var(--color-border)',
-											}}
+											style={GRADE_TYPE_CONFIG[type].style}
 										>
 											{GRADE_TYPE_CONFIG[type].label}
 										</span>

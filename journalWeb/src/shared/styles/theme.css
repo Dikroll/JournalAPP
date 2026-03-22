@@ -64,9 +64,29 @@
 	--color-grade-2-border: rgba(224, 53, 53, 0.35);
 	--color-grade-2-badge: #e03535;
 
+	/* ── Shadows ──────────────────────────────────────────────
+	   --shadow-card     : карточки (HomeworkCard, GradesCard, LessonCard…)
+	   --shadow-nav      : нижний навбар
+	   --shadow-modal    : bottom sheets и центрированные модалки
+	                       (SendHomeworkSheet, StudAnswerSheet, LogoutButton)
+	   --shadow-dropdown : выпадающие списки (SpecSelector, AccountSwitcher)
+	   --shadow-tooltip  : тултипы на графиках (CustomTooltip)
+	   ──────────────────────────────────────────────────────── */
 	--shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.35);
 	--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.55),
 		0 2px 12px 0 rgba(0, 0, 0, 0.3);
+	--shadow-modal: 0 4px 24px 0 rgba(0, 0, 0, 0.45);
+	--shadow-dropdown: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+	--shadow-tooltip: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+	/* ── Backdrop blur — допустимые уровни ────────────────────
+	   backdrop-blur-sm  (4px)  : полупрозрачный оверлей за модалкой/шторкой
+	   backdrop-blur-xl  (24px) : карточки, хедеры, навбар, сами шторки
+	   backdrop-blur-3xl (64px) : LoginForm (намеренно усиленный)
+
+	   ❌ Не использовать: backdrop-blur-md, backdrop-blur-lg,
+	                        backdrop-blur-[24px] (arbitrary value)
+	   ──────────────────────────────────────────────────────── */
 
 	--glow-top: radial-gradient(
 		ellipse,
@@ -94,9 +114,6 @@
 
 /*
    LIGHT THEME
-   Концепция: тёплый бежевый фон с лёгким кремовым оттенком,
-   glow-паттерн как в тёмной теме — красный снизу-слева, тёплый нейтральный сверху.
-   Белые карточки хорошо контрастируют с бежем.
 */
 .light,
 [data-theme='light'] {
@@ -107,28 +124,20 @@
 	--color-brand-subtle: rgba(194, 3, 18, 0.08);
 	--color-brand-border: rgba(194, 3, 18, 0.22);
 
-	/* Бежевый тёплый фон */
 	--color-bg: #e8e2d9;
-
-	/* Карточки — чистый белый */
 	--color-surface: #ffffff;
 	--color-surface-hover: #f7f5f2;
 	--color-surface-active: #eeeae4;
-	/* Вложенные — видимо теплее фона */
 	--color-surface-strong: #ddd8d0;
-	/* Навбар — плотный белый */
 	--color-overlay-nav: #ffffff;
 
-	/* Бордеры — тёплые, не холодные серые */
 	--color-border: rgba(60, 45, 30, 0.1);
 	--color-border-strong: rgba(60, 45, 30, 0.18);
 
-	/* Текст */
 	--color-text: #1a1410;
 	--color-text-muted: #5c5248;
 	--color-text-faint: rgba(26, 20, 16, 0.3);
 
-	/* Статусы — насыщенные */
 	--color-new: #1256c0;
 	--color-new-subtle: #dce8ff;
 	--color-new-border: rgba(18, 86, 192, 0.25);
@@ -154,7 +163,6 @@
 	--color-comment-subtle: #fff0cc;
 	--color-comment-border: rgba(140, 78, 0, 0.22);
 
-	/* Оценки — solid */
 	--color-grade-5-bg: #d0f2e4;
 	--color-grade-5-border: rgba(8, 110, 71, 0.3);
 	--color-grade-5-badge: #086e47;
@@ -171,17 +179,14 @@
 	--color-grade-2-border: rgba(170, 24, 24, 0.3);
 	--color-grade-2-badge: #aa1818;
 
-	/* Тени — тёплые */
 	--shadow-card: 0 1px 4px 0 rgba(30, 20, 10, 0.08),
 		0 4px 18px 0 rgba(30, 20, 10, 0.09);
 	--shadow-nav: 0 4px 20px 0 rgba(30, 20, 10, 0.14),
 		0 1px 4px 0 rgba(30, 20, 10, 0.08);
+	--shadow-modal: 0 4px 24px 0 rgba(30, 20, 10, 0.18);
+	--shadow-dropdown: 0 8px 32px 0 rgba(30, 20, 10, 0.16);
+	--shadow-tooltip: 0 4px 20px rgba(30, 20, 10, 0.15);
 
-	/* Glow-паттерн как в тёмной теме:
-	   - сверху: нейтральный тёплый туман
-	   - снизу-слева: красный glow (бренд)
-	   - сверху-справа: лёгкий красный отсвет
-	   - середина: совсем лёгкий тёплый */
 	--glow-top: radial-gradient(
 		ellipse,
 		rgba(180, 160, 130, 0.3) 0%,
@@ -275,6 +280,9 @@
 			0 4px 18px 0 rgba(30, 20, 10, 0.09);
 		--shadow-nav: 0 4px 20px 0 rgba(30, 20, 10, 0.14),
 			0 1px 4px 0 rgba(30, 20, 10, 0.08);
+		--shadow-modal: 0 4px 24px 0 rgba(30, 20, 10, 0.18);
+		--shadow-dropdown: 0 8px 32px 0 rgba(30, 20, 10, 0.16);
+		--shadow-tooltip: 0 4px 20px rgba(30, 20, 10, 0.15);
 
 		--glow-top: radial-gradient(
 			ellipse,
@@ -317,8 +325,8 @@
 	background: var(--color-overlay-nav);
 	border: 1px solid var(--color-border);
 	box-shadow: var(--shadow-nav);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(24px);
+	-webkit-backdrop-filter: blur(24px);
 }
 
 @theme {

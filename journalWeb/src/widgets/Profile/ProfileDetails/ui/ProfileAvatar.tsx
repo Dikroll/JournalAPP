@@ -1,17 +1,12 @@
 import type { ProfileDetails } from '@/entities/profile'
 import { getCachedImageUrl } from '@/shared/lib'
+import { AvatarPlaceholder } from '@/shared/ui'
 
 interface Props {
 	details: ProfileDetails
 }
 
 export function ProfileAvatar({ details }: Props) {
-	const initials = details.full_name
-		.split(' ')
-		.map(n => n[0])
-		.join('')
-		.slice(0, 2)
-
 	const photoUrl = getCachedImageUrl(details.photo_url)
 
 	return (
@@ -30,12 +25,11 @@ export function ProfileAvatar({ details }: Props) {
 					className='w-16 h-16 rounded-full object-cover border-2 border-app-border-strong shrink-0'
 				/>
 			) : (
-				<div
-					className='w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold border-2 border-app-border-strong shrink-0'
-					style={{ background: 'linear-gradient(135deg,#F20519,#F29F05)' }}
-				>
-					{initials}
-				</div>
+				<AvatarPlaceholder
+					fullName={details.full_name}
+					size={64}
+					className='border-2 border-app-border-strong'
+				/>
 			)}
 			<div className='flex-1 min-w-0'>
 				<p className='text-base font-bold text-app-text leading-snug'>

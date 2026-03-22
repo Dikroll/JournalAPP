@@ -30,21 +30,32 @@ export function ScheduleCalendar() {
 					const isGray = !hasLesson || isWeekend
 
 					return (
-						<div
+						<button
+							type='button'
 							onClick={() => hasLesson && setSelectedDate(dateStr)}
 							className={`
-								w-9 h-9 flex items-center justify-center rounded-full text-xs font-semibold
-								transition-colors relative
+								relative flex items-center justify-center
+								rounded-full text-xs font-semibold
+								transition-colors
 								${isSelected ? 'bg-brand text-white' : ''}
 								${!isSelected && isGray ? 'text-app-faint' : ''}
-								${!isSelected && !isGray ? 'text-app-text hover:bg-app-surface-hover cursor-pointer' : 'cursor-default'}
+								${
+									!isSelected && !isGray
+										? 'text-app-text hover:bg-app-surface-hover cursor-pointer'
+										: 'cursor-default'
+								}
 							`}
+							style={{ width: 36, height: 36 }}
 						>
 							{day}
+
 							{isToday && !isSelected && (
-								<span className='absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brand' />
+								<span
+									className='absolute inset-0 rounded-full pointer-events-none'
+									style={{ boxShadow: '0 0 0 1.5px var(--color-brand)' }}
+								/>
 							)}
-						</div>
+						</button>
 					)
 				}}
 			/>

@@ -8,10 +8,9 @@ import {
 	Phone,
 	XCircle,
 } from 'lucide-react'
-
 import { Divider, InfoRow } from './shared/ProfileInfoParts'
 
-function phoneTypeLabel(type: number) {
+export function phoneTypeLabel(type: number): string {
 	const map: Record<number, string> = {
 		0: 'Мобильный',
 		1: 'Домашний',
@@ -61,7 +60,7 @@ export function ProfileInfoCard({ details }: Props) {
 					badge={<VerifiedBadge ok={details.is_email_verified} />}
 				/>
 				{details.phones.map((p, i) => (
-					<div key={i}>
+					<div key={p.number}>
 						<Divider />
 						<InfoRow
 							icon={<Phone size={15} />}

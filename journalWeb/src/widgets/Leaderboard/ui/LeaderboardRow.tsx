@@ -1,5 +1,6 @@
 import type { LeaderboardStudent } from '@/entities/leaderboard'
 import { getCachedImageUrl } from '@/shared/lib'
+import { AvatarPlaceholder } from '@/shared/ui'
 import { Coins, Crown, Medal } from 'lucide-react'
 import { memo } from 'react'
 
@@ -36,7 +37,6 @@ const RANK_COLORS: Record<number, string> = {
 	3: '#B45309',
 }
 
-// Оранжевые токены — одинаковые в тёмной и светлой теме через inline стили
 const AMBER = {
 	bg: 'rgba(245, 158, 11, 0.10)',
 	border: 'rgba(245, 158, 11, 0.28)',
@@ -56,11 +56,6 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 		.split(' ')
 		.map((p, i) => (i === 0 ? p : p[0] + '.'))
 		.join(' ')
-	const initials = student.full_name
-		.split(' ')
-		.map(p => p[0])
-		.join('')
-		.slice(0, 2)
 
 	const photoUrl = getCachedImageUrl(student.photo_url)
 
@@ -81,7 +76,6 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 					  }
 			}
 		>
-			{/* Позиция */}
 			<span
 				className='w-6 text-center text-base font-bold shrink-0'
 				style={{
@@ -91,7 +85,6 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				{student.position}
 			</span>
 
-			{/* Аватар */}
 			<div className='relative shrink-0'>
 				{photoUrl ? (
 					<img
@@ -109,29 +102,19 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 						}}
 					/>
 				) : (
-					<div
-						className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold'
+					<AvatarPlaceholder
+						fullName={student.full_name}
+						size={40}
 						style={
 							isMe
-								? {
-										background: AMBER.bg,
-										border: `2px solid ${AMBER.border}`,
-										color: AMBER.text,
-								  }
-								: {
-										background: 'var(--color-surface-strong)',
-										border: '2px solid var(--color-border)',
-										color: 'var(--color-text)',
-								  }
+								? { border: `2px solid ${AMBER.border}` }
+								: { border: '2px solid var(--color-border)' }
 						}
-					>
-						{initials}
-					</div>
+					/>
 				)}
 				<RankBadge rank={student.position} />
 			</div>
 
-			{/* Имя */}
 			<div className='flex-1 min-w-0'>
 				<p
 					className='text-sm font-semibold truncate'
@@ -144,7 +127,6 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				</p>
 			</div>
 
-			{/* Очки */}
 			<div
 				className='flex items-center gap-1 px-2.5 py-1.5 rounded-xl shrink-0'
 				style={

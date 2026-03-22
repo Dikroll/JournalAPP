@@ -64,7 +64,6 @@ export const CACHE_KEYS = {
 	HOMEWORK: (status: number, groupId: number) =>
 		`cache:hw:${status}:${groupId}`,
 	NEWS: 'cache:news:latest',
-	PAYMENT_SUMMARY: 'cache:payment:summary',
 	LIBRARY_COUNTERS: (specId?: number) =>
 		`cache:library:counters:${specId ?? 'all'}`,
 	MARKET_PRODUCTS: 'cache:market:products',
@@ -72,4 +71,6 @@ export const CACHE_KEYS = {
 	LEADERBOARD_STREAM: 'cache:leaderboard:stream',
 	REVIEWS: 'cache:reviews',
 	GRADES_ALL: 'cache:grades:all',
+	PAYMENT_SUMMARY: 'cache:payment:summary',
+	PAYMENT_INDEX: 'cache:payment:index',
 }

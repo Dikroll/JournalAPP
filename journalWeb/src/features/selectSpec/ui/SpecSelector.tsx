@@ -29,25 +29,13 @@ export function SpecSelector({
 
 	useEffect(() => {
 		const handler = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as Node)) {
-				close()
-			}
+			if (ref.current && !ref.current.contains(e.target as Node)) close()
 		}
 		document.addEventListener('mousedown', handler)
 		return () => document.removeEventListener('mousedown', handler)
 	}, [close])
 
 	useEffect(() => () => close(), [])
-
-	const handleSearchZoneClick = () => {
-		setOpen(true)
-		setTimeout(() => inputRef.current?.focus(), 0)
-	}
-
-	const handleToggleZoneClick = () => {
-		if (open) close()
-		else setOpen(true)
-	}
 
 	const handleSelect = (subject: Subject | null) => {
 		onChange(subject)
@@ -66,7 +54,10 @@ export function SpecSelector({
 				<div
 					className='flex items-center gap-2 min-w-0 px-4 h-full cursor-pointer'
 					style={{ flex: '1 1 0' }}
-					onClick={handleSearchZoneClick}
+					onClick={() => {
+						setOpen(true)
+						setTimeout(() => inputRef.current?.focus(), 0)
+					}}
 				>
 					<Search size={14} className='text-[#6B7280] flex-shrink-0' />
 					{loading ? (
@@ -84,7 +75,9 @@ export function SpecSelector({
 						/>
 					) : (
 						<span
-							className={`truncate ${selected ? 'text-[#F2F2F2]' : 'text-[#6B7280]'}`}
+							className={`truncate ${
+								selected ? 'text-[#F2F2F2]' : 'text-[#6B7280]'
+							}`}
 						>
 							{selected ? selected.name : 'Все предметы'}
 						</span>
@@ -94,32 +87,29 @@ export function SpecSelector({
 				<div
 					className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-white/5 text-[#6B7280] hover:text-[#F2F2F2] transition-colors flex-shrink-0'
 					style={{ minWidth: '80px' }}
-					onClick={handleToggleZoneClick}
+					onClick={() => (open ? close() : setOpen(true))}
 				>
 					{(selected || search) && (
-						<button
-							type='button'
-							onClick={handleClear}
-							className='p-0.5 transition-colors'
-						>
+						<button type='button' onClick={handleClear} className='p-0.5'>
 							<X size={13} />
 						</button>
 					)}
 					<ChevronDown
 						size={14}
-						className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+						className={`transition-transform duration-200 ${
+							open ? 'rotate-180' : ''
+						}`}
 					/>
 				</div>
 			</div>
 
 			{open && !loading && (
 				<div
-					className='absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl overflow-hidden'
+					className='absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl overflow-hidden backdrop-blur-xl'
 					style={{
 						background: 'rgba(30, 31, 35, 0.92)',
-						backdropFilter: 'blur(24px)',
 						border: '1px solid rgba(255,255,255,0.10)',
-						boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+						boxShadow: 'var(--shadow-dropdown)',
 					}}
 				>
 					<div className='max-h-64 overflow-y-auto'>

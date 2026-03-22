@@ -1,25 +1,23 @@
 import { isCacheValid } from '@/shared/lib'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { subjectApi } from '../api'
 import { useSubjectStore } from '../model/store'
 
 const CACHE_TTL_MS = 60 * 60 * 1000
 
-let fetching = false
-
-export function resetSubjectsFetch() {
-	fetching = false
-}
+export function resetSubjectsFetch() {}
 
 export function useSubjects() {
 	const { subjects, status, loadedAt, setSubjects, setStatus, setLoadedAt } =
 		useSubjectStore()
 
+	const fetchingRef = useRef(false)
+
 	useEffect(() => {
-		if (fetching) return
+		if (fetchingRef.current) return
 		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
-		fetching = true
+		fetchingRef.current = true
 		setStatus('loading')
 
 		subjectApi
@@ -31,7 +29,7 @@ export function useSubjects() {
 			})
 			.catch(() => setStatus('error'))
 			.finally(() => {
-				fetching = false
+				fetchingRef.current = false
 			})
 	}, [loadedAt])
 

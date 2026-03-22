@@ -1,32 +1,114 @@
 import type { GradeType } from '../model/types'
-export const GRADE_TYPE_CONFIG: Record<
-	GradeType,
-	{ label: string; color: string }
-> = {
+
+export interface GradeTypeStyle {
+	label: string
+	style: {
+		background: string
+		color: string
+		borderColor: string
+	}
+}
+
+export const GRADE_TYPE_CONFIG: Record<GradeType, GradeTypeStyle> = {
 	homework: {
 		label: 'ДЗ',
-		color: 'bg-[#3B82F6]/20 text-[#3B82F6] border-[#3B82F6]/30',
+		style: {
+			background: 'rgba(59,130,246,0.15)',
+			color: '#3B82F6',
+			borderColor: 'rgba(59,130,246,0.35)',
+		},
 	},
 	lab: {
 		label: 'Лаб',
-		color: 'bg-[#8B5CF6]/20 text-[#8B5CF6] border-[#8B5CF6]/30',
+		style: {
+			background: 'rgba(139,92,246,0.15)',
+			color: '#8B5CF6',
+			borderColor: 'rgba(139,92,246,0.35)',
+		},
 	},
 	classwork: {
 		label: 'КР',
-		color: 'bg-[#06B6D4]/20 text-[#06B6D4] border-[#06B6D4]/30',
+		style: {
+			background: 'rgba(6,182,212,0.15)',
+			color: '#06B6D4',
+			borderColor: 'rgba(6,182,212,0.35)',
+		},
 	},
 	control: {
 		label: 'Контроль',
-		color: 'bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30',
+		style: {
+			background: 'rgba(245,158,11,0.15)',
+			color: '#F59E0B',
+			borderColor: 'rgba(245,158,11,0.35)',
+		},
 	},
 	practical: {
 		label: 'Практ',
-		color: 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30',
+		style: {
+			background: 'rgba(16,185,129,0.15)',
+			color: '#10B981',
+			borderColor: 'rgba(16,185,129,0.35)',
+		},
 	},
 	final: {
 		label: 'Зачёт',
-		color: 'bg-[#A855F7]/20 text-[#A855F7] border-[#A855F7]/30',
+		style: {
+			background: 'rgba(168,85,247,0.15)',
+			color: '#A855F7',
+			borderColor: 'rgba(168,85,247,0.35)',
+		},
 	},
+}
+
+export function getGradeStyle(grade: number): {
+	background: string
+	color: string
+	borderColor: string
+} {
+	if (grade >= 5)
+		return {
+			background: 'rgba(16,185,129,0.15)',
+			color: '#10B981',
+			borderColor: 'rgba(16,185,129,0.35)',
+		}
+	if (grade >= 4)
+		return {
+			background: 'rgba(59,130,246,0.15)',
+			color: '#3B82F6',
+			borderColor: 'rgba(59,130,246,0.35)',
+		}
+	if (grade >= 3)
+		return {
+			background: 'rgba(245,158,11,0.15)',
+			color: '#F59E0B',
+			borderColor: 'rgba(245,158,11,0.35)',
+		}
+	if (grade >= 2)
+		return {
+			background: 'rgba(249,115,22,0.15)',
+			color: '#F97316',
+			borderColor: 'rgba(249,115,22,0.35)',
+		}
+	return {
+		background: 'rgba(220,38,38,0.15)',
+		color: '#DC2626',
+		borderColor: 'rgba(220,38,38,0.35)',
+	}
+}
+
+// Для кружков в GradesSubjectList — тип final фиолетовый независимо от значения
+export function gradeCircleStyle(
+	type: GradeType,
+	value: number,
+): { background: string; color: string; borderColor: string } {
+	if (type === 'final') {
+		return {
+			background: 'rgba(168,85,247,0.15)',
+			color: '#A855F7',
+			borderColor: 'rgba(168,85,247,0.55)',
+		}
+	}
+	return getGradeStyle(value)
 }
 
 export function getGradeColor(grade: number): string {

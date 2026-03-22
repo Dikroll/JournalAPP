@@ -32,9 +32,14 @@ export { FutureExams } from './FutureExams/ui/FutureExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'
-export { ProfileAvatar } from './Profile/ui/ProfileAvatar'
-export { ProfileInfoCard } from './Profile/ui/ProfileInfoCard'
-export { ProfilePaymentCard } from './Profile/ui/ProfilePaymentCard'
-export { ProfileRelativesCard } from './Profile/ui/ProfileRelativesCard'
-export { ProfileHeader } from './ProfileHeader/ui/ProfileHeader'
+export { ProfileAvatar } from './Profile/ProfileDetails/ui/ProfileAvatar'
+export { ProfileInfoCard } from './Profile/ProfileDetails/ui/ProfileInfoCard'
+export { ProfilePaymentCard } from './Profile/ProfileDetails/ui/ProfilePaymentCard'
+export { ProfileRelativesCard } from './Profile/ProfileDetails/ui/ProfileRelativesCard'
+export { ProfileHeader } from './Profile/ProfileHeader/ui/ProfileHeader'
 export { ReviewsList } from './ReviewList/ui/ReviewList'
+
+//Payment
+export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
+export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
+export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'

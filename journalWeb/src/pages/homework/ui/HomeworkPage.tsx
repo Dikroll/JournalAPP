@@ -7,6 +7,7 @@ import type { Subject } from '@/entities/subject'
 import { useSubjects } from '@/entities/subject'
 import { RefreshHomeworkButton } from '@/features/refreshHomework'
 import { SpecSelector } from '@/features/selectSpec'
+import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import {
 	HomeworkCountersBar,
 	HomeworkStatusView,
@@ -63,17 +64,16 @@ export function HomeworkPage() {
 
 	if (status === 'loading') {
 		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<p className='text-app-muted'>Загрузка...</p>
+			<div className='p-4'>
+				<SkeletonList count={5} height={120} />
 			</div>
 		)
 	}
 
 	if (status === 'error') {
 		return (
-			<div className='flex flex-col items-center justify-center min-h-screen gap-4'>
-				<p className='text-status-overdue'>{error}</p>
-				<RefreshHomeworkButton className='flex items-center gap-2 px-4 py-2.5 bg-app-surface rounded-2xl text-app-text text-sm border border-app-border transition-colors' />
+			<div className='min-h-screen flex items-center justify-center'>
+				<ErrorView message={error ?? undefined} />
 			</div>
 		)
 	}
@@ -81,10 +81,10 @@ export function HomeworkPage() {
 	return (
 		<div className='min-h-screen text-app-text pb-28'>
 			<div className='p-4 space-y-3'>
-				<div className='flex items-center justify-between'>
-					<h1 className='text-2xl font-bold text-app-text'>Домашние задания</h1>
-					<RefreshHomeworkButton />
-				</div>
+				<PageHeader
+					title='Домашние задания'
+					actions={<RefreshHomeworkButton />}
+				/>
 
 				{counters && (
 					<HomeworkCountersBar

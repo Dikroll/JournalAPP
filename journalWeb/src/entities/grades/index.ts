@@ -1,4 +1,10 @@
-export { getGradeColor, GRADE_TYPE_CONFIG } from './config/labelConfig'
+export {
+	getGradeColor,
+	getGradeStyle,
+	GRADE_TYPE_CONFIG,
+	gradeCircleStyle,
+} from './config/labelConfig'
+export type { GradeTypeStyle } from './config/labelConfig'
 export { useGrades } from './hooks/useGrades'
 export { useGradesBySubject } from './hooks/useGradesBySubject'
 export { useGradesGroups } from './hooks/useGradesGroups'

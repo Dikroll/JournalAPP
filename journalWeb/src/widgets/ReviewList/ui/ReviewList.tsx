@@ -34,8 +34,11 @@ export function ReviewsList() {
 			</h3>
 
 			<div className='space-y-3'>
-				{visible.map((review, i) => (
-					<ReviewCard key={i} review={review} />
+				{visible.map(review => (
+					<ReviewCard
+						key={`${review.date}-${review.teacher}`}
+						review={review}
+					/>
 				))}
 			</div>
 
