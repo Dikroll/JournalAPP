@@ -1,5 +1,5 @@
+import type { SortKey } from '@/entities/grades'
 import { ArrowDownUp } from 'lucide-react'
-import type { SortKey } from '../model/store'
 import { useSortSubjectsStore } from '../model/store'
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [

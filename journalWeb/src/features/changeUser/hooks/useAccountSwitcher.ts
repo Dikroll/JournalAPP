@@ -1,5 +1,5 @@
 import { useUserStore } from '@/entities/user'
-import { useAuthStore } from '@/features/auth'
+import { useAuthStore } from '@/features/auth/model/store'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSwitchUser } from './useSwitchUser'
@@ -26,6 +26,7 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 		},
 		[switching, switchTo, onClose],
 	)
+
 	const handleRemove = useCallback(
 		(username: string) => {
 			const isActive = username === activeUsername
@@ -33,20 +34,15 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 				removeAccount(username)
 				return
 			}
-
 			const remaining = useAuthStore
 				.getState()
 				.accounts.filter(a => a.username !== username)
-
 			removeAccount(username)
 			onReset()
 			clearUser()
 			logout()
 			onClose()
-
-			if (remaining.length === 0) {
-				navigate('/login', { replace: true })
-			}
+			if (remaining.length === 0) navigate('/login', { replace: true })
 		},
 		[
 			activeUsername,
@@ -63,15 +59,11 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 		const remaining = useAuthStore
 			.getState()
 			.accounts.filter(a => a.username !== activeUsername)
-
 		onReset()
 		clearUser()
 		logout()
 		onClose()
-
-		if (remaining.length === 0) {
-			navigate('/login', { replace: true })
-		}
+		if (remaining.length === 0) navigate('/login', { replace: true })
 	}, [activeUsername, onReset, clearUser, logout, onClose, navigate])
 
 	return {
