@@ -11,7 +11,7 @@ staticfiles/images/*.jpg
 tests/
 android/
 ios/
-docs/
+
 
 .env
 package-lock.json*
