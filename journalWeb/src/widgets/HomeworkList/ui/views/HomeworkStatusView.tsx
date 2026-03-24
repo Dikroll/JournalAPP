@@ -10,7 +10,9 @@ import {
 	STATUS_ORDER,
 } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
-import { ShowMoreBtn } from '@/shared/ui'
+import { illustrations } from '@/shared/config/illustrationsConfig'
+import { InlineImage, ShowMoreBtn } from '@/shared/ui'
+import { useMemo } from 'react'
 import { HomeworkCard } from '../card/HomeworkCard'
 import { HomeworkCardPhoto } from '../card/HomeworkCardPhoto'
 import type { HomeworkViewMode } from '../shared/HomeworkToggleView'
@@ -37,7 +39,26 @@ export function HomeworkStatusView({
 	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
 	const CardComponent = viewMode === 'photo' ? HomeworkCardPhoto : HomeworkCard
 
+	const emptyState = useMemo(
+		() => (
+			<div className='flex flex-col items-center justify-center py-4'>
+				<InlineImage
+					src={illustrations.noHomework}
+					alt='Нет домашних заданий'
+					width={280}
+					height={280}
+					className='mb-3'
+				/>
+				<p className='text-app-muted text-sm'>Нет домашних заданий</p>
+			</div>
+		),
+		[],
+	)
+
 	if (!selectedSpec) {
+		const hasAnyItems = statusesToShow.some(s => byStatus[s]?.items.length)
+		if (!hasAnyItems) return emptyState
+
 		return (
 			<div className='space-y-6'>
 				{statusesToShow.map(s => {
@@ -60,7 +81,6 @@ export function HomeworkStatusView({
 								))}
 							</div>
 							{group.hasMore && (
-								// ✅ используем ShowMoreBtn из shared/ui
 								<ShowMoreBtn
 									onClick={() => onLoadMore(STATUS_KEY_MAP[s])}
 									remaining={group.total - group.items.length}
@@ -87,6 +107,12 @@ export function HomeworkStatusView({
 			</div>
 		)
 	}
+
+	const hasAnyItems = statusesToShow.some(s => {
+		const numKey = STATUS_KEY_MAP[s]
+		return (subjectData.items[numKey] ?? []).length > 0
+	})
+	if (!hasAnyItems) return emptyState
 
 	return (
 		<div className='space-y-6'>

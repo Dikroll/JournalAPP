@@ -1046,7 +1046,7 @@ GET /api/v2/endpoint
    }
    ```
 
-3. **Покажите loading状态**
+3. **Покажите loading 状态**
 
    ```typescript
    setStatus('loading')

@@ -1,9 +1,27 @@
 import { useFutureExams } from '@/entities/exam'
+import { illustrations } from '@/shared/config/illustrationsConfig'
+import { InlineImage } from '@/shared/ui'
 import { formatDate } from '@/shared/utils'
 import { CalendarDays } from 'lucide-react'
+import { useMemo } from 'react'
 
 export function FutureExams() {
 	const { exams, status } = useFutureExams()
+
+	const emptyState = useMemo(
+		() => (
+			<div className='flex flex-col items-center justify-center'>
+				<InlineImage
+					src={illustrations.noExams}
+					alt='Нет предстоящих экзаменов'
+					width={280}
+					height={280}
+				/>
+				<p className='text-app-muted text-sm'>Нет предстоящих экзаменов</p>
+			</div>
+		),
+		[],
+	)
 
 	if (status === 'loading' && exams.length === 0)
 		return <p className='text-app-muted text-sm'>Загрузка...</p>
@@ -11,7 +29,7 @@ export function FutureExams() {
 	if (status === 'error')
 		return <p className='text-status-overdue text-sm'>Ошибка загрузки</p>
 
-	if (exams.length === 0) return null
+	if (exams.length === 0) return emptyState
 
 	return (
 		<div>
