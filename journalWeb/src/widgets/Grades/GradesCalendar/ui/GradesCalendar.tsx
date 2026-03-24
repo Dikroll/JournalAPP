@@ -59,13 +59,9 @@ export function GradesCalendar({ byMonth }: Props) {
 								relative flex items-center justify-center
 								rounded-full text-xs font-semibold transition-colors
 								disabled:cursor-default
-								${
-									isSelected
-										? 'bg-brand text-white'
-										: hasData
-										? 'text-app-text hover:bg-app-surface-hover'
-										: 'text-app-faint'
-								}
+								${isSelected ? 'bg-brand text-white' : ''}
+								${!isSelected && hasData ? 'text-app-text hover:bg-app-surface-hover' : ''}
+								${!isSelected && !hasData ? 'text-app-faint' : ''}
 							`}
 							style={{ width: 36, height: 36 }}
 						>
@@ -74,9 +70,7 @@ export function GradesCalendar({ byMonth }: Props) {
 							{isToday && !isSelected && (
 								<span
 									className='absolute inset-0 rounded-full pointer-events-none'
-									style={{
-										boxShadow: '0 0 0 1.5px var(--color-brand)',
-									}}
+									style={{ boxShadow: '0 0 0 1.5px var(--color-brand)' }}
 								/>
 							)}
 

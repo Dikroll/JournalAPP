@@ -1,10 +1,17 @@
 import { getDaysUntilDeadline } from '@/shared/utils'
 import { Calendar, Clock } from 'lucide-react'
+
 interface Props {
 	issuedDate: string
 	deadline: string
 	isOverdue: boolean
 	isNew?: boolean
+}
+
+function getUrgencyLabel(daysLeft: number): string {
+	if (daysLeft === 0) return 'сегодня'
+	if (daysLeft === 1) return 'завтра'
+	return `${daysLeft} дня`
 }
 
 export function HomeworkCardDates({
@@ -14,9 +21,10 @@ export function HomeworkCardDates({
 	isNew,
 }: Props) {
 	const daysLeft = isNew && !isOverdue ? getDaysUntilDeadline(deadline) : null
-	const isUrgentYellow = daysLeft != null && daysLeft <= 3 && daysLeft > 0
+
 	const isUrgentRed = daysLeft === 0
-	const isUrgent = isUrgentYellow || isUrgentRed
+	const isUrgentYellow = daysLeft != null && daysLeft >= 1 && daysLeft <= 3
+	const isUrgent = isUrgentRed || isUrgentYellow
 
 	return (
 		<div className='flex gap-4 mb-4'>
@@ -48,7 +56,8 @@ export function HomeworkCardDates({
 				>
 					{deadline}
 				</span>
-				{isUrgent && (
+
+				{isUrgent && daysLeft != null && (
 					<span
 						className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
 							isUrgentRed
@@ -56,7 +65,7 @@ export function HomeworkCardDates({
 								: 'bg-pending-subtle text-status-pending'
 						}`}
 					>
-						{daysLeft === 0 ? 'сегодня' : 'завтра'}
+						{getUrgencyLabel(daysLeft)}
 					</span>
 				)}
 			</div>

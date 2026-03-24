@@ -22,6 +22,9 @@ interface Props {
 	renderDay: (info: MonthGridDayInfo) => React.ReactNode
 }
 
+const TOTAL_CELLS = 42
+const CELL_HEIGHT = 44
+
 export function MonthGrid({
 	year,
 	month,
@@ -32,6 +35,15 @@ export function MonthGrid({
 	const todayStr = getTodayString()
 	const daysInMonth = getDaysInMonth(year, month)
 	const firstDay = getFirstDayOfMonth(year, month)
+
+	const cells: (number | null)[] = Array.from(
+		{ length: TOTAL_CELLS },
+		(_, i) => {
+			const dayIndex = i - firstDay
+			if (dayIndex < 0 || dayIndex >= daysInMonth) return null
+			return dayIndex + 1
+		},
+	)
 
 	return (
 		<div
@@ -69,23 +81,24 @@ export function MonthGrid({
 				))}
 			</div>
 
-			<div className='grid grid-cols-7'>
-				{Array.from({ length: firstDay }).map((_, i) => (
-					<div key={`empty-${i}`} style={{ height: 44 }} />
-				))}
-				{Array.from({ length: daysInMonth }).map((_, i) => {
-					const day = i + 1
-					const dateStr = toDateString(year, month, day)
-					return (
+			<div className='grid grid-cols-7' style={{ height: CELL_HEIGHT * 6 }}>
+				{cells.map((day, i) =>
+					day !== null ? (
 						<div
-							key={day}
+							key={i}
 							className='flex items-center justify-center'
-							style={{ height: 44 }}
+							style={{ height: CELL_HEIGHT }}
 						>
-							{renderDay({ dateStr, day, isToday: dateStr === todayStr })}
+							{renderDay({
+								dateStr: toDateString(year, month, day),
+								day,
+								isToday: toDateString(year, month, day) === todayStr,
+							})}
 						</div>
-					)
-				})}
+					) : (
+						<div key={i} style={{ height: CELL_HEIGHT }} />
+					),
+				)}
 			</div>
 		</div>
 	)

@@ -1,7 +1,6 @@
 import type { ExamResult } from '@/entities/exam'
 import { useExamResults } from '@/entities/exam'
 import { ErrorView, SkeletonList } from '@/shared/ui'
-// ✅ используем formatDate из shared/utils — не дублируем
 import { formatDate } from '@/shared/utils'
 import { CheckCircle, Clock, GraduationCap } from 'lucide-react'
 
@@ -15,7 +14,6 @@ function getMarkColor(mark: number): string {
 	return 'text-app-muted bg-app-surface-strong border-app-border'
 }
 
-// ✅ вынесли повторяющийся рендер экзамена в отдельный компонент
 function ExamRow({ exam }: { exam: ExamResult }) {
 	const isPassed = exam.mark > 0
 
@@ -25,12 +23,10 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 			style={{ gridTemplateColumns: '1fr auto' }}
 		>
 			<div className='min-w-0'>
-				{/* ✅ line-clamp-2 вместо truncate — длинные названия не обрезаются */}
 				<h4 className='text-sm font-semibold text-app-text leading-snug line-clamp-2'>
 					{exam.spec}
 				</h4>
 
-				{/* ✅ иконка преподавателя как в GradeEntryRow */}
 				{exam.teacher && (
 					<div className='flex items-center gap-1.5 mt-1'>
 						<GraduationCap size={13} className='text-app-text flex-shrink-0' />
@@ -46,7 +42,7 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 							size={11}
 							className='text-status-checked flex-shrink-0'
 						/>
-						{/* ✅ formatDate из shared/utils */}
+
 						<span className='text-xs text-status-checked'>
 							{formatDate(exam.date)}
 						</span>
@@ -60,7 +56,6 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 				)}
 			</div>
 
-			{/* Правая колонка — оценка или clock */}
 			{isPassed ? (
 				<div
 					className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold border flex-shrink-0 ${getMarkColor(
@@ -96,7 +91,6 @@ export function GradesExamList() {
 	const passed = exams.filter(e => e.mark > 0)
 	const pending = exams.filter(e => e.mark === 0)
 
-	// ✅ вынесли повторяющийся блок секции в хелпер
 	const Section = ({
 		title,
 		items,

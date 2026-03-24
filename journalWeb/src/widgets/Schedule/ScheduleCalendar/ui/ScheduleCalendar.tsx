@@ -27,23 +27,24 @@ export function ScheduleCalendar() {
 					const isWeekend = dow === 0 || dow === 6
 					const hasLesson = daysWithLessons.has(dateStr)
 					const isSelected = dateStr === selectedDate
-					const isGray = !hasLesson || isWeekend
+					const isActive = hasLesson && !isWeekend
 
 					return (
 						<button
 							type='button'
-							onClick={() => hasLesson && setSelectedDate(dateStr)}
+							disabled={!isActive}
+							onClick={() => setSelectedDate(dateStr)}
 							className={`
 								relative flex items-center justify-center
-								rounded-full text-xs font-semibold
-								transition-colors
+								rounded-full text-xs font-semibold transition-colors
+								disabled:cursor-default
 								${isSelected ? 'bg-brand text-white' : ''}
-								${!isSelected && isGray ? 'text-app-faint' : ''}
 								${
-									!isSelected && !isGray
+									!isSelected && isActive
 										? 'text-app-text hover:bg-app-surface-hover cursor-pointer'
-										: 'cursor-default'
+										: ''
 								}
+								${!isSelected && !isActive ? 'text-app-faint' : ''}
 							`}
 							style={{ width: 36, height: 36 }}
 						>
