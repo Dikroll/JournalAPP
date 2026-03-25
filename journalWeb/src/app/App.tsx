@@ -1,36 +1,40 @@
+/**
+ * @fileoverview Root App Component - точка входа приложения
+ *
+ * Отвечает за:
+ * - Инициализацию пользователя (useInitUser)
+ * - Загрузку сохранённой темы из localStorage
+ * - Отображение маршрутизации приложения
+ * - Кнопка переключения темы (для разработки и юзеров)
+ *
+ * Структура:
+ * - useInitUser() загружает данные пользователя
+ * - useThemeStore используется для управления темой (с сохранением в localStorage)
+ * - ThemeToggleButton компонент для красивой кнопки переключения
+ * - AppRouter содержит все маршруты приложения
+ */
+
 import { useInitUser } from '@/features/initUser/hooks/useInitUser'
-import { useEffect, useState } from 'react'
 import { AppRouter } from './router'
+import { ThemeToggleButton } from './ui/ThemeToggleButton'
 
+/**
+ * Root компонент приложения
+ *
+ * Эффекты:
+ * - useInitUser() - загружает данные текущего пользователя при монтировании
+ * - useThemeStore автоматически применяет тему из localStorage
+ */
 export function App() {
+	// Инициализируем пользователя при загрузке
 	useInitUser()
-	const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-
-	useEffect(() => {
-		document.documentElement.classList.remove('light', 'dark')
-		if (theme === 'light') document.documentElement.classList.add('light')
-	}, [theme])
 
 	return (
 		<>
-			{/* <button
-        onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-        style={{
-          position: 'fixed',
-          bottom: 80,
-          right: 16,
-          zIndex: 9999,
-          padding: '8px 12px',
-          borderRadius: 12,
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          color: 'var(--color-text)',
-          fontSize: 12,
-          cursor: 'pointer'
-        }}
-      >
-        {theme === 'dark' ? '☀️' : '🌙'}
-      </button> */}
+			{/* Кнопка переключения темы - красивая, сохраняет выбор */}
+			<ThemeToggleButton />
+
+			{/* Маршруты приложения */}
 			<AppRouter />
 		</>
 	)
