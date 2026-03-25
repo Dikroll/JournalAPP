@@ -27,29 +27,36 @@ export function ReviewCard({ review }: Props) {
 					{formatDate(review.date)}
 				</span>
 			</div>
+
 			{review.specs.length > 0 && (
-				<div>
-					<div className='flex flex-wrap gap-1.5 mb-2'>
+				<div className='mb-2'>
+					<div className='flex flex-wrap gap-1.5'>
 						{displaySpecs.map((spec, index) => (
 							<span
 								key={`${spec}-${index}`}
-								className='inline-block text-xs bg-app-border bg-opacity-50 text-app-muted px-2 py-1 rounded-lg whitespace-nowrap'
+								className='inline-block text-xs text-status-comment px-2 py-0.5 rounded-lg break-words max-w-full'
+								style={{
+									background: 'var(--color-comment-subtle)',
+									border: '1px solid var(--color-comment-border)',
+									wordBreak: 'break-word',
+								}}
 							>
 								{spec}
 							</span>
 						))}
 					</div>
+
 					{hasMoreSpecs && (
 						<button
 							onClick={() => setIsExpanded(!isExpanded)}
-							className='flex items-center gap-1 text-xs text-app-primary hover:text-app-primary/80 transition-colors mb-2'
+							className='flex items-center gap-1 text-xs text-app-muted hover:text-app-text transition-colors mt-1.5'
 						>
 							{isExpanded
 								? 'Свернуть'
 								: `+${review.specs.length - MAX_SPECS_COLLAPSED} ещё`}
 							<ChevronDown
-								size={14}
-								className={`transform transition-transform ${
+								size={13}
+								className={`transition-transform duration-200 ${
 									isExpanded ? 'rotate-180' : ''
 								}`}
 							/>
@@ -57,6 +64,7 @@ export function ReviewCard({ review }: Props) {
 					)}
 				</div>
 			)}
+
 			<p className='text-sm text-app-text leading-relaxed'>{review.message}</p>
 		</div>
 	)
