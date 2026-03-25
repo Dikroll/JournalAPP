@@ -1,19 +1,19 @@
-import { useInitUser } from "@/features/initUser/hooks/useInitUser"
-import { useEffect, useState } from "react"
-import { AppRouter } from "./router"
+import { useInitUser } from '@/features/initUser/hooks/useInitUser'
+import { useEffect, useState } from 'react'
+import { AppRouter } from './router'
 
 export function App() {
-  useInitUser()
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+	useInitUser()
+	const [theme, setTheme] = useState<'dark' | 'light'>('dark')
 
-  useEffect(() => {
-    document.documentElement.classList.remove('light', 'dark')
-    if (theme === 'light') document.documentElement.classList.add('light')
-  }, [theme])
+	useEffect(() => {
+		document.documentElement.classList.remove('light', 'dark')
+		if (theme === 'light') document.documentElement.classList.add('light')
+	}, [theme])
 
-  return (
-    <>
-      <button
+	return (
+		<>
+			{/* <button
         onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
         style={{
           position: 'fixed',
@@ -30,8 +30,8 @@ export function App() {
         }}
       >
         {theme === 'dark' ? '☀️' : '🌙'}
-      </button>
-      <AppRouter />
-    </>
-  )
+      </button> */}
+			<AppRouter />
+		</>
+	)
 }

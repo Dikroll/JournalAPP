@@ -1,17 +1,40 @@
-import { useState, useEffect } from 'react'
+import { ttl } from '@/shared/config'
+import { isCacheValid } from '@/shared/lib'
+import { useEffect, useRef } from 'react'
 import { examApi } from '../api'
-import type { ExamResult } from '../model/types'
+import { useExamStore } from '../model/store'
+
+const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 
 export function useExamResults() {
-  const [exams, setExams] = useState<ExamResult[]>([])
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+	const results = useExamStore(s => s.results)
+	const status = useExamStore(s => s.resultsStatus)
+	const loadedAt = useExamStore(s => s.resultsLoadedAt)
+	const setResults = useExamStore(s => s.setResults)
+	const setStatus = useExamStore(s => s.setResultsStatus)
+	const setLoadedAt = useExamStore(s => s.setResultsLoadedAt)
 
-  useEffect(() => {
-    setStatus('loading')
-    examApi.getExams()
-      .then(data => { setExams(data); setStatus('success') })
-      .catch(() => setStatus('error'))
-  }, [])
+	const fetchingRef = useRef(false)
 
-  return { exams, status }
+	useEffect(() => {
+		if (fetchingRef.current) return
+		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
+
+		fetchingRef.current = true
+		setStatus('loading')
+
+		examApi
+			.getExams()
+			.then(data => {
+				setResults(data)
+				setLoadedAt(Date.now())
+				setStatus('success')
+			})
+			.catch(() => setStatus('error'))
+			.finally(() => {
+				fetchingRef.current = false
+			})
+	}, [loadedAt])
+
+	return { exams: results, status }
 }

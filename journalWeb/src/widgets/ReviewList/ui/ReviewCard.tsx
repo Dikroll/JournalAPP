@@ -29,11 +29,11 @@ export function ReviewCard({ review }: Props) {
 			</div>
 			{review.specs.length > 0 && (
 				<div>
-					<div className='flex flex-wrap gap-1.5 mb-2 break-words'>
+					<div className='flex flex-wrap gap-1.5 mb-2'>
 						{displaySpecs.map((spec, index) => (
 							<span
 								key={`${spec}-${index}`}
-								className='inline-block text-xs bg-app-border bg-opacity-50 text-app-muted px-2 py-1 rounded-lg break-words'
+								className='inline-block text-xs bg-app-border bg-opacity-50 text-app-muted px-2 py-1 rounded-lg whitespace-nowrap'
 							>
 								{spec}
 							</span>

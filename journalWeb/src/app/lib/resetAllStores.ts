@@ -17,7 +17,14 @@ export function resetAllStores(): void {
 	usePaymentStore.getState().reset()
 
 	useUserStore.setState({ user: null })
-	useExamStore.setState({ exams: [], status: 'idle', loadedAt: null })
+	useExamStore.setState({
+		exams: [],
+		status: 'idle',
+		loadedAt: null,
+		results: [],
+		resultsStatus: 'idle',
+		resultsLoadedAt: null,
+	})
 	useSubjectStore.setState({ subjects: [], status: 'idle', loadedAt: null })
 
 	useDashboardChartsStore.setState({

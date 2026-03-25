@@ -42,21 +42,6 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 				)}
 
 				<div className='flex items-center flex-wrap gap-1 mt-1.5'>
-					{hasMarks &&
-						entry.flatMarks.map(({ type }) => (
-							<span
-								key={type}
-								className='px-1.5 py-0.5 rounded text-[10px] font-medium border'
-								style={GRADE_TYPE_CONFIG[type].style}
-							>
-								{GRADE_TYPE_CONFIG[type].label}
-							</span>
-						))}
-
-					{hasMarks && (
-						<span className='w-1 h-1 rounded-full bg-app-border-strong flex-shrink-0' />
-					)}
-
 					{entry.attended ? (
 						<span className='flex items-center gap-1 text-[11px] text-status-checked font-medium'>
 							<CheckCircle size={11} className='flex-shrink-0' />
@@ -68,6 +53,19 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 							Пропуск
 						</span>
 					)}
+					{hasMarks && (
+						<span className='w-1 h-1 rounded-full bg-app-border-strong flex-shrink-0' />
+					)}
+					{hasMarks &&
+						entry.flatMarks.map(({ type }) => (
+							<span
+								key={type}
+								className='px-1.5 py-0.5 rounded text-[10px] font-medium border'
+								style={GRADE_TYPE_CONFIG[type].style}
+							>
+								{GRADE_TYPE_CONFIG[type].label}
+							</span>
+						))}
 				</div>
 			</div>
 
