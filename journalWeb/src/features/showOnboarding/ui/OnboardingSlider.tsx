@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { useState } from 'react'
+import { useOnboardingSlider } from '../hooks/useOnboardingSlider'
 
 const SLIDES = [
 	{
@@ -30,14 +30,15 @@ interface Props {
 }
 
 export function OnboardingSlider({ onDone }: Props) {
-	const [current, setCurrent] = useState(0)
-	const isLast = current === SLIDES.length - 1
+	const {
+		current,
+		isLast,
+		handleNext,
+		handleTouchStart,
+		handleTouchEnd,
+		goToSlide,
+	} = useOnboardingSlider(SLIDES.length, onDone)
 	const slide = SLIDES[current]
-
-	const handleNext = () => {
-		if (isLast) onDone()
-		else setCurrent(c => c + 1)
-	}
 
 	return (
 		<div
@@ -48,6 +49,8 @@ export function OnboardingSlider({ onDone }: Props) {
 				backgroundColor: 'var(--color-bg)',
 				overflow: 'hidden',
 			}}
+			onTouchStart={handleTouchStart}
+			onTouchEnd={handleTouchEnd}
 		>
 			<div
 				style={{
@@ -76,7 +79,7 @@ export function OnboardingSlider({ onDone }: Props) {
 				}}
 			/>
 
-			<div className='flex justify-end px-6 pt-8 relative z-10'>
+			<div className='flex justify-end px-6 pt-16 relative z-10'>
 				{!isLast && (
 					<button
 						onClick={onDone}
@@ -145,12 +148,12 @@ export function OnboardingSlider({ onDone }: Props) {
 				</p>
 			</div>
 
-			<div className='px-6 pb-10 pt-6 flex items-center justify-between relative z-10'>
+			<div className='px-6 pb-6 pt-4 flex items-center justify-between relative z-10'>
 				<div className='flex gap-1.5'>
 					{SLIDES.map((_, i) => (
 						<div
 							key={i}
-							onClick={() => setCurrent(i)}
+							onClick={() => goToSlide(i)}
 							className='cursor-pointer transition-all duration-300'
 							style={{
 								width: i === current ? 20 : 6,
@@ -170,6 +173,7 @@ export function OnboardingSlider({ onDone }: Props) {
 					className='flex items-center justify-center gap-2 font-semibold text-sm transition-all active:scale-95'
 					style={{
 						height: 48,
+						minWidth: 80,
 						paddingLeft: 24,
 						paddingRight: 24,
 						borderRadius: 16,
