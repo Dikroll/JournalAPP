@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { X, ZoomIn, ZoomOut } from 'lucide-react'
 import Lightbox from 'yet-another-react-lightbox'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
@@ -31,9 +31,9 @@ export function PhotoViewerModal({ src, alt, onClose }: Props) {
 			render={{
 				buttonPrev: () => null,
 				buttonNext: () => null,
-				iconZoomIn: () => null,
-				iconZoomOut: () => null,
-				iconClose: () => <X size={16} />,
+				iconZoomIn: () => <ZoomIn size={18} />,
+				iconZoomOut: () => <ZoomOut size={18} />,
+				iconClose: () => <X size={18} />,
 			}}
 			styles={{
 				container: {
@@ -43,6 +43,7 @@ export function PhotoViewerModal({ src, alt, onClose }: Props) {
 				},
 				button: {
 					filter: 'none',
+					margin: '40px 4px',
 					color: 'rgba(255,255,255,0.6)',
 					padding: '8px',
 					borderRadius: '12px',
