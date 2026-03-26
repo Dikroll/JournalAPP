@@ -6,10 +6,6 @@ interface InlineImageProps {
 	height?: number
 }
 
-/**
- * Компонент для отображения SVG изображений из файлов
- * Идеален для мобильных приложений (Capacitor), так как не требует загрузки из интернета
- */
 export function InlineImage({
 	src,
 	alt = 'Image',

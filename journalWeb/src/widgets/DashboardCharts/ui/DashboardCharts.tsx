@@ -30,8 +30,11 @@ export function DashboardCharts() {
 		<div className='grid grid-cols-2 gap-3'>
 			<StatsCard
 				title='Посещаемость'
-				value={lastValue(attendance) != null ? `${lastValue(attendance)}%` : '—'}
+				value={
+					lastValue(attendance) != null ? `${lastValue(attendance)}%` : '—'
+				}
 				trend={calcTrend(attendance)}
+				trendSuffix='%'
 				trendLabel='за месяц'
 				data={toChartData(attendance)}
 				icon={<Users size={16} />}
@@ -39,7 +42,9 @@ export function DashboardCharts() {
 			/>
 			<StatsCard
 				title='Средний балл'
-				value={lastValue(progress) != null ? lastValue(progress)!.toFixed(1) : '—'}
+				value={
+					lastValue(progress) != null ? lastValue(progress)!.toFixed(1) : '—'
+				}
 				trend={calcTrend(progress)}
 				trendLabel='за месяц'
 				data={toChartData(progress)}

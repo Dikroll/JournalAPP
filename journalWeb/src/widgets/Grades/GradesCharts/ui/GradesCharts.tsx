@@ -2,7 +2,8 @@ import type { ChartPoint } from '@/entities/dashboard'
 import { useGradesCharts } from '@/entities/dashboard'
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui/'
-import { useTooltipTimeout } from '@/shared/utils'
+import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
+import React from 'react'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -10,21 +11,24 @@ interface Props {
 	attendance: ChartPoint[]
 }
 
-function TrendBadge({ trend }: { trend: number }) {
+function TrendBadge({ trend, suffix }: { trend: number; suffix?: string }) {
 	const isPositive = trend > 0
 	const isNeutral = trend === 0
+	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
 	return (
 		<span
-			className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+			className={`flex items-center gap-0.5 text-xs font-medium px-1.5 py-0.5 rounded-full ${
 				isNeutral
 					? 'bg-app-surface-strong text-app-muted'
 					: isPositive
-					? 'bg-checked-subtle text-status-checked'
-					: 'bg-overdue-bg text-status-overdue'
+					? 'bg-[#10B981]/10 text-[#10B981]'
+					: 'bg-[#EF4444]/10 text-[#EF4444]'
 			}`}
 		>
+			<TrendIcon size={11} />
 			{isPositive ? '+' : ''}
-			{trend}%
+			{trend}
+			{suffix ?? ''}
 		</span>
 	)
 }
@@ -46,15 +50,21 @@ const tooltipWrapperStyle = {
 	pointerEvents: 'none' as const,
 	overflow: 'visible' as const,
 	zIndex: 50,
-	transform: 'translateY(-100%) translateY(-12px)',
 }
 
 function ProgressChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const tooltip = useTooltipTimeout()
+	const containerRef = React.useRef<HTMLDivElement>(null)
 	const height = 192
 	return (
-		<div ref={ref} className='w-full' style={{ height }}>
+		<div
+			ref={node => {
+				ref(node)
+				containerRef.current = node
+			}}
+			className='w-full'
+			style={{ height }}
+		>
 			{width > 0 && (
 				<LineChart
 					width={width}
@@ -62,10 +72,6 @@ function ProgressChart({ data }: { data: any[] }) {
 					data={data}
 					margin={{ top: 16, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
-					onMouseMove={tooltip.show}
-					onMouseLeave={tooltip.hide}
-					onTouchStart={tooltip.show}
-					onTouchEnd={tooltip.hide}
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
 					<YAxis
@@ -75,10 +81,12 @@ function ProgressChart({ data }: { data: any[] }) {
 						width={30}
 					/>
 					<Tooltip
-						content={<CustomTooltip visible={tooltip.visible} />}
+						content={<CustomTooltip containerRef={containerRef} />}
 						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
 						isAnimationActive={false}
 						wrapperStyle={tooltipWrapperStyle}
+						position={{ y: -48 }}
+						allowEscapeViewBox={{ x: true, y: true }}
 					/>
 					<Line
 						type='monotone'
@@ -97,10 +105,17 @@ function ProgressChart({ data }: { data: any[] }) {
 
 function AttendanceChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const tooltip = useTooltipTimeout()
+	const containerRef = React.useRef<HTMLDivElement>(null)
 	const height = 192
 	return (
-		<div ref={ref} className='w-full' style={{ height }}>
+		<div
+			ref={node => {
+				ref(node)
+				containerRef.current = node
+			}}
+			className='w-full'
+			style={{ height }}
+		>
 			{width > 0 && (
 				<BarChart
 					width={width}
@@ -108,10 +123,6 @@ function AttendanceChart({ data }: { data: any[] }) {
 					data={data}
 					margin={{ top: 4, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
-					onMouseMove={tooltip.show}
-					onMouseLeave={tooltip.hide}
-					onTouchStart={tooltip.show}
-					onTouchEnd={tooltip.hide}
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
 					<YAxis
@@ -121,10 +132,12 @@ function AttendanceChart({ data }: { data: any[] }) {
 						width={36}
 					/>
 					<Tooltip
-						content={<CustomTooltip suffix='%' visible={tooltip.visible} />}
+						content={<CustomTooltip containerRef={containerRef} suffix='%' />}
 						cursor={<NoCursor />}
 						isAnimationActive={false}
 						wrapperStyle={tooltipWrapperStyle}
+						position={{ y: -48 }}
+						allowEscapeViewBox={{ x: true, y: true }}
 					/>
 					<Bar
 						dataKey='value'
@@ -167,7 +180,9 @@ export function GradesCharts({ progress, attendance }: Props) {
 						<h3 className='text-base font-bold text-app-text'>
 							Динамика посещаемости
 						</h3>
-						{attendanceTrend != null && <TrendBadge trend={attendanceTrend} />}
+						{attendanceTrend != null && (
+							<TrendBadge trend={attendanceTrend} suffix='%' />
+						)}
 					</div>
 					<AttendanceChart data={attendanceData} />
 				</div>

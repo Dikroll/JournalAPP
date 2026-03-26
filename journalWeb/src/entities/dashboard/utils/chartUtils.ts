@@ -6,9 +6,7 @@ export function calcTrend(data: ChartPoint[]): number | undefined {
 	if (!last || last.points == null || last.previous_points == null)
 		return undefined
 	if (last.previous_points === 0) return undefined
-	return Math.round(
-		((last.points - last.previous_points) / last.previous_points) * 100,
-	)
+	return last.points - last.previous_points
 }
 
 export function lastValue(data: ChartPoint[]): number | null {
