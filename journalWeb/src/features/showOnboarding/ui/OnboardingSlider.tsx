@@ -45,7 +45,7 @@ export function OnboardingSlider({ onDone }: Props) {
 			style={{
 				width: '100%',
 				height: '100dvh',
-				backgroundColor: '#0f0f0f',
+				backgroundColor: 'var(--color-bg)',
 				overflow: 'hidden',
 			}}
 		>
@@ -57,7 +57,7 @@ export function OnboardingSlider({ onDone }: Props) {
 					width: '320px',
 					height: '320px',
 					background:
-						'radial-gradient(circle, rgba(213,4,22,0.12) 0%, transparent 70%)',
+						'radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)',
 					borderRadius: '50%',
 					pointerEvents: 'none',
 				}}
@@ -70,7 +70,7 @@ export function OnboardingSlider({ onDone }: Props) {
 					width: '260px',
 					height: '260px',
 					background:
-						'radial-gradient(circle, rgba(213,4,22,0.07) 0%, transparent 70%)',
+						'radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)',
 					borderRadius: '50%',
 					pointerEvents: 'none',
 				}}
@@ -80,7 +80,10 @@ export function OnboardingSlider({ onDone }: Props) {
 				{!isLast && (
 					<button
 						onClick={onDone}
-						className='text-xs text-white/30 hover:text-white/60 transition-colors'
+						style={{
+							color: 'var(--color-text-faint)',
+						}}
+						className='text-xs hover:text-white/60 transition-colors'
 					>
 						Пропустить
 					</button>
@@ -94,23 +97,23 @@ export function OnboardingSlider({ onDone }: Props) {
 				<div
 					className='w-full max-w-[260px] aspect-square rounded-[32px] flex items-center justify-center'
 					style={{
-						background: 'rgba(213,4,22,0.06)',
-						border: '1px solid rgba(213,4,22,0.15)',
+						background: 'var(--color-brand-subtle)',
+						border: '1px solid var(--color-brand-border)',
 					}}
 				>
 					{slide.illustration ?? (
 						<div className='flex flex-col items-center gap-3 opacity-30'>
 							<div
 								className='w-16 h-16 rounded-2xl'
-								style={{ background: 'rgba(213,4,22,0.3)' }}
+								style={{ background: 'var(--color-brand-subtle)' }}
 							/>
 							<div
 								className='w-24 h-2 rounded-full'
-								style={{ background: 'rgba(255,255,255,0.15)' }}
+								style={{ background: 'var(--color-text-faint)' }}
 							/>
 							<div
 								className='w-16 h-2 rounded-full'
-								style={{ background: 'rgba(255,255,255,0.1)' }}
+								style={{ background: 'var(--color-text-faint)' }}
 							/>
 						</div>
 					)}
@@ -121,17 +124,23 @@ export function OnboardingSlider({ onDone }: Props) {
 				<span
 					className='text-xs font-medium px-2.5 py-1 rounded-full mb-4 inline-block'
 					style={{
-						background: 'rgba(213,4,22,0.12)',
-						border: '1px solid rgba(213,4,22,0.2)',
-						color: '#D50416',
+						background: 'var(--color-brand-subtle)',
+						border: '1px solid var(--color-brand-border)',
+						color: 'var(--color-brand)',
 					}}
 				>
 					{slide.tag}
 				</span>
-				<h1 className='text-2xl font-bold text-white mb-3 leading-tight'>
+				<h1
+					className='text-2xl font-bold mb-3 leading-tight'
+					style={{ color: 'var(--color-text)' }}
+				>
 					{slide.title}
 				</h1>
-				<p className='text-sm leading-relaxed text-white/50'>
+				<p
+					className='text-sm leading-relaxed'
+					style={{ color: 'var(--color-text-muted)' }}
+				>
 					{slide.description}
 				</p>
 			</div>
@@ -148,7 +157,9 @@ export function OnboardingSlider({ onDone }: Props) {
 								height: 6,
 								borderRadius: 3,
 								background:
-									i === current ? '#D50416' : 'rgba(255,255,255,0.15)',
+									i === current
+										? 'var(--color-brand)'
+										: 'var(--color-text-faint)',
 							}}
 						/>
 					))}
@@ -162,8 +173,8 @@ export function OnboardingSlider({ onDone }: Props) {
 						paddingLeft: 24,
 						paddingRight: 24,
 						borderRadius: 16,
-						background: '#D50416',
-						color: 'white',
+						background: 'var(--color-brand)',
+						color: 'var(--color-text)',
 					}}
 				>
 					{isLast ? 'Начать' : 'Далее'}
