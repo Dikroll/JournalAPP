@@ -1,3 +1,4 @@
+import { resetAllStores } from '@/app/lib/resetAllStores'
 import { userApi, useUserStore } from '@/entities/user'
 import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
@@ -51,7 +52,12 @@ export function useLogin() {
 
 		try {
 			const { access_token } = await authApi.login(payload)
-			setToken(access_token)
+
+			if (isAddingAccount) {
+				resetAllStores()
+			}
+
+			setToken(access_token, username.trim())
 
 			try {
 				const userData = await userApi.getMe()

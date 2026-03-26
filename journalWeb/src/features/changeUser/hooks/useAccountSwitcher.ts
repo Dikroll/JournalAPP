@@ -42,7 +42,12 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 			clearUser()
 			logout()
 			onClose()
-			if (remaining.length === 0) navigate('/login', { replace: true })
+
+			if (remaining.length === 0) {
+				navigate('/login', { replace: true })
+			} else {
+				navigate('/', { replace: true })
+			}
 		},
 		[
 			activeUsername,
@@ -63,7 +68,11 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 		clearUser()
 		logout()
 		onClose()
-		if (remaining.length === 0) navigate('/login', { replace: true })
+		if (remaining.length === 0) {
+			navigate('/login', { replace: true })
+		} else {
+			navigate('/', { replace: true })
+		}
 	}, [activeUsername, onReset, clearUser, logout, onClose, navigate])
 
 	return {

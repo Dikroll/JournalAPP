@@ -4,6 +4,7 @@ import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../model/store'
+
 interface Props {
 	onBeforeLogout?: () => void
 }
@@ -14,6 +15,16 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 	const logout = useAuthStore(s => s.logout)
 	const clearUser = useUserStore(s => s.clearUser)
 	const navigate = useNavigate()
+
+	const handleOpen = () => {
+		setLoading(false)
+		setOpen(true)
+	}
+
+	const handleClose = () => {
+		if (loading) return
+		setOpen(false)
+	}
 
 	const confirm = () => {
 		setLoading(true)
@@ -26,7 +37,7 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 	return (
 		<>
 			<button
-				onClick={() => setOpen(true)}
+				onClick={handleOpen}
 				className='w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-white/5 border border-white/8 text-[#9CA3AF] text-sm font-medium active:bg-white/10 transition-colors'
 			>
 				<LogOut size={16} />
@@ -41,7 +52,7 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 						background: 'rgba(0,0,0,0.6)',
 						backdropFilter: 'blur(4px)',
 					}}
-					onClick={() => !loading && setOpen(false)}
+					onClick={handleClose}
 				>
 					<div
 						className='w-full rounded-t-[28px] p-6 space-y-3'
@@ -76,7 +87,7 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 						</button>
 
 						<button
-							onClick={() => setOpen(false)}
+							onClick={handleClose}
 							disabled={loading}
 							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors disabled:opacity-40'
 						>

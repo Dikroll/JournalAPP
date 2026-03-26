@@ -18,24 +18,15 @@ export const useHydrationStore = create<HydrationState>()(() => ({
 }))
 
 interface AuthState {
-	// Текущий активный аккаунт
 	token: string | null
 	isAuthenticated: boolean
 	activeUsername: string | null
-
-	// Все сохранённые аккаунты (до 5)
 	accounts: SavedAccount[]
 
-	setToken: (token: string) => void
+	setToken: (token: string, username: string) => void
 	logout: () => void
-
-	// Сохранить/обновить аккаунт в списке
 	saveAccount: (account: SavedAccount) => void
-
-	// Переключиться на другой аккаунт
 	switchAccount: (username: string) => boolean
-
-	// Удалить аккаунт из списка
 	removeAccount: (username: string) => void
 }
 
@@ -47,15 +38,14 @@ export const useAuthStore = create<AuthState>()(
 			activeUsername: null,
 			accounts: [],
 
-			setToken: token => set({ token, isAuthenticated: true }),
+			setToken: (token, username) =>
+				set({ token, isAuthenticated: true, activeUsername: username }),
 
 			logout: () =>
 				set(state => {
-					// Удаляем текущий аккаунт из списка
 					const accounts = state.accounts.filter(
 						a => a.username !== state.activeUsername,
 					)
-					// Переключаемся на следующий если есть
 					if (accounts.length > 0) {
 						const next = accounts[0]
 						return {
@@ -84,7 +74,6 @@ export const useAuthStore = create<AuthState>()(
 							a.username === account.username ? account : a,
 						)
 					} else {
-						// Максимум 5 аккаунтов — убираем самый старый
 						const trimmed =
 							state.accounts.length >= 5
 								? state.accounts.slice(0, 4)

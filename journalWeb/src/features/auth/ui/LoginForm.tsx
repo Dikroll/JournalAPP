@@ -1,11 +1,7 @@
-import { OnboardingSlider, onboardingStorage } from '@/widgets'
 import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
 import { useLogin } from '../hooks/useLogin'
 
 export function LoginForm() {
-	const [onboardingDone, setOnboardingDone] = useState(() => onboardingStorage.isDone())
-
 	const {
 		username,
 		password,
@@ -17,17 +13,6 @@ export function LoginForm() {
 		setShowPassword,
 		submit,
 	} = useLogin()
-
-	if (!onboardingDone) {
-		return (
-			<OnboardingSlider
-				onDone={() => {
-					onboardingStorage.setDone()
-					setOnboardingDone(true)
-				}}
-			/>
-		)
-	}
 
 	return (
 		<div
@@ -116,9 +101,7 @@ export function LoginForm() {
 
 			<div
 				className='relative z-10 w-full max-w-sm'
-				style={{
-					marginTop: 'calc(38.2dvh - 180px)',
-				}}
+				style={{ marginTop: 'calc(38.2dvh - 180px)' }}
 			>
 				<form
 					onSubmit={submit}
@@ -126,13 +109,10 @@ export function LoginForm() {
 					style={{ boxShadow: '0 2px 6px rgba(255,255,255,0.155)' }}
 				>
 					<style>{`
-						input::-ms-reveal,
-						input::-ms-clear,
+						input::-ms-reveal, input::-ms-clear,
 						input::-webkit-contacts-auto-fill-button,
 						input::-webkit-credentials-auto-fill-button {
-							display: none !important;
-							visibility: hidden;
-							pointer-events: none;
+							display: none !important; visibility: hidden; pointer-events: none;
 						}
 					`}</style>
 					<div className='text-center mb-2'>
