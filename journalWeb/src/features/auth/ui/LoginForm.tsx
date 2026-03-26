@@ -1,7 +1,11 @@
+import { OnboardingSlider, onboardingStorage } from '@/widgets'
 import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
 import { useLogin } from '../hooks/useLogin'
 
 export function LoginForm() {
+	const [onboardingDone, setOnboardingDone] = useState(() => onboardingStorage.isDone())
+
 	const {
 		username,
 		password,
@@ -13,6 +17,17 @@ export function LoginForm() {
 		setShowPassword,
 		submit,
 	} = useLogin()
+
+	if (!onboardingDone) {
+		return (
+			<OnboardingSlider
+				onDone={() => {
+					onboardingStorage.setDone()
+					setOnboardingDone(true)
+				}}
+			/>
+		)
+	}
 
 	return (
 		<div
