@@ -2,7 +2,6 @@ import { LogOut, Plus } from 'lucide-react'
 import { useAccountSwitcher } from '../hooks/useAccountSwitcher'
 import { AccountRow } from './AccountRow'
 import { LogoutConfirm } from './LogoutConfirm'
-
 interface Props {
 	onClose: () => void
 	onAddAccount: () => void

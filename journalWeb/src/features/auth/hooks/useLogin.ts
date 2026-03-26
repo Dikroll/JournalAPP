@@ -1,5 +1,6 @@
 import { resetAllStores } from '@/app/lib/resetAllStores'
 import { userApi, useUserStore } from '@/entities/user'
+import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -71,7 +72,7 @@ export function useLogin() {
 				})
 			} catch {}
 
-			navigate('/', { replace: true })
+			navigate(pageConfig.home, { replace: true })
 		} catch (err: unknown) {
 			const status = (err as { response?: { status?: number } })?.response
 				?.status

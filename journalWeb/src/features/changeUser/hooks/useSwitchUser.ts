@@ -1,5 +1,6 @@
 import { userApi, useUserStore } from '@/entities/user'
 import { useAuthStore } from '@/features/auth'
+import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -32,7 +33,7 @@ export function useSwitchUser(onReset: () => void) {
 					})
 				} catch {}
 
-				navigate('/', { replace: true })
+				navigate(pageConfig.home, { replace: true })
 			} finally {
 				setSwitching(false)
 			}

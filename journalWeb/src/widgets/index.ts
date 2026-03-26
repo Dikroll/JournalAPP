@@ -43,6 +43,3 @@ export { ReviewsList } from './ReviewList/ui/ReviewList'
 export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
-
-// Onboarding
-export { OnboardingSlider, onboardingStorage } from './Onboarding/ui/OnboardingSlider'

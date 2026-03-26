@@ -1,5 +1,6 @@
 import { useUserStore } from '@/entities/user'
 import { useAuthStore } from '@/features/auth/model/store'
+import { pageConfig } from '@/shared/config'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSwitchUser } from './useSwitchUser'
@@ -44,9 +45,9 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 			onClose()
 
 			if (remaining.length === 0) {
-				navigate('/login', { replace: true })
+				navigate(pageConfig.login, { replace: true })
 			} else {
-				navigate('/', { replace: true })
+				navigate(pageConfig.home, { replace: true })
 			}
 		},
 		[
@@ -69,9 +70,9 @@ export function useAccountSwitcher(onReset: () => void, onClose: () => void) {
 		logout()
 		onClose()
 		if (remaining.length === 0) {
-			navigate('/login', { replace: true })
+			navigate(pageConfig.login, { replace: true })
 		} else {
-			navigate('/', { replace: true })
+			navigate(pageConfig.home, { replace: true })
 		}
 	}, [activeUsername, onReset, clearUser, logout, onClose, navigate])
 
