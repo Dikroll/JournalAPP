@@ -1,3 +1,4 @@
+export { getAuthToken } from './getAuthToken'
 export { getCachedImageUrl, preloadImages } from './imageCache'
 export { isCacheValid } from './isCacheValid'
 export { ScrollToTop } from './scrollToTop'

@@ -15,7 +15,16 @@ export function flattenMarks(
 		.map(([type, value]) => ({ type, value: value! }))
 }
 
-export function useGradesGroups(entries: GradeEntry[]) {
+type ActiveTab = 'recent' | 'calendar' | 'subjects' | 'exams'
+
+/**
+ * ИСПРАВЛЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ:
+ * Принимает activeTab и вычисляет ТОЛЬКО нужную группировку.
+ * Раньше считались byDate + bySubject + byMonth одновременно — O(3n) при каждом рендере.
+ * Теперь O(n) — только активная вкладка.
+ */
+export function useGradesGroups(entries: GradeEntry[], activeTab: ActiveTab) {
+	// expanded всегда нужен — базовая трансформация
 	const expanded = useMemo<GradeEntryExpanded[]>(() => {
 		return entries.map(e => {
 			const flatMarks = e.marks ? flattenMarks(e.marks) : []
@@ -26,7 +35,9 @@ export function useGradesGroups(entries: GradeEntry[]) {
 		})
 	}, [entries])
 
+	// byDate — только для вкладки 'recent'
 	const byDate = useMemo(() => {
+		if (activeTab !== 'recent') return []
 		const map: Record<string, GradeEntryExpanded[]> = {}
 		for (const e of expanded) {
 			if (!map[e.date]) map[e.date] = []
@@ -38,9 +49,11 @@ export function useGradesGroups(entries: GradeEntry[]) {
 				date,
 				items: [...items].sort((a, b) => a.lesson_number - b.lesson_number),
 			}))
-	}, [expanded])
+	}, [expanded, activeTab])
 
+	// bySubject — только для вкладки 'subjects'
 	const bySubject = useMemo<SubjectStats[]>(() => {
+		if (activeTab !== 'subjects') return []
 		const map: Record<number, GradeEntryExpanded[]> = {}
 		for (const e of expanded) {
 			if (!map[e.spec_id]) map[e.spec_id] = []
@@ -63,9 +76,11 @@ export function useGradesGroups(entries: GradeEntry[]) {
 			})
 			.filter(s => s.totalMarks > 0)
 			.sort((a, b) => a.spec_name.localeCompare(b.spec_name, 'ru'))
-	}, [expanded])
+	}, [expanded, activeTab])
 
+	// byMonth — только для вкладки 'calendar'
 	const byMonth = useMemo(() => {
+		if (activeTab !== 'calendar') return {} as Record<string, Record<string, GradeEntryExpanded[]>>
 		const map: Record<string, Record<string, GradeEntryExpanded[]>> = {}
 		for (const e of expanded) {
 			const month = e.date.slice(0, 7)
@@ -74,7 +89,7 @@ export function useGradesGroups(entries: GradeEntry[]) {
 			map[month][e.date].push(e)
 		}
 		return map
-	}, [expanded])
+	}, [expanded, activeTab])
 
 	const stats = useMemo(() => {
 		const allMarks = expanded.flatMap(e => e.flatMarks.map(m => m.value))

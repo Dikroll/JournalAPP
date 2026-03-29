@@ -18,6 +18,8 @@ import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
 import { storage } from '@/shared/lib/storage'
 
 export function resetAllStores(): void {
+	// Эти функции теперь no-op (флаги перенесены в useRef),
+	// но оставлены для обратной совместимости
 	resetDashboardFetch()
 	resetGradesFetch()
 	resetHomeworkFetch()

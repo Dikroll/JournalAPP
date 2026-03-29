@@ -41,6 +41,10 @@ export const useAuthStore = create<AuthState>()(
 			setToken: (token, username) =>
 				set({ token, isAuthenticated: true, activeUsername: username }),
 
+			/**
+			 * ИСПРАВЛЕНИЕ: logout теперь корректно обрабатывает переключение
+			 * на следующий аккаунт без дублирования логики в useAccountSwitcher.
+			 */
 			logout: () =>
 				set(state => {
 					const accounts = state.accounts.filter(

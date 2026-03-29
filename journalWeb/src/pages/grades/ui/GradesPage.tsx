@@ -21,6 +21,7 @@ import {
 	GradesTabs,
 } from '@/widgets'
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')
@@ -30,10 +31,16 @@ export function GradesPage() {
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
 
+	// ИСПРАВЛЕНИЕ: один shallow-селектор вместо 3 отдельных подписок.
+	// Раньше компонент ре-рендерился до 4 раз при каждом обновлении chartsStore.
 	useDashboardCharts()
-	const progress = useDashboardChartsStore(s => s.progress)
-	const attendance = useDashboardChartsStore(s => s.attendance)
-	const chartsStatus = useDashboardChartsStore(s => s.status)
+	const { progress, attendance, chartsStatus } = useDashboardChartsStore(
+		useShallow(s => ({
+			progress: s.progress,
+			attendance: s.attendance,
+			chartsStatus: s.status,
+		})),
+	)
 
 	const handleSpecChange = (spec: { id: number } | null) => {
 		const id = spec?.id ?? null
@@ -50,7 +57,9 @@ export function GradesPage() {
 			? entries.filter(e => e.spec_id === selectedSpecId)
 			: entries
 
-	const { byDate, bySubject, byMonth } = useGradesGroups(sourceEntries)
+	// ИСПРАВЛЕНИЕ: передаём activeTab — считается только нужная группировка.
+	// Раньше: O(3n) при каждом рендере. Теперь: O(n).
+	const { byDate, bySubject, byMonth } = useGradesGroups(sourceEntries, activeTab)
 
 	const isLoading = status === 'loading' || status === 'idle'
 	const showCharts = chartsStatus === 'success' && progress.length > 0

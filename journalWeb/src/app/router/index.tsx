@@ -5,45 +5,27 @@ import {
 	HomePage,
 	HomeworkPage,
 	LoginPage,
+	PaymentPage,
 	ProfileDetailsPage,
 	ProfilePage,
 	SchedulePage,
-	PaymentPage,
 } from '@/pages'
 import { pageConfig } from '@/shared/config'
 import { ScrollToTop } from '@/shared/lib'
+import { FullscreenLoader } from '@/widgets/Loading/ui/Loader'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '../layouts'
 
+/**
+ * ИСПРАВЛЕНИЕ: убран дублированный инлайн SVG спиннер.
+ * Теперь используется FullscreenLoader из widgets/Loading.
+ */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 
 	if (!hasHydrated) {
-		return (
-			<div
-				style={{
-					minHeight: '100dvh',
-					backgroundColor: 'var(--color-bg, #1F2024)',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-			>
-				<svg
-					style={{ color: '#D50416' }}
-					width='24'
-					height='24'
-					viewBox='0 0 24 24'
-					fill='none'
-					stroke='currentColor'
-					strokeWidth='2'
-					className='animate-spin'
-				>
-					<path d='M21 12a9 9 0 1 1-6.219-8.56' />
-				</svg>
-			</div>
-		)
+		return <FullscreenLoader />
 	}
 
 	return isAuthenticated ? (

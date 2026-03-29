@@ -96,7 +96,11 @@ export function getGradeStyle(grade: number): {
 	}
 }
 
-// Для кружков в GradesSubjectList — тип final фиолетовый независимо от значения
+/**
+ * Стиль кружка оценки в GradesSubjectList.
+ * final — всегда фиолетовый независимо от значения.
+ * Единственная реализация — дубликат из gradeMark.ts УДАЛЁН.
+ */
 export function gradeCircleStyle(
 	type: GradeType,
 	value: number,

@@ -1,6 +1,7 @@
 export { useContainerReady } from './useContainerReady'
 export { toMinutes, useCurrentMinutes } from './useCurrentTime'
 export { useElementSize } from './useElementSize'
+export { useEntityFetch } from './useEntityFetch'
 export { useLazyItems } from './useLazyItems'
 export { useMonthNav } from './useMonthNav'
 export { useSwipeBack } from './useSwipeBack'

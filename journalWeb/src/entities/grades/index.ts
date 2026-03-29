@@ -17,3 +17,4 @@ export type {
 export { getGradeDotColor } from './utils/gradeDotColor'
 export { sortSubjects } from './utils/sortSubjects'
 export type { SortKey } from './utils/sortSubjects'
+// УДАЛЕНО: utils/gradeMark.ts — дубликат gradeCircleStyle из labelConfig

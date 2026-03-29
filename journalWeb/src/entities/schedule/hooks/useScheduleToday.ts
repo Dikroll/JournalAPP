@@ -1,17 +1,30 @@
 import { ttl } from '@/shared/config/cacheConfig'
 import { isCacheValid } from '@/shared/lib/isCacheValid'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
 import { useScheduleStore } from '../model/store'
 
 const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
-let fetching = false
+const FETCH_TIMEOUT_MS = 15_000
 
 export function resetScheduleTodayFetch() {
-	fetching = false
+	// оставлен для совместимости с resetAllStores — больше не нужен,
+	// но удалять нельзя чтобы не ломать импорты
 }
 
+/**
+ * ИСПРАВЛЕНИЕ: модульный `let fetching = false` заменён на useRef.
+ *
+ * Проблема была в том, что если запрос зависал или падал до .finally(),
+ * модульная переменная оставалась true НАВСЕГДА до перезагрузки страницы.
+ * Это приводило к тому, что страница schedule не открывалась с первого клика —
+ * хук молча возвращал ничего, видя fetching = true.
+ *
+ * useRef живёт только пока компонент смонтирован, поэтому при переходе
+ * на другую страницу и обратно флаг сбрасывается автоматически.
+ * Дополнительно добавлен таймаут-страховка на случай зависших запросов.
+ */
 export function useScheduleToday() {
 	const today = useScheduleStore(s => s.today)
 	const todayStatus = useScheduleStore(s => s.todayStatus)
@@ -22,12 +35,24 @@ export function useScheduleToday() {
 	const setTodayLoadedAt = useScheduleStore(s => s.setTodayLoadedAt)
 	const setError = useScheduleStore(s => s.setError)
 
+	const fetchingRef = useRef(false)
+	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
 	useEffect(() => {
-		if (fetching) return
+		if (fetchingRef.current) return
 		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
 
-		fetching = true
+		fetchingRef.current = true
 		setTodayStatus('loading')
+
+		// Страховочный таймаут: если запрос завис — разблокируем флаг
+		timeoutRef.current = setTimeout(() => {
+			if (fetchingRef.current) {
+				fetchingRef.current = false
+				setTodayStatus('error')
+				setError('Превышено время ожидания')
+			}
+		}, FETCH_TIMEOUT_MS)
 
 		scheduleApi
 			.getToday()
@@ -44,9 +69,22 @@ export function useScheduleToday() {
 				setTodayStatus('error')
 			})
 			.finally(() => {
-				fetching = false
+				fetchingRef.current = false
+				if (timeoutRef.current) {
+					clearTimeout(timeoutRef.current)
+					timeoutRef.current = null
+				}
 			})
 	}, [todayLoadedAt])
+
+	// Чистим таймаут при размонтировании
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current)
+			}
+		}
+	}, [])
 
 	return { today, status: todayStatus, error }
 }
