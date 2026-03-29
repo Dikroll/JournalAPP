@@ -1,23 +1,24 @@
+import { InlineImage } from '@/shared/ui'
 import { ArrowRight } from 'lucide-react'
 import { useOnboardingSlider } from '../hooks/useOnboardingSlider'
 
 const SLIDES = [
 	{
-		illustration: null,
+		illustration: <InlineImage src='/illustrations/page1.svg' alt='Всё в одном месте' className='w-full h-full object-contain p-6' />,
 		tag: 'Студенческий дневник',
 		title: 'Всё в одном месте',
 		description:
 			'Расписание, оценки, домашние задания и платежи — всё что нужно студенту под рукой.',
 	},
 	{
-		illustration: null,
+		illustration: <InlineImage src='/illustrations/page2.svg' alt='Данные под защитой' className='w-full h-full object-contain p-6' />,
 		tag: 'Безопасность',
 		title: 'Данные под защитой',
 		description:
 			'Данные хранятся на вашем устройстве и передаются по зашифрованному каналу. Мы не храним лишнего.',
 	},
 	{
-		illustration: null,
+		illustration: <InlineImage src='/illustrations/page3.svg' alt='Без лишнего шума' className='w-full h-full object-contain p-6' />,
 		tag: 'Дизайн',
 		title: 'Без лишнего шума',
 		description:
@@ -98,28 +99,13 @@ export function OnboardingSlider({ onDone }: Props) {
 				style={{ flex: '1 1 0' }}
 			>
 				<div
-					className='w-full max-w-[260px] aspect-square rounded-[32px] flex items-center justify-center'
+					className='w-full max-w-[260px] aspect-square rounded-[32px] flex items-center justify-center overflow-hidden'
 					style={{
 						background: 'var(--color-brand-subtle)',
 						border: '1px solid var(--color-brand-border)',
 					}}
 				>
-					{slide.illustration ?? (
-						<div className='flex flex-col items-center gap-3 opacity-30'>
-							<div
-								className='w-16 h-16 rounded-2xl'
-								style={{ background: 'var(--color-brand-subtle)' }}
-							/>
-							<div
-								className='w-24 h-2 rounded-full'
-								style={{ background: 'var(--color-text-faint)' }}
-							/>
-							<div
-								className='w-16 h-2 rounded-full'
-								style={{ background: 'var(--color-text-faint)' }}
-							/>
-						</div>
-					)}
+					{slide.illustration}
 				</div>
 			</div>
 
