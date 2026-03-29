@@ -1,4 +1,5 @@
 import { BookOpen, CalendarDays, Clock, GraduationCap } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export type Tab = 'recent' | 'calendar' | 'subjects' | 'exams'
 
@@ -15,23 +16,161 @@ interface Props {
 }
 
 export function GradesTabs({ active, onChange }: Props) {
+	const scrollRef = useRef<HTMLDivElement>(null)
+	const [showRight, setShowRight] = useState(true)
+	const [showLeft, setShowLeft] = useState(false)
+	const touchStartX = useRef(0)
+	const touchStartY = useRef(0)
+
+	const checkFades = () => {
+		const el = scrollRef.current
+		if (!el) return
+		setShowLeft(el.scrollLeft > 8)
+		setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8)
+	}
+
+	useEffect(() => {
+		checkFades()
+	}, [])
+
+	useEffect(() => {
+		const el = scrollRef.current
+		if (!el) return
+		const idx = TABS.findIndex(t => t.key === active)
+		const btns = el.querySelectorAll<HTMLButtonElement>('button')
+		const btn = btns[idx]
+		if (!btn) return
+		const left = btn.offsetLeft - el.clientWidth / 2 + btn.offsetWidth / 2
+		el.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+	}, [active])
+
+	const handleTouchStart = useCallback((e: React.TouchEvent) => {
+		touchStartX.current = e.touches[0].clientX
+		touchStartY.current = e.touches[0].clientY
+	}, [])
+
+	const makeTabHandler = useCallback(
+		(key: Tab) => (e: React.TouchEvent | React.MouseEvent) => {
+			if (e.type === 'touchend') {
+				const te = e as React.TouchEvent
+				const dx = Math.abs(te.changedTouches[0].clientX - touchStartX.current)
+				const dy = Math.abs(te.changedTouches[0].clientY - touchStartY.current)
+				if (dx > 8 || dy > 8) return
+			}
+			onChange(key)
+		},
+		[onChange],
+	)
+
 	return (
-		<div className='flex gap-2 overflow-x-auto no-scrollbar'>
-			{TABS.map(({ key, label, icon }) => (
-				<button
-					key={key}
-					type='button'
-					onClick={() => onChange(key)}
-					className={`flex-shrink-0 flex items-center justify-center gap-1.5 h-10 px-3 rounded-2xl text-xs font-medium transition-colors whitespace-nowrap ${
-						active === key
-							? 'bg-app-surface-strong text-app-text border border-app-border-strong'
-							: 'bg-app-surface text-app-muted border border-app-border hover:text-app-text hover:bg-app-surface-hover'
-					}`}
+		<div className='space-y-2'>
+			<div className='relative'>
+				{showLeft && (
+					<div
+						className='absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none'
+						style={{
+							background:
+								'linear-gradient(to right, var(--color-bg) 0%, transparent 100%)',
+						}}
+					/>
+				)}
+				{showRight && (
+					<div
+						className='absolute right-0 top-0 bottom-0 z-10 pointer-events-none'
+						style={{ width: 40 }}
+					>
+						<div
+							className='absolute inset-0'
+							style={{
+								background:
+									'linear-gradient(to left, var(--color-bg) 30%, transparent 100%)',
+							}}
+						/>
+						<svg
+							className='absolute right-1 top-1/2 -translate-y-1/2'
+							width='12'
+							height='12'
+							viewBox='0 0 12 12'
+							fill='none'
+						>
+							<path
+								d='M4 2l4 4-4 4'
+								stroke='var(--color-text-muted)'
+								strokeWidth='1.5'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							/>
+						</svg>
+					</div>
+				)}
+
+				<div
+					ref={scrollRef}
+					onScroll={checkFades}
+					className='flex gap-2'
+					style={{
+						overflowX: 'auto',
+						scrollbarWidth: 'none',
+						WebkitOverflowScrolling: 'touch' as any,
+						paddingRight: showRight ? 32 : 4,
+						paddingBottom: 2,
+					}}
 				>
-					{icon}
-					{label}
-				</button>
-			))}
+					{TABS.map(({ key, label, icon }) => {
+						const isActive = active === key
+						return (
+							<button
+								key={key}
+								type='button'
+								onTouchStart={handleTouchStart}
+								onTouchEnd={makeTabHandler(key)}
+								onClick={makeTabHandler(key)}
+								className='flex-shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium transition-all duration-200 whitespace-nowrap'
+								style={{
+									minHeight: 44,
+									paddingLeft: 16,
+									paddingRight: 16,
+									WebkitTapHighlightColor: 'transparent',
+									touchAction: 'manipulation',
+									background: isActive
+										? 'var(--color-surface-strong)'
+										: 'var(--color-surface)',
+									border: isActive
+										? '1.5px solid var(--color-border-strong)'
+										: '1px solid var(--color-border)',
+									color: isActive
+										? 'var(--color-text)'
+										: 'var(--color-text-muted)',
+									boxShadow: isActive ? 'var(--shadow-card)' : 'none',
+								}}
+							>
+								{icon}
+								{label}
+							</button>
+						)
+					})}
+				</div>
+			</div>
+
+			<div className='flex justify-center items-center gap-1.5'>
+				{TABS.map(({ key }) => {
+					const isActive = active === key
+					return (
+						<div
+							key={key}
+							style={{
+								width: isActive ? 20 : 5,
+								height: 3,
+								borderRadius: 2,
+								background: isActive
+									? 'var(--color-brand)'
+									: 'var(--color-border-strong)',
+								transition: 'all 0.25s ease',
+							}}
+						/>
+					)
+				})}
+			</div>
 		</div>
 	)
 }

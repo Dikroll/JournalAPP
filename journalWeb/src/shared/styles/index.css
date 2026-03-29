@@ -10,7 +10,8 @@ html,
 body {
 	scrollbar-width: none;
 	overflow-x: hidden;
-	overscroll-behavior-x: none;
+	overscroll-behavior: none;
+	touch-action: manipulation;
 }
 
 body {

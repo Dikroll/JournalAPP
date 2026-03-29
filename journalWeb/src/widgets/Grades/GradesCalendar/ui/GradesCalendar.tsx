@@ -3,7 +3,7 @@ import { getGradeDotColor } from '@/entities/grades'
 import { useMonthNav } from '@/shared/hooks'
 import { MonthGrid } from '@/shared/ui'
 import { formatDateWithWeekday, toDateString } from '@/shared/utils'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { GradeEntryRow } from '../../GradesList/ui/GradeEntryRow'
 
 interface Props {
@@ -20,8 +20,8 @@ export function GradesCalendar({ byMonth }: Props) {
 	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth)
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
-	const currentMonth = toDateString(year, month, 1).slice(0, 7)
-	const datesWithData = byMonth[currentMonth] ?? {}
+	const touchStartX = useRef(0)
+	const touchStartY = useRef(0)
 
 	const handlePrevMonth = () => {
 		prevMonth()
@@ -32,6 +32,33 @@ export function GradesCalendar({ byMonth }: Props) {
 		nextMonth()
 		setSelectedDate(null)
 	}
+
+	const currentMonth = toDateString(year, month, 1).slice(0, 7)
+	const datesWithData = byMonth[currentMonth] ?? {}
+
+	const handleDayTouchStart = useCallback((e: React.TouchEvent) => {
+		touchStartX.current = e.touches[0].clientX
+		touchStartY.current = e.touches[0].clientY
+	}, [])
+
+	const makeHandleDayTap = useCallback(
+		(dateStr: string, hasData: boolean) =>
+			(e: React.TouchEvent | React.MouseEvent) => {
+				if (!hasData) return
+				if (e.type === 'touchend') {
+					const te = e as React.TouchEvent
+					const dx = Math.abs(
+						te.changedTouches[0].clientX - touchStartX.current,
+					)
+					const dy = Math.abs(
+						te.changedTouches[0].clientY - touchStartY.current,
+					)
+					if (dx > 8 || dy > 8) return
+				}
+				setSelectedDate(prev => (prev === dateStr ? null : dateStr))
+			},
+		[],
+	)
 
 	const selectedEntries = selectedDate
 		? datesWithData[selectedDate] ?? []
@@ -54,16 +81,23 @@ export function GradesCalendar({ byMonth }: Props) {
 						<button
 							type='button'
 							disabled={!hasData}
-							onClick={() => setSelectedDate(isSelected ? null : dateStr)}
-							className={`
-								relative flex items-center justify-center
-								rounded-full text-xs font-semibold transition-colors
-								disabled:cursor-default
-								${isSelected ? 'bg-brand text-white' : ''}
-								${!isSelected && hasData ? 'text-app-text hover:bg-app-surface-hover' : ''}
-								${!isSelected && !hasData ? 'text-app-faint' : ''}
-							`}
-							style={{ width: 36, height: 36 }}
+							onTouchStart={hasData ? handleDayTouchStart : undefined}
+							onTouchEnd={makeHandleDayTap(dateStr, hasData)}
+							onClick={makeHandleDayTap(dateStr, hasData)}
+							className='relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default'
+							style={{
+								width: 36,
+								height: 36,
+								WebkitTapHighlightColor: 'transparent',
+								touchAction: 'manipulation',
+								background: isSelected ? 'var(--color-brand)' : 'transparent',
+								color: isSelected
+									? '#fff'
+									: hasData
+									? 'var(--color-text)'
+									: 'var(--color-text-faint)',
+								transition: 'background 0.15s ease, color 0.15s ease',
+							}}
 						>
 							{day}
 
@@ -91,6 +125,12 @@ export function GradesCalendar({ byMonth }: Props) {
 					)
 				}}
 			/>
+
+			{Object.keys(datesWithData).length === 0 && (
+				<p className='text-app-muted text-sm text-center py-2'>
+					В этом месяце нет записей
+				</p>
+			)}
 
 			{selectedDate &&
 				selectedEntries !== null &&
