@@ -57,10 +57,11 @@ export function AccountRow({
 				<button
 					type='button'
 					onClick={e => {
+						e.preventDefault()
 						e.stopPropagation()
 						onRemove()
 					}}
-					className='p-1.5 rounded-full hover:bg-white/10 text-[#6B7280] hover:text-[#EF4444] transition-colors flex-shrink-0'
+					className='p-1.5 rounded-full hover:bg-white/10 text-[#6B7280] hover:text-[#EF4444] flex-shrink-0'
 				>
 					<Trash2 size={13} />
 				</button>

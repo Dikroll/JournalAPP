@@ -109,12 +109,13 @@ export function HomeworkSubjectView({
 										<button
 											type='button'
 											disabled={isLoadingSubject}
-											onClick={() =>
+											onClick={e => {
+												e.preventDefault()
 												subjectNotFetched
 													? onLoadSubject(specId, specName)
 													: onLoadMoreForSubject(specId, numKey)
-											}
-											className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors disabled:opacity-50'
+											}}
+											className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text disabled:opacity-50'
 										>
 											{isLoadingSubject ? (
 												<>

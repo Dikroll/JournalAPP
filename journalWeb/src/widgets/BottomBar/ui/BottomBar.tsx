@@ -25,6 +25,7 @@ export function BottomBar() {
 
 	const makeHandleTouchEnd = useCallback(
 		(to: string) => (e: React.TouchEvent) => {
+			e.preventDefault()
 			const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
 			const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
 			if (dy > 10 || dx > 10) return
@@ -52,7 +53,7 @@ export function BottomBar() {
 								onTouchStart={handleTouchStart}
 								onTouchEnd={makeHandleTouchEnd(to)}
 								onClick={() => navigate(to)}
-								className='relative flex flex-col items-center justify-center px-4 transition-all duration-300 bg-transparent border-0 outline-none cursor-pointer'
+								className='relative flex flex-col items-center justify-center px-4 bg-transparent border-0 outline-none cursor-pointer'
 								style={{
 									minWidth: 44,
 									minHeight: 44,

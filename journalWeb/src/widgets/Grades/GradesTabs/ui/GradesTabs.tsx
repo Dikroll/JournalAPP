@@ -51,6 +51,7 @@ export function GradesTabs({ active, onChange }: Props) {
 
 	const makeTabHandler = useCallback(
 		(key: Tab) => (e: React.TouchEvent | React.MouseEvent) => {
+			e.preventDefault()
 			if (e.type === 'touchend') {
 				const te = e as React.TouchEvent
 				const dx = Math.abs(te.changedTouches[0].clientX - touchStartX.current)
@@ -126,7 +127,7 @@ export function GradesTabs({ active, onChange }: Props) {
 								onTouchStart={handleTouchStart}
 								onTouchEnd={makeTabHandler(key)}
 								onClick={makeTabHandler(key)}
-								className='flex-shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium transition-all duration-200 whitespace-nowrap'
+								className='flex-shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap'
 								style={{
 									minHeight: 44,
 									paddingLeft: 16,

@@ -64,11 +64,12 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 				{accounts.length < 5 && (
 					<button
 						type='button'
-						onClick={() => {
+						onClick={e => {
+							e.preventDefault()
 							onClose()
 							onAddAccount()
 						}}
-						className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/5 border border-white/8 text-[#9CA3AF] text-sm hover:bg-white/8 transition-colors'
+						className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/5 border border-white/8 text-[#9CA3AF] text-sm hover:bg-white/8'
 					>
 						<Plus size={15} />
 						Добавить аккаунт
@@ -77,8 +78,11 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 
 				<button
 					type='button'
-					onClick={() => setConfirmLogout(true)}
-					className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444] text-sm font-medium hover:bg-[#EF4444]/15 transition-colors'
+					onClick={e => {
+						e.preventDefault()
+						setConfirmLogout(true)
+					}}
+					className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444] text-sm font-medium hover:bg-[#EF4444]/15'
 				>
 					<LogOut size={15} />
 					Выйти из аккаунта

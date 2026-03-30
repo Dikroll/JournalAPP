@@ -4,21 +4,39 @@ import { useOnboardingSlider } from '../hooks/useOnboardingSlider'
 
 const SLIDES = [
 	{
-		illustration: <InlineImage src='/illustrations/page1.svg' alt='Всё в одном месте' className='w-full h-full object-contain p-6' />,
+		illustration: (
+			<InlineImage
+				src='/illustrations/page1.svg'
+				alt='Всё в одном месте'
+				className='w-full h-full object-contain p-6'
+			/>
+		),
 		tag: 'Студенческий дневник',
 		title: 'Всё в одном месте',
 		description:
 			'Расписание, оценки, домашние задания и платежи — всё что нужно студенту под рукой.',
 	},
 	{
-		illustration: <InlineImage src='/illustrations/page2.svg' alt='Данные под защитой' className='w-full h-full object-contain p-6' />,
+		illustration: (
+			<InlineImage
+				src='/illustrations/page2.svg'
+				alt='Данные под защитой'
+				className='w-full h-full object-contain p-6'
+			/>
+		),
 		tag: 'Безопасность',
 		title: 'Данные под защитой',
 		description:
 			'Данные хранятся на вашем устройстве и передаются по зашифрованному каналу. Мы не храним лишнего.',
 	},
 	{
-		illustration: <InlineImage src='/illustrations/page3.svg' alt='Без лишнего шума' className='w-full h-full object-contain p-6' />,
+		illustration: (
+			<InlineImage
+				src='/illustrations/page3.svg'
+				alt='Без лишнего шума'
+				className='w-full h-full object-contain p-6'
+			/>
+		),
 		tag: 'Дизайн',
 		title: 'Без лишнего шума',
 		description:
@@ -83,11 +101,14 @@ export function OnboardingSlider({ onDone }: Props) {
 			<div className='flex justify-end px-6 pt-16 relative z-10'>
 				{!isLast && (
 					<button
-						onClick={onDone}
+						onClick={e => {
+							e.preventDefault()
+							onDone()
+						}}
 						style={{
 							color: 'var(--color-text-faint)',
 						}}
-						className='text-xs hover:text-white/60 transition-colors'
+						className='text-xs hover:text-white/60'
 					>
 						Пропустить
 					</button>

@@ -45,6 +45,7 @@ export function GradesCalendar({ byMonth }: Props) {
 		(dateStr: string, hasData: boolean) =>
 			(e: React.TouchEvent | React.MouseEvent) => {
 				if (!hasData) return
+				e.preventDefault() // ✅ Предотвращает дефолтное поведение
 				if (e.type === 'touchend') {
 					const te = e as React.TouchEvent
 					const dx = Math.abs(
@@ -89,14 +90,12 @@ export function GradesCalendar({ byMonth }: Props) {
 								width: 36,
 								height: 36,
 								WebkitTapHighlightColor: 'transparent',
-								touchAction: 'manipulation',
 								background: isSelected ? 'var(--color-brand)' : 'transparent',
 								color: isSelected
 									? '#fff'
 									: hasData
 									? 'var(--color-text)'
 									: 'var(--color-text-faint)',
-								transition: 'background 0.15s ease, color 0.15s ease',
 							}}
 						>
 							{day}

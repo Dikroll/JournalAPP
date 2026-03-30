@@ -45,8 +45,11 @@ function RelativeItem({
 				</div>
 				{hasDetails && (
 					<button
-						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-app-surface active:bg-app-surface-hover transition-colors'
-						onClick={() => setOpen(v => !v)}
+						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-app-surface active:bg-app-surface-hover'
+						onClick={e => {
+							e.preventDefault()
+							setOpen(v => !v)
+						}}
 					>
 						<ChevronDown
 							size={16}

@@ -48,8 +48,11 @@ export function ReviewCard({ review }: Props) {
 
 					{hasMoreSpecs && (
 						<button
-							onClick={() => setIsExpanded(!isExpanded)}
-							className='flex items-center gap-1 text-xs text-app-muted hover:text-app-text transition-colors mt-1.5'
+							onClick={e => {
+								e.preventDefault()
+								setIsExpanded(!isExpanded)
+							}}
+							className='flex items-center gap-1 text-xs text-app-muted hover:text-app-text mt-1.5'
 						>
 							{isExpanded
 								? 'Свернуть'

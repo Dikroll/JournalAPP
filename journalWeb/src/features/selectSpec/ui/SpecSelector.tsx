@@ -43,6 +43,7 @@ export function SpecSelector({
 	}
 
 	const handleClear = (e: React.MouseEvent) => {
+		e.preventDefault()
 		e.stopPropagation()
 		onChange(null)
 		setSearch('')
@@ -85,9 +86,12 @@ export function SpecSelector({
 				</div>
 
 				<div
-					className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-white/5 text-[#6B7280] hover:text-[#F2F2F2] transition-colors flex-shrink-0'
+					className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-white/5 text-[#6B7280] hover:text-[#F2F2F2] flex-shrink-0'
 					style={{ minWidth: '80px' }}
-					onClick={() => (open ? close() : setOpen(true))}
+					onClick={e => {
+						e.preventDefault()
+						open ? close() : setOpen(true)
+					}}
 				>
 					{(selected || search) && (
 						<button type='button' onClick={handleClear} className='p-0.5'>
@@ -115,8 +119,11 @@ export function SpecSelector({
 					<div className='max-h-64 overflow-y-auto'>
 						<button
 							type='button'
-							onClick={() => handleSelect(null)}
-							className={`w-full text-left px-4 py-3 text-sm transition-colors border-b border-white/5 ${
+							onClick={e => {
+								e.preventDefault()
+								handleSelect(null)
+							}}
+							className={`w-full text-left px-4 py-3 text-sm border-b border-white/5 ${
 								!selectedId
 									? 'text-[#F2F2F2] font-medium bg-white/8'
 									: 'text-[#9CA3AF] hover:text-[#F2F2F2] hover:bg-white/8'
@@ -132,8 +139,11 @@ export function SpecSelector({
 								<button
 									key={spec.id}
 									type='button'
-									onClick={() => handleSelect(spec)}
-									className={`w-full text-left px-4 py-3 text-sm transition-colors border-b border-white/5 last:border-0 ${
+									onClick={e => {
+										e.preventDefault()
+										handleSelect(spec)
+									}}
+									className={`w-full text-left px-4 py-3 text-sm border-b border-white/5 last:border-0 ${
 										spec.id === selectedId
 											? 'text-[#F2F2F2] font-medium bg-white/8'
 											: 'text-[#9CA3AF] hover:text-[#F2F2F2] hover:bg-white/8'

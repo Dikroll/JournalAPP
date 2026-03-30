@@ -53,9 +53,12 @@ export function MonthGrid({
 			<div className='flex items-center justify-between mb-4'>
 				<button
 					type='button'
-					onClick={onPrevMonth}
+					onClick={e => {
+						e.preventDefault()
+						onPrevMonth()
+					}}
 					title='Previous month'
-					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors'
+					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted'
 				>
 					<ChevronLeft size={16} />
 				</button>
@@ -64,9 +67,12 @@ export function MonthGrid({
 				</span>
 				<button
 					type='button'
-					onClick={onNextMonth}
+					onClick={e => {
+						e.preventDefault()
+						onNextMonth()
+					}}
 					title='Next month'
-					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors'
+					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted'
 				>
 					<ChevronRight size={16} />
 				</button>

@@ -37,8 +37,11 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 	return (
 		<>
 			<button
-				onClick={handleOpen}
-				className='w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-white/5 border border-white/8 text-[#9CA3AF] text-sm font-medium active:bg-white/10 transition-colors'
+				onClick={e => {
+					e.preventDefault()
+					handleOpen()
+				}}
+				className='w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-white/5 border border-white/8 text-[#9CA3AF] text-sm font-medium active:bg-white/10'
 			>
 				<LogOut size={16} />
 				Выйти из аккаунта
@@ -79,17 +82,23 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 						</div>
 
 						<button
-							onClick={confirm}
+							onClick={e => {
+								e.preventDefault()
+								confirm()
+							}}
 							disabled={loading}
-							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 transition-colors disabled:opacity-50'
+							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 disabled:opacity-50'
 						>
 							{loading ? 'Выходим...' : 'Выйти'}
 						</button>
 
 						<button
-							onClick={handleClose}
+							onClick={e => {
+								e.preventDefault()
+								handleClose()
+							}}
 							disabled={loading}
-							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors disabled:opacity-40'
+							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 disabled:opacity-40'
 						>
 							Отмена
 						</button>

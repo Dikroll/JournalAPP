@@ -49,7 +49,6 @@ export function ProfileDetailsPage() {
 					style={{
 						boxShadow: 'var(--shadow-card)',
 						WebkitTapHighlightColor: 'transparent',
-						touchAction: 'manipulation',
 					}}
 				>
 					<ArrowLeft size={18} />
@@ -64,12 +63,11 @@ export function ProfileDetailsPage() {
 					onTouchStart={onTouchStart}
 					onTouchEnd={makeTouchEnd(() => setShowSwitcher(true))}
 					onClick={() => setShowSwitcher(true)}
-					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover transition-colors'
+					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover'
 					style={{
 						boxShadow: 'var(--shadow-card)',
 						minHeight: 36,
 						WebkitTapHighlightColor: 'transparent',
-						touchAction: 'manipulation',
 					}}
 				>
 					<Users size={14} />
@@ -81,12 +79,11 @@ export function ProfileDetailsPage() {
 					onTouchStart={onTouchStart}
 					onTouchEnd={makeTouchEnd(() => setShowClearCache(true))}
 					onClick={() => setShowClearCache(true)}
-					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover transition-colors'
+					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover'
 					style={{
 						boxShadow: 'var(--shadow-card)',
 						minHeight: 36,
 						WebkitTapHighlightColor: 'transparent',
-						touchAction: 'manipulation',
 					}}
 				>
 					<Trash2 size={14} />

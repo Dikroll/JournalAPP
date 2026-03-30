@@ -33,10 +33,13 @@ export function ScheduleCalendar() {
 						<button
 							type='button'
 							disabled={!isActive}
-							onClick={() => setSelectedDate(dateStr)}
+							onClick={e => {
+								e.preventDefault()
+								setSelectedDate(dateStr)
+							}}
 							className={`
 								relative flex items-center justify-center
-								rounded-full text-xs font-semibold transition-colors
+								rounded-full text-xs font-semibold
 								disabled:cursor-default
 								${isSelected ? 'bg-brand text-white' : ''}
 								${

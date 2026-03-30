@@ -36,15 +36,21 @@ export function LogoutConfirm({ onConfirm, onCancel }: Props) {
 				</div>
 				<button
 					type='button'
-					onClick={onConfirm}
-					className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 transition-colors'
+					onClick={e => {
+						e.preventDefault()
+						onConfirm()
+					}}
+					className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20'
 				>
 					Выйти
 				</button>
 				<button
 					type='button'
-					onClick={onCancel}
-					className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors'
+					onClick={e => {
+						e.preventDefault()
+						onCancel()
+					}}
+					className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10'
 				>
 					Отмена
 				</button>

@@ -56,10 +56,13 @@ export function HomeworkCardActions({
 	const DownloadTaskBtn = (
 		<button
 			type='button'
-			onClick={() => downloadTask(fileUrl)}
+			onClick={e => {
+				e.preventDefault()
+				downloadTask(fileUrl)
+			}}
 			disabled={!fileUrl}
 			title='Скачать задание'
-			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs'
+			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border text-xs'
 		>
 			<Download size={14} />
 			<span>Задание</span>
@@ -69,10 +72,13 @@ export function HomeworkCardActions({
 	const ViewAnswerBtn = (
 		<button
 			type='button'
-			onClick={() => viewAnswer(studAnswer, studFileUrl)}
+			onClick={e => {
+				e.preventDefault()
+				viewAnswer(studAnswer, studFileUrl)
+			}}
 			disabled={!hasAnswer}
 			title='Мой ответ'
-			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs'
+			className='flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-app-text border border-app-border text-xs'
 		>
 			{!studAnswerIsUrl && !studFileUrl ? (
 				<MessageSquare size={14} />
@@ -86,8 +92,11 @@ export function HomeworkCardActions({
 	const UploadBtn = ({ label, red }: { label: string; red?: boolean }) => (
 		<button
 			type='button'
-			onClick={() => setSheetOpen(true)}
-			className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-medium transition-colors ${
+			onClick={e => {
+				e.preventDefault()
+				setSheetOpen(true)
+			}}
+			className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-medium ${
 				red
 					? 'bg-overdue-bg hover:bg-overdue-border text-status-overdue border border-overdue-border'
 					: 'bg-app-surface-strong hover:bg-app-surface-active text-app-text border border-app-border-strong'
@@ -101,10 +110,13 @@ export function HomeworkCardActions({
 	const DeleteBtn = (
 		<button
 			type='button'
-			onClick={() => setShowDeleteWarning(true)}
+			onClick={e => {
+				e.preventDefault()
+				setShowDeleteWarning(true)
+			}}
 			disabled={!studId}
 			title='Удалить сданное ДЗ'
-			className='flex items-center justify-center px-3 py-2.5 bg-app-surface hover:bg-overdue-bg disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-status-overdue border border-app-border hover:border-overdue-border transition-colors'
+			className='flex items-center justify-center px-3 py-2.5 bg-app-surface hover:bg-overdue-bg disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl text-app-muted hover:text-status-overdue border border-app-border hover:border-overdue-border'
 		>
 			<Trash2 size={14} />
 		</button>
@@ -142,17 +154,23 @@ export function HomeworkCardActions({
 					<div className='flex gap-2'>
 						<button
 							type='button'
-							onClick={() => setShowDeleteWarning(false)}
+							onClick={e => {
+								e.preventDefault()
+								setShowDeleteWarning(false)
+							}}
 							disabled={isDeleting}
-							className='flex-1 px-4 py-2 bg-app-surface hover:bg-app-surface-hover rounded-xl text-app-text text-sm transition-colors'
+							className='flex-1 px-4 py-2 bg-app-surface hover:bg-app-surface-hover rounded-xl text-app-text text-sm'
 						>
 							Отмена
 						</button>
 						<button
 							type='button'
-							onClick={handleDelete}
+							onClick={e => {
+								e.preventDefault()
+								handleDelete()
+							}}
 							disabled={isDeleting}
-							className='flex-1 px-4 py-2 bg-status-overdue hover:opacity-90 rounded-xl text-white text-sm font-medium transition-colors disabled:opacity-50'
+							className='flex-1 px-4 py-2 bg-status-overdue hover:opacity-90 rounded-xl text-white text-sm font-medium disabled:opacity-50'
 						>
 							{isDeleting ? 'Удаляем...' : 'Удалить'}
 						</button>

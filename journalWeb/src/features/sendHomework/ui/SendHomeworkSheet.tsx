@@ -74,9 +74,12 @@ export function SendHomeworkSheet({
 					</div>
 					<button
 						type='button'
-						onClick={onClose}
+						onClick={e => {
+							e.preventDefault()
+							onClose()
+						}}
 						disabled={isLoading}
-						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-40'
+						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-40'
 					>
 						<X size={14} className='text-[#9CA3AF]' />
 					</button>
@@ -117,7 +120,7 @@ export function SendHomeworkSheet({
 									onChange={e => setText(e.target.value)}
 									placeholder='Введите ответ...'
 									rows={3}
-									className='w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#F2F2F2] placeholder:text-[#6B7280] resize-none focus:outline-none focus:border-white/20 transition-colors'
+									className='w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm text-[#F2F2F2] placeholder:text-[#6B7280] resize-none focus:outline-none focus:border-white/20'
 								/>
 								{text.length > 0 && text.length < 5 && (
 									<p className='text-xs text-[#9CA3AF] mt-1 px-1'>
@@ -135,9 +138,12 @@ export function SendHomeworkSheet({
 
 						<button
 							type='button'
-							onClick={submit}
+							onClick={e => {
+								e.preventDefault()
+								submit()
+							}}
 							disabled={isLoading}
-							className='w-full flex items-center justify-center gap-2 py-3 rounded-[18px] bg-white/10 hover:bg-white/15 border border-white/10 text-[#F2F2F2] text-sm font-semibold transition-colors disabled:opacity-50'
+							className='w-full flex items-center justify-center gap-2 py-3 rounded-[18px] bg-white/10 hover:bg-white/15 border border-white/10 text-[#F2F2F2] text-sm font-semibold disabled:opacity-50'
 						>
 							{isLoading ? (
 								<>

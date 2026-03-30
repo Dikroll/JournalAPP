@@ -21,15 +21,21 @@ export function HomeworkCardUploadWarning({ onCancel, onConfirm }: Props) {
 			<div className='flex gap-2'>
 				<button
 					type='button'
-					onClick={onCancel}
-					className='flex-1 px-4 py-2 bg-app-surface hover:bg-app-surface-hover rounded-xl text-app-text text-sm transition-colors'
+					onClick={e => {
+						e.preventDefault()
+						onCancel()
+					}}
+					className='flex-1 px-4 py-2 bg-app-surface hover:bg-app-surface-hover rounded-xl text-app-text text-sm'
 				>
 					Отмена
 				</button>
 				<button
 					type='button'
-					onClick={onConfirm}
-					className='flex-1 px-4 py-2 bg-status-comment hover:opacity-90 rounded-xl text-white text-sm font-medium transition-colors'
+					onClick={e => {
+						e.preventDefault()
+						onConfirm()
+					}}
+					className='flex-1 px-4 py-2 bg-status-comment hover:opacity-90 rounded-xl text-white text-sm font-medium'
 				>
 					Продолжить
 				</button>

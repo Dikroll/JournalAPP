@@ -19,9 +19,12 @@ export function ShowMoreBtn({
 	return (
 		<button
 			type='button'
-			onClick={onClick}
+			onClick={e => {
+				e.preventDefault()
+				onClick()
+			}}
 			disabled={isLoading}
-			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text transition-colors disabled:opacity-50'
+			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text disabled:opacity-50'
 		>
 			{isLoading ? (
 				<>

@@ -172,8 +172,11 @@ export function LoginForm() {
 						/>
 						<button
 							type='button'
-							onClick={() => setShowPassword(!showPassword)}
-							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF] transition-colors'
+							onClick={e => {
+								e.preventDefault()
+								setShowPassword(!showPassword)
+							}}
+							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF]'
 							tabIndex={-1}
 						>
 							{showPassword ? <EyeOff size={15} /> : <Eye size={15} />}

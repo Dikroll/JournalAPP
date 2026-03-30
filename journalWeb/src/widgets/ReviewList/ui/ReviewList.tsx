@@ -44,8 +44,11 @@ export function ReviewsList() {
 
 			{reviews.length > INITIAL_SHOW && (
 				<button
-					onClick={() => setExpanded(v => !v)}
-					className='mt-3 w-full py-3 rounded-[18px] bg-app-surface border border-app-border text-app-muted text-sm font-medium transition-colors hover:bg-app-surface-hover'
+					onClick={e => {
+						e.preventDefault()
+						setExpanded(v => !v)
+					}}
+					className='mt-3 w-full py-3 rounded-[18px] bg-app-surface border border-app-border text-app-muted text-sm font-medium hover:bg-app-surface-hover'
 				>
 					{expanded
 						? 'Свернуть'

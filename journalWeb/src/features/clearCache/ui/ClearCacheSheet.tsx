@@ -46,10 +46,9 @@ export function ClearCacheSheet({ onClose }: ClearCacheSheetProps) {
 								onClose()
 							}}
 							onClick={onClose}
-							className='w-full mt-2 py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors'
+							className='w-full mt-2 py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10'
 							style={{
 								WebkitTapHighlightColor: 'transparent',
-								touchAction: 'manipulation',
 							}}
 						>
 							Закрыть
@@ -79,10 +78,9 @@ export function ClearCacheSheet({ onClose }: ClearCacheSheetProps) {
 								handleClear()
 							}}
 							onClick={handleClear}
-							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20 transition-colors'
+							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/20 active:bg-[#EF4444]/20'
 							style={{
 								WebkitTapHighlightColor: 'transparent',
-								touchAction: 'manipulation',
 							}}
 						>
 							Очистить
@@ -95,10 +93,9 @@ export function ClearCacheSheet({ onClose }: ClearCacheSheetProps) {
 								onClose()
 							}}
 							onClick={onClose}
-							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10 transition-colors'
+							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8 active:bg-white/10'
 							style={{
 								WebkitTapHighlightColor: 'transparent',
-								touchAction: 'manipulation',
 							}}
 						>
 							Отмена

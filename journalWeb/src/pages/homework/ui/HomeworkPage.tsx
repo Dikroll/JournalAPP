@@ -99,8 +99,11 @@ export function HomeworkPage() {
 						<button
 							key={key}
 							type='button'
-							onClick={() => setGroupBy(key)}
-							className={`flex-1 flex items-center justify-center gap-1.5 h-10 px-2 rounded-2xl text-xs font-medium transition-colors whitespace-nowrap ${
+							onClick={e => {
+								e.preventDefault()
+								setGroupBy(key)
+							}}
+							className={`flex-1 flex items-center justify-center gap-1.5 h-10 px-2 rounded-2xl text-xs font-medium whitespace-nowrap ${
 								groupBy === key
 									? 'bg-app-surface-strong text-app-text border border-app-border-strong'
 									: 'bg-app-surface text-app-muted border border-app-border hover:text-app-text hover:bg-app-surface-hover'
