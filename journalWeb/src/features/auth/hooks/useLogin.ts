@@ -1,7 +1,7 @@
-import { resetAllStores } from '@/app/lib/resetAllStores'
 import { userApi, useUserStore } from '@/entities/user'
 import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
+import { resetAllStores } from '@/shared/lib/resetAllStores'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'

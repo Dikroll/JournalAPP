@@ -15,7 +15,6 @@ import { resetSubjectsFetch } from '@/entities/subject/hooks/useSubjects'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
 import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
-import { storage } from '@/shared/lib/storage'
 
 export function resetAllStores(): void {
 	// Эти функции теперь no-op (флаги перенесены в useRef),
@@ -48,23 +47,30 @@ export function resetAllStores(): void {
 		status: 'idle',
 		loadedAt: null,
 	})
+
 	useLeaderboardStore.setState({
 		group: { data: null, status: 'idle', loadedAt: null },
 		stream: { data: null, status: 'idle', loadedAt: null },
 	})
-	useReviewStore.setState({ reviews: [], status: 'idle', loadedAt: null })
+
+	useReviewStore.setState({
+		reviews: [],
+		status: 'idle',
+		loadedAt: null,
+	})
+
 	useScheduleStore.setState({
+		months: {},
+		monthStatus: {},
+		monthLoadedAt: {},
 		today: [],
 		todayStatus: 'idle',
 		todayLoadedAt: null,
 		error: null,
-		months: {},
-		monthStatus: {},
-		monthLoadedAt: {},
 	})
-	useProfileDetailsStore.setState({ details: null, status: 'idle' })
-	;['user-store', 'exam-store', 'subject-store'].forEach(k =>
-		localStorage.removeItem(k),
-	)
-	storage.clear('cache:')
+
+	useProfileDetailsStore.setState({
+		details: null,
+		status: 'idle',
+	})
 }

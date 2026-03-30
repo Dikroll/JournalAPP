@@ -1,5 +1,6 @@
 export { getAuthToken } from './getAuthToken'
 export { getCachedImageUrl, preloadImages } from './imageCache'
 export { isCacheValid } from './isCacheValid'
+export { resetAllStores } from './resetAllStores'
 export { ScrollToTop } from './scrollToTop'
 export * from './storage'
