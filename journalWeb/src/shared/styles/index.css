@@ -11,7 +11,6 @@ body {
 	scrollbar-width: none;
 	overflow-x: hidden;
 	overscroll-behavior-x: none;
-	touch-action: manipulation;
 }
 
 body {
@@ -22,13 +21,13 @@ body {
 * {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
-	user-select: none;
-	-webkit-user-select: none;
 }
 
+button,
 input,
 textarea,
-[contenteditable] {
+[contenteditable],
+.selectable {
 	user-select: text;
 	-webkit-user-select: text;
 }

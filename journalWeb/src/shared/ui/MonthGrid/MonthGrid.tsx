@@ -54,6 +54,7 @@ export function MonthGrid({
 				<button
 					type='button'
 					onClick={onPrevMonth}
+					title='Previous month'
 					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors'
 				>
 					<ChevronLeft size={16} />
@@ -64,6 +65,7 @@ export function MonthGrid({
 				<button
 					type='button'
 					onClick={onNextMonth}
+					title='Next month'
 					className='w-8 h-8 flex items-center justify-center rounded-xl bg-app-surface-strong hover:bg-app-surface-hover text-app-muted transition-colors'
 				>
 					<ChevronRight size={16} />

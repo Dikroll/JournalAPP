@@ -114,6 +114,7 @@ export function GradesTabs({ active, onChange }: Props) {
 						WebkitOverflowScrolling: 'touch' as any,
 						paddingRight: showRight ? 32 : 4,
 						paddingBottom: 2,
+						scrollBehavior: 'smooth',
 					}}
 				>
 					{TABS.map(({ key, label, icon }) => {
@@ -131,7 +132,6 @@ export function GradesTabs({ active, onChange }: Props) {
 									paddingLeft: 16,
 									paddingRight: 16,
 									WebkitTapHighlightColor: 'transparent',
-									touchAction: 'manipulation',
 									background: isActive
 										? 'var(--color-surface-strong)'
 										: 'var(--color-surface)',

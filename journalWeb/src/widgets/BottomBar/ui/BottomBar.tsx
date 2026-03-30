@@ -57,7 +57,6 @@ export function BottomBar() {
 									minWidth: 44,
 									minHeight: 44,
 									WebkitTapHighlightColor: 'transparent',
-									touchAction: 'manipulation',
 								}}
 							>
 								{isActive && (
