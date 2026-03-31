@@ -1,5 +1,11 @@
 import { pageConfig } from '@/shared/config'
-import { BookOpen, Calendar, GraduationCap, Home } from 'lucide-react'
+import {
+	BookMarked,
+	BookOpen,
+	Calendar,
+	GraduationCap,
+	Home,
+} from 'lucide-react'
 import { useCallback, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -8,13 +14,13 @@ const tabs = [
 	{ to: pageConfig.grades, icon: GraduationCap, exact: false },
 	{ to: pageConfig.schedule, icon: Calendar, exact: false },
 	{ to: pageConfig.homework, icon: BookOpen, exact: false },
+	{ to: pageConfig.library, icon: BookMarked, exact: false },
 ]
 
 export function BottomBar() {
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	// Храним координату начала тача — если палец сдвинулся (скролл), не навигируем
 	const touchStartY = useRef<number>(0)
 	const touchStartX = useRef<number>(0)
 
@@ -62,7 +68,7 @@ export function BottomBar() {
 							>
 								{isActive && (
 									<span
-										className='absolute bottom-1 left-1/2 -translate-x-1/2 h-[3px] w-5 rounded-full'
+										className='absolute bottom-1 left-1/2 -translate-x-1/2 h-0.75 w-5 rounded-full'
 										style={{ background: 'var(--color-brand)' }}
 									/>
 								)}

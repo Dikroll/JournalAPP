@@ -4,6 +4,7 @@ import {
 	GradesPage,
 	HomePage,
 	HomeworkPage,
+	LibraryPage,
 	LoginPage,
 	PaymentPage,
 	ProfileDetailsPage,
@@ -16,10 +17,6 @@ import { FullscreenLoader } from '@/widgets/Loading/ui/Loader'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '../layouts'
 
-/**
- * ИСПРАВЛЕНИЕ: убран дублированный инлайн SVG спиннер.
- * Теперь используется FullscreenLoader из widgets/Loading.
- */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
@@ -87,6 +84,7 @@ export function AppRouter() {
 					<Route index element={<HomePage />} />
 					<Route path='schedule' element={<SchedulePage />} />
 					<Route path='homework' element={<HomeworkPage />} />
+					<Route path='library' element={<LibraryPage />} />
 					<Route path='grades' element={<GradesPage />} />
 					<Route path='profile' element={<ProfilePage />} />
 					<Route path='profile/details' element={<ProfileDetailsPage />} />

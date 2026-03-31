@@ -22,6 +22,7 @@ export function GradesCalendar({ byMonth }: Props) {
 
 	const touchStartX = useRef(0)
 	const touchStartY = useRef(0)
+	const touchFiredRef = useRef(false)
 
 	const handlePrevMonth = () => {
 		prevMonth()
@@ -41,23 +42,27 @@ export function GradesCalendar({ byMonth }: Props) {
 		touchStartY.current = e.touches[0].clientY
 	}, [])
 
-	const makeHandleDayTap = useCallback(
-		(dateStr: string, hasData: boolean) =>
-			(e: React.TouchEvent | React.MouseEvent) => {
+	const makeHandlers = useCallback(
+		(dateStr: string, hasData: boolean) => ({
+			onTouchEnd: (e: React.TouchEvent) => {
 				if (!hasData) return
-				e.preventDefault() // ✅ Предотвращает дефолтное поведение
-				if (e.type === 'touchend') {
-					const te = e as React.TouchEvent
-					const dx = Math.abs(
-						te.changedTouches[0].clientX - touchStartX.current,
-					)
-					const dy = Math.abs(
-						te.changedTouches[0].clientY - touchStartY.current,
-					)
-					if (dx > 8 || dy > 8) return
+				const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
+				const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
+				if (dx > 8 || dy > 8) return
+				e.preventDefault()
+				touchFiredRef.current = true
+				setSelectedDate(prev => (prev === dateStr ? null : dateStr))
+			},
+			onClick: (e: React.MouseEvent) => {
+				if (!hasData) return
+				if (touchFiredRef.current) {
+					touchFiredRef.current = false
+					e.preventDefault()
+					return
 				}
 				setSelectedDate(prev => (prev === dateStr ? null : dateStr))
 			},
+		}),
 		[],
 	)
 
@@ -77,14 +82,15 @@ export function GradesCalendar({ byMonth }: Props) {
 					const hasData = entries.length > 0
 					const isSelected = selectedDate === dateStr
 					const dotColor = hasData ? getGradeDotColor(entries) : null
+					const handlers = makeHandlers(dateStr, hasData)
 
 					return (
 						<button
 							type='button'
 							disabled={!hasData}
 							onTouchStart={hasData ? handleDayTouchStart : undefined}
-							onTouchEnd={makeHandleDayTap(dateStr, hasData)}
-							onClick={makeHandleDayTap(dateStr, hasData)}
+							onTouchEnd={handlers.onTouchEnd}
+							onClick={handlers.onClick}
 							className='relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default'
 							style={{
 								width: 36,

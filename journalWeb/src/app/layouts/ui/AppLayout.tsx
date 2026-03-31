@@ -83,9 +83,7 @@ export function AppLayout() {
 				<TopBar />
 			</div>
 
-			<div key={location.pathname}>
-				<Outlet />
-			</div>
+			<Outlet />
 
 			<BottomBar />
 		</div>
