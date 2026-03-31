@@ -1,8 +1,6 @@
-import {
-	type MaterialType,
-	useLibrary,
-	useLibraryByType,
-} from '@/entities/library'
+import { type MaterialType, useLibrary } from '@/entities/library'
+import { SkeletonList } from '@/shared/ui'
+import { ErrorView } from '@/shared/ui/ErrorView/ErrorView'
 import { BookOpen, FileText, Lightbulb, TestTube, Video } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { LibraryMaterialCard } from '../../LibraryMaterialCard/ui/LibraryMaterialCard'
@@ -33,7 +31,6 @@ export const LibraryTabs = memo(function LibraryTabs({
 	const [showLeft, setShowLeft] = useState(false)
 	const touchStartX = useRef(0)
 	const touchStartY = useRef(0)
-
 	const touchFiredRef = useRef(false)
 
 	const { materials, counters, error, isLoading } = useLibrary({
@@ -42,9 +39,10 @@ export const LibraryTabs = memo(function LibraryTabs({
 		autoLoad: true,
 	})
 
-	const materialsByType = materials // already filtered by API on request; backup filter also available
-		? materials
-		: useLibraryByType(active)
+	// Фильтруем по активной вкладке на клиенте как страховка:
+	// store общий — при переключении вкладок он перезаписывается,
+	// поэтому отображаем только те материалы, что совпадают с активным типом.
+	const materialsByType = materials.filter(m => m.material_type === active)
 
 	const checkFades = () => {
 		const el = scrollRef.current
@@ -99,11 +97,12 @@ export const LibraryTabs = memo(function LibraryTabs({
 				setActive(key)
 			},
 		}),
-		[specId],
+		[],
 	)
 
 	return (
 		<div className='space-y-2'>
+			{/* Табы */}
 			<div className='relative'>
 				{showLeft && (
 					<div
@@ -151,7 +150,8 @@ export const LibraryTabs = memo(function LibraryTabs({
 					style={{
 						overflowX: 'auto',
 						scrollbarWidth: 'none',
-						WebkitOverflowScrolling: 'touch' as any,
+						WebkitOverflowScrolling:
+							'touch' as React.CSSProperties['WebkitOverflowScrolling'],
 						paddingRight: showRight ? 32 : 4,
 						paddingBottom: 2,
 						scrollBehavior: 'smooth',
@@ -199,6 +199,7 @@ export const LibraryTabs = memo(function LibraryTabs({
 				</div>
 			</div>
 
+			{/* Индикатор активной вкладки */}
 			<div className='flex justify-center items-center gap-1.5'>
 				{TABS.map(({ key }) => {
 					const isActive = active === key
@@ -219,36 +220,21 @@ export const LibraryTabs = memo(function LibraryTabs({
 				})}
 			</div>
 
-			{/* Content */}
-			{isLoading && (
-				<div className='py-8 text-center'>
-					<div className='inline-block animate-spin'>
-						<div className='w-6 h-6 border-2 border-gray-300 dark:border-slate-600 border-t-blue-500 rounded-full' />
-					</div>
-					<p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-						Загрузка материалов...
-					</p>
-				</div>
-			)}
+			{/* Контент */}
+			{isLoading && <SkeletonList count={3} height={200} />}
 
-			{error && (
-				<div className='p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg'>
-					<p className='text-sm text-red-700 dark:text-red-200'>
-						Ошибка: {error}
-					</p>
-				</div>
+			{!isLoading && error && (
+				<ErrorView message='Не удалось загрузить материалы' />
 			)}
 
 			{!isLoading && !error && materialsByType.length === 0 && (
-				<div className='py-8 text-center'>
-					<p className='text-gray-600 dark:text-gray-400 text-sm'>
-						Материалы не найдены
-					</p>
-				</div>
+				<p className='text-app-muted text-sm text-center py-8'>
+					Материалы не найдены
+				</p>
 			)}
 
 			{!isLoading && !error && materialsByType.length > 0 && (
-				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+				<div className='space-y-3'>
 					{materialsByType.map(material => (
 						<LibraryMaterialCard
 							key={material.material_id}

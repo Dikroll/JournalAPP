@@ -42,7 +42,7 @@ export const LibraryMaterialCard = memo(
 					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border-4 border-l-4 border-b-4 border-app-border border-t-0 border-r-0 overflow-hidden'
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
-					{/* Cover Image */}
+					{/* Обложка */}
 					{hasPhoto && (
 						<button
 							type='button'
@@ -50,7 +50,7 @@ export const LibraryMaterialCard = memo(
 								e.stopPropagation()
 								setViewerOpen(true)
 							}}
-							className='w-full mb-4 rounded-2xl overflow-hidden bg-app-surface'
+							className='w-full mb-4 rounded-2xl overflow-hidden bg-app-surface-strong block focus:outline-none'
 						>
 							<img
 								src={photoUrl}
@@ -59,15 +59,29 @@ export const LibraryMaterialCard = memo(
 							/>
 						</button>
 					)}
-					{/* Header */}
+
+					{/* Заголовок */}
 					<div className='flex items-start justify-between mb-3'>
 						<div className='flex-1 min-w-0'>
 							<div className='flex items-center gap-2 mb-1'>
-								<span className='text-xs font-medium px-2 py-0.5 rounded-full text-app-text bg-app-surface'>
+								<span
+									className='text-xs font-medium px-2 py-0.5 rounded-full'
+									style={{
+										background: 'var(--color-surface-strong)',
+										color: 'var(--color-text-muted)',
+									}}
+								>
 									{material.type_name}
 								</span>
 								{material.is_new && (
-									<span className='text-xs font-bold px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200'>
+									<span
+										className='text-xs font-bold px-2 py-0.5 rounded-full'
+										style={{
+											background: 'var(--color-new-subtle)',
+											color: 'var(--color-new)',
+											border: '1px solid var(--color-new-border)',
+										}}
+									>
 										NEW
 									</span>
 								)}
@@ -92,30 +106,40 @@ export const LibraryMaterialCard = memo(
 						</div>
 					</div>
 
-					{/* Description */}
+					{/* Описание */}
 					{material.description && (
 						<p className='text-sm text-app-text mb-4 line-clamp-3'>
 							{material.description}
 						</p>
 					)}
 
-					{/* Actions */}
+					{/* Кнопки действий */}
 					<div className='flex gap-2'>
 						{material.link && (
 							<button
 								onClick={handleOpenLink}
-								className='flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-2xl bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors'
+								className='flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-medium border transition-colors'
+								style={{
+									background: 'var(--color-new-subtle)',
+									color: 'var(--color-new)',
+									borderColor: 'var(--color-new-border)',
+								}}
 							>
-								<ExternalLink size={16} />
+								<ExternalLink size={14} />
 								<span>Открыть</span>
 							</button>
 						)}
 						{material.download_url && (
 							<button
 								onClick={handleDownload}
-								className='flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-2xl bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-800 transition-colors'
+								className='flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl text-xs font-medium border transition-colors'
+								style={{
+									background: 'var(--color-checked-subtle)',
+									color: 'var(--color-checked)',
+									borderColor: 'var(--color-checked-border)',
+								}}
 							>
-								<Download size={16} />
+								<Download size={14} />
 								<span>Скачать</span>
 							</button>
 						)}
@@ -123,9 +147,10 @@ export const LibraryMaterialCard = memo(
 				</div>
 
 				{viewerOpen &&
+					photoUrl &&
 					createPortal(
 						<PhotoViewerModal
-							src={photoUrl!}
+							src={photoUrl}
 							alt={material.theme}
 							onClose={() => setViewerOpen(false)}
 						/>,
