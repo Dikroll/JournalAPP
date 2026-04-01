@@ -22,10 +22,7 @@ export function SortSubjectsControl() {
 					<button
 						key={key}
 						type='button'
-						onClick={e => {
-							e.preventDefault()
-							setSortKey(key)
-						}}
+						onClick={() => setSortKey(key)}
 						className={`px-2.5 py-1 rounded-xl text-xs font-medium border ${
 							sortKey === key
 								? 'bg-white/15 text-[#F2F2F2] border-white/20'

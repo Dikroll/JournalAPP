@@ -10,10 +10,7 @@ export function RefreshButton({ isRefreshing, onRefresh, className }: Props) {
 	return (
 		<button
 			type='button'
-			onClick={e => {
-				e.preventDefault()
-				onRefresh()
-			}}
+			onClick={onRefresh}
 			disabled={isRefreshing}
 			className={
 				className ??

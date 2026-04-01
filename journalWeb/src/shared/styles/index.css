@@ -23,6 +23,10 @@ body {
 	-webkit-touch-callout: none;
 }
 
+button {
+	touch-action: manipulation;
+}
+
 button,
 input,
 textarea,
