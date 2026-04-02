@@ -1,21 +1,28 @@
 import { type MaterialType, useLibrary } from '@/entities/library'
 import { SkeletonList } from '@/shared/ui'
 import { ErrorView } from '@/shared/ui/ErrorView/ErrorView'
-import { BookOpen, FileText, Lightbulb, TestTube, Video } from 'lucide-react'
+import {
+	Book,
+	BookOpen,
+	FileText,
+	Lightbulb,
+	TestTube,
+	Video,
+} from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { LibraryMaterialCard } from '../../LibraryMaterialCard/ui/LibraryMaterialCard'
 
 type Tab = MaterialType
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
-	{ key: 1, label: 'Уроки', icon: <BookOpen size={13} /> },
-	{ key: 2, label: 'Библиотека', icon: <FileText size={13} /> },
-	{ key: 3, label: 'Видео', icon: <Video size={13} /> },
-	{ key: 4, label: 'Статьи', icon: <Lightbulb size={13} /> },
-	{ key: 5, label: 'Практика', icon: <Lightbulb size={13} /> },
+	{ key: 1, label: 'ДЗ', icon: <BookOpen size={13} /> },
+	{ key: 2, label: 'Уроки', icon: <FileText size={13} /> },
+	{ key: 3, label: 'Практика', icon: <Lightbulb size={13} /> },
+	{ key: 4, label: 'Книги', icon: <Book size={13} /> },
+	{ key: 5, label: 'Видео', icon: <Video size={13} /> },
 	{ key: 6, label: 'Другое', icon: <FileText size={13} /> },
 	{ key: 7, label: 'Тесты', icon: <TestTube size={13} /> },
-	{ key: 8, label: 'Доп', icon: <FileText size={13} /> },
+	{ key: 8, label: 'Статьи', icon: <FileText size={13} /> },
 ]
 
 interface LibraryTabsProps {
@@ -156,7 +163,7 @@ export const LibraryTabs = memo(function LibraryTabs({
 					{TABS.map(({ key, label, icon }) => {
 						const isActive = active === key
 						const handlers = makeTabHandler(key)
-						const count = countersForSpec?.by_type?.[key] ?? 0
+						const count = countersForSpec?.[key] ?? 0
 						return (
 							<button
 								key={key}

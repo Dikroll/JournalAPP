@@ -1,14 +1,14 @@
 export type MaterialType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
-	1: 'Уроки',
-	2: 'Библиотека',
-	3: 'Видео',
-	4: 'Статьи',
-	5: 'Практика',
+	1: 'ДЗ',
+	2: 'Уроки',
+	3: 'Практика',
+	4: 'Книги',
+	5: 'Видео',
 	6: 'Другое',
 	7: 'Тесты',
-	8: 'Доп',
+	8: 'Статьи',
 }
 
 /** Маппинг числового типа → ключ в ответе /library/counters */
@@ -16,14 +16,14 @@ export const MATERIAL_TYPE_TO_COUNTER_KEY: Record<
 	MaterialType,
 	keyof LibraryCounters
 > = {
-	1: 'lessons',
-	2: 'books',
-	3: 'videos',
-	4: 'articles',
-	5: 'practical',
+	1: 'homeworks',
+	2: 'lessons',
+	3: 'practical',
+	4: 'books',
+	5: 'videos',
 	6: 'other',
 	7: 'tests',
-	8: 'additional',
+	8: 'articles',
 }
 
 export interface LibraryTypeCount {
@@ -41,7 +41,7 @@ export interface LibraryCounters {
 	practical: LibraryTypeCount
 	other: LibraryTypeCount
 	tests: LibraryTypeCount
-	additional: LibraryTypeCount
+	homeworks: LibraryTypeCount
 }
 
 export interface LibraryMaterial {

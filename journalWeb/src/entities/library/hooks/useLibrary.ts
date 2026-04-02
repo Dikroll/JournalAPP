@@ -20,9 +20,8 @@ export function useLibrary({
 }: UseLibraryOptions = {}) {
 	const {
 		materialsMap,
-		materialsLoadedAt,
 		countersMap,
-		countersLoadedAt,
+
 		loadingKeys,
 		errorKeys,
 		setMaterials,
