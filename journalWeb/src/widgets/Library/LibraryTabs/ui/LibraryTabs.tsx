@@ -39,9 +39,6 @@ export const LibraryTabs = memo(function LibraryTabs({
 		autoLoad: true,
 	})
 
-	// Фильтруем по активной вкладке на клиенте как страховка:
-	// store общий — при переключении вкладок он перезаписывается,
-	// поэтому отображаем только те материалы, что совпадают с активным типом.
 	const materialsByType = materials.filter(m => m.material_type === active)
 
 	const checkFades = () => {
@@ -168,7 +165,7 @@ export const LibraryTabs = memo(function LibraryTabs({
 								onTouchStart={handleTouchStart}
 								onTouchEnd={handlers.onTouchEnd}
 								onClick={handlers.onClick}
-								className='flex-shrink-0 flex flex-col items-center gap-0.5 rounded-2xl text-xs font-medium whitespace-nowrap'
+								className='flex-shrink-0 flex flex-col items-center justify-center gap-0.5 rounded-2xl text-xs font-medium whitespace-nowrap'
 								style={{
 									minHeight: 44,
 									paddingLeft: 12,
