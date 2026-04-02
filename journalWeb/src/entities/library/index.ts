@@ -7,5 +7,6 @@ export type {
 	LibraryLoadingState,
 	LibraryMaterial,
 	LibrarySpec,
+	MATERIAL_TYPE_TO_COUNTER_KEY,
 	MaterialType,
 } from './model/types'

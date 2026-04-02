@@ -33,13 +33,11 @@ export const LibraryTabs = memo(function LibraryTabs({
 	const touchStartY = useRef(0)
 	const touchFiredRef = useRef(false)
 
-	const { materials, counters, error, isLoading } = useLibrary({
+	const { materials, counters, isLoading, error } = useLibrary({
 		specId,
 		materialType: active,
 		autoLoad: true,
 	})
-
-	const materialsByType = materials.filter(m => m.material_type === active)
 
 	const checkFades = () => {
 		const el = scrollRef.current
@@ -97,9 +95,10 @@ export const LibraryTabs = memo(function LibraryTabs({
 		[],
 	)
 
+	const countersForSpec = counters
+
 	return (
 		<div className='space-y-2'>
-			{/* Табы */}
 			<div className='relative'>
 				{showLeft && (
 					<div
@@ -157,7 +156,7 @@ export const LibraryTabs = memo(function LibraryTabs({
 					{TABS.map(({ key, label, icon }) => {
 						const isActive = active === key
 						const handlers = makeTabHandler(key)
-						const count = counters?.by_type?.[key] ?? 0
+						const count = countersForSpec?.by_type?.[key] ?? 0
 						return (
 							<button
 								key={key}
@@ -196,7 +195,7 @@ export const LibraryTabs = memo(function LibraryTabs({
 				</div>
 			</div>
 
-			{/* Индикатор активной вкладки */}
+			{/* Индикатор */}
 			<div className='flex justify-center items-center gap-1.5'>
 				{TABS.map(({ key }) => {
 					const isActive = active === key
@@ -224,15 +223,15 @@ export const LibraryTabs = memo(function LibraryTabs({
 				<ErrorView message='Не удалось загрузить материалы' />
 			)}
 
-			{!isLoading && !error && materialsByType.length === 0 && (
+			{!isLoading && !error && materials.length === 0 && (
 				<p className='text-app-muted text-sm text-center py-8'>
 					Материалы не найдены
 				</p>
 			)}
 
-			{!isLoading && !error && materialsByType.length > 0 && (
+			{!isLoading && !error && materials.length > 0 && (
 				<div className='space-y-3'>
-					{materialsByType.map(material => (
+					{materials.map(material => (
 						<LibraryMaterialCard
 							key={material.material_id}
 							material={material}

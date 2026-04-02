@@ -13,16 +13,16 @@ interface LibraryViewProps {
 export const LibraryView = ({ showSpecSelector = true }: LibraryViewProps) => {
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null)
 	const { subjects, status: subjectsStatus } = useSubjects()
-	const { reset } = useLibraryStore()
+	const { setSelectedSpec } = useLibraryStore()
 
 	const handleSpecChange = (spec: { id: number } | null) => {
 		const newSpecId = spec?.id ?? null
 		setSelectedSpecId(newSpecId)
-		reset() // Reset store when spec changes
+		setSelectedSpec(newSpecId)
 	}
 
 	return (
-		<div className='min-h-screen text-[#F2F2F2] pb-28 overflow-y-auto p-4'>
+		<div className='min-h-screen text-app-text pb-28 overflow-y-auto p-4'>
 			<div className='space-y-4'>
 				<PageHeader
 					title='Библиотека материалов'

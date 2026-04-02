@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef } from 'react'
 import { libraryApi } from '../api'
 import { useLibraryStore } from '../model/store'
 
-const CACHE_TTL_MS = 30 * 60 * 1000 // 30 mins
+const MATERIALS_TTL_MS = 24 * 60 * 60 * 1000 // 24h
+const COUNTERS_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 
 interface UseLibraryOptions {
 	specId?: number
@@ -18,120 +19,133 @@ export function useLibrary({
 	autoLoad = true,
 }: UseLibraryOptions = {}) {
 	const {
-		materials,
-		counters,
-		status,
-		error,
+		materialsMap,
+		materialsLoadedAt,
+		countersMap,
+		countersLoadedAt,
+		loadingKeys,
+		errorKeys,
 		setMaterials,
+		setMaterialsLoadedAt,
 		setCounters,
-		setStatus,
+		setCountersLoadedAt,
+		setLoading,
 		setError,
 		setSelectedSpec,
 		setSelectedMaterialType,
 	} = useLibraryStore()
 
-	const loadedAtRef = useRef<Record<string, number>>({})
-	const isLoadingRef = useRef(false)
+	/** Ключ для материалов — зависит от предмета И типа */
+	const materialsKey = `${specId ?? 'all'}-${materialType ?? 'all'}`
+	/** Ключ для счётчиков — только предмет, один на все вкладки */
+	const countersKey = `${specId ?? 'all'}`
 
-	const cacheKey = `${specId ?? 'all'}-${materialType ?? 'all'}`
+	const fetchingMaterialsRef = useRef(false)
+	const fetchingCountersRef = useRef(false)
 
-	const load = useCallback(
+	const materials = materialsMap[materialsKey] ?? []
+	const counters = countersMap[countersKey] ?? null
+	const isLoading = loadingKeys.has(materialsKey)
+	const error = errorKeys[materialsKey] ?? null
+
+	/** Загрузка материалов для конкретной вкладки */
+	const loadMaterials = useCallback(
 		async (force = false) => {
-			if (isLoadingRef.current) return
+			if (fetchingMaterialsRef.current) return
+			const loadedAt =
+				useLibraryStore.getState().materialsLoadedAt[materialsKey] ?? null
+			if (!force && isCacheValid(loadedAt, MATERIALS_TTL_MS)) return
 
-			if (!force && isCacheValid(loadedAtRef.current[cacheKey], CACHE_TTL_MS))
-				return
-
-			isLoadingRef.current = true
-			setStatus('loading')
-			setError(null)
+			fetchingMaterialsRef.current = true
+			setLoading(materialsKey, true)
+			setError(materialsKey, null)
 
 			try {
-				const [materials, counters] = await Promise.all([
-					libraryApi.getMaterials(specId, materialType),
-					libraryApi.getCounters(specId, materialType),
-				])
-
-				setMaterials(materials)
-				setCounters(counters)
-				setStatus('success')
-				loadedAtRef.current[cacheKey] = Date.now()
-
-				if (specId != null) {
-					setSelectedSpec(specId)
-				}
+				const mats = await libraryApi.getMaterials(specId, materialType)
+				setMaterials(materialsKey, mats)
+				setMaterialsLoadedAt(materialsKey, Date.now())
+				setSelectedSpec(specId ?? null)
 				setSelectedMaterialType(materialType ?? null)
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.response?.status === 422) {
 					try {
-						const [materials, counters] = await Promise.all([
-							libraryApi.getAllMaterials(),
-							libraryApi.getCounters(),
-						])
-						setMaterials(materials)
-						setCounters(counters)
-						setStatus('success')
-						loadedAtRef.current[cacheKey] = Date.now()
+						const mats = await libraryApi.getAllMaterials()
+						setMaterials('all-all', mats)
+						setMaterialsLoadedAt('all-all', Date.now())
 						setSelectedSpec(null)
 						setSelectedMaterialType(null)
 						return
 					} catch (nestedErr) {
-						const nestedMessage =
+						setError(
+							materialsKey,
 							nestedErr instanceof Error
 								? nestedErr.message
-								: 'Failed to load library materials after 422 fallback'
-						setError(nestedMessage)
-						setStatus('error')
+								: 'Ошибка загрузки',
+						)
 						return
 					}
 				}
-
-				const message =
-					err instanceof Error
-						? err.message
-						: 'Failed to load library materials'
-				setError(message)
-				setStatus('error')
+				setError(
+					materialsKey,
+					err instanceof Error ? err.message : 'Ошибка загрузки материалов',
+				)
 			} finally {
-				isLoadingRef.current = false
+				fetchingMaterialsRef.current = false
+				setLoading(materialsKey, false)
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[cacheKey, specId, materialType],
+		[materialsKey, specId, materialType],
 	)
 
-	// Отслеживаем изменение materialType и specId через ref,
-	// чтобы при переключении вкладок всегда загружать свежие данные.
-	// Проблема: store общий — если вернуться на вкладку 1 после вкладки 2,
-	// store содержит данные вкладки 2, а loadedAtRef считает кеш валидным.
-	// Решение: force=true при смене ключа.
-	const prevCacheKeyRef = useRef<string | null>(null)
+	/** Загрузка счётчиков — один раз на предмет, независимо от активной вкладки */
+	const loadCounters = useCallback(
+		async (force = false) => {
+			if (fetchingCountersRef.current) return
+			const loadedAt =
+				useLibraryStore.getState().countersLoadedAt[countersKey] ?? null
+			if (!force && isCacheValid(loadedAt, COUNTERS_TTL_MS)) return
+
+			fetchingCountersRef.current = true
+			try {
+				const cts = await libraryApi.getCounters(specId)
+				setCounters(countersKey, cts)
+				setCountersLoadedAt(countersKey, Date.now())
+			} catch {
+				// счётчики некритичны — молча игнорируем ошибку
+			} finally {
+				fetchingCountersRef.current = false
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[countersKey, specId],
+	)
 
 	useEffect(() => {
 		if (!autoLoad) return
+		loadMaterials(false)
+	}, [autoLoad, materialsKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-		const isKeyChange =
-			prevCacheKeyRef.current !== null && prevCacheKeyRef.current !== cacheKey
+	// Счётчики грузятся один раз при смене предмета — не при смене вкладки
+	useEffect(() => {
+		if (!autoLoad) return
+		loadCounters(false)
+	}, [autoLoad, countersKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-		prevCacheKeyRef.current = cacheKey
+	const load = useCallback(
+		(force = false) => {
+			loadMaterials(force)
+			loadCounters(force)
+		},
+		[loadMaterials, loadCounters],
+	)
 
-		// При смене вкладки или предмета — принудительная перезагрузка,
-		// иначе store мог быть перезаписан другой вкладкой.
-		load(isKeyChange)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [autoLoad, cacheKey])
-
-	return {
-		materials,
-		counters,
-		status,
-		error,
-		isLoading: status === 'loading',
-		load,
-	}
+	return { materials, counters, isLoading, error, load }
 }
 
 export function useLibraryByType(type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8) {
-	const { materials } = useLibraryStore()
-	return materials.filter(m => m.material_type === type)
+	const { materialsMap } = useLibraryStore()
+	return Object.values(materialsMap)
+		.flat()
+		.filter(m => m.material_type === type)
 }

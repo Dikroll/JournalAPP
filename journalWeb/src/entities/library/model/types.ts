@@ -11,6 +11,39 @@ export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
 	8: 'Доп',
 }
 
+/** Маппинг числового типа → ключ в ответе /library/counters */
+export const MATERIAL_TYPE_TO_COUNTER_KEY: Record<
+	MaterialType,
+	keyof LibraryCounters
+> = {
+	1: 'lessons',
+	2: 'books',
+	3: 'videos',
+	4: 'articles',
+	5: 'practical',
+	6: 'other',
+	7: 'tests',
+	8: 'additional',
+}
+
+export interface LibraryTypeCount {
+	total: number
+	new: number
+	recommended: number
+}
+
+/** Реальная структура ответа /library/counters */
+export interface LibraryCounters {
+	lessons: LibraryTypeCount
+	books: LibraryTypeCount
+	videos: LibraryTypeCount
+	articles: LibraryTypeCount
+	practical: LibraryTypeCount
+	other: LibraryTypeCount
+	tests: LibraryTypeCount
+	additional: LibraryTypeCount
+}
+
 export interface LibraryMaterial {
 	material_id: number
 	theme: string
@@ -26,12 +59,6 @@ export interface LibraryMaterial {
 	link: string
 	download_url: string
 	cover_image: string
-}
-
-export interface LibraryCounters {
-	total: number
-	new: number
-	by_type: Record<MaterialType, number>
 }
 
 export interface LibrarySpec {
