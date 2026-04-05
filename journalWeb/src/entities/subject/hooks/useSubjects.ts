@@ -1,8 +1,9 @@
+import { ttl } from '@/shared/config'
 import { useEntityFetch } from '@/shared/hooks/useEntityFetch'
 import { subjectApi } from '../api'
 import { useSubjectStore } from '../model/store'
 
-const CACHE_TTL_MS = 60 * 60 * 1000
+const CACHE_TTL_MS = ttl.LEADERBOARD * 1000
 
 export function resetSubjectsFetch() {}
 

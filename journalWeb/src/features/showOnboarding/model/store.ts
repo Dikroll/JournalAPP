@@ -1,20 +1,5 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-interface OnboardingState {
-	isDone: boolean
-	setDone: () => void
-}
-
-export const useOnboardingStore = create<OnboardingState>()(
-	persist(
-		set => ({
-			isDone: false,
-			setDone: () => set({ isDone: true }),
-		}),
-		{
-			name: 'onboarding-store',
-			partialize: state => ({ isDone: state.isDone }),
-		},
-	),
-)
+/**
+ * @deprecated Используйте импорты из @/shared/model/onboardingStore вместо этого файла.
+ * Этот файл оставлен только для обратной совместимости.
+ */
+export { useOnboardingStore } from '@/shared/model/onboardingStore'

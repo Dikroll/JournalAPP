@@ -1,7 +1,7 @@
 import { userApi, useUserStore } from '@/entities/user'
+import { resetAllAppState } from '@/features/logout'
 import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
-import { resetAllStores } from '@/shared/lib/resetAllStores'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
@@ -55,7 +55,12 @@ export function useLogin() {
 			const { access_token } = await authApi.login(payload)
 
 			if (isAddingAccount) {
-				resetAllStores()
+				// Clear previous user's cached data but keep auth
+				resetAllAppState({
+					resetAuth: false,
+					resetTheme: false, // Keep user's theme preference
+					resetOnboarding: false,
+				})
 			}
 
 			setToken(access_token, username.trim())

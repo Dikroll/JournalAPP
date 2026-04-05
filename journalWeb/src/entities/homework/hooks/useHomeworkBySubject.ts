@@ -1,11 +1,12 @@
 import { useUserStore } from '@/entities/user'
+import { ttl } from '@/shared/config'
 import { isCacheValid, preloadImages } from '@/shared/lib'
 import { useCallback, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, useHomeworkStore } from '../model/store'
 import type { HomeworkItem } from '../model/types'
 
-const CACHE_TTL_MS = 15 * 60 * 1000
+const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 
 export function useHomeworkBySubject() {
 	const groupId = useUserStore(s => s.user?.group?.id)

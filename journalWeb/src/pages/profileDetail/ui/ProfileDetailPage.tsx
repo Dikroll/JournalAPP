@@ -1,9 +1,9 @@
 import { useProfileDetails } from '@/entities/profile'
 import { AccountSwitcher } from '@/features/changeUser'
 import { ClearCacheSheet } from '@/features/clearCache'
+import { resetAllAppState } from '@/features/logout'
 import { pageConfig } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { resetAllStores } from '@/shared/lib/resetAllStores'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import {
 	ProfileAvatar,
@@ -12,7 +12,7 @@ import {
 	ProfileRelativesCard,
 } from '@/widgets'
 import { ArrowLeft, Trash2, Users } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function ProfileDetailsPage() {
@@ -23,16 +23,6 @@ export function ProfileDetailsPage() {
 
 	useSwipeBack()
 
-	// touch-координата для хедер-кнопок (чтобы не стрелять при скролле)
-	const touchStartY = useRef(0)
-	const onTouchStart = (e: React.TouchEvent) => {
-		touchStartY.current = e.touches[0].clientY
-	}
-	const makeTouchEnd = (cb: () => void) => (e: React.TouchEvent) => {
-		if (Math.abs(e.changedTouches[0].clientY - touchStartY.current) > 10) return
-		cb()
-	}
-
 	const handleAddAccount = () => {
 		navigate(`${pageConfig.login}?addAccount=true`)
 	}
@@ -42,8 +32,6 @@ export function ProfileDetailsPage() {
 			<div className='flex items-center gap-2 px-4 pt-4 pb-4'>
 				<button
 					type='button'
-					onTouchStart={onTouchStart}
-					onTouchEnd={makeTouchEnd(() => navigate(-1))}
 					onClick={() => navigate(-1)}
 					className='w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform'
 					style={{
@@ -60,8 +48,6 @@ export function ProfileDetailsPage() {
 
 				<button
 					type='button'
-					onTouchStart={onTouchStart}
-					onTouchEnd={makeTouchEnd(() => setShowSwitcher(true))}
 					onClick={() => setShowSwitcher(true)}
 					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover'
 					style={{
@@ -76,8 +62,6 @@ export function ProfileDetailsPage() {
 
 				<button
 					type='button'
-					onTouchStart={onTouchStart}
-					onTouchEnd={makeTouchEnd(() => setShowClearCache(true))}
 					onClick={() => setShowClearCache(true)}
 					className='flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-app-surface border border-app-border text-app-muted text-xs hover:bg-app-surface-hover'
 					style={{
@@ -105,13 +89,17 @@ export function ProfileDetailsPage() {
 					</>
 				)}
 			</div>
-
-			{/* Шторки */}
 			{showSwitcher && (
 				<AccountSwitcher
 					onClose={() => setShowSwitcher(false)}
 					onAddAccount={handleAddAccount}
-					onReset={resetAllStores}
+					onReset={() =>
+						resetAllAppState({
+							resetAuth: false,
+							resetTheme: false,
+							resetOnboarding: false,
+						})
+					}
 				/>
 			)}
 

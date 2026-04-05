@@ -1,6 +1,5 @@
 import { userApi, useUserStore } from '@/entities/user'
-import { useAuthStore } from '@/features/auth'
-import { useHydrationStore } from '@/features/auth/model/store'
+import { useAuthStore, useHydrationStore } from '@/shared/model/authStore'
 import { useEffect } from 'react'
 
 let fetching = false

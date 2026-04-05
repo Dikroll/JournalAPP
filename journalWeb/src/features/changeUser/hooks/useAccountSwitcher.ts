@@ -1,6 +1,6 @@
 import { useUserStore } from '@/entities/user'
-import { useAuthStore } from '@/features/auth/model/store'
 import { pageConfig } from '@/shared/config'
+import { useAuthStore } from '@/shared/model/authStore'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSwitchUser } from './useSwitchUser'

@@ -1,9 +1,10 @@
+import { ttl } from '@/shared/config'
 import { isCacheValid } from '@/shared/lib'
 import { useCallback } from 'react'
 import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
 
-const CACHE_TTL_MS = 15 * 60 * 1000
+const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 const fetching = new Set<number>()
 
 export function useGradesBySubject() {

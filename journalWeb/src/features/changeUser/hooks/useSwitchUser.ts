@@ -1,7 +1,7 @@
 import { userApi, useUserStore } from '@/entities/user'
-import { useAuthStore } from '@/features/auth'
 import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
+import { useAuthStore } from '@/shared/model/authStore'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 

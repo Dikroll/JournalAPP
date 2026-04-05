@@ -1,5 +1,5 @@
+import { useThemeStore } from '@/shared/lib/themeStore'
 import { Moon, Sun } from 'lucide-react'
-import { useThemeStore } from '../lib/themeStore'
 
 export function ThemeToggleButton() {
 	const { theme, toggleTheme } = useThemeStore()

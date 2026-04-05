@@ -1,11 +1,11 @@
-import { CACHE_KEYS, isCacheValid, preloadImages, storage } from '@/shared/lib'
-import { useEffect } from 'react'
+import { ttl } from '@/shared/config'
+import { useEntityFetch } from '@/shared/hooks/useEntityFetch'
+import { preloadImages } from '@/shared/lib'
 import { leaderboardApi } from '../api'
 import { useLeaderboardStore } from '../model/store'
 import type { LeaderboardResponse } from '../model/types'
 
-const TTL_24H_MS = 60 * 60 * 24 * 1000
-const TTL_24H_S = 60 * 60 * 24
+const CACHE_TTL_MS = ttl.SESSION * 1000
 
 function preload(d: LeaderboardResponse) {
 	preloadImages([
@@ -14,47 +14,32 @@ function preload(d: LeaderboardResponse) {
 	])
 }
 
-async function loadAll(
-	update: ReturnType<typeof useLeaderboardStore.getState>['update'],
-) {
-	const state = useLeaderboardStore.getState()
-	if (state.group.status === 'loading') return
-	if (isCacheValid(state.group.loadedAt, TTL_24H_MS)) return
-
-	const cached = storage.get<LeaderboardResponse>(CACHE_KEYS.LEADERBOARD_GROUP)
-	if (cached) {
-		const cachedAt =
-			storage.getCachedAt(CACHE_KEYS.LEADERBOARD_GROUP) ?? Date.now()
-		update('group', { data: cached, status: 'success', loadedAt: cachedAt })
-		update('stream', { data: cached, status: 'success', loadedAt: cachedAt })
-		preload(cached)
-		return
-	}
-
-	update('group', { status: 'loading' })
-	update('stream', { status: 'loading' })
-
-	try {
-		const d = await leaderboardApi.getAll()
-		const now = Date.now()
-		update('group', { data: d, status: 'success', loadedAt: now })
-		update('stream', { data: d, status: 'success', loadedAt: now })
-		storage.set(CACHE_KEYS.LEADERBOARD_GROUP, d, TTL_24H_S)
-		preload(d)
-	} catch {
-		update('group', { status: 'error' })
-		update('stream', { status: 'error' })
-	}
-}
-
 export function useLeaderboard() {
 	const groupData = useLeaderboardStore(s => s.group.data)
 	const status = useLeaderboardStore(s => s.group.status)
+	const loadedAt = useLeaderboardStore(s => s.group.loadedAt)
 	const update = useLeaderboardStore(s => s.update)
 
-	useEffect(() => {
-		loadAll(update)
-	}, [])
+	useEntityFetch({
+		loadedAt,
+		ttlMs: CACHE_TTL_MS,
+		status,
+		fetchFn: () => leaderboardApi.getAll(),
+		onStart: () => {
+			update('group', { status: 'loading' })
+			update('stream', { status: 'loading' })
+		},
+		onSuccess: data => {
+			const now = Date.now()
+			update('group', { data, status: 'success', loadedAt: now })
+			update('stream', { data, status: 'success', loadedAt: now })
+			preload(data)
+		},
+		onError: () => {
+			update('group', { status: 'error' })
+			update('stream', { status: 'error' })
+		},
+	})
 
 	const groupStudents = groupData?.top_group ?? []
 	const streamStudents = groupData?.top_stream ?? []

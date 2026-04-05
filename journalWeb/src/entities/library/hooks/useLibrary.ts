@@ -1,11 +1,12 @@
+import { ttl } from '@/shared/config'
 import { isCacheValid } from '@/shared/lib'
 import axios from 'axios'
 import { useCallback, useEffect, useRef } from 'react'
 import { libraryApi } from '../api'
 import { useLibraryStore } from '../model/store'
 
-const MATERIALS_TTL_MS = 24 * 60 * 60 * 1000 // 24h
-const COUNTERS_TTL_MS = 24 * 60 * 60 * 1000 // 24h
+const MATERIALS_TTL_MS = ttl.SESSION * 1000 // 24h
+const COUNTERS_TTL_MS = ttl.SESSION * 1000 // 24h
 
 interface UseLibraryOptions {
 	specId?: number

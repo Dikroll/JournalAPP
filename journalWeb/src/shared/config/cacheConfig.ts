@@ -11,6 +11,7 @@ class TTL {
 	readonly PAYMENT = 60 * 60 * 24 * 15
 	readonly SPECS = 60 * 60 * 24 * 7
 	readonly LIBRARY = 60 * 60 * 24
+	readonly SESSION = 60 * 60 * 24 // 24 hours - for leaderboard, library materials
 	readonly MARKET = 60 * 60 * 24
 	readonly FEEDBACK = 60 * 90
 	readonly QUIZZES = 60 * 60 * 24
