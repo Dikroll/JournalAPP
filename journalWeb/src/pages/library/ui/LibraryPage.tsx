@@ -1,4 +1,4 @@
-import { LibraryView } from '@/widgets/Library'
+import { LibraryView } from '@/widgets'
 import { Suspense } from 'react'
 
 export function LibraryPage() {

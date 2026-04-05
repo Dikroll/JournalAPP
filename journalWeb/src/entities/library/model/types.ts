@@ -4,18 +4,15 @@ export const MATERIAL_TYPE_LABELS: Record<MaterialType, string> = {
 	1: 'ДЗ',
 	2: 'Уроки',
 	3: 'Практика',
-	4: 'Книги',
+	4: 'Библиотека',
 	5: 'Видео',
-	6: 'Другое',
+	6: 'Презентации',
 	7: 'Тесты',
 	8: 'Статьи',
 }
 
 /** Маппинг числового типа → ключ в ответе /library/counters */
-export const MATERIAL_TYPE_TO_COUNTER_KEY: Record<
-	MaterialType,
-	keyof LibraryCounters
-> = {
+export const MATERIAL_TYPE_TO_COUNTER_KEY = {
 	1: 'homeworks',
 	2: 'lessons',
 	3: 'practical',
@@ -24,7 +21,7 @@ export const MATERIAL_TYPE_TO_COUNTER_KEY: Record<
 	6: 'other',
 	7: 'tests',
 	8: 'articles',
-}
+} as const satisfies Record<MaterialType, keyof LibraryCounters>
 
 export interface LibraryTypeCount {
 	total: number
@@ -32,16 +29,15 @@ export interface LibraryTypeCount {
 	recommended: number
 }
 
-/** Реальная структура ответа /library/counters */
 export interface LibraryCounters {
+	homeworks: LibraryTypeCount
 	lessons: LibraryTypeCount
+	practical: LibraryTypeCount
 	books: LibraryTypeCount
 	videos: LibraryTypeCount
-	articles: LibraryTypeCount
-	practical: LibraryTypeCount
 	other: LibraryTypeCount
 	tests: LibraryTypeCount
-	homeworks: LibraryTypeCount
+	articles: LibraryTypeCount
 }
 
 export interface LibraryMaterial {
@@ -56,9 +52,12 @@ export interface LibraryMaterial {
 	week: number
 	public_week: number
 	is_new: boolean
-	link: string
-	download_url: string
-	cover_image: string
+	/** Embed / внешняя ссылка (YouTube embed, LinkedIn...). Не FS. */
+	url: string | null
+	/** FS-файл, проксирован через /files/<token> */
+	link: string | null
+	download_url: string | null
+	cover_image: string | null
 }
 
 export interface LibrarySpec {

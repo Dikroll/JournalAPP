@@ -1,10 +1,10 @@
 import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { getGradeStyle, STATUS_CONFIG } from '@/entities/homework'
 import { getCachedImageUrl } from '@/shared/lib'
+import { PhotoViewerModal } from '@/shared/ui'
 import { Calendar, Clock, GraduationCap } from 'lucide-react'
 import { memo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { PhotoViewerModal } from '../shared/PhotoViewerModal'
 import { HomeworkCard } from './HomeworkCard'
 import { HomeworkCardActions } from './HomeworkCardActions'
 
@@ -12,11 +12,6 @@ interface Props {
 	hw: HomeworkItemWithStatus
 }
 
-/**
- * ИСПРАВЛЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ: обёрнут в memo.
- * Фото-карточки особенно тяжёлые — содержат img + portal.
- * Без memo рендерились при любом изменении фильтра или store.
- */
 export const HomeworkCardPhoto = memo(
 	function HomeworkCardPhoto({ hw }: Props) {
 		const [viewerOpen, setViewerOpen] = useState(false)

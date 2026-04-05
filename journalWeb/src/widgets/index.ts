@@ -43,3 +43,8 @@ export { ReviewsList } from './ReviewList/ui/ReviewList'
 export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
+
+// Library
+export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'
+export { LibraryTabs } from './Library/LibraryTabs/ui/LibraryTabs'
+export { LibraryView } from './Library/LibraryView/ui/LibraryView'
