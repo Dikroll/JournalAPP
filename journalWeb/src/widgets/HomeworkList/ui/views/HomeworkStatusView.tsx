@@ -14,15 +14,12 @@ import { illustrations } from '@/shared/config/illustrationsConfig'
 import { InlineImage, ShowMoreBtn } from '@/shared/ui'
 import { useMemo } from 'react'
 import { HomeworkCard } from '../card/HomeworkCard'
-import { HomeworkCardPhoto } from '../card/HomeworkCardPhoto'
-import type { HomeworkViewMode } from '../shared/HomeworkToggleView'
 
 interface Props {
 	byStatus: Record<HomeworkStatus, GroupData>
 	filterStatus: HomeworkStatus | null
 	selectedSpec: Subject | null
 	subjectData: SubjectData | undefined
-	viewMode: HomeworkViewMode
 	onLoadMore: (statusKey: number) => void
 	onLoadMoreForSubject: (specId: number, statusKey: number) => void
 }
@@ -32,12 +29,10 @@ export function HomeworkStatusView({
 	filterStatus,
 	selectedSpec,
 	subjectData,
-	viewMode,
 	onLoadMore,
 	onLoadMoreForSubject,
 }: Props) {
 	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
-	const CardComponent = viewMode === 'photo' ? HomeworkCardPhoto : HomeworkCard
 
 	const emptyState = useMemo(
 		() => (
@@ -77,7 +72,7 @@ export function HomeworkStatusView({
 							</h2>
 							<div className='space-y-3'>
 								{group.items.map(hw => (
-									<CardComponent key={hw.id} hw={hw} />
+									<HomeworkCard key={hw.id} hw={hw} />
 								))}
 							</div>
 							{group.hasMore && (
@@ -143,7 +138,7 @@ export function HomeworkStatusView({
 						</h2>
 						<div className='space-y-3'>
 							{displayItems.map(hw => (
-								<CardComponent key={hw.id} hw={hw as any} />
+								<HomeworkCard key={hw.id} hw={hw as any} />
 							))}
 						</div>
 						{hasMore && (

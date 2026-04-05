@@ -1,3 +1,4 @@
+import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { LibraryCounters, LibraryMaterial, MaterialType } from './types'
@@ -14,6 +15,9 @@ interface LibraryStore {
 	loadingKeys: Set<string>
 	errorKeys: Record<string, string>
 
+	status: LoadingState
+	error: string | null
+
 	selectedSpecId: number | null
 	selectedMaterialType: MaterialType | null
 
@@ -23,6 +27,8 @@ interface LibraryStore {
 	setCountersLoadedAt: (specKey: string, t: number) => void
 	setLoading: (key: string, loading: boolean) => void
 	setError: (key: string, msg: string | null) => void
+	setStatus: (s: LoadingState) => void
+	setGlobalError: (msg: string | null) => void
 	setSelectedSpec: (specId: number | null) => void
 	setSelectedMaterialType: (type: MaterialType | null) => void
 	reset: () => void
@@ -37,6 +43,8 @@ export const useLibraryStore = create<LibraryStore>()(
 			countersLoadedAt: {},
 			loadingKeys: new Set(),
 			errorKeys: {},
+			status: 'idle',
+			error: null,
 			selectedSpecId: null,
 			selectedMaterialType: null,
 
@@ -76,6 +84,9 @@ export const useLibraryStore = create<LibraryStore>()(
 						  ),
 				})),
 
+			setStatus: (s: LoadingState) => set({ status: s }),
+			setGlobalError: (msg: string | null) => set({ error: msg }),
+
 			setSelectedSpec: specId => set({ selectedSpecId: specId }),
 			setSelectedMaterialType: type => set({ selectedMaterialType: type }),
 
@@ -87,6 +98,8 @@ export const useLibraryStore = create<LibraryStore>()(
 					countersLoadedAt: {},
 					loadingKeys: new Set(),
 					errorKeys: {},
+					status: 'idle',
+					error: null,
 					selectedSpecId: null,
 					selectedMaterialType: null,
 				}),
@@ -105,6 +118,8 @@ export const useLibraryStore = create<LibraryStore>()(
 				if (state) {
 					state.loadingKeys = new Set()
 					state.errorKeys = {}
+					state.status = 'idle'
+					state.error = null
 				}
 			},
 		},

@@ -30,6 +30,8 @@ export function useLibrary({
 		setCountersLoadedAt,
 		setLoading,
 		setError,
+		setStatus,
+		setGlobalError,
 		setSelectedSpec,
 		setSelectedMaterialType,
 	} = useLibraryStore()
@@ -57,7 +59,9 @@ export function useLibrary({
 
 			fetchingMaterialsRef.current = true
 			setLoading(materialsKey, true)
+			setStatus('loading')
 			setError(materialsKey, null)
+			setGlobalError(null)
 
 			try {
 				const mats = await libraryApi.getMaterials(specId, materialType)
@@ -65,6 +69,7 @@ export function useLibrary({
 				setMaterialsLoadedAt(materialsKey, Date.now())
 				setSelectedSpec(specId ?? null)
 				setSelectedMaterialType(materialType ?? null)
+				setStatus('success')
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.response?.status === 422) {
 					try {
@@ -73,21 +78,22 @@ export function useLibrary({
 						setMaterialsLoadedAt('all-all', Date.now())
 						setSelectedSpec(null)
 						setSelectedMaterialType(null)
+						setStatus('success')
 						return
 					} catch (nestedErr) {
-						setError(
-							materialsKey,
-							nestedErr instanceof Error
-								? nestedErr.message
-								: 'Ошибка загрузки',
-						)
+						const msg =
+							nestedErr instanceof Error ? nestedErr.message : 'Ошибка загрузки'
+						setError(materialsKey, msg)
+						setGlobalError(msg)
+						setStatus('error')
 						return
 					}
 				}
-				setError(
-					materialsKey,
-					err instanceof Error ? err.message : 'Ошибка загрузки материалов',
-				)
+				const msg =
+					err instanceof Error ? err.message : 'Ошибка загрузки материалов'
+				setError(materialsKey, msg)
+				setGlobalError(msg)
+				setStatus('error')
 			} finally {
 				fetchingMaterialsRef.current = false
 				setLoading(materialsKey, false)
