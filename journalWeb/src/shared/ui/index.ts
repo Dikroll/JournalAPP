@@ -1,6 +1,7 @@
 export { AvatarPlaceholder } from './AvatarPlaceholder/AvatarPlaceholder'
 export { CustomTooltip } from './CustomTooltip/CustomTooltip'
 export { ErrorView } from './ErrorView/ErrorView'
+export { GlowBackground } from './GlowBackground/GlowBackground'
 export { InlineImage } from './InlineImage/InlineImage'
 export { MonthGrid } from './MonthGrid/MonthGrid'
 export { PageHeader } from './PageHeader/PageHeader'

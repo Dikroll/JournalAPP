@@ -11,7 +11,7 @@ export { GradesExamList } from './Grades/GradesList/ui/GradesExamList'
 
 export { GradesCalendar } from './Grades/GradesCalendar/ui/GradesCalendar'
 export { GradesCharts } from './Grades/GradesCharts/ui/GradesCharts'
-export { GradesHeader } from './Grades/GradesHeader/ui/GradesHeader'
+
 export { GradesRecentList } from './Grades/GradesList/ui/GradesRecentList'
 export { GradesSubjectList } from './Grades/GradesList/ui/GradesSubjectList'
 export { GradesSummary } from './Grades/GradesSummary/ui/GradesSummary'

@@ -1,3 +1,4 @@
+import { GlowBackground } from '@/shared/ui'
 import { Eye, EyeOff } from 'lucide-react'
 import { useLogin } from '../hooks/useLogin'
 
@@ -26,78 +27,7 @@ export function LoginForm() {
 				backgroundColor: 'var(--color-bg)',
 			}}
 		>
-			<div
-				style={{
-					position: 'fixed',
-					top: '-200px',
-					left: '50%',
-					transform: 'translateX(-50%)',
-					width: '700px',
-					height: '500px',
-					background:
-						'radial-gradient(ellipse, rgba(60,63,70,0.3) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
-					zIndex: 0,
-				}}
-			/>
-			<div
-				style={{
-					position: 'fixed',
-					bottom: '-100px',
-					right: '-80px',
-					width: '400px',
-					height: '400px',
-					background:
-						'radial-gradient(circle, rgba(50,53,60,0.6) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
-					zIndex: 0,
-				}}
-			/>
-			<div
-				style={{
-					position: 'fixed',
-					bottom: '-120px',
-					left: '-100px',
-					width: '500px',
-					height: '500px',
-					background:
-						'radial-gradient(circle, rgba(242,5,25,0.1) 0%, rgba(242,5,25,0.04) 40%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
-					zIndex: 0,
-				}}
-			/>
-			<div
-				style={{
-					position: 'fixed',
-					top: '-80px',
-					right: '-80px',
-					width: '360px',
-					height: '360px',
-					background:
-						'radial-gradient(circle, rgba(242,5,25,0.06) 0%, transparent 65%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
-					zIndex: 0,
-				}}
-			/>
-			<div
-				style={{
-					position: 'fixed',
-					top: '35%',
-					left: '50%',
-					transform: 'translateX(-50%)',
-					width: '500px',
-					height: '400px',
-					background:
-						'radial-gradient(ellipse, rgba(180,185,195,0.04) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
-					zIndex: 0,
-				}}
-			/>
+			<GlowBackground />
 
 			<div
 				className='relative z-10 w-full max-w-sm'

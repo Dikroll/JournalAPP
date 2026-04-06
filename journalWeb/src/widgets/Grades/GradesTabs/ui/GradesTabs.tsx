@@ -19,21 +19,17 @@ export function GradesTabs({ active, onChange }: Props) {
 	const scrollRef = useRef<HTMLDivElement>(null)
 	const [showRight, setShowRight] = useState(true)
 	const [showLeft, setShowLeft] = useState(false)
-	const touchStartX = useRef(0)
-	const touchStartY = useRef(0)
 
-	const touchFiredRef = useRef(false)
-
-	const checkFades = () => {
+	const checkFades = useCallback(() => {
 		const el = scrollRef.current
 		if (!el) return
 		setShowLeft(el.scrollLeft > 8)
 		setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8)
-	}
+	}, [])
 
 	useEffect(() => {
 		checkFades()
-	}, [])
+	}, [checkFades])
 
 	useEffect(() => {
 		const el = scrollRef.current
@@ -46,30 +42,10 @@ export function GradesTabs({ active, onChange }: Props) {
 		el.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
 	}, [active])
 
-	const handleTouchStart = useCallback((e: React.TouchEvent) => {
-		touchStartX.current = e.touches[0].clientX
-		touchStartY.current = e.touches[0].clientY
-	}, [])
-
-	const makeTabHandler = useCallback(
-		(key: Tab) => ({
-			onTouchEnd: (e: React.TouchEvent) => {
-				const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
-				const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
-				if (dx > 8 || dy > 8) return
-				e.preventDefault()
-				touchFiredRef.current = true
-				onChange(key)
-			},
-			onClick: (e: React.MouseEvent) => {
-				if (touchFiredRef.current) {
-					touchFiredRef.current = false
-					e.preventDefault()
-					return
-				}
-				onChange(key)
-			},
-		}),
+	const handleTabClick = useCallback(
+		(key: Tab) => {
+			onChange(key)
+		},
 		[onChange],
 	)
 
@@ -118,10 +94,8 @@ export function GradesTabs({ active, onChange }: Props) {
 				<div
 					ref={scrollRef}
 					onScroll={checkFades}
-					className='flex gap-2'
+					className='flex gap-2 overflow-x-auto scrollbar-none'
 					style={{
-						overflowX: 'auto',
-						scrollbarWidth: 'none',
 						WebkitOverflowScrolling: 'touch' as any,
 						paddingRight: showRight ? 32 : 4,
 						paddingBottom: 2,
@@ -130,14 +104,11 @@ export function GradesTabs({ active, onChange }: Props) {
 				>
 					{TABS.map(({ key, label, icon }) => {
 						const isActive = active === key
-						const handlers = makeTabHandler(key)
 						return (
 							<button
 								key={key}
 								type='button'
-								onTouchStart={handleTouchStart}
-								onTouchEnd={handlers.onTouchEnd}
-								onClick={handlers.onClick}
+								onClick={() => handleTabClick(key)}
 								className='flex-shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap'
 								style={{
 									minHeight: 44,

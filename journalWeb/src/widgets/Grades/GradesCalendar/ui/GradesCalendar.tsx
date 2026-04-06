@@ -3,7 +3,7 @@ import { getGradeDotColor } from '@/entities/grades'
 import { useMonthNav } from '@/shared/hooks'
 import { MonthGrid } from '@/shared/ui'
 import { formatDateWithWeekday, toDateString } from '@/shared/utils'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { GradeEntryRow } from '../../GradesList/ui/GradeEntryRow'
 
 interface Props {
@@ -20,10 +20,6 @@ export function GradesCalendar({ byMonth }: Props) {
 	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth)
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
-	const touchStartX = useRef(0)
-	const touchStartY = useRef(0)
-	const touchFiredRef = useRef(false)
-
 	const handlePrevMonth = () => {
 		prevMonth()
 		setSelectedDate(null)
@@ -34,38 +30,13 @@ export function GradesCalendar({ byMonth }: Props) {
 		setSelectedDate(null)
 	}
 
-	const currentMonth = toDateString(year, month, 1).slice(0, 7)
-	const datesWithData = byMonth[currentMonth] ?? {}
-
-	const handleDayTouchStart = useCallback((e: React.TouchEvent) => {
-		touchStartX.current = e.touches[0].clientX
-		touchStartY.current = e.touches[0].clientY
+	const handleDayClick = useCallback((dateStr: string, hasData: boolean) => {
+		if (!hasData) return
+		setSelectedDate(prev => (prev === dateStr ? null : dateStr))
 	}, [])
 
-	const makeHandlers = useCallback(
-		(dateStr: string, hasData: boolean) => ({
-			onTouchEnd: (e: React.TouchEvent) => {
-				if (!hasData) return
-				const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
-				const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
-				if (dx > 8 || dy > 8) return
-				e.preventDefault()
-				touchFiredRef.current = true
-				setSelectedDate(prev => (prev === dateStr ? null : dateStr))
-			},
-			onClick: (e: React.MouseEvent) => {
-				if (!hasData) return
-				if (touchFiredRef.current) {
-					touchFiredRef.current = false
-					e.preventDefault()
-					return
-				}
-				setSelectedDate(prev => (prev === dateStr ? null : dateStr))
-			},
-		}),
-		[],
-	)
-
+	const currentMonth = toDateString(year, month, 1).slice(0, 7)
+	const datesWithData = byMonth[currentMonth] ?? {}
 	const selectedEntries = selectedDate
 		? datesWithData[selectedDate] ?? []
 		: null
@@ -82,15 +53,12 @@ export function GradesCalendar({ byMonth }: Props) {
 					const hasData = entries.length > 0
 					const isSelected = selectedDate === dateStr
 					const dotColor = hasData ? getGradeDotColor(entries) : null
-					const handlers = makeHandlers(dateStr, hasData)
 
 					return (
 						<button
 							type='button'
 							disabled={!hasData}
-							onTouchStart={hasData ? handleDayTouchStart : undefined}
-							onTouchEnd={handlers.onTouchEnd}
-							onClick={handlers.onClick}
+							onClick={() => handleDayClick(dateStr, hasData)}
 							className='relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default'
 							style={{
 								width: 36,
@@ -137,30 +105,28 @@ export function GradesCalendar({ byMonth }: Props) {
 				</p>
 			)}
 
-			{selectedDate &&
-				selectedEntries !== null &&
-				selectedEntries.length > 0 && (
-					<div className='space-y-2'>
-						<div className='text-sm font-medium text-app-muted px-1'>
-							{formatDateWithWeekday(selectedDate)}
-						</div>
-						<div
-							className='bg-app-surface backdrop-blur-xl rounded-[24px] p-3 border border-app-border'
-							style={{ boxShadow: 'var(--shadow-card)' }}
-						>
-							{[...selectedEntries]
-								.sort((a, b) => a.lesson_number - b.lesson_number)
-								.map((entry, idx) => (
-									<div key={`${entry.spec_id}-${entry.lesson_number}`}>
-										{idx > 0 && (
-											<div className='border-t border-app-border my-1' />
-										)}
-										<GradeEntryRow entry={entry} />
-									</div>
-								))}
-						</div>
+			{selectedDate && selectedEntries && selectedEntries.length > 0 && (
+				<div className='space-y-2'>
+					<div className='text-sm font-medium text-app-muted px-1'>
+						{formatDateWithWeekday(selectedDate)}
 					</div>
-				)}
+					<div
+						className='bg-app-surface backdrop-blur-xl rounded-[24px] p-3 border border-app-border'
+						style={{ boxShadow: 'var(--shadow-card)' }}
+					>
+						{[...selectedEntries]
+							.sort((a, b) => a.lesson_number - b.lesson_number)
+							.map((entry, idx) => (
+								<div key={`${entry.spec_id}-${entry.lesson_number}`}>
+									{idx > 0 && (
+										<div className='border-t border-app-border my-1' />
+									)}
+									<GradeEntryRow entry={entry} />
+								</div>
+							))}
+					</div>
+				</div>
+			)}
 
 			{selectedDate && (!selectedEntries || selectedEntries.length === 0) && (
 				<p className='text-app-muted text-sm text-center py-4'>

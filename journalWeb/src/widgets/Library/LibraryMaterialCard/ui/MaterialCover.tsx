@@ -1,4 +1,5 @@
 import type { LibraryMaterial } from '@/entities/library'
+import { useVideoPlayer, VideoPlayerOverlay } from '@/features/playVideo'
 import {
 	getCachedImageUrl,
 	getYouTubeThumbnail,
@@ -18,8 +19,6 @@ import {
 import { memo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-// ── placeholder-иконки по типу ─────────────────────────────────
-
 const TYPE_PLACEHOLDER_ICONS: Record<number, React.ReactNode> = {
 	1: <BookOpen size={28} />,
 	2: <FileText size={28} />,
@@ -31,109 +30,129 @@ const TYPE_PLACEHOLDER_ICONS: Record<number, React.ReactNode> = {
 	8: <FileText size={28} />,
 }
 
-// ── YouTube фасад: загружает только thumbnail, iframe при клике ──
-// Это предотвращает загрузку Google-скриптов и youtube.com/log_event запросы
+// ── YouTube превью ─────────────────────────────────────────────
+// Thumbnail грузится как обычная картинка — ноль запросов к Google.
+// При клике: нативный плеер на Capacitor, оверлей на вебе.
 
-interface YoutubeFacadeProps {
+interface YoutubePreviewProps {
 	thumbnailUrl: string | null
-	embedUrl: string
+	watchUrl: string // оригинальный URL для нативного плеера
 	title: string
 	typeColor: { border: string; bg: string; text: string }
 }
 
-function YoutubeFacade({
+function YoutubePreview({
 	thumbnailUrl,
-	embedUrl,
+	watchUrl,
 	title,
 	typeColor,
-}: YoutubeFacadeProps) {
-	const [active, setActive] = useState(false)
+}: YoutubePreviewProps) {
+	const [thumbErr, setThumbErr] = useState(false)
+	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer()
 
-	// Iframe монтируется только после клика
-	if (active) {
+	// Нативный плеер получает оригинальный watchUrl,
+	// веб-оверлей открывается с embedUrl (autoplay=1 добавляет сам оверлей)
+	const handleClick = () => {
+		openVideo(watchUrl)
+		// При fallback на веб useVideoPlayer запишет watchUrl в overlayUrl,
+		// но VideoPlayerOverlay умеет конвертировать watch?v= → embed сам через getEmbedUrl
+	}
+
+	const previewHeight = { aspectRatio: '16/9' } as React.CSSProperties
+
+	if (thumbnailUrl && !thumbErr) {
 		return (
-			<div className='relative w-full' style={{ paddingBottom: '56.25%' }}>
-				<iframe
-					src={`${embedUrl}?autoplay=1`}
-					title={title}
-					allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-					allowFullScreen
-					className='absolute inset-0 w-full h-full'
-					style={{ border: 'none' }}
-				/>
-			</div>
+			<>
+				<button
+					type='button'
+					onClick={handleClick}
+					className='relative w-full overflow-hidden block focus:outline-none group'
+					style={previewHeight}
+				>
+					<img
+						src={thumbnailUrl}
+						alt={title}
+						className='w-full h-full object-cover'
+						loading='lazy'
+						onError={() => setThumbErr(true)}
+					/>
+					<div className='absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors'>
+						<div
+							className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
+							style={{
+								background: 'rgba(255,0,0,0.9)',
+								boxShadow: '0 4px 24px rgba(255,0,0,0.5)',
+							}}
+						>
+							<Play
+								size={28}
+								className='text-white'
+								style={{ marginLeft: 3 }}
+							/>
+						</div>
+					</div>
+				</button>
+
+				{overlayUrl && (
+					<VideoPlayerOverlay
+						url={overlayUrl}
+						title={title}
+						onClose={closeOverlay}
+					/>
+				)}
+			</>
 		)
 	}
 
-	// До клика показываем thumbnail как обычную картинку
-	// Это не инициирует YouTube скрипты или log_event
-	if (thumbnailUrl) {
-		return (
+	// Fallback без thumbnail
+	return (
+		<>
 			<button
 				type='button'
-				onClick={() => setActive(true)}
-				className='relative w-full overflow-hidden block focus:outline-none group'
-				style={{ height: 160 }}
-			>
-				<img
-					src={thumbnailUrl}
-					alt={title}
-					className='w-full h-full object-cover'
-					loading='lazy'
-				/>
-				<div className='absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/35 transition-colors'>
-					<div
-						className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
-						style={{
-							background: 'rgba(255,0,0,0.85)',
-							boxShadow: '0 4px 20px rgba(255,0,0,0.35)',
-						}}
-					>
-						<Play size={28} className='text-white' style={{ marginLeft: 3 }} />
-					</div>
-				</div>
-			</button>
-		)
-	}
-
-	// Fallback на кнопку если нет thumbnail
-	return (
-		<button
-			type='button'
-			onClick={() => setActive(true)}
-			className='relative w-full flex items-center justify-center focus:outline-none group'
-			style={{
-				aspectRatio: '16/9',
-				background: `linear-gradient(135deg, ${typeColor.bg} 0%, var(--color-surface-strong) 100%)`,
-				borderBottom: `1px solid ${typeColor.border}`,
-			}}
-		>
-			<div
-				className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
+				onClick={handleClick}
+				className='relative w-full flex items-center justify-center focus:outline-none group'
 				style={{
-					background: 'rgba(255,0,0,0.85)',
-					boxShadow: '0 4px 20px rgba(255,0,0,0.35)',
+					...previewHeight,
+					background: `linear-gradient(135deg, ${typeColor.bg} 0%, var(--color-surface-strong) 100%)`,
+					borderBottom: `1px solid ${typeColor.border}`,
 				}}
 			>
-				<Play size={24} className='text-white' style={{ marginLeft: 3 }} />
-			</div>
-		</button>
+				<div
+					className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
+					style={{
+						background: 'rgba(255,0,0,0.85)',
+						boxShadow: '0 4px 20px rgba(255,0,0,0.35)',
+					}}
+				>
+					<Play size={26} className='text-white' style={{ marginLeft: 3 }} />
+				</div>
+			</button>
+
+			{overlayUrl && (
+				<VideoPlayerOverlay
+					url={overlayUrl}
+					title={title}
+					onClose={closeOverlay}
+				/>
+			)}
+		</>
 	)
 }
+
+// ── Главный компонент ──────────────────────────────────────────
 
 interface Props {
 	material: LibraryMaterial
 	typeColor: { border: string; bg: string; text: string }
-	onOpenExternal?: () => void
 }
 
 export const MaterialCover = memo(function MaterialCover({
 	material,
 	typeColor,
-	onOpenExternal,
 }: Props) {
 	const [viewerOpen, setViewerOpen] = useState(false)
 	const [imgError, setImgError] = useState(false)
+	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer()
 
 	const photoUrl = getCachedImageUrl(material.cover_image)
 	const isVideo = material.material_type === 5
@@ -142,79 +161,108 @@ export const MaterialCover = memo(function MaterialCover({
 		isVideo && material.url ? toYouTubeEmbed(material.url) : null
 	const youtubeThumbnail =
 		isVideo && material.url ? getYouTubeThumbnail(material.url) : null
-
 	const isExternalVideo = isVideo && !!material.url && !youtubeEmbed
 
-	// YouTube видео - показываем thumbnail до клика, iframe после
+	// ── 1. YouTube ──────────────────────────────────────────────
 	if (youtubeEmbed) {
 		return (
-			<YoutubeFacade
+			<YoutubePreview
 				thumbnailUrl={youtubeThumbnail}
-				embedUrl={youtubeEmbed}
+				watchUrl={material.url!}
 				title={material.theme}
 				typeColor={typeColor}
 			/>
 		)
 	}
 
+	// ── 2. Внешнее видео + обложка ──────────────────────────────
 	if (isExternalVideo && photoUrl && !imgError) {
 		return (
-			<button
-				type='button'
-				onClick={onOpenExternal}
-				className='relative w-full overflow-hidden block focus:outline-none group'
-				style={{ height: 160 }}
-			>
-				<img
-					src={photoUrl}
-					alt={material.theme}
-					className='absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]'
-					onError={() => setImgError(true)}
-				/>
-				<div className='absolute inset-0 flex items-center justify-center bg-black/25'>
+			<>
+				<button
+					type='button'
+					onClick={() => openVideo(material.url!)}
+					className='relative w-full overflow-hidden block focus:outline-none group'
+					style={{ aspectRatio: '16/9' }}
+				>
+					<img
+						src={photoUrl}
+						alt={material.theme}
+						className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]'
+						onError={() => setImgError(true)}
+					/>
+					<div className='absolute inset-0 flex items-center justify-center bg-black/25'>
+						<div
+							className='w-12 h-12 rounded-full flex items-center justify-center'
+							style={{
+								background: 'rgba(0,0,0,0.55)',
+								backdropFilter: 'blur(4px)',
+								border: '1.5px solid rgba(255,255,255,0.3)',
+							}}
+						>
+							<Play
+								size={22}
+								className='text-white'
+								style={{ marginLeft: 2 }}
+							/>
+						</div>
+					</div>
+				</button>
+
+				{overlayUrl && (
+					<VideoPlayerOverlay
+						url={overlayUrl}
+						title={material.theme}
+						onClose={closeOverlay}
+					/>
+				)}
+			</>
+		)
+	}
+
+	// ── 3. Внешнее видео без обложки ────────────────────────────
+	if (isExternalVideo) {
+		return (
+			<>
+				<button
+					type='button'
+					onClick={() => openVideo(material.url!)}
+					className='w-full flex flex-col items-center justify-center gap-2.5 focus:outline-none'
+					style={{
+						height: 148,
+						background: typeColor.bg,
+						borderBottom: `1px solid ${typeColor.border}`,
+					}}
+				>
 					<div
 						className='w-12 h-12 rounded-full flex items-center justify-center'
 						style={{
-							background: 'rgba(0,0,0,0.55)',
-							backdropFilter: 'blur(4px)',
-							border: '1.5px solid rgba(255,255,255,0.3)',
+							background: 'rgba(255,255,255,0.08)',
+							border: `1.5px solid ${typeColor.border}`,
 						}}
 					>
-						<Play size={22} className='text-white' style={{ marginLeft: 2 }} />
+						<Play size={22} style={{ color: typeColor.text, marginLeft: 2 }} />
 					</div>
-				</div>
-			</button>
+					<span
+						className='text-xs font-medium'
+						style={{ color: typeColor.text }}
+					>
+						Смотреть видео
+					</span>
+				</button>
+
+				{overlayUrl && (
+					<VideoPlayerOverlay
+						url={overlayUrl}
+						title={material.theme}
+						onClose={closeOverlay}
+					/>
+				)}
+			</>
 		)
 	}
 
-	if (isExternalVideo) {
-		return (
-			<button
-				type='button'
-				onClick={onOpenExternal}
-				className='w-full flex flex-col items-center justify-center gap-2.5 focus:outline-none'
-				style={{
-					height: 148,
-					background: typeColor.bg,
-					borderBottom: `1px solid ${typeColor.border}`,
-				}}
-			>
-				<div
-					className='w-12 h-12 rounded-full flex items-center justify-center'
-					style={{
-						background: 'rgba(255,255,255,0.08)',
-						border: `1.5px solid ${typeColor.border}`,
-					}}
-				>
-					<Play size={22} style={{ color: typeColor.text, marginLeft: 2 }} />
-				</div>
-				<span className='text-xs font-medium' style={{ color: typeColor.text }}>
-					Смотреть видео
-				</span>
-			</button>
-		)
-	}
-
+	// ── 4. Обычная обложка ──────────────────────────────────────
 	if (photoUrl && !imgError) {
 		return (
 			<>
@@ -245,6 +293,7 @@ export const MaterialCover = memo(function MaterialCover({
 		)
 	}
 
+	// ── 5. Заглушка ─────────────────────────────────────────────
 	return (
 		<div
 			className='w-full flex items-center justify-center'

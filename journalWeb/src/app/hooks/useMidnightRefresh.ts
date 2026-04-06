@@ -1,14 +1,7 @@
 import { useGradesStore } from '@/entities/grades'
 import { useScheduleStore } from '@/entities/schedule'
+import { getTodayString } from '@/shared/utils/dateUtils'
 import { useEffect, useRef } from 'react'
-
-function getLocalDateString() {
-	const now = new Date()
-	const y = now.getFullYear()
-	const m = String(now.getMonth() + 1).padStart(2, '0')
-	const d = String(now.getDate()).padStart(2, '0')
-	return `${y}-${m}-${d}`
-}
 
 function invalidateAll() {
 	useScheduleStore.setState({
@@ -20,12 +13,12 @@ function invalidateAll() {
 }
 
 export function useMidnightRefresh() {
-	const lastDateRef = useRef(getLocalDateString())
+	const lastDateRef = useRef(getTodayString())
 
 	useEffect(() => {
 		function handleVisibilityChange() {
 			if (document.visibilityState !== 'visible') return
-			const today = getLocalDateString()
+			const today = getTodayString()
 			if (today !== lastDateRef.current) {
 				lastDateRef.current = today
 				invalidateAll()
@@ -43,7 +36,7 @@ export function useMidnightRefresh() {
 				5,
 			)
 			const timer = setTimeout(() => {
-				lastDateRef.current = getLocalDateString()
+				lastDateRef.current = getTodayString()
 				invalidateAll()
 				scheduleNextMidnight()
 			}, tomorrow.getTime() - now.getTime())

@@ -8,13 +8,13 @@ import {
 	useGradesGroups,
 } from '@/entities/grades'
 import { useSubjects } from '@/entities/subject'
+import { RefreshGradesButton } from '@/features/refreshGrades'
 import { SpecSelector } from '@/features/selectSpec'
-import { ErrorView, SkeletonList } from '@/shared/ui'
+import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
 	GradesCalendar,
 	GradesExamList,
-	GradesHeader,
 	GradesRecentList,
 	GradesSubjectList,
 	GradesSummary,
@@ -31,8 +31,6 @@ export function GradesPage() {
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
 
-	// ИСПРАВЛЕНИЕ: один shallow-селектор вместо 3 отдельных подписок.
-	// Раньше компонент ре-рендерился до 4 раз при каждом обновлении chartsStore.
 	useDashboardCharts()
 	const { progress, attendance, chartsStatus } = useDashboardChartsStore(
 		useShallow(s => ({
@@ -57,8 +55,6 @@ export function GradesPage() {
 			? entries.filter(e => e.spec_id === selectedSpecId)
 			: entries
 
-	// ИСПРАВЛЕНИЕ: передаём activeTab — считается только нужная группировка.
-	// Раньше: O(3n) при каждом рендере. Теперь: O(n).
 	const { byDate, bySubject, byMonth } = useGradesGroups(
 		sourceEntries,
 		activeTab,
@@ -78,7 +74,7 @@ export function GradesPage() {
 	return (
 		<div className='min-h-screen text-[#F2F2F2] pb-28 overflow-y-auto'>
 			<div className='p-4 space-y-4'>
-				<GradesHeader />
+				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
 				{showCharts && (
 					<GradesSummary progress={progress} attendance={attendance} />

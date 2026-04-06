@@ -10,6 +10,7 @@ import { MaterialCover } from './MaterialCover'
 
 interface Props {
 	material: LibraryMaterial
+
 	onClick?: () => void
 }
 
@@ -17,22 +18,13 @@ export const LibraryMaterialCard = memo(
 	function LibraryMaterialCard({ material, onClick }: Props) {
 		const tc = getMaterialTypeColor(material.material_type)
 
-		const handleOpenExternal = () => {
-			const target = material.url || material.link
-			if (target) window.open(target, '_blank')
-		}
-
 		return (
 			<div
 				onClick={onClick}
 				className='bg-app-surface backdrop-blur-xl rounded-3xl overflow-hidden border-4 border-l-4 border-b-4 border-t-0 border-r-0'
 				style={{ boxShadow: 'var(--shadow-card)', borderColor: tc.border }}
 			>
-				<MaterialCover
-					material={material}
-					typeColor={tc}
-					onOpenExternal={handleOpenExternal}
-				/>
+				<MaterialCover material={material} typeColor={tc} />
 
 				<div className='p-4'>
 					<div className='flex items-start gap-3 mb-2'>
