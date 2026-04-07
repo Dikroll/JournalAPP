@@ -6,6 +6,7 @@ import {
 	HomeworkPage,
 	LibraryPage,
 	LoginPage,
+	NotificationsPage,
 	PaymentPage,
 	ProfileDetailsPage,
 	ProfilePage,
@@ -21,9 +22,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 
-	if (!hasHydrated) {
-		return <FullscreenLoader />
-	}
+	if (!hasHydrated) return <FullscreenLoader />
 
 	return isAuthenticated ? (
 		<>{children}</>
@@ -89,6 +88,7 @@ export function AppRouter() {
 					<Route path='profile' element={<ProfilePage />} />
 					<Route path='profile/details' element={<ProfileDetailsPage />} />
 					<Route path='payment' element={<PaymentPage />} />
+					<Route path='notifications' element={<NotificationsPage />} />
 				</Route>
 
 				<Route path='*' element={<Navigate to='/' replace />} />

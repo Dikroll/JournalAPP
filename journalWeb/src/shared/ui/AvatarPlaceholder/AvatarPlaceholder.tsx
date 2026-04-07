@@ -1,3 +1,4 @@
+import { getInitials } from '@/shared/utils/nameUtils'
 import type { CSSProperties } from 'react'
 
 interface Props {
@@ -5,15 +6,6 @@ interface Props {
 	size?: number
 	className?: string
 	style?: CSSProperties
-}
-
-function getInitials(fullName: string): string {
-	return fullName
-		.split(' ')
-		.map(n => n[0])
-		.join('')
-		.slice(0, 2)
-		.toUpperCase()
 }
 
 export function AvatarPlaceholder({

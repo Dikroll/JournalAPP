@@ -1,9 +1,16 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.Dikroll.Journal',
-  appName: 'Journal',
-  webDir: 'dist'
-};
+	appId: 'com.Dikroll.Journal',
+	appName: 'Journal',
+	webDir: 'dist',
+	plugins: {
+		CapacitorApkInstaller: {
+			ios: {
+				enabled: false,
+			},
+		},
+	},
+}
 
-export default config;
+export default config

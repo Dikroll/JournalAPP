@@ -14,6 +14,7 @@
  * - AppRouter содержит все маршруты приложения
  */
 
+import { AppUpdateSheet, useInitAppUpdate } from '@/features/appUpdate'
 import { useInitUser } from '@/features/initUser/hooks/useInitUser'
 import { AppRouter } from './router'
 import { ThemeToggleButton } from './ui/ThemeToggleButton'
@@ -28,6 +29,7 @@ import { ThemeToggleButton } from './ui/ThemeToggleButton'
 export function App() {
 	// Инициализируем пользователя при загрузке
 	useInitUser()
+	useInitAppUpdate()
 
 	return (
 		<>
@@ -36,6 +38,7 @@ export function App() {
 
 			{/* Маршруты приложения */}
 			<AppRouter />
+			<AppUpdateSheet />
 		</>
 	)
 }

@@ -10,6 +10,7 @@ class PageConfig {
 	readonly grades = '/grades'
 	readonly payment = '/payment'
 	readonly market = '/market'
+	readonly notifications = '/notifications'
 }
 
 export const pageConfig = new PageConfig()

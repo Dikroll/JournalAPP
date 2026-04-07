@@ -10,10 +10,13 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@bixbyte/capacitor-apk-installer": "^1.0.1",
 		"@capacitor/android": "^8.2.0",
+		"@capacitor/app": "^8.1.0",
 		"@capacitor/browser": "^8.0.3",
-		"@capacitor/cli": "^8.2.0",
-		"@capacitor/core": "^8.2.0",
+		"@capacitor/cli": "^8.3.0",
+		"@capacitor/core": "^8.3.0",
+		"@capacitor/filesystem": "^8.1.2",
 		"@capacitor/ios": "^8.2.0",
 		"@tailwindcss/vite": "^4.2.1",
 		"axios": "^1.13.6",
