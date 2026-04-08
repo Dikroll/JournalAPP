@@ -102,20 +102,8 @@ jobs:
         working-directory: /tmp
         run: |
           export APK_URL="https://github.com/Dikroll/JournalAPP/releases/download/v${VERSION}/Journal-v${VERSION}.apk"
-
           git clone "https://x-access-token:${API_REPO_TOKEN}@github.com/Dikroll/JournalAPI.git" JournalAPI
-
-          python3 -c "
-import json, os
-data = {
-    'version': os.environ['VERSION'],
-    'build': int(os.environ['BUILD']),
-    'apk_url': os.environ['APK_URL'],
-    'changelog': os.environ['CHANGELOG']
-}
-print(json.dumps(data, indent='\t', ensure_ascii=False))
-" > JournalAPI/src/version.json
-
+          python3 -c "import json,os; print(json.dumps({'version':os.environ['VERSION'],'build':int(os.environ['BUILD']),'apk_url':os.environ['APK_URL'],'changelog':os.environ['CHANGELOG']},indent=2,ensure_ascii=False))" > JournalAPI/src/version.json
           cd JournalAPI
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
