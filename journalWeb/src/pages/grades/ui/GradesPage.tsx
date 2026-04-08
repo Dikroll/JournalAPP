@@ -1,7 +1,4 @@
-import {
-	useDashboardCharts,
-	useDashboardChartsStore,
-} from '@/entities/dashboard'
+import { useDashboardChartsStore } from '@/entities/dashboard'
 import {
 	useGrades,
 	useGradesBySubject,
@@ -20,8 +17,7 @@ import {
 	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
-import { useState } from 'react'
-import { useShallow } from 'zustand/react/shallow'
+import { useCallback, useMemo, useState } from 'react'
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')
@@ -31,29 +27,33 @@ export function GradesPage() {
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
 
-	useDashboardCharts()
-	const { progress, attendance, chartsStatus } = useDashboardChartsStore(
-		useShallow(s => ({
-			progress: s.progress,
-			attendance: s.attendance,
-			chartsStatus: s.status,
-		})),
+	const progress = useDashboardChartsStore(s => s.progress)
+	const attendance = useDashboardChartsStore(s => s.attendance)
+	const chartsStatus = useDashboardChartsStore(s => s.status)
+
+	const handleSpecChange = useCallback(
+		(spec: { id: number } | null) => {
+			const id = spec?.id ?? null
+			setSelectedSpecId(id)
+			if (id != null) {
+				setTimeout(() => loadSubject(id), 0)
+			}
+		},
+		[loadSubject],
 	)
 
-	const handleSpecChange = (spec: { id: number } | null) => {
-		const id = spec?.id ?? null
-		setSelectedSpecId(id)
-		if (id != null) loadSubject(id)
-	}
+	const selectedSubjectCache = useMemo(
+		() => (selectedSpecId != null ? subjectCache[selectedSpecId] : null),
+		[selectedSpecId, subjectCache],
+	)
 
-	const selectedSubjectCache =
-		selectedSpecId != null ? subjectCache[selectedSpecId] : null
-	const sourceEntries =
-		selectedSubjectCache?.status === 'success'
-			? selectedSubjectCache.entries
-			: selectedSpecId != null
-			? entries.filter(e => e.spec_id === selectedSpecId)
-			: entries
+	const sourceEntries = useMemo(() => {
+		if (selectedSubjectCache?.status === 'success')
+			return selectedSubjectCache.entries
+		if (selectedSpecId != null)
+			return entries.filter(e => e.spec_id === selectedSpecId)
+		return entries
+	}, [selectedSubjectCache, selectedSpecId, entries])
 
 	const { byDate, bySubject, byMonth } = useGradesGroups(
 		sourceEntries,
