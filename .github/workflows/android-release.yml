@@ -99,9 +99,6 @@ jobs:
           APK_FILE="Journal-v${{ github.event.inputs.version }}.apk"
           REMOTE="$SERVER_USER@$SERVER_HOST"
 
-          # Rename APK to match version.json file_name
-          cp "journalWeb/release/$APK_FILE" "journalWeb/release/$APK_FILE"
-
           # Upload APK to release/ dir on server
           scp -i ~/.ssh/deploy_key \
             "journalWeb/release/$APK_FILE" \
