@@ -93,4 +93,33 @@ jobs:
           name: android-release-${{ github.event.inputs.version }}
           path: journalWeb/release/Journal-v${{ github.event.inputs.version }}.apk
 
-      # TODO: deploy to Dokploy (push version.json + APK url to JournalAPI repo)
+      - name: Update JournalAPI version.json
+        env:
+          API_REPO_TOKEN: ${{ secrets.API_REPO_TOKEN }}
+          VERSION: ${{ github.event.inputs.version }}
+          BUILD: ${{ github.event.inputs.build }}
+          CHANGELOG: ${{ github.event.inputs.release_notes }}
+        working-directory: /tmp
+        run: |
+          export APK_URL="https://github.com/Dikroll/JournalAPP/releases/download/v${VERSION}/Journal-v${VERSION}.apk"
+
+          git clone "https://x-access-token:${API_REPO_TOKEN}@github.com/Dikroll/JournalAPI.git" JournalAPI
+
+          python3 -c "
+import json, os
+data = {
+    'version': os.environ['VERSION'],
+    'build': int(os.environ['BUILD']),
+    'apk_url': os.environ['APK_URL'],
+    'changelog': os.environ['CHANGELOG']
+}
+print(json.dumps(data, indent='\t', ensure_ascii=False))
+" > JournalAPI/src/version.json
+
+          cd JournalAPI
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add src/version.json
+          git commit -m "release: update version to ${VERSION}"
+          git push
+          echo "✅ JournalAPI version.json updated"
