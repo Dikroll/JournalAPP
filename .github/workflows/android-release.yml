@@ -47,12 +47,9 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Debug
-        run: pwd && ls && cat package.json | grep -A8 scripts
-
       - name: Prepare Android release metadata
         run: >
-          bun run release:prepare
+          node ./scripts/prepare-android-release.mjs
           --version "${{ github.event.inputs.version }}"
           --build "${{ github.event.inputs.build }}"
           --app-name "${{ github.event.inputs.app_name }}"
