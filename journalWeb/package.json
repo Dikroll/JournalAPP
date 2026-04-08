@@ -1,22 +1,28 @@
 {
 	"name": "journalweb",
 	"private": true,
-	"version": "0.0.0",
+	"version": "1.0.2",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"release:prepare": "node ./scripts/prepare-android-release.mjs"
 	},
 	"dependencies": {
+		"@bixbyte/capacitor-apk-installer": "^1.0.1",
 		"@capacitor/android": "^8.2.0",
-		"@capacitor/cli": "^8.2.0",
-		"@capacitor/core": "^8.2.0",
+		"@capacitor/app": "^8.1.0",
+		"@capacitor/browser": "^8.0.3",
+		"@capacitor/cli": "^8.3.0",
+		"@capacitor/core": "^8.3.0",
+		"@capacitor/filesystem": "^8.1.2",
 		"@capacitor/ios": "^8.2.0",
 		"@tailwindcss/vite": "^4.2.1",
 		"axios": "^1.13.6",
 		"capacitor": "^0.5.6",
+		"capacitor-video-player": "^6.0.2",
 		"lucide-react": "^0.576.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
