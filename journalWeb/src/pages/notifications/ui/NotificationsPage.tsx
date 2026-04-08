@@ -1,8 +1,13 @@
 import {
-	CHANGELOG,
+	FALLBACK_CHANGELOG,
 	getUnreadCount,
 	useNotificationsStore,
 } from '@/features/sendNotifications'
+import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
+import {
+	fetchLatestAppRelease,
+	toChangelogFeedEntry,
+} from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import {
 	ArrowLeft,
@@ -31,10 +36,10 @@ function formatDate(iso: string): string {
 	})
 }
 
-function ChangelogTab() {
+function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 	return (
 		<div className='space-y-3'>
-			{CHANGELOG.map((entry, idx) => (
+			{entries.map((entry, idx) => (
 				<div
 					key={entry.id}
 					className='bg-app-surface rounded-[24px] p-4 border border-app-border'
@@ -67,9 +72,11 @@ function ChangelogTab() {
 								</span>
 							)}
 						</div>
-						<span className='text-xs text-app-muted'>
-							{formatDate(entry.date)}
-						</span>
+						{entry.date && (
+							<span className='text-xs text-app-muted'>
+								{formatDate(entry.date)}
+							</span>
+						)}
 					</div>
 
 					<ul className='space-y-1.5'>
@@ -114,17 +121,36 @@ function ComingSoonTab({ label }: { label: string }) {
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
+	const [entries, setEntries] = useState<ChangelogEntry[]>(FALLBACK_CHANGELOG)
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 
 	useSwipeBack()
 
 	useEffect(() => {
-		if (CHANGELOG.length > 0) {
-			setLastRead(CHANGELOG[0].id)
+		const abortController = new AbortController()
+
+		const loadChangelog = async () => {
+			try {
+				const release = await fetchLatestAppRelease(abortController.signal)
+				setEntries([toChangelogFeedEntry(release)])
+			} catch (error) {
+				console.warn('Failed to load changelog feed', error)
+				setEntries(FALLBACK_CHANGELOG)
+			}
 		}
+
+		loadChangelog()
+
+		return () => abortController.abort()
 	}, [])
 
-	const unread = getUnreadCount(lastReadChangelogId)
+	useEffect(() => {
+		if (entries.length > 0) {
+			setLastRead(entries[0].id)
+		}
+	}, [entries, setLastRead])
+
+	const unread = getUnreadCount(lastReadChangelogId, entries)
 
 	return (
 		<div className='min-h-screen pb-28 text-app-text'>
@@ -187,7 +213,7 @@ export function NotificationsPage() {
 			</div>
 
 			<div className='px-4'>
-				{activeTab === 'changelog' && <ChangelogTab />}
+				{activeTab === 'changelog' && <ChangelogTab entries={entries} />}
 				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
 				{activeTab === 'reviews' && (
 					<ComingSoonTab label='Отзывы преподавателей' />

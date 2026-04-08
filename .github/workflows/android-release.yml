@@ -1,0 +1,115 @@
+name: Android Release
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version, for example 1.0.2
+        required: true
+      build:
+        description: Android versionCode
+        required: true
+      app_name:
+        description: Android app name
+        required: false
+        default: Journal
+      release_notes:
+        description: Release notes for GitHub Release
+        required: false
+        default: ''
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: journalWeb
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Prepare Android release metadata
+        run: >
+          bun run release:prepare
+          --version "${{ github.event.inputs.version }}"
+          --build "${{ github.event.inputs.build }}"
+          --app-name "${{ github.event.inputs.app_name }}"
+
+      - name: Build web bundle
+        run: bun run build
+
+      - name: Sync Capacitor Android
+        run: bunx cap sync android
+
+      - name: Build release APK
+        working-directory: journalWeb/android
+        run: ./gradlew assembleRelease
+
+      - name: Collect APK
+        run: |
+          mkdir -p release
+          cp android/app/build/outputs/apk/release/app-release.apk "release/Journal-v${{ github.event.inputs.version }}.apk"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: Journal v${{ github.event.inputs.version }}
+          body: ${{ github.event.inputs.release_notes }}
+          files: journalWeb/release/Journal-v${{ github.event.inputs.version }}.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-${{ github.event.inputs.version }}
+          path: journalWeb/release/Journal-v${{ github.event.inputs.version }}.apk
+
+      - name: Deploy APK and version.json to server
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SERVER_HOST: ${{ secrets.DEPLOY_HOST }}
+          SERVER_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+
+          APK_FILE="Journal-v${{ github.event.inputs.version }}.apk"
+          REMOTE="$SERVER_USER@$SERVER_HOST"
+
+          # Rename APK to match version.json file_name
+          cp "journalWeb/release/$APK_FILE" "journalWeb/release/$APK_FILE"
+
+          # Upload APK to release/ dir on server
+          scp -i ~/.ssh/deploy_key \
+            "journalWeb/release/$APK_FILE" \
+            "$REMOTE:$DEPLOY_PATH/release/$APK_FILE"
+
+          # Upload updated version.json
+          scp -i ~/.ssh/deploy_key \
+            journalWeb/version.json \
+            "$REMOTE:$DEPLOY_PATH/version.json"
+
+          echo "✅ Deployed $APK_FILE and version.json to server"

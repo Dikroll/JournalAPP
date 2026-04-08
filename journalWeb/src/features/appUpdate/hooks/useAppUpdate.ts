@@ -1,4 +1,8 @@
 import { useCallback } from 'react'
+import {
+	fetchLatestAppRelease,
+	isRemoteReleaseNewer,
+} from '@/shared/lib/appRelease'
 import { useAppUpdateStore } from '../model/store'
 
 let _loaded = false
@@ -29,8 +33,6 @@ async function loadPlugins() {
 	} catch {}
 }
 
-const API_BASE = import.meta.env.DEV ? '/api' : 'https://msapi-top-journal.ru'
-
 export function useAppUpdate() {
 	const {
 		status,
@@ -54,23 +56,25 @@ export function useAppUpdate() {
 		try {
 			const appInfo = await App.getInfo()
 			const currentBuild = parseInt(String(appInfo.build ?? '0'), 10)
+			const currentVersion = String(appInfo.version ?? '0.0.0')
 
-			const res = await fetch(`${API_BASE}/app/version`)
-			if (!res.ok) {
-				setStatus('idle')
-				return
-			}
+			const releaseInfo = await fetchLatestAppRelease()
 
-			const data = await res.json()
-			const serverBuild = parseInt(String(data.build), 10)
-
-			if (serverBuild > currentBuild) {
-				setServerInfo(data)
+			if (
+				isRemoteReleaseNewer({
+					currentBuild,
+					currentVersion,
+					serverBuild: releaseInfo.build,
+					serverVersion: releaseInfo.version,
+				})
+			) {
+				setServerInfo(releaseInfo)
 				setStatus('available')
 			} else {
 				setStatus('idle')
 			}
-		} catch {
+		} catch (error) {
+			console.warn('App update check failed', error)
 			setStatus('idle')
 		}
 	}, [setStatus, setServerInfo])

@@ -4,11 +4,11 @@ import { persist } from 'zustand/middleware'
 export interface ChangelogEntry {
 	id: string
 	version: string
-	date: string
+	date?: string
 	items: string[]
 }
 
-export const CHANGELOG: ChangelogEntry[] = [
+export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 	{
 		id: 'v1.0.0',
 		version: '1.0.0',
@@ -37,8 +37,11 @@ export const useNotificationsStore = create<NotificationsState>()(
 	),
 )
 
-export function getUnreadCount(lastReadId: string | null): number {
-	if (!lastReadId) return CHANGELOG.length
-	const idx = CHANGELOG.findIndex(e => e.id === lastReadId)
-	return idx === -1 ? CHANGELOG.length : idx
+export function getUnreadCount(
+	lastReadId: string | null,
+	entries: ChangelogEntry[] = FALLBACK_CHANGELOG,
+): number {
+	if (!lastReadId) return entries.length
+	const idx = entries.findIndex(entry => entry.id === lastReadId)
+	return idx === -1 ? entries.length : idx
 }
