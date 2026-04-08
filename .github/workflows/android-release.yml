@@ -75,7 +75,9 @@ jobs:
       - name: Collect APK
         run: |
           mkdir -p release
-          cp android/app/build/outputs/apk/release/app-release.apk "release/Journal-v${{ github.event.inputs.version }}.apk"
+          APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          echo "Found APK: $APK"
+          cp "$APK" "release/Journal-v${{ github.event.inputs.version }}.apk"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
