@@ -47,6 +47,9 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Debug
+        run: pwd && ls && cat package.json | grep -A8 scripts
+
       - name: Prepare Android release metadata
         run: >
           bun run release:prepare
