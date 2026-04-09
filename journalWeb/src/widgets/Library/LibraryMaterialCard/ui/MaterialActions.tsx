@@ -34,12 +34,12 @@ export function MaterialActions({
 
 	if (!canOpen && !canDownload) return null
 
-	const handleOpen = (e: React.MouseEvent) => {
+	const handleOpen = (e: React.SyntheticEvent) => {
 		e.stopPropagation()
 		if (resolvedOpenUrl) openExternalUrl(resolvedOpenUrl)
 	}
 
-	const handleDownload = (e: React.MouseEvent) => {
+	const handleDownload = (e: React.SyntheticEvent) => {
 		e.stopPropagation()
 		if (downloadUrl) openExternalUrl(downloadUrl)
 	}

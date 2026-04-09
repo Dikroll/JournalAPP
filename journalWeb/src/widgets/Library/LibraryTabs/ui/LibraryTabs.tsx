@@ -99,7 +99,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 				touchFiredRef.current = true
 				setActive(key)
 			},
-			onClick: (e: React.MouseEvent) => {
+			onClick: (e: React.SyntheticEvent) => {
 				if (touchFiredRef.current) {
 					touchFiredRef.current = false
 					e.preventDefault()

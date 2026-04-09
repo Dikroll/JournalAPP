@@ -40,7 +40,7 @@ export function SpecSelector({
 		close()
 	}
 
-	const handleClear = (e: React.MouseEvent) => {
+	const handleClear = (e: React.SyntheticEvent) => {
 		e.stopPropagation()
 		onChange(null)
 		setSearch('')
