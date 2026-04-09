@@ -59,6 +59,9 @@ jobs:
       - name: Add Android platform
         run: bunx cap add android
 
+      - name: Generate app icons
+        run: bunx @capacitor/assets generate --android
+
       - name: Prepare Android release metadata
         run: >
           node ./scripts/prepare-android-release.mjs
@@ -66,11 +69,33 @@ jobs:
           --build "${{ github.event.inputs.build }}"
           --app-name "${{ github.event.inputs.app_name }}"
 
+      - name: Setup signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/journal-release.jks
+          cat >> android/app/build.gradle << 'GRADLE'
+
+          android.signingConfigs {
+              release {
+                  storeFile file("journal-release.jks")
+                  storePassword System.getenv("KEYSTORE_PASSWORD")
+                  keyAlias System.getenv("KEY_ALIAS")
+                  keyPassword System.getenv("KEY_PASSWORD")
+              }
+          }
+          android.buildTypes.release.signingConfig = android.signingConfigs.release
+          GRADLE
+
       - name: Sync Capacitor Android
         run: bunx cap sync android
 
       - name: Build release APK
         working-directory: journalWeb/android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease
 
       - name: Collect APK

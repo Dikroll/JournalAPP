@@ -94,48 +94,27 @@ export function useAppUpdate() {
 				return
 			}
 
-			const response = await fetch(serverInfo.apk_url)
-			if (!response.ok) throw new Error(`HTTP ${response.status}`)
-
-			const contentLength = response.headers.get('content-length')
-			const total = contentLength ? parseInt(contentLength, 10) : 0
-			const reader = response.body?.getReader()
-			if (!reader) throw new Error('No response body')
-
-			const chunks: Uint8Array[] = []
-			let received = 0
-
-			while (true) {
-				const { done, value } = await reader.read()
-				if (done) break
-				chunks.push(value)
-				received += value.length
-				if (total > 0) {
-					setProgress(Math.round((received / total) * 100))
-				}
-			}
-
-			const merged = new Uint8Array(received)
-			let offset = 0
-			for (const chunk of chunks) {
-				merged.set(chunk, offset)
-				offset += chunk.length
-			}
-
-			let binary = ''
-			const CHUNK = 8192
-			for (let i = 0; i < merged.length; i += CHUNK) {
-				binary += String.fromCharCode(...merged.subarray(i, i + CHUNK))
-			}
-			const base64 = btoa(binary)
-
 			const fileName = `update-${serverInfo.version}.apk`
 
-			await Filesystem.writeFile({
-				path: fileName,
-				data: base64,
-				directory: Directory.Cache,
-			})
+			const progressListener = await Filesystem.addListener(
+				'progress',
+				(event: { bytes: number; contentLength: number }) => {
+					if (event.contentLength > 0) {
+						setProgress(Math.round((event.bytes / event.contentLength) * 100))
+					}
+				},
+			)
+
+			try {
+				await Filesystem.downloadFile({
+					url: serverInfo.apk_url,
+					path: fileName,
+					directory: Directory.Cache,
+					progress: true,
+				})
+			} finally {
+				progressListener.remove()
+			}
 
 			const { uri } = await Filesystem.getUri({
 				path: fileName,
