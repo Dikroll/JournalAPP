@@ -1,4 +1,5 @@
 import { canOpenMaterial, getOpenUrl } from '@/shared/lib/materialUrls'
+import { fixUrl } from '@/shared/lib/imageCache'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
 import { Download, ExternalLink } from 'lucide-react'
@@ -11,11 +12,13 @@ interface Props {
 	materialType: number
 }
 
-async function openUrl(url: string) {
+async function openExternalUrl(rawUrl: string) {
+	// fixUrl превращает /files/<token> → https://api.domain/files/<token>
+	const absolute = fixUrl(rawUrl) ?? rawUrl
 	if (Capacitor.isNativePlatform()) {
-		await Browser.open({ url })
+		await Browser.open({ url: absolute })
 	} else {
-		window.open(url, '_blank')
+		window.open(absolute, '_blank')
 	}
 }
 
@@ -33,12 +36,12 @@ export function MaterialActions({
 
 	const handleOpen = (e: React.MouseEvent) => {
 		e.stopPropagation()
-		if (resolvedOpenUrl) openUrl(resolvedOpenUrl)
+		if (resolvedOpenUrl) openExternalUrl(resolvedOpenUrl)
 	}
 
 	const handleDownload = (e: React.MouseEvent) => {
 		e.stopPropagation()
-		if (downloadUrl) openUrl(downloadUrl)
+		if (downloadUrl) openExternalUrl(downloadUrl)
 	}
 
 	return (
