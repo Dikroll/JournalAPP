@@ -14,7 +14,7 @@ export function RefreshButton({ isRefreshing, onRefresh, className }: Props) {
 			disabled={isRefreshing}
 			className={
 				className ??
-				'flex items-center gap-1.5 px-3 py-2 bg-app-surface-strong hover:bg-app-surface-active border border-app-border-strong rounded-2xl text-app-muted hover:text-app-text text-sm disabled:opacity-50'
+				'flex items-center gap-1.5 px-3 py-2 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-2xl text-[var(--color-text)] hover:text-[var(--color-text)] text-sm disabled:opacity-50'
 			}
 			style={{ boxShadow: 'var(--shadow-card)' }}
 		>

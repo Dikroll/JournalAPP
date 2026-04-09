@@ -51,14 +51,6 @@ export function HomeworkPage() {
 		loadSubject(selectedSpec.id, selectedSpec.name)
 	}, [selectedSpec?.id])
 
-	if (status === 'loading') {
-		return (
-			<div className='p-4'>
-				<SkeletonList count={5} height={120} />
-			</div>
-		)
-	}
-
 	if (status === 'error') {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
@@ -113,7 +105,9 @@ export function HomeworkPage() {
 			</div>
 
 			<div className='px-4'>
-				{groupBy === 'status' ? (
+				{status === 'loading' ? (
+					<SkeletonList count={5} height={120} />
+				) : groupBy === 'status' ? (
 					<HomeworkStatusView
 						byStatus={byStatus}
 						filterStatus={filterStatus}

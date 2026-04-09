@@ -1,5 +1,6 @@
 import { RefreshButton } from '@/shared/ui'
 import { useRefreshHomework } from '../hooks/useRefreshHomework'
+import { useEffect, useState } from 'react'
 
 interface Props {
 	className?: string
@@ -7,6 +8,18 @@ interface Props {
 
 export function RefreshHomeworkButton({ className }: Props) {
 	const { refresh, isRefreshing } = useRefreshHomework()
+	const [isRefreshingLocal, setIsRefreshingLocal] = useState(false)
 
-	return <RefreshButton isRefreshing={isRefreshing} onRefresh={refresh} className={className} />
+	const handleRefresh = () => {
+		setIsRefreshingLocal(true)
+		refresh()
+	}
+
+	useEffect(() => {
+		if (!isRefreshing) {
+			setIsRefreshingLocal(false)
+		}
+	}, [isRefreshing])
+
+	return <RefreshButton isRefreshing={isRefreshing || isRefreshingLocal} onRefresh={handleRefresh} className={className} />
 }
