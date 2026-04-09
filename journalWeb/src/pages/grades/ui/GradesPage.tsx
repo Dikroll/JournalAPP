@@ -72,7 +72,7 @@ export function GradesPage() {
 	}
 
 	return (
-		<div className='min-h-screen text-[#F2F2F2] pb-28 overflow-y-auto'>
+		<div className='min-h-screen text-[#F2F2F2] pb-28'>
 			<div className='p-4 space-y-4'>
 				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
