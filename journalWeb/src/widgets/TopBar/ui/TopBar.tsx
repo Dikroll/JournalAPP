@@ -3,6 +3,8 @@ import {
 	getUnreadCount,
 	useNotificationsStore,
 } from '@/features/sendNotifications'
+import { useAppUpdateStore } from '@/features/appUpdate'
+import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { pageConfig } from '@/shared/config'
 import { getCachedImageUrl } from '@/shared/lib'
 import { getInitials, getShortName } from '@/shared/utils/nameUtils'
@@ -34,7 +36,9 @@ export const TopBar = memo(function TopBar() {
 	const navigate = useNavigate()
 
 	const { lastReadChangelogId } = useNotificationsStore()
-	const unreadCount = getUnreadCount(lastReadChangelogId)
+	const latestRelease = useAppUpdateStore(s => s.latestRelease)
+	const entries = latestRelease ? [toChangelogFeedEntry(latestRelease)] : undefined
+	const unreadCount = getUnreadCount(lastReadChangelogId, entries)
 
 	if (!fullName) return null
 
