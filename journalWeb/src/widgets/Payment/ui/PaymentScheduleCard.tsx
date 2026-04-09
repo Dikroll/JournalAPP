@@ -1,7 +1,6 @@
 import type { ScheduledPayment } from '@/entities/payment/model/types'
 import { formatDateShort } from '@/shared/utils'
 import { formatAmount } from '@/shared/utils/formatUtils'
-import { CheckCircle, Circle } from 'lucide-react'
 
 interface Props {
 	schedule: ScheduledPayment[]
@@ -22,14 +21,6 @@ export function PaymentScheduleCard({ schedule }: Props) {
 						key={item.id}
 						className='flex items-center gap-3 bg-app-surface-strong rounded-[16px] p-3'
 					>
-						{item.is_paid ? (
-							<CheckCircle
-								size={18}
-								className='text-status-checked flex-shrink-0'
-							/>
-						) : (
-							<Circle size={18} className='text-app-muted flex-shrink-0' />
-						)}
 						<div className='flex-1 min-w-0'>
 							<p
 								className={`text-sm font-medium ${
