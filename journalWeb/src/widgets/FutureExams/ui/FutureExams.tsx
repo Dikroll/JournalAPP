@@ -41,14 +41,18 @@ export function FutureExams() {
 					>
 						<div
 							className='flex-shrink-0 w-12 h-12 rounded-2xl flex flex-col items-center justify-center'
-							style={{
-								background: 'var(--color-overdue-bg)',
-								border: '1px solid var(--color-overdue-border)',
-							}}
+							style={
+								exam.days_left !== null && exam.days_left > 7
+									? { background: 'var(--color-checked-bg)', border: '1px solid var(--color-checked-border)' }
+									: { background: 'var(--color-overdue-bg)', border: '1px solid var(--color-overdue-border)' }
+							}
 						>
-							<CalendarDays size={16} className='text-status-overdue mb-0.5' />
+							<CalendarDays
+								size={16}
+								className={`mb-0.5 ${exam.days_left !== null && exam.days_left > 7 ? 'text-status-checked' : 'text-status-overdue'}`}
+							/>
 							{exam.days_left !== null && (
-								<span className='text-status-overdue text-[10px] font-bold'>
+								<span className={`text-[10px] font-bold ${exam.days_left > 7 ? 'text-status-checked' : 'text-status-overdue'}`}>
 									{exam.days_left}д
 								</span>
 							)}
