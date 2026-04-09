@@ -51,18 +51,21 @@ export function useAppUpdate() {
 	const checkForUpdate = useCallback(async () => {
 		await loadPlugins()
 
-		if (!Capacitor?.isNativePlatform()) return
-
-		setStatus('checking')
-
 		try {
+			// Always fetch release info — needed for changelog on all platforms
+			const releaseInfo = await fetchLatestAppRelease()
+			setLatestRelease(releaseInfo)
+
+			// APK updates only apply to Android
+			if (Capacitor?.getPlatform() !== 'android') return
+
+			setStatus('checking')
+
 			const appInfo = await App.getInfo()
 			const currentBuild = parseInt(String(appInfo.build ?? '0'), 10)
 			const currentVersion = String(appInfo.version ?? '0.0.0')
 
-			const releaseInfo = await fetchLatestAppRelease()
-
-			setLatestRelease(releaseInfo)
+			console.log(`[AppUpdate] current=${currentVersion} (${currentBuild}), server=${releaseInfo.version} (${releaseInfo.build})`)
 
 			if (
 				isRemoteReleaseNewer({
@@ -81,7 +84,7 @@ export function useAppUpdate() {
 			console.warn('App update check failed', error)
 			setStatus('idle')
 		}
-	}, [setStatus, setServerInfo])
+	}, [setStatus, setServerInfo, setLatestRelease])
 
 	const downloadAndInstall = useCallback(async () => {
 		if (!serverInfo || !Filesystem || !ApkInstaller) return
