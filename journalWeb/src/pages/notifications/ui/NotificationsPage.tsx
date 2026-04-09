@@ -5,7 +5,7 @@ import {
 } from '@/features/sendNotifications'
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
 import { useAppUpdateStore } from '@/features/appUpdate'
-import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
+import { fetchLatestAppRelease, toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import {
 	ArrowLeft,
@@ -13,9 +13,10 @@ import {
 	BookOpen,
 	CheckCircle,
 	Megaphone,
+	RefreshCw,
 	Sparkles,
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Tab = 'changelog' | 'news' | 'reviews'
@@ -119,10 +120,27 @@ function ComingSoonTab({ label }: { label: string }) {
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
+	const [refreshing, setRefreshing] = useState(false)
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
+	const setLatestRelease = useAppUpdateStore(s => s.setLatestRelease)
 
 	useSwipeBack()
+
+	const handleRefresh = useCallback(async () => {
+		if (refreshing) return
+		setRefreshing(true)
+		try {
+			const fresh = await fetchLatestAppRelease()
+			if (fresh.version !== latestRelease?.version) {
+				setLatestRelease(fresh)
+			}
+		} catch {
+			// сеть недоступна — оставляем текущие данные
+		} finally {
+			setRefreshing(false)
+		}
+	}, [refreshing, latestRelease?.version, setLatestRelease])
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
@@ -148,7 +166,7 @@ export function NotificationsPage() {
 				>
 					<ArrowLeft size={18} />
 				</button>
-				<div className='flex items-center gap-2'>
+				<div className='flex items-center gap-2 flex-1'>
 					<h1 className='text-xl font-bold text-app-text'>Уведомления</h1>
 					{unread > 0 && activeTab !== 'changelog' && (
 						<span className='text-xs font-bold px-1.5 py-0.5 rounded-full bg-brand text-white'>
@@ -156,6 +174,18 @@ export function NotificationsPage() {
 						</span>
 					)}
 				</div>
+
+				{activeTab === 'changelog' && (
+					<button
+						type='button'
+						onClick={handleRefresh}
+						disabled={refreshing}
+						className='w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform disabled:opacity-50'
+						style={{ boxShadow: 'var(--shadow-card)', WebkitTapHighlightColor: 'transparent' }}
+					>
+						<RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
+					</button>
+				)}
 			</div>
 
 			<div className='px-4 mb-4'>
