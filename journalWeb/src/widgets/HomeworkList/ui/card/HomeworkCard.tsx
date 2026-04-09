@@ -52,7 +52,7 @@ export const HomeworkCard = memo(
 							<img
 								src={photoUrl}
 								alt={hw.theme ?? hw.spec_name}
-								className='w-full h-full object-contain transition-transform duration-300 hover:scale-[1.02]'
+								className='w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]'
 							/>
 
 							<div className='absolute top-3 left-3'>
