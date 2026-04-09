@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface AppVersionInfo {
 	version: string
@@ -24,22 +25,30 @@ interface AppUpdateState {
 	reset: () => void
 }
 
-export const useAppUpdateStore = create<AppUpdateState>()(set => ({
-	status: 'idle',
-	serverInfo: null,
-	latestRelease: null,
-	downloadProgress: 0,
-	errorMessage: null,
-
-	setStatus: status => set({ status }),
-	setServerInfo: serverInfo => set({ serverInfo }),
-	setLatestRelease: latestRelease => set({ latestRelease }),
-	setProgress: downloadProgress => set({ downloadProgress }),
-	setError: errorMessage => set({ errorMessage, status: 'error' }),
-	reset: () =>
-		set({
+export const useAppUpdateStore = create<AppUpdateState>()(
+	persist(
+		set => ({
 			status: 'idle',
+			serverInfo: null,
+			latestRelease: null,
 			downloadProgress: 0,
 			errorMessage: null,
+
+			setStatus: status => set({ status }),
+			setServerInfo: serverInfo => set({ serverInfo }),
+			setLatestRelease: latestRelease => set({ latestRelease }),
+			setProgress: downloadProgress => set({ downloadProgress }),
+			setError: errorMessage => set({ errorMessage, status: 'error' }),
+			reset: () =>
+				set({
+					status: 'idle',
+					downloadProgress: 0,
+					errorMessage: null,
+				}),
 		}),
-}))
+		{
+			name: 'app-update-store',
+			partialize: state => ({ latestRelease: state.latestRelease }),
+		},
+	),
+)

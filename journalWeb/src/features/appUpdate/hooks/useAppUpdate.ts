@@ -130,7 +130,9 @@ export function useAppUpdate() {
 
 			setProgress(100)
 
-			await ApkInstaller.installApk({ filePath: uri })
+			// Некоторые версии плагина ожидают путь без file:// префикса
+			const filePath = uri.startsWith('file://') ? uri.slice(7) : uri
+			await ApkInstaller.installApk({ filePath })
 
 			reset()
 		} catch (err: unknown) {

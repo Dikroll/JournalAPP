@@ -4,7 +4,7 @@ import {
 	useNotificationsStore,
 } from '@/features/sendNotifications'
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
-import { useAppUpdateStore } from '@/features/appUpdate'
+import { useAppUpdate, useAppUpdateStore } from '@/features/appUpdate'
 import { fetchLatestAppRelease, toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import {
@@ -12,6 +12,7 @@ import {
 	Bell,
 	BookOpen,
 	CheckCircle,
+	Download,
 	Megaphone,
 	RefreshCw,
 	Sparkles,
@@ -124,6 +125,7 @@ export function NotificationsPage() {
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
 	const setLatestRelease = useAppUpdateStore(s => s.setLatestRelease)
+	const { serverInfo, status: updateStatus, downloadAndInstall } = useAppUpdate()
 
 	useSwipeBack()
 
@@ -147,11 +149,12 @@ export function NotificationsPage() {
 		[latestRelease],
 	)
 
+	// Помечаем прочитанным только когда загружен реальный релиз, не fallback
 	useEffect(() => {
-		if (entries.length > 0) {
+		if (latestRelease && entries.length > 0) {
 			setLastRead(entries[0].id)
 		}
-	}, [entries, setLastRead])
+	}, [latestRelease, entries, setLastRead])
 
 	const unread = getUnreadCount(lastReadChangelogId, entries)
 
@@ -228,6 +231,33 @@ export function NotificationsPage() {
 			</div>
 
 			<div className='px-4'>
+				{activeTab === 'changelog' && serverInfo && (
+					<button
+						type='button'
+						onClick={downloadAndInstall}
+						disabled={updateStatus === 'downloading'}
+						className='w-full mb-3 flex items-center justify-between px-4 py-3.5 rounded-[18px] border disabled:opacity-60'
+						style={{
+							background: 'linear-gradient(90deg, rgba(213,4,22,0.12), rgba(242,159,5,0.08))',
+							borderColor: 'rgba(213,4,22,0.3)',
+						}}
+					>
+						<div className='flex items-center gap-3'>
+							<Download size={16} className='text-brand' />
+							<div className='text-left'>
+								<p className='text-sm font-semibold text-app-text'>
+									Доступно обновление v{serverInfo.version}
+								</p>
+								<p className='text-xs text-app-muted'>
+									{updateStatus === 'downloading' ? 'Скачивание...' : 'Нажмите чтобы скачать и установить'}
+								</p>
+							</div>
+						</div>
+						{updateStatus !== 'downloading' && (
+							<span className='text-xs font-semibold text-brand'>Установить</span>
+						)}
+					</button>
+				)}
 				{activeTab === 'changelog' && <ChangelogTab entries={entries} />}
 				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
 				{activeTab === 'reviews' && (
