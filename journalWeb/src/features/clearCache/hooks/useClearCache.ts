@@ -1,4 +1,4 @@
-import { resetAllAppState } from '@/features/logout'
+import { resetAllAppState } from '@/shared/lib'
 
 export function clearCache(): void {
 	// Clear all cached data but keep auth state

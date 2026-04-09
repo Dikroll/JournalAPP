@@ -123,10 +123,7 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 					</div>
 					<button
 						type='button'
-						onClick={e => {
-							e.preventDefault()
-							handleClose()
-						}}
+						onClick={handleClose}
 						className='w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-[#6B7280] hover:text-[#F2F2F2]'
 					>
 						<X size={15} />

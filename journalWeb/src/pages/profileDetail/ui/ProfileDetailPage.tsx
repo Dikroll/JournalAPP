@@ -1,7 +1,7 @@
 import { useProfileDetails } from '@/entities/profile'
 import { AccountSwitcher } from '@/features/changeUser'
 import { ClearCacheSheet } from '@/features/clearCache'
-import { resetAllAppState } from '@/features/logout'
+import { resetAllAppState } from '@/shared/lib'
 import { pageConfig } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
