@@ -8,7 +8,10 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"release:prepare": "node ./scripts/prepare-android-release.mjs"
+		"release:prepare": "node ./scripts/prepare-android-release.mjs",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:ui": "vitest --ui"
 	},
 	"dependencies": {
 		"@bixbyte/capacitor-apk-installer": "^1.0.1",
@@ -38,11 +41,14 @@
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.1",
+		"@vitest/ui": "^4.1.4",
 		"globals": "^16.5.0",
+		"jsdom": "^29.0.2",
 		"tailwindcss": "^4.2.1",
 		"ts-node": "^10.9.2",
 		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.48.0",
-		"vite": "^7.3.1"
+		"vite": "^7.3.1",
+		"vitest": "^4.1.4"
 	}
 }
