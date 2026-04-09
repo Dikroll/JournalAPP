@@ -1,5 +1,5 @@
 name: Android Release
-
+# This workflow builds the Android release APK, creates a GitHub Release, and updates the JournalAPI version.json file with the new release information.
 permissions:
   contents: write
 
