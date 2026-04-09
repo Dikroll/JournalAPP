@@ -4,10 +4,8 @@ import {
 	useNotificationsStore,
 } from '@/features/sendNotifications'
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
-import {
-	fetchLatestAppRelease,
-	toChangelogFeedEntry,
-} from '@/shared/lib/appRelease'
+import { useAppUpdateStore } from '@/features/appUpdate'
+import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import {
 	ArrowLeft,
@@ -17,7 +15,7 @@ import {
 	Megaphone,
 	Sparkles,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Tab = 'changelog' | 'news' | 'reviews'
@@ -121,28 +119,15 @@ function ComingSoonTab({ label }: { label: string }) {
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
-	const [entries, setEntries] = useState<ChangelogEntry[]>(FALLBACK_CHANGELOG)
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
+	const latestRelease = useAppUpdateStore(s => s.latestRelease)
 
 	useSwipeBack()
 
-	useEffect(() => {
-		const abortController = new AbortController()
-
-		const loadChangelog = async () => {
-			try {
-				const release = await fetchLatestAppRelease(abortController.signal)
-				setEntries([toChangelogFeedEntry(release)])
-			} catch (error) {
-				console.warn('Failed to load changelog feed', error)
-				setEntries(FALLBACK_CHANGELOG)
-			}
-		}
-
-		loadChangelog()
-
-		return () => abortController.abort()
-	}, [])
+	const entries = useMemo<ChangelogEntry[]>(
+		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
+		[latestRelease],
+	)
 
 	useEffect(() => {
 		if (entries.length > 0) {

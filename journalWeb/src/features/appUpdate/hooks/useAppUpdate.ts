@@ -37,10 +37,12 @@ export function useAppUpdate() {
 	const {
 		status,
 		serverInfo,
+		latestRelease,
 		downloadProgress,
 		errorMessage,
 		setStatus,
 		setServerInfo,
+		setLatestRelease,
 		setProgress,
 		setError,
 		reset,
@@ -59,6 +61,8 @@ export function useAppUpdate() {
 			const currentVersion = String(appInfo.version ?? '0.0.0')
 
 			const releaseInfo = await fetchLatestAppRelease()
+
+			setLatestRelease(releaseInfo)
 
 			if (
 				isRemoteReleaseNewer({
@@ -135,6 +139,7 @@ export function useAppUpdate() {
 	return {
 		status,
 		serverInfo,
+		latestRelease,
 		downloadProgress,
 		errorMessage,
 		checkForUpdate,

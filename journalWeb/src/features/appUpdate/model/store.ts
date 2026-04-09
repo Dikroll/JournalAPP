@@ -12,11 +12,13 @@ type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'error'
 interface AppUpdateState {
 	status: UpdateStatus
 	serverInfo: AppVersionInfo | null
+	latestRelease: AppVersionInfo | null
 	downloadProgress: number
 	errorMessage: string | null
 
 	setStatus: (s: UpdateStatus) => void
 	setServerInfo: (info: AppVersionInfo) => void
+	setLatestRelease: (info: AppVersionInfo) => void
 	setProgress: (p: number) => void
 	setError: (msg: string) => void
 	reset: () => void
@@ -25,11 +27,13 @@ interface AppUpdateState {
 export const useAppUpdateStore = create<AppUpdateState>()(set => ({
 	status: 'idle',
 	serverInfo: null,
+	latestRelease: null,
 	downloadProgress: 0,
 	errorMessage: null,
 
 	setStatus: status => set({ status }),
 	setServerInfo: serverInfo => set({ serverInfo }),
+	setLatestRelease: latestRelease => set({ latestRelease }),
 	setProgress: downloadProgress => set({ downloadProgress }),
 	setError: errorMessage => set({ errorMessage, status: 'error' }),
 	reset: () =>
