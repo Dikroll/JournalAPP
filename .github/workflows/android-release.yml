@@ -59,6 +59,9 @@ jobs:
       - name: Add Android platform
         run: bunx cap add android
 
+      - name: Generate app icons
+        run: bunx @capacitor/assets generate --android
+
       - name: Prepare Android release metadata
         run: >
           node ./scripts/prepare-android-release.mjs
