@@ -24,6 +24,7 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    environment: DEPLOY_HOST
 
     defaults:
       run:
@@ -32,6 +33,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -45,17 +51,20 @@ jobs:
           java-version: '21'
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Prepare Android release metadata
-        run: >
-          bun run release:prepare
-          --version "${{ github.event.inputs.version }}"
-          --build "${{ github.event.inputs.build }}"
-          --app-name "${{ github.event.inputs.app_name }}"
+        run: bun install
 
       - name: Build web bundle
         run: bun run build
+
+      - name: Add Android platform
+        run: bunx cap add android
+
+      - name: Prepare Android release metadata
+        run: >
+          node ./scripts/prepare-android-release.mjs
+          --version "${{ github.event.inputs.version }}"
+          --build "${{ github.event.inputs.build }}"
+          --app-name "${{ github.event.inputs.app_name }}"
 
       - name: Sync Capacitor Android
         run: bunx cap sync android
@@ -67,7 +76,9 @@ jobs:
       - name: Collect APK
         run: |
           mkdir -p release
-          cp android/app/build/outputs/apk/release/app-release.apk "release/Journal-v${{ github.event.inputs.version }}.apk"
+          APK=$(find android/app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          echo "Found APK: $APK"
+          cp "$APK" "release/Journal-v${{ github.event.inputs.version }}.apk"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
@@ -89,27 +100,15 @@ jobs:
           VERSION: ${{ github.event.inputs.version }}
           BUILD: ${{ github.event.inputs.build }}
           CHANGELOG: ${{ github.event.inputs.release_notes }}
-        working-directory: /tmp
         run: |
-          export APK_URL="https://github.com/Dikroll/JournalAPP/releases/download/v${VERSION}/Journal-v${VERSION}.apk"
-
-          git clone "https://x-access-token:${API_REPO_TOKEN}@github.com/Dikroll/JournalAPI.git" JournalAPI
-
-          python3 -c "
-import json, os
-data = {
-    'version': os.environ['VERSION'],
-    'build': int(os.environ['BUILD']),
-    'apk_url': os.environ['APK_URL'],
-    'changelog': os.environ['CHANGELOG']
-}
-print(json.dumps(data, indent='\t', ensure_ascii=False))
-" > JournalAPI/src/version.json
-
-          cd JournalAPI
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add src/version.json
-          git commit -m "release: update version to ${VERSION}"
-          git push
+          APK_URL="https://github.com/Dikroll/JournalAPP/releases/download/v${VERSION}/Journal-v${VERSION}.apk"
+          SHA=$(curl -s -H "Authorization: token ${API_REPO_TOKEN}" \
+            "https://api.github.com/repos/Dikroll/JournalAPI/contents/src/version.json" \
+            | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'])")
+          CONTENT=$(python3 -c "import json,base64,os; d={'version':os.environ['VERSION'],'build':int(os.environ['BUILD']),'apk_url':os.environ['APK_URL'],'changelog':os.environ['CHANGELOG']}; print(base64.b64encode(json.dumps(d,indent=2,ensure_ascii=False).encode()).decode())")
+          curl -s -X PUT \
+            -H "Authorization: token ${API_REPO_TOKEN}" \
+            -H "Content-Type: application/json" \
+            "https://api.github.com/repos/Dikroll/JournalAPI/contents/src/version.json" \
+            -d "{\"message\":\"release: update version to ${VERSION}\",\"content\":\"${CONTENT}\",\"sha\":\"${SHA}\"}"
           echo "✅ JournalAPI version.json updated"
