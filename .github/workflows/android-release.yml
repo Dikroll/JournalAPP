@@ -101,13 +101,13 @@ jobs:
           CHANGELOG: ${{ github.event.inputs.release_notes }}
         run: |
           APK_URL="https://github.com/Dikroll/JournalAPP/releases/download/v${VERSION}/Journal-v${VERSION}.apk"
-          API_RESPONSE=$(curl -s -H "Authorization: token ${API_REPO_TOKEN}" \
+          API_RESPONSE=$(curl -s -H "Authorization: Bearer ${API_REPO_TOKEN}" \
             "https://api.github.com/repos/Dikroll/JournalAPI/contents/src/version.json")
           echo "API response: $API_RESPONSE"
           SHA=$(echo "$API_RESPONSE" | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'])")
           CONTENT=$(python3 -c "import json,base64,os; d={'version':os.environ['VERSION'],'build':int(os.environ['BUILD']),'apk_url':os.environ['APK_URL'],'changelog':os.environ['CHANGELOG']}; print(base64.b64encode(json.dumps(d,indent=2,ensure_ascii=False).encode()).decode())")
           curl -s -X PUT \
-            -H "Authorization: token ${API_REPO_TOKEN}" \
+            -H "Authorization: Bearer ${API_REPO_TOKEN}" \
             -H "Content-Type: application/json" \
             "https://api.github.com/repos/Dikroll/JournalAPI/contents/src/version.json" \
             -d "{\"message\":\"release: update version to ${VERSION}\",\"content\":\"${CONTENT}\",\"sha\":\"${SHA}\"}"
