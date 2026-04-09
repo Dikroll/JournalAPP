@@ -63,6 +63,12 @@ svg:focus-visible,
 	outline: none !important;
 }
 
+/* ── Light theme dot pattern ── */
+.light .light-dot-pattern,
+[data-theme='light'] .light-dot-pattern {
+	display: block !important;
+}
+
 /* ── Grade utility classes ── */
 
 .grade-bg-5 {

@@ -97,10 +97,10 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 					<Line
 						type='monotone'
 						dataKey='value'
-						stroke='var(--color-brand)'
+						stroke='#F20519'
 						strokeWidth={3}
-						dot={{ fill: 'var(--color-brand)', r: 4, strokeWidth: 0 }}
-						activeDot={{ r: 6, strokeWidth: 0, fill: 'var(--color-brand)' }}
+						dot={{ fill: '#F20519', r: 4, strokeWidth: 0 }}
+						activeDot={{ r: 6, strokeWidth: 0, fill: '#F20519' }}
 						isAnimationActive={false}
 					/>
 				</LineChart>
@@ -148,7 +148,7 @@ const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] })
 					/>
 					<Bar
 						dataKey='value'
-						fill='var(--color-pending)'
+						fill='#F0A020'
 						radius={[8, 8, 0, 0]}
 						isAnimationActive={false}
 					/>

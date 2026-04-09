@@ -30,7 +30,7 @@ export function StarRating({
 							size={26}
 							className={
 								n <= value
-									? 'text-[#F29F05] fill-[#F29F05]'
+									? 'text-[#3B82F6] fill-[#3B82F6]'
 									: 'text-white/15 fill-transparent'
 							}
 						/>

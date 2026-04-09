@@ -5,11 +5,21 @@ interface GlowBackgroundProps {
 /**
  * Decorative glowing background effect with 5 gradient blobs.
  * Can use CSS variables (for AppLayout) or inline gradients (for LoginForm)
+ * Light theme adds a subtle dot-grid pattern overlay.
  */
 export function GlowBackground({ useVariables = false }: GlowBackgroundProps) {
 	if (useVariables) {
 		return (
 			<div className='fixed inset-0 pointer-events-none overflow-hidden'>
+				{/* Dot pattern — visible only in light theme */}
+				<div
+					className='absolute inset-0 hidden light-dot-pattern'
+					style={{
+						backgroundImage:
+							'radial-gradient(circle, rgba(15,23,42,0.045) 1px, transparent 1px)',
+						backgroundSize: '22px 22px',
+					}}
+				/>
 				<div
 					style={{
 						position: 'absolute',

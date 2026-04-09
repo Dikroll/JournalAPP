@@ -69,7 +69,7 @@ export const TopBar = memo(function TopBar() {
 						<div
 							className='w-14 h-14 rounded-full flex items-center justify-center text-white text-base font-bold border border-app-border'
 							style={{
-								background: 'linear-gradient(135deg, #F20519 0%, #F29F05 100%)',
+								background: 'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
 							}}
 						>
 							{initials}

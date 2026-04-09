@@ -5,7 +5,7 @@
 export function Loader({ size = 24 }: { size?: number }) {
 	return (
 		<svg
-			style={{ color: '#D50416' }}
+			style={{ color: 'var(--color-brand)' }}
 			width={size}
 			height={size}
 			viewBox='0 0 24 24'

@@ -20,7 +20,7 @@ export function FileDropZone({
 	if (file)
 		return (
 			<div className='flex items-center gap-3 px-4 py-3 bg-white/5 rounded-2xl border border-white/10'>
-				<FileText size={18} className='text-[#F29F05] shrink-0' />
+				<FileText size={18} className='text-[#3B82F6] shrink-0' />
 				<div className='flex-1 min-w-0'>
 					<p className='text-sm text-[#F2F2F2] truncate'>{file.name}</p>
 					<p className='text-xs text-[#9CA3AF] mt-0.5'>{fmtSize(file.size)}</p>
@@ -59,13 +59,13 @@ export function FileDropZone({
 				}}
 				className={`w-full flex flex-col items-center gap-2 py-5 rounded-2xl border border-dashed ${
 					drag
-						? 'border-[#F29F05]/50 bg-[#F29F05]/5'
+						? 'border-[#3B82F6]/50 bg-[#3B82F6]/5'
 						: 'border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5'
 				}`}
 			>
 				<Upload
 					size={20}
-					className={drag ? 'text-[#F29F05]' : 'text-[#9CA3AF]'}
+					className={drag ? 'text-[#3B82F6]' : 'text-[#9CA3AF]'}
 				/>
 				<p className='text-sm text-[#9CA3AF]'>
 					Перетащите или <span className='text-[#F2F2F2]'>выберите файл</span>

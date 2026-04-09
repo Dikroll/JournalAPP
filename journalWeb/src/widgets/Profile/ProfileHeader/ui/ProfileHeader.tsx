@@ -31,8 +31,8 @@ export const ProfileHeader = memo(
 					<div
 						className='rounded-[28px] p-6 relative overflow-hidden'
 						style={{
-							background: 'linear-gradient(135deg, #F20519 0%, #F29F05 100%)',
-							boxShadow: '0 8px 32px 0 rgba(242,5,25,0.3)',
+							background: 'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
+							boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)',
 						}}
 					>
 						{/* декоративные градиенты */}

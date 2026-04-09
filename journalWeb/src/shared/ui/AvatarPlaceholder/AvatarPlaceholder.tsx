@@ -21,7 +21,7 @@ export function AvatarPlaceholder({
 				width: size,
 				height: size,
 				fontSize: size * 0.3,
-				background: 'linear-gradient(135deg, #F20519 0%, #F29F05 100%)',
+				background: 'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
 				flexShrink: 0,
 				...style,
 			}}

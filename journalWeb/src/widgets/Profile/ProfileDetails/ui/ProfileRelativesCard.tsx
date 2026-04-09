@@ -31,8 +31,8 @@ function RelativeItem({
 					style={{
 						background:
 							index % 2 === 0
-								? 'linear-gradient(135deg,#F20519,#F29F05)'
-								: 'linear-gradient(135deg,#3B82F6,#8B5CF6)',
+								? 'linear-gradient(135deg, var(--color-gradient-from), var(--color-gradient-to))'
+								: 'linear-gradient(135deg, #7c3aed, #0ea5e9)',
 					}}
 				>
 					{initials}

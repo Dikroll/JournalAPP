@@ -38,13 +38,13 @@ const RANK_COLORS: Record<number, string> = {
 	3: '#B45309',
 }
 
-const AMBER = {
-	bg: 'rgba(245, 158, 11, 0.10)',
-	border: 'rgba(245, 158, 11, 0.28)',
-	text: '#D97706',
-	badgeBg: 'rgba(245, 158, 11, 0.15)',
-	badgeBorder: 'rgba(245, 158, 11, 0.30)',
-	shadow: '0 2px 14px 0 rgba(245, 158, 11, 0.14)',
+const HIGHLIGHT = {
+	bg: 'var(--color-highlight-bg)',
+	border: 'var(--color-highlight-border)',
+	text: 'var(--color-highlight-text)',
+	badgeBg: 'var(--color-highlight-badge-bg)',
+	badgeBorder: 'var(--color-highlight-badge-border)',
+	shadow: 'var(--color-highlight-shadow)',
 }
 
 export const LeaderboardRow = memo(function LeaderboardRow({
@@ -63,9 +63,9 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				style={
 					isMe
 						? {
-								background: AMBER.bg,
-								border: `1px solid ${AMBER.border}`,
-								boxShadow: AMBER.shadow,
+								background: HIGHLIGHT.bg,
+								border: `1px solid ${HIGHLIGHT.border}`,
+								boxShadow: HIGHLIGHT.shadow,
 						  }
 						: {
 								background: 'var(--color-surface)',
@@ -77,7 +77,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				<span
 					className='w-6 text-center text-base font-bold shrink-0'
 					style={{
-						color: isMe ? AMBER.text : rankColor ?? 'var(--color-text-muted)',
+						color: isMe ? HIGHLIGHT.text : rankColor ?? 'var(--color-text-muted)',
 					}}
 				>
 					{student.position}
@@ -100,7 +100,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 								className='w-10 h-10 rounded-full object-cover'
 								style={{
 									border: isMe
-										? `2px solid ${AMBER.border}`
+										? `2px solid ${HIGHLIGHT.border}`
 										: '2px solid var(--color-border)',
 								}}
 							/>
@@ -112,7 +112,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 							size={40}
 							style={
 								isMe
-									? { border: `2px solid ${AMBER.border}` }
+									? { border: `2px solid ${HIGHLIGHT.border}` }
 									: { border: '2px solid var(--color-border)' }
 							}
 						/>
@@ -122,7 +122,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				<div className='flex-1 min-w-0'>
 					<p
 						className='text-sm font-semibold truncate'
-						style={{ color: isMe ? AMBER.text : 'var(--color-text)' }}
+						style={{ color: isMe ? HIGHLIGHT.text : 'var(--color-text)' }}
 					>
 						{shortName}
 						{isMe && (
@@ -136,8 +136,8 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 					style={
 						isMe
 							? {
-									background: AMBER.badgeBg,
-									border: `1px solid ${AMBER.badgeBorder}`,
+									background: HIGHLIGHT.badgeBg,
+									border: `1px solid ${HIGHLIGHT.badgeBorder}`,
 							  }
 							: {
 									background: 'var(--color-surface-strong)',
@@ -147,11 +147,11 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 				>
 					<Coins
 						size={13}
-						style={{ color: isMe ? '#FFD700' : 'var(--color-comment)' }}
+						style={{ color: isMe ? 'var(--color-highlight-coin)' : 'var(--color-comment)' }}
 					/>
 					<span
 						className='text-sm font-bold'
-						style={{ color: isMe ? AMBER.text : 'var(--color-text)' }}
+						style={{ color: isMe ? HIGHLIGHT.text : 'var(--color-text)' }}
 					>
 						{student.points.toLocaleString()}
 					</span>

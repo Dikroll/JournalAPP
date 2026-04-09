@@ -59,7 +59,7 @@ export function ProfileAvatar({ details }: Props) {
 									className='h-full rounded-full'
 									style={{
 										width: `${details.fill_percentage}%`,
-										background: 'linear-gradient(90deg,#F20519,#F29F05)',
+										background: 'linear-gradient(90deg, var(--color-gradient-from), var(--color-gradient-to))',
 									}}
 								/>
 							</div>

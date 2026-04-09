@@ -70,7 +70,7 @@ export function AppUpdateSheet() {
 								className='h-full rounded-full transition-all duration-300'
 								style={{
 									width: `${downloadProgress}%`,
-									background: 'linear-gradient(90deg, #D50416, #F29F05)',
+									background: 'linear-gradient(90deg, var(--color-gradient-from), var(--color-gradient-to))',
 								}}
 							/>
 						</div>
@@ -95,7 +95,7 @@ export function AppUpdateSheet() {
 							onClick={downloadAndInstall}
 							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-white'
 							style={{
-								background: 'linear-gradient(90deg, #D50416, #b8030f)',
+								background: 'linear-gradient(90deg, var(--color-brand), var(--color-brand-hover))',
 							}}
 						>
 							{isError ? 'Попробовать снова' : 'Скачать и установить'}

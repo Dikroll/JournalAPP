@@ -57,7 +57,8 @@ export const HomeworkCard = memo(
 
 							<div className='absolute top-3 left-3'>
 								<span
-								className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${config.textColor} bg-[var(--color-surface)] border border-[var(--color-border)]`}
+								className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${config.textColor} border border-[var(--color-border)] backdrop-blur-xl`}
+								style={{ background: 'var(--color-overlay-nav)' }}
 							>
 								{config.icon && <config.icon size={11} />}
 								{config.label}
@@ -68,7 +69,8 @@ export const HomeworkCard = memo(
 									<div
 										className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-bold border ${
 											gradeStyle!.badge
-										} bg-[var(--color-surface)] border-[var(--color-border)] backdrop-blur-sm`}
+										} border-[var(--color-border)] backdrop-blur-xl`}
+									style={{ background: 'var(--color-overlay-nav)' }}
 									>
 										{grade}
 									</div>
