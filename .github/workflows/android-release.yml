@@ -59,6 +59,13 @@ jobs:
       - name: Add Android platform
         run: bunx cap add android
 
+      - name: Patch AndroidManifest permissions
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          if ! grep -q "REQUEST_INSTALL_PACKAGES" "$MANIFEST"; then
+            sed -i 's|</manifest>|    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n</manifest>|' "$MANIFEST"
+          fi
+
       - name: Generate app icons
         run: bunx @capacitor/assets generate --android
 
