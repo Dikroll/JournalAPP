@@ -1,6 +1,7 @@
 import { useHomework } from '@/entities/homework'
 import { useUserStore } from '@/entities/user'
-import { CheckCircle, Loader2, X } from 'lucide-react'
+import { IconButton, SuccessStateView } from '@/shared/ui'
+import { Loader2, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useSendHomework } from '../hooks/useSendHomework'
 import { FileDropZone } from './FileDropZone'
@@ -72,31 +73,21 @@ export function SendHomeworkSheet({
 							{homeworkTheme}
 						</p>
 					</div>
-					<button
-						type='button'
+					<IconButton
+						icon={<X size={14} />}
 						onClick={e => {
 							e.preventDefault()
 							onClose()
 						}}
 						disabled={isLoading}
-						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-40'
-					>
-						<X size={14} className='text-[#9CA3AF]' />
-					</button>
+					/>
 				</div>
 
 				{isSuccess ? (
-					<div className='flex flex-col items-center py-6 gap-3'>
-						<div className='w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center'>
-							<CheckCircle size={26} className='text-[#10B981]' />
-						</div>
-						<p className='text-sm font-semibold text-[#F2F2F2]'>
-							Задание отправлено!
-						</p>
-						<p className='text-xs text-[#9CA3AF]'>
-							Ожидайте проверки преподавателя
-						</p>
-					</div>
+					<SuccessStateView
+						title='Задание отправлено!'
+						subtitle='Ожидайте проверки преподавателя'
+					/>
 				) : (
 					<div className='space-y-4'>
 						<div>

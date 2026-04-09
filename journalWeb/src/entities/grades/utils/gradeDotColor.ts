@@ -1,7 +1,7 @@
 import type { GradeEntryExpanded } from '../model/types'
 
 export function getGradeDotColor(entries: GradeEntryExpanded[]): string {
-	const hasAbsence = entries.some(e => !e.attended)
+	const hasAbsence = entries.some(e => e.attended === 'absent')
 	if (hasAbsence) return 'var(--color-overdue)'
 
 	const allMarks = entries.flatMap(e => e.flatMarks.map(m => m.value))

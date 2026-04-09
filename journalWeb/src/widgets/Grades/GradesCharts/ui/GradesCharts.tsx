@@ -3,7 +3,7 @@ import { useGradesCharts } from '@/entities/dashboard'
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui/'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
-import React from 'react'
+import { memo, useCallback, useRef } from 'react'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -11,7 +11,13 @@ interface Props {
 	attendance: ChartPoint[]
 }
 
-function TrendBadge({ trend, suffix }: { trend: number; suffix?: string }) {
+const TrendBadge = memo(function TrendBadge({
+	trend,
+	suffix,
+}: {
+	trend: number
+	suffix?: string
+}) {
 	const isPositive = trend > 0
 	const isNeutral = trend === 0
 	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
@@ -31,12 +37,13 @@ function TrendBadge({ trend, suffix }: { trend: number; suffix?: string }) {
 			{suffix ?? ''}
 		</span>
 	)
-}
+})
 
 function NoCursor() {
 	return null
 }
 
+// Static objects — defined once, never recreated
 const axisProps = {
 	fontSize: 12,
 	tickLine: false,
@@ -52,34 +59,33 @@ const tooltipWrapperStyle = {
 	zIndex: 50,
 }
 
-function ProgressChart({ data }: { data: any[] }) {
+const CHART_HEIGHT = 192
+
+const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const containerRef = React.useRef<HTMLDivElement>(null)
-	const height = 192
+	const containerRef = useRef<HTMLDivElement>(null)
+
+	// Stable merged ref — only created once since `ref` from useElementSize is stable
+	const mergedRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			ref(node)
+			containerRef.current = node
+		},
+		[ref],
+	)
+
 	return (
-		<div
-			ref={node => {
-				ref(node)
-				containerRef.current = node
-			}}
-			className='w-full'
-			style={{ height }}
-		>
+		<div ref={mergedRef} className='w-full' style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<LineChart
 					width={width}
-					height={height}
+					height={CHART_HEIGHT}
 					data={data}
 					margin={{ top: 16, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
-					<YAxis
-						domain={[1, 5]}
-						ticks={[1, 2, 3, 4, 5]}
-						{...axisProps}
-						width={30}
-					/>
+					<YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} {...axisProps} width={30} />
 					<Tooltip
 						content={<CustomTooltip containerRef={containerRef} />}
 						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
@@ -101,25 +107,26 @@ function ProgressChart({ data }: { data: any[] }) {
 			)}
 		</div>
 	)
-}
+})
 
-function AttendanceChart({ data }: { data: any[] }) {
+const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const containerRef = React.useRef<HTMLDivElement>(null)
-	const height = 192
+	const containerRef = useRef<HTMLDivElement>(null)
+
+	const mergedRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			ref(node)
+			containerRef.current = node
+		},
+		[ref],
+	)
+
 	return (
-		<div
-			ref={node => {
-				ref(node)
-				containerRef.current = node
-			}}
-			className='w-full'
-			style={{ height }}
-		>
+		<div ref={mergedRef} className='w-full' style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<BarChart
 					width={width}
-					height={height}
+					height={CHART_HEIGHT}
 					data={data}
 					margin={{ top: 4, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
@@ -149,9 +156,9 @@ function AttendanceChart({ data }: { data: any[] }) {
 			)}
 		</div>
 	)
-}
+})
 
-export function GradesCharts({ progress, attendance }: Props) {
+export const GradesCharts = memo(function GradesCharts({ progress, attendance }: Props) {
 	const { progressData, attendanceData, progressTrend, attendanceTrend } =
 		useGradesCharts(progress, attendance)
 
@@ -163,9 +170,7 @@ export function GradesCharts({ progress, attendance }: Props) {
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-app-text'>
-							Динамика оценок
-						</h3>
+						<h3 className='text-base font-bold text-app-text'>Динамика оценок</h3>
 						{progressTrend != null && <TrendBadge trend={progressTrend} />}
 					</div>
 					<ProgressChart data={progressData} />
@@ -189,4 +194,4 @@ export function GradesCharts({ progress, attendance }: Props) {
 			)}
 		</div>
 	)
-}
+})

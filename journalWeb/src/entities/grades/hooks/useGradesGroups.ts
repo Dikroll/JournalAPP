@@ -87,7 +87,7 @@ function calcStats(expanded: GradeEntryExpanded[]) {
 		? allMarks.reduce((s, v) => s + v, 0) / allMarks.length
 		: 0
 	const total = expanded.length
-	const absences = expanded.filter(e => !e.attended).length
+	const absences = expanded.filter(e => e.attended === 'absent').length
 	return {
 		averageGrade: avg,
 		attendanceRate: total > 0 ? ((total - absences) / total) * 100 : 0,

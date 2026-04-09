@@ -1,4 +1,5 @@
 import { CatGame } from '@/shared/ui/CatGame'
+import { IconButton } from '@/shared/ui'
 import { MessageSquare, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -121,13 +122,12 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 							</p>
 						</div>
 					</div>
-					<button
-						type='button'
+					<IconButton
+						icon={<X size={15} />}
 						onClick={handleClose}
-						className='w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-[#6B7280] hover:text-[#F2F2F2]'
-					>
-						<X size={15} />
-					</button>
+						shape='square'
+						aria-label='Закрыть'
+					/>
 				</div>
 
 				{/* Answer — scrollable, max ~5 lines visible */}

@@ -9,6 +9,7 @@ import {
 	useSortSubjectsStore,
 } from '@/features/sortSubjects'
 import { useLazyItems } from '@/shared/hooks'
+import { useMemo } from 'react'
 
 interface Props {
 	bySubject: SubjectStats[]
@@ -16,7 +17,7 @@ interface Props {
 
 export function GradesSubjectList({ bySubject }: Props) {
 	const sortKey = useSortSubjectsStore(s => s.sortKey)
-	const sorted = sortSubjects(bySubject, sortKey)
+	const sorted = useMemo(() => sortSubjects(bySubject, sortKey), [bySubject, sortKey])
 	const { visibleCount, sentinelRef } = useLazyItems(sorted.length)
 
 	if (bySubject.length === 0) {

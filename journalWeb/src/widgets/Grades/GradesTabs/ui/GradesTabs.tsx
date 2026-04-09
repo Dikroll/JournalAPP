@@ -1,5 +1,6 @@
+import { useScrollableTabs } from '@/shared/hooks'
 import { BookOpen, CalendarDays, Clock, GraduationCap } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback } from 'react'
 
 export type Tab = 'recent' | 'calendar' | 'subjects' | 'exams'
 
@@ -16,31 +17,8 @@ interface Props {
 }
 
 export function GradesTabs({ active, onChange }: Props) {
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const [showRight, setShowRight] = useState(true)
-	const [showLeft, setShowLeft] = useState(false)
-
-	const checkFades = useCallback(() => {
-		const el = scrollRef.current
-		if (!el) return
-		setShowLeft(el.scrollLeft > 8)
-		setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8)
-	}, [])
-
-	useEffect(() => {
-		checkFades()
-	}, [checkFades])
-
-	useEffect(() => {
-		const el = scrollRef.current
-		if (!el) return
-		const idx = TABS.findIndex(t => t.key === active)
-		const btns = el.querySelectorAll<HTMLButtonElement>('button')
-		const btn = btns[idx]
-		if (!btn) return
-		const left = btn.offsetLeft - el.clientWidth / 2 + btn.offsetWidth / 2
-		el.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
-	}, [active])
+	const activeIndex = TABS.findIndex(t => t.key === active)
+	const { scrollRef, showLeft, showRight } = useScrollableTabs(activeIndex)
 
 	const handleTabClick = useCallback(
 		(key: Tab) => {
@@ -93,7 +71,6 @@ export function GradesTabs({ active, onChange }: Props) {
 
 				<div
 					ref={scrollRef}
-					onScroll={checkFades}
 					className='flex gap-2 overflow-x-auto scrollbar-none'
 					style={{
 						WebkitOverflowScrolling: 'touch' as any,

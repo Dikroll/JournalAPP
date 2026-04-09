@@ -10,12 +10,8 @@ export function useElementSize() {
 		if (!node) return
 
 		const observer = new ResizeObserver(entries => {
-			const rect = entries[0]?.contentRect
-			if (rect)
-				setSize({
-					width: Math.floor(rect.width),
-					height: Math.floor(rect.height),
-				})
+			const r = entries[0]?.contentRect
+			if (r) setSize({ width: Math.floor(r.width), height: Math.floor(r.height) })
 		})
 		observer.observe(node)
 		observerRef.current = observer

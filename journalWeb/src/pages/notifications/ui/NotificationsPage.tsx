@@ -7,6 +7,8 @@ import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
 import { useAppUpdate, useAppUpdateStore } from '@/features/appUpdate'
 import { fetchLatestAppRelease, toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
+import { Badge, IconButton } from '@/shared/ui'
+import { formatDate } from '@/shared/utils/dateUtils'
 import {
 	ArrowLeft,
 	Bell,
@@ -27,14 +29,6 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
 	{ key: 'news', label: 'Новости', icon: <Megaphone size={13} /> },
 	{ key: 'reviews', label: 'Отзывы', icon: <BookOpen size={13} /> },
 ]
-
-function formatDate(iso: string): string {
-	return new Date(iso).toLocaleDateString('ru-RU', {
-		day: 'numeric',
-		month: 'long',
-		year: 'numeric',
-	})
-}
 
 function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 	return (
@@ -67,9 +61,7 @@ function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 								v{entry.version}
 							</span>
 							{idx === 0 && (
-								<span className='text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20'>
-									Новое
-								</span>
+								<Badge variant='success' size='xs'>Новое</Badge>
 							)}
 						</div>
 						{entry.date && (
@@ -161,14 +153,15 @@ export function NotificationsPage() {
 	return (
 		<div className='min-h-screen pb-28 text-app-text'>
 			<div className='flex items-center gap-3 px-4 pt-4 pb-4'>
-				<button
-					type='button'
+				<IconButton
+					icon={<ArrowLeft size={18} />}
 					onClick={() => navigate(-1)}
-					className='w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform'
+					size='md'
+					shape='square'
+					variant='surface'
 					style={{ boxShadow: 'var(--shadow-card)' }}
-				>
-					<ArrowLeft size={18} />
-				</button>
+					aria-label='Назад'
+				/>
 				<div className='flex items-center gap-2 flex-1'>
 					<h1 className='text-xl font-bold text-app-text'>Уведомления</h1>
 					{unread > 0 && activeTab !== 'changelog' && (
@@ -179,15 +172,16 @@ export function NotificationsPage() {
 				</div>
 
 				{activeTab === 'changelog' && (
-					<button
-						type='button'
+					<IconButton
+						icon={<RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />}
 						onClick={handleRefresh}
 						disabled={refreshing}
-						className='w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform disabled:opacity-50'
-						style={{ boxShadow: 'var(--shadow-card)', WebkitTapHighlightColor: 'transparent' }}
-					>
-						<RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
-					</button>
+						size='md'
+						shape='square'
+						variant='surface'
+						style={{ boxShadow: 'var(--shadow-card)' }}
+						aria-label='Обновить'
+					/>
 				)}
 			</div>
 

@@ -24,6 +24,7 @@ export { HomeworkCountersBar } from './HomeworkList/ui/shared/HomeworkCounterBar
 // Schedule
 export { ScheduleCalendar } from './Schedule/ScheduleCalendar/ui/ScheduleCalendar'
 export { ScheduleList } from './Schedule/ScheduleList/ui/ScheduleList'
+export { ScheduleWeekView } from './Schedule/ScheduleWeekView/ui/ScheduleWeekView'
 
 // Exams
 export { FutureExams } from './FutureExams/ui/FutureExams'

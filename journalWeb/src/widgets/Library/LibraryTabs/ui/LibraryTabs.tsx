@@ -3,9 +3,9 @@ import {
 	type MaterialType,
 	useLibrary,
 } from '@/entities/library'
+import { useScrollableTabs } from '@/shared/hooks'
 import { pluralizeCount } from '@/shared/lib/pluralize'
-import { SkeletonList } from '@/shared/ui'
-import { ErrorView } from '@/shared/ui/ErrorView/ErrorView'
+import { Badge, ErrorView, SkeletonList } from '@/shared/ui'
 import {
 	BookMarked,
 	BookOpen,
@@ -15,7 +15,7 @@ import {
 	Presentation,
 	Video,
 } from 'lucide-react'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import { LibraryMaterialCard } from '../../LibraryMaterialCard/ui/LibraryMaterialCard'
 
 type Tab = MaterialType
@@ -38,12 +38,12 @@ interface Props {
 
 export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 	const [active, setActive] = useState<Tab>(2)
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const [showRight, setShowRight] = useState(true)
-	const [showLeft, setShowLeft] = useState(false)
 	const touchStartX = useRef(0)
 	const touchStartY = useRef(0)
 	const touchFiredRef = useRef(false)
+
+	const activeIndex = TABS.findIndex(t => t.key === active)
+	const { scrollRef, showLeft, showRight } = useScrollableTabs(activeIndex)
 
 	const { materials, counters, isLoading, error } = useLibrary({
 		specId,
@@ -53,34 +53,6 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 	const activeCounterKey = MATERIAL_TYPE_TO_COUNTER_KEY[active]
 	const activeCounter = counters?.[activeCounterKey] ?? null
-
-	// ── скролл-фейды ────────────────────────────────────────────
-
-	const checkFades = useCallback(() => {
-		const el = scrollRef.current
-		if (!el) return
-		setShowLeft(el.scrollLeft > 8)
-		setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8)
-	}, [])
-
-	useEffect(() => {
-		checkFades()
-		const el = scrollRef.current
-		if (!el) return
-		el.addEventListener('scroll', checkFades, { passive: true })
-		return () => el.removeEventListener('scroll', checkFades)
-	}, [checkFades])
-
-	useEffect(() => {
-		const el = scrollRef.current
-		if (!el) return
-		const idx = TABS.findIndex(t => t.key === active)
-		const btns = el.querySelectorAll<HTMLButtonElement>('button')
-		const btn = btns[idx]
-		if (!btn) return
-		const left = btn.offsetLeft - el.clientWidth / 2 + btn.offsetWidth / 2
-		el.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
-	}, [active])
 
 	// ── touch-хендлеры ──────────────────────────────────────────
 
@@ -156,7 +128,6 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 				<div
 					ref={scrollRef}
-					onScroll={checkFades}
 					className='flex gap-2'
 					style={{
 						overflowX: 'auto',
@@ -232,16 +203,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 							: `${activeCounter.total} ${pluralizeCount(activeCounter.total)}`}
 					</p>
 					{activeCounter.new > 0 && (
-						<span
-							className='text-[11px] font-medium px-2 py-0.5 rounded-full'
-							style={{
-								background: 'var(--color-new-subtle)',
-								color: 'var(--color-new)',
-								border: '1px solid var(--color-new-border)',
-							}}
-						>
-							{activeCounter.new} новых
-						</span>
+						<Badge variant='new'>{activeCounter.new} новых</Badge>
 					)}
 				</div>
 			)}

@@ -13,8 +13,10 @@ export const scheduleApi = {
 			.then(r => r.data),
 	getMonth: (date: string) =>
 		api
-			.get<
-				LessonItem[]
-			>(apiConfig.SCHEDULE_MONTH, { params: { date_filter: date } })
+			.get<LessonItem[]>(apiConfig.SCHEDULE_MONTH, { params: { date_filter: date } })
+			.then(r => r.data),
+	getWeek: (date: string) =>
+		api
+			.get<LessonItem[]>(apiConfig.SCHEDULE_WEEK, { params: { date_filter: date } })
 			.then(r => r.data),
 }

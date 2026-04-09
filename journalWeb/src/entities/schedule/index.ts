@@ -1,5 +1,6 @@
 export { scheduleApi } from './api'
 export { useScheduleMonth } from './hooks/useScheduleMonth'
 export { useScheduleToday } from './hooks/useScheduleToday'
+export { useScheduleWeek } from './hooks/useScheduleWeek'
 export { useScheduleStore } from './model/store'
 export type { LessonItem } from './model/types'

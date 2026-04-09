@@ -4,6 +4,7 @@ import {
 	getMaterialTypeIcon,
 } from '@/shared/config/libraryMaterialTypes'
 import { formatDateCompact } from '@/shared/lib/formatDate'
+import { Badge } from '@/shared/ui'
 import { memo } from 'react'
 import { MaterialActions } from './MaterialActions'
 import { MaterialCover } from './MaterialCover'
@@ -44,16 +45,7 @@ export const LibraryMaterialCard = memo(
 									{material.type_name}
 								</span>
 								{material.is_new && (
-									<span
-										className='text-[10px] font-bold px-1.5 py-0.5 rounded-full'
-										style={{
-											background: 'var(--color-new-subtle)',
-											color: 'var(--color-new)',
-											border: '1px solid var(--color-new-border)',
-										}}
-									>
-										NEW
-									</span>
+									<Badge variant='new' size='xs'>NEW</Badge>
 								)}
 							</div>
 							<h3 className='text-sm font-semibold text-app-text leading-snug'>

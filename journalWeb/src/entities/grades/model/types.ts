@@ -14,7 +14,7 @@ export interface GradeEntryExpanded extends GradeEntry {
 export interface GradeEntry {
 	date: string
 	lesson_number: number
-	attended: boolean
+	attended: 'present' | 'late' | 'absent'
 	spec_id: number
 	spec_name: string
 	teacher: string

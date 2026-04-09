@@ -1,7 +1,7 @@
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
-import React from 'react'
+import { memo, useCallback, useRef } from 'react'
 import { Line, LineChart, Tooltip, XAxis } from 'recharts'
 
 interface StatsCardProps {
@@ -23,7 +23,7 @@ const tooltipWrapperStyle = {
 	zIndex: 50,
 }
 
-export function StatsCard({
+export const StatsCard = memo(function StatsCard({
 	title,
 	value,
 	trend,
@@ -34,7 +34,17 @@ export function StatsCard({
 	color = '#F20519',
 }: StatsCardProps) {
 	const { ref, width, height } = useElementSize()
-	const containerRef = React.useRef<HTMLDivElement>(null)
+	const containerRef = useRef<HTMLDivElement>(null)
+
+	// Stable merged ref — avoids reconnecting ResizeObserver on every render
+	const mergedRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			ref(node)
+			containerRef.current = node
+		},
+		[ref],
+	)
+
 	const isNeutral = trend === 0
 	const isPositive = trend !== undefined && trend > 0
 	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
@@ -75,10 +85,7 @@ export function StatsCard({
 
 			{data && data.length > 0 && (
 				<div
-					ref={node => {
-						ref(node)
-						containerRef.current = node
-					}}
+					ref={mergedRef}
 					className='w-full px-6 pb-2'
 					style={{ height: 128, overflow: 'visible' }}
 				>
@@ -113,4 +120,4 @@ export function StatsCard({
 			)}
 		</div>
 	)
-}
+})

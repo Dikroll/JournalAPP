@@ -1,5 +1,4 @@
-// journalWeb/src/features/appUpdate/ui/AppUpdateSheet.tsx
-
+import { BottomSheet, IconButton } from '@/shared/ui'
 import { Download, X } from 'lucide-react'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 
@@ -20,23 +19,8 @@ export function AppUpdateSheet() {
 	const isError = status === 'error'
 
 	return (
-		<div
-			className='fixed inset-0 z-[300] flex items-end justify-center'
-			style={{
-				background: 'rgba(0,0,0,0.6)',
-				backdropFilter: 'blur(4px)',
-			}}
-		>
-			<div
-				className='w-full max-w-lg rounded-t-[28px] p-5 space-y-4'
-				style={{
-					background: '#1A1C21',
-					border: '1px solid rgba(255,255,255,0.08)',
-				}}
-			>
-				{/* Drag indicator */}
-				<div className='w-10 h-1 bg-white/20 rounded-full mx-auto' />
-
+		<BottomSheet onBackdropClick={isDownloading ? undefined : dismiss} zIndex={300} maxWidth='max-w-lg'>
+			<div className='space-y-4'>
 				{/* Header */}
 				<div className='flex items-start justify-between'>
 					<div className='flex items-center gap-3'>
@@ -53,15 +37,12 @@ export function AppUpdateSheet() {
 						</div>
 					</div>
 
-					{/* Закрыть только если не качаем */}
 					{!isDownloading && (
-						<button
-							type='button'
+						<IconButton
+							icon={<X size={14} />}
 							onClick={dismiss}
-							className='w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-[#6B7280] hover:text-[#F2F2F2]'
-						>
-							<X size={14} />
-						</button>
+							aria-label='Закрыть'
+						/>
 					)}
 				</div>
 
@@ -130,6 +111,6 @@ export function AppUpdateSheet() {
 					</div>
 				)}
 			</div>
-		</div>
+		</BottomSheet>
 	)
 }

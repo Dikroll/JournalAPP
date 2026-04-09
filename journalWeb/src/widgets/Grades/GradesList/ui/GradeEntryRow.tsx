@@ -1,6 +1,6 @@
 import type { GradeEntryExpanded } from '@/entities/grades'
 import { GRADE_TYPE_CONFIG, getGradeStyle } from '@/entities/grades'
-import { CheckCircle, Clock, GraduationCap, XCircle } from 'lucide-react'
+import { CheckCircle, Clock, GraduationCap, Timer, XCircle } from 'lucide-react'
 
 interface Props {
 	entry: GradeEntryExpanded
@@ -42,12 +42,19 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 				)}
 
 				<div className='flex items-center flex-wrap gap-1 mt-1.5'>
-					{entry.attended ? (
+					{entry.attended === 'present' && (
 						<span className='flex items-center gap-1 text-[11px] text-status-checked font-medium'>
 							<CheckCircle size={11} className='flex-shrink-0' />
 							Посетил
 						</span>
-					) : (
+					)}
+					{entry.attended === 'late' && (
+						<span className='flex items-center gap-1 text-[11px] font-medium' style={{ color: '#F59E0B' }}>
+							<Timer size={11} className='flex-shrink-0' />
+							Опоздание
+						</span>
+					)}
+					{entry.attended === 'absent' && (
 						<span className='flex items-center gap-1 text-[11px] text-status-overdue font-medium'>
 							<XCircle size={11} className='flex-shrink-0' />
 							Пропуск
@@ -89,9 +96,13 @@ export function GradeEntryRow({ entry, showSubject = true }: Props) {
 							</div>
 						))}
 					</div>
-				) : entry.attended ? (
+				) : entry.attended === 'present' ? (
 					<div className='w-8 h-8 rounded-xl flex items-center justify-center bg-app-surface-strong border border-app-border'>
 						<Clock size={16} className='text-app-muted' />
+					</div>
+				) : entry.attended === 'late' ? (
+					<div className='w-8 h-8 rounded-xl flex items-center justify-center' style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)' }}>
+						<Timer size={16} style={{ color: '#F59E0B' }} />
 					</div>
 				) : (
 					<div className='w-8 h-8 rounded-xl flex items-center justify-center bg-overdue-bg border border-status-overdue/30'>

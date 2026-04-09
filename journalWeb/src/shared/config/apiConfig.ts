@@ -11,6 +11,7 @@ class ApiConfig {
 	readonly SCHEDULE_TODAY = '/schedule/today'
 	readonly SCHEDULE_BY_DATE = '/schedule/by-date'
 	readonly SCHEDULE_MONTH = '/schedule/month'
+	readonly SCHEDULE_WEEK = '/schedule/week'
 
 	// dashboard
 	readonly DASHBOARD_COUNTERS = '/dashboard/counters'
