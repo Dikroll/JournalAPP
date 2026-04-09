@@ -64,7 +64,7 @@ export function ScheduleWeekView() {
 	)
 
 	return (
-		<div className='flex flex-col gap-3'>
+		<div className='flex flex-col gap-5'>
 			{weekDays.map((dateStr, idx) => {
 				const dayLessons = byDate[dateStr] ?? []
 				const isToday = dateStr === today
@@ -92,28 +92,12 @@ export function ScheduleWeekView() {
 				}
 
 				return (
-					<div
+					<section
 						key={dateStr}
-						className={`rounded-[24px] border overflow-hidden ${isPast && !isToday ? 'opacity-60' : ''}`}
-						style={{
-							background: 'var(--color-surface)',
-							borderColor: isToday
-								? 'var(--color-brand)'
-								: 'var(--color-border)',
-							borderWidth: isToday ? '1.5px' : '1px',
-							boxShadow: isToday ? 'var(--shadow-card)' : undefined,
-						}}
+						className={isPast && !isToday ? 'opacity-60' : ''}
 					>
-						{/* Card header */}
-						<div
-							className='flex items-center justify-between px-4 py-3'
-							style={{
-								borderBottom: isEmpty ? 'none' : '1px solid var(--color-border)',
-								background: isToday
-									? 'var(--color-brand-subtle)'
-									: undefined,
-							}}
-						>
+						{/* Section header */}
+						<div className='flex items-center justify-between mb-2.5 px-1'>
 							<div className='flex items-center gap-2'>
 								<span
 									className='text-xs font-bold w-6 shrink-0'
@@ -141,9 +125,9 @@ export function ScheduleWeekView() {
 							)}
 						</div>
 
-						{/* Lessons */}
-						{!isEmpty && (
-							<div className='p-3 flex flex-col gap-2'>
+						{/* Lessons — flat list */}
+						{!isEmpty ? (
+							<ul className='flex flex-col gap-3'>
 								{dayLessons.map(lesson => (
 									<LessonCard
 										key={`${lesson.started_at}-${lesson.room}`}
@@ -155,9 +139,11 @@ export function ScheduleWeekView() {
 										}
 									/>
 								))}
-							</div>
+							</ul>
+						) : (
+							<p className='text-app-muted text-sm px-1'>Пар нет</p>
 						)}
-					</div>
+					</section>
 				)
 			})}
 		</div>

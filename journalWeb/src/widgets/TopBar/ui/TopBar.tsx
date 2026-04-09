@@ -1,3 +1,4 @@
+import { useFeedbackStore } from '@/entities/feedback'
 import { useUserStore } from '@/entities/user'
 import {
 	getUnreadCount,
@@ -39,6 +40,8 @@ export const TopBar = memo(function TopBar() {
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
 	const entries = latestRelease ? [toChangelogFeedEntry(latestRelease)] : undefined
 	const unreadCount = getUnreadCount(lastReadChangelogId, entries)
+	const pendingFeedbackCount = useFeedbackStore(s => s.pending.length)
+	const hasBadge = unreadCount > 0 || pendingFeedbackCount > 0
 
 	if (!fullName) return null
 
@@ -101,10 +104,8 @@ export const TopBar = memo(function TopBar() {
 					className='relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border border-app-border bg-app-surface transition-all duration-200 hover:bg-app-surface-hover hover:border-brand-border active:scale-95 ml-3'
 				>
 					<Bell size={18} className='text-app-muted' />
-					{unreadCount > 0 && (
-						<span className='absolute -top-0.5 -right-0.5 min-w-[16px] h-4 rounded-full bg-brand text-white text-[9px] font-bold flex items-center justify-center px-1 leading-none'>
-							{unreadCount > 9 ? '9+' : unreadCount}
-						</span>
+					{hasBadge && (
+						<span className='absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-brand border-2' style={{ borderColor: 'var(--color-surface)' }} />
 					)}
 				</button>
 			</div>

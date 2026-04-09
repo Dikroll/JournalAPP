@@ -43,6 +43,9 @@ export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
 
+// EvaluateLesson
+export { EvaluateLessonList } from './EvaluateLesson/ui/EvaluateLessonList'
+
 // Library
 export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'
 export { LibraryTabs } from './Library/LibraryTabs/ui/LibraryTabs'

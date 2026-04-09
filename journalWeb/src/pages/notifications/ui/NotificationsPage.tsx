@@ -7,13 +7,11 @@ import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
 import { useAppUpdate, useAppUpdateStore } from '@/features/appUpdate'
 import { fetchLatestAppRelease, toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { Badge, IconButton } from '@/shared/ui'
-import { formatDate } from '@/shared/utils/dateUtils'
+import { IconButton } from '@/shared/ui'
+import { EvaluateLessonList } from '@/widgets'
 import {
 	ArrowLeft,
-	Bell,
-	BookOpen,
-	CheckCircle,
+	ClipboardCheck,
 	Download,
 	Megaphone,
 	RefreshCw,
@@ -21,94 +19,16 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ChangelogTab } from './ChangelogTab'
+import { ComingSoonTab } from './ComingSoonTab'
 
-type Tab = 'changelog' | 'news' | 'reviews'
+type Tab = 'changelog' | 'feedback' | 'news'
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
 	{ key: 'changelog', label: 'Обновления', icon: <Sparkles size={13} /> },
+	{ key: 'feedback', label: 'Оценки', icon: <ClipboardCheck size={13} /> },
 	{ key: 'news', label: 'Новости', icon: <Megaphone size={13} /> },
-	{ key: 'reviews', label: 'Отзывы', icon: <BookOpen size={13} /> },
 ]
-
-function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
-	return (
-		<div className='space-y-3'>
-			{entries.map((entry, idx) => (
-				<div
-					key={entry.id}
-					className='bg-app-surface rounded-[24px] p-4 border border-app-border'
-					style={{ boxShadow: 'var(--shadow-card)' }}
-				>
-					<div className='flex items-center justify-between mb-3'>
-						<div className='flex items-center gap-2'>
-							<span
-								className='text-xs font-bold px-2 py-0.5 rounded-full'
-								style={{
-									background:
-										idx === 0
-											? 'var(--color-brand-subtle)'
-											: 'var(--color-surface-strong)',
-									color:
-										idx === 0
-											? 'var(--color-brand)'
-											: 'var(--color-text-muted)',
-									border:
-										idx === 0
-											? '1px solid var(--color-brand-border)'
-											: '1px solid var(--color-border)',
-								}}
-							>
-								v{entry.version}
-							</span>
-							{idx === 0 && (
-								<Badge variant='success' size='xs'>Новое</Badge>
-							)}
-						</div>
-						{entry.date && (
-							<span className='text-xs text-app-muted'>
-								{formatDate(entry.date)}
-							</span>
-						)}
-					</div>
-
-					<ul className='space-y-1.5'>
-						{entry.items.map((item, i) => (
-							<li key={i} className='flex items-start gap-2'>
-								<CheckCircle
-									size={13}
-									className='text-status-checked flex-shrink-0 mt-0.5'
-								/>
-								<span className='text-sm text-app-text leading-snug'>
-									{item}
-								</span>
-							</li>
-						))}
-					</ul>
-				</div>
-			))}
-		</div>
-	)
-}
-
-function ComingSoonTab({ label }: { label: string }) {
-	return (
-		<div className='flex flex-col items-center justify-center py-16 gap-3'>
-			<div
-				className='w-16 h-16 rounded-[20px] flex items-center justify-center'
-				style={{
-					background: 'var(--color-surface-strong)',
-					border: '1px solid var(--color-border)',
-				}}
-			>
-				<Bell size={24} className='text-app-muted' />
-			</div>
-			<p className='text-base font-semibold text-app-text'>{label}</p>
-			<p className='text-sm text-app-muted text-center px-8'>
-				Раздел появится в одном из следующих обновлений
-			</p>
-		</div>
-	)
-}
 
 export function NotificationsPage() {
 	const navigate = useNavigate()
@@ -141,7 +61,6 @@ export function NotificationsPage() {
 		[latestRelease],
 	)
 
-	// Помечаем прочитанным только когда загружен реальный релиз, не fallback
 	useEffect(() => {
 		if (latestRelease && entries.length > 0) {
 			setLastRead(entries[0].id)
@@ -253,10 +172,8 @@ export function NotificationsPage() {
 					</button>
 				)}
 				{activeTab === 'changelog' && <ChangelogTab entries={entries} />}
+				{activeTab === 'feedback' && <EvaluateLessonList />}
 				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
-				{activeTab === 'reviews' && (
-					<ComingSoonTab label='Отзывы преподавателей' />
-				)}
 			</div>
 		</div>
 	)
