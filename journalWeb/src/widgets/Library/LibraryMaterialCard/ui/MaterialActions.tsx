@@ -1,4 +1,6 @@
 import { canOpenMaterial, getOpenUrl } from '@/shared/lib/materialUrls'
+import { Capacitor } from '@capacitor/core'
+import { Browser } from '@capacitor/browser'
 import { Download, ExternalLink } from 'lucide-react'
 
 interface Props {
@@ -9,13 +11,21 @@ interface Props {
 	materialType: number
 }
 
+async function openUrl(url: string) {
+	if (Capacitor.isNativePlatform()) {
+		await Browser.open({ url })
+	} else {
+		window.open(url, '_blank')
+	}
+}
+
 export function MaterialActions({
 	url,
 	link,
 	downloadUrl,
 	materialType,
 }: Props) {
-	const openUrl = getOpenUrl(materialType, url, link)
+	const resolvedOpenUrl = getOpenUrl(materialType, url, link)
 	const canOpen = canOpenMaterial(materialType, url, link)
 	const canDownload = !!downloadUrl
 
@@ -23,12 +33,12 @@ export function MaterialActions({
 
 	const handleOpen = (e: React.MouseEvent) => {
 		e.stopPropagation()
-		if (openUrl) window.open(openUrl, '_blank')
+		if (resolvedOpenUrl) openUrl(resolvedOpenUrl)
 	}
 
 	const handleDownload = (e: React.MouseEvent) => {
 		e.stopPropagation()
-		if (downloadUrl) window.open(downloadUrl, '_blank')
+		if (downloadUrl) openUrl(downloadUrl)
 	}
 
 	return (
