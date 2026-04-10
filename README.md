@@ -1,453 +1,301 @@
-# 📖 JournalAPP - Индекс документации
+# JournalAPP - Индекс документации
 
-## 🚀 Быстрый старт
+## Быстрый старт
 
 ```bash
 # 1. Установка зависимостей
 cd journalWeb
-npm install
+bun install
 
 # 2. Запуск dev сервера
-npm run dev
+bun run dev
 
 # 3. Открыть в браузере
 # http://localhost:5173
-
-# 4. Логин с demo аккаунтом
-# username: demo
-# password: demo123
 ```
 
 ---
 
-## 📚 Справочник документов
+## Справочник документов
 
 ### Основная документация
 
-| Документ                                                              | Назначение                                                         |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [📖 DOCUMENTATION.md](./DOCUMENTATION.md)                             | **Полный обзор проекта** - Обзор, стек, модули, API, hooks         |
-| [🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)                               | **Архитектура FSD** - Слои, паттерны, data flow, rules             |
-| [🌐 API_REFERENCE.md](./API_REFERENCE.md)                             | **API Endpoints** - Все endpoints, request/response примеры        |
-| [🚀 DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md)                     | **Для разработчиков** - Как добавлять features, debugging, testing |
-| [🎨 UI_COMPONENTS_GUIDE.md](./journalWeb/docs/UI_COMPONENTS_GUIDE.md) | **UI паттерны** - Компоненты, Tailwind, accessibility              |
-| [📦 DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)                       | **Deployment & CI/CD** - Build, production, мобильные apps         |
+| Документ                                              | Назначение                                                        |
+| ----------------------------------------------------- | ----------------------------------------------------------------- |
+| [DOCUMENTATION.md](journalWeb/docs/DOCUMENTATION.md)  | **Полный обзор проекта** — стек, модули, API, hooks               |
+| [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md)    | **Архитектура FSD** — слои, паттерны, data flow, правила          |
+| [API_REFERENCE.md](journalWeb/docs/API_REFERENCE.md)  | **API Endpoints** — все endpoints, request/response примеры       |
+| [SRC_STRUCTURE.md](journalWeb/docs/SRC_STRUCTURE.md)  | **Структура кода** — все файлы, экспорты, сигнатуры функций       |
+| [UI_COMPONENTS_GUIDE.md](journalWeb/docs/UI_COMPONENTS_GUIDE.md) | **UI паттерны** — компоненты, Tailwind, accessibility  |
 
 ---
 
-## 🎯 Руководства для специфичных задач
+## Руководства для специфичных задач
 
 ### Я хочу...
 
 #### Начать разработку
 
-1. Прочитайте [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Начало работы"
-2. Изучите структуру в [DOCUMENTATION.md](./DOCUMENTATION.md) - раздел "Структура проекта"
-3. Поймите архитектуру в [ARCHITECTURE.md](./ARCHITECTURE.md)
+1. Прочитайте [DOCUMENTATION.md](journalWeb/docs/DOCUMENTATION.md) — раздел «Установка и запуск»
+2. Изучите структуру в [SRC_STRUCTURE.md](journalWeb/docs/SRC_STRUCTURE.md)
+3. Поймите архитектуру в [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md)
 
 #### Добавить новую сущность (Entity)
 
-1. Следуйте примеру в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Добавление новой Entity"
-2. Используйте паттерн из [ARCHITECTURE.md](./ARCHITECTURE.md) - раздел "Слой 2: Entities"
-3. Проверьте API endpoints в [API_REFERENCE.md](./API_REFERENCE.md)
+1. Используйте паттерн из [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md) — раздел «Слой 2: Entities»
+2. Проверьте API endpoints в [API_REFERENCE.md](journalWeb/docs/API_REFERENCE.md)
 
 #### Добавить новую функцию (Feature)
 
-1. Прочитайте примеры в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Добавление новой Feature"
-2. Изучите паттерны в [ARCHITECTURE.md](./ARCHITECTURE.md) - раздел "Слой 3: Features"
+1. Изучите паттерны в [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md) — раздел «Слой 3: Features»
 
 #### Добавить страницу
 
-1. Используйте пример в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Добавление новой страницы"
-2. Дизайн компонентов изучите в [UI_COMPONENTS_GUIDE.md](./journalWeb/docs/UI_COMPONENTS_GUIDE.md)
+1. Посмотрите примеры в [SRC_STRUCTURE.md](journalWeb/docs/SRC_STRUCTURE.md) — раздел «Pages»
+2. Дизайн компонентов изучите в [UI_COMPONENTS_GUIDE.md](journalWeb/docs/UI_COMPONENTS_GUIDE.md)
 
 #### Работать с API
 
-1. Найдите endpoint в [API_REFERENCE.md](./API_REFERENCE.md)
-2. Создайте API функцию следуя примерам в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "API запросы"
+1. Найдите endpoint в [API_REFERENCE.md](journalWeb/docs/API_REFERENCE.md)
 
 #### Создать UI компонент
 
-1. Изучите паттерны в [UI_COMPONENTS_GUIDE.md](./journalWeb/docs/UI_COMPONENTS_GUIDE.md)
-2. Используйте Tailwind классы из раздела "Tailwind CSS Классы"
-3. Следуйте accessibility guidelines
+1. Изучите паттерны в [UI_COMPONENTS_GUIDE.md](journalWeb/docs/UI_COMPONENTS_GUIDE.md)
+2. Следуйте accessibility guidelines
 
-#### Задеплоить приложение
+#### Собрать релиз Android
 
-1. Подготовьте через [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - раздел "Подготовка к продакшену"
-2. Выберите вариант деплоя для вашей платформы
-3. Настройте CI/CD pipeline
-
-#### Задеплоить на мобильные (iOS/Android)
-
-1. Используйте [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - раздел "Mobile App Distribution"
-2. Настройте Capacitor в [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - раздел "Capacitor Configuration"
-
-#### Отладить проблему
-
-1. Используйте tips в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Debugging"
-2. Проверьте troubleshooting в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Troubleshooting"
-
-#### Оптимизировать производительность
-
-1. Используйте tips в [DEVELOPMENT_GUIDE.md](./DEVELOPMENT_GUIDE.md) - раздел "Performance"
-2. Используйте patterns в [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - раздел "Performance Optimization"
+1. Запустите GitHub Actions workflow `Android Release`
+2. Укажите версию, build number и release notes
+3. Формат release notes: `add: Новая фича\nfix: Баг\nchange: Изменение`
 
 ---
 
-## 📋 Шпаргалка команд
+## Шпаргалка команд
 
 ### Разработка
 
 ```bash
 # Запуск dev сервера
-npm run dev
+bun run dev
 
 # Lint код
-npm run lint
+bun run lint
+
+# Запуск тестов
+bun run test
 
 # Build для production
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 ```
 
 ### Мобильная разработка (Capacitor)
 
 ```bash
 # Build и sync с платформами
-npm run build
-npx cap sync
+bun run build
+bunx cap sync
 
-# Sync с iOS и открыть Xcode
-npx cap open ios
-
-# Sync с Android и открыть Android Studio
-npx cap open android
+# Открыть Android Studio
+bunx cap open android
 ```
 
 ### Git коммиты
 
 ```bash
-# Правильный формат commits
 git commit -m "feat: add assignment feature"
 git commit -m "fix: resolve grades bug"
 git commit -m "refactor: improve api client"
-git commit -m "docs: update README"
 ```
 
 ---
 
-## 🏗️ Архитектурные слои
-
-### Иерархия слоёв
+## Архитектурные слои (FSD)
 
 ```
 app/          ← Router, Layout, Theme
-	↑
+  ↑
 pages/        ← Screen компоненты
-	↑
+  ↑
+widgets/      ← Составные UI блоки
+  ↑
 features/     ← Business logic
-	↑
+  ↑
 entities/     ← Domain entities с stores
-	↑
+  ↑
 shared/       ← Переиспользуемые компоненты, API, utils
 ```
 
-**Правило:** нижние слои не знают о верхних
-
-### Когда что использовать
+**Правило:** нижние слои не знают о верхних.
 
 | Слой          | Использование                              |
 | ------------- | ------------------------------------------ |
 | **shared/**   | API, UI компоненты, хуки, утилиты          |
 | **entities/** | Domain сущности, stores, API для сущностей |
 | **features/** | Бизнес-функции, комбинирование entities    |
+| **widgets/**  | Составные UI виджеты                       |
 | **pages/**    | Экраны приложения                          |
-| **app/**      | Глобальная конфигурация маршрутов          |
+| **app/**      | Глобальная конфигурация, роутер, тема      |
 
 ---
 
-## 🗂️ Структура папок quick reference
+## Структура папок
 
 ```
 src/
 ├── app/
-│   ├── App.tsx           ← Root компонент
-│   ├── hooks/            ← App-level хуки
-│   ├── layouts/          ← Layouts
-│   ├── lib/              ← Утилиты (resetAllStores)
-│   └── router/           ← Routing конфигурация
+│   ├── App.tsx            ← Root компонент
+│   ├── hooks/             ← App-level хуки (useMidnightRefresh)
+│   ├── layouts/           ← Layouts
+│   ├── ui/                ← ThemeToggleButton
+│   └── router/            ← Routing конфигурация
 │
-├── entities/             ← Domain сущности
-│   ├── user/             ← User profile
-│   ├── grades/           ← Оценки
-│   ├── homework/         ← Домашние задания
-│   ├── schedule/         ← Расписание
-│   └── ... (другие)
+├── entities/              ← Domain сущности
+│   ├── user/              ← Пользователь
+│   ├── grades/            ← Оценки
+│   ├── homework/          ← Домашние задания
+│   ├── schedule/          ← Расписание
+│   ├── dashboard/         ← Главная панель
+│   ├── exam/              ← Экзамены
+│   ├── feedback/          ← Оценка занятий
+│   ├── leaderboard/       ← Лидерборд
+│   ├── library/           ← Библиотека материалов
+│   ├── payment/           ← Платежи
+│   ├── profile/           ← Профиль
+│   ├── review/            ← Отзывы
+│   └── subject/           ← Предметы
 │
-├── features/             ← Бизнес-функции
-│   ├── auth/             ← Аутентификация
-│   ├── sendHomework/     ← Отправка ДЗ
-│   ├── changeUser/       ← Смена аккаунта
-│   └── ... (другие)
+├── features/              ← Бизнес-функции
+│   ├── appUpdate/         ← Обновление приложения (APK)
+│   ├── auth/              ← Аутентификация
+│   ├── changeUser/        ← Смена аккаунта
+│   ├── clearCache/        ← Очистка кеша
+│   ├── deleteHomework/    ← Удаление ДЗ
+│   ├── downloadHomework/  ← Скачивание ДЗ
+│   ├── initUser/          ← Инициализация пользователя
+│   ├── logout/            ← Логаут
+│   ├── playCatGame/       ← Кот-игра (пасхалка)
+│   ├── playVideo/         ← Воспроизведение видео
+│   ├── refreshGrades/     ← Обновление оценок
+│   ├── refreshHomework/   ← Обновление ДЗ
+│   ├── refreshLibrary/    ← Обновление библиотеки
+│   ├── refreshSchedule/   ← Обновление расписания
+│   ├── selectSpec/        ← Выбор специальности
+│   ├── sendHomework/      ← Отправка ДЗ
+│   ├── sendNotifications/ ← Уведомления (changelog, feedback)
+│   ├── showOnboarding/    ← Онбординг
+│   ├── showPreview/       ← Предпросмотр файлов
+│   └── sortSubjects/      ← Сортировка предметов
 │
-├── pages/                ← Страницы
-│   ├── home/
-│   ├── grades/
-│   ├── homework/
-│   └── ... (другие)
+├── pages/                 ← Страницы
+│   ├── home/              ← Главная
+│   ├── grades/            ← Оценки
+│   ├── homework/          ← Домашние задания
+│   ├── schedule/          ← Расписание
+│   ├── library/           ← Библиотека
+│   ├── profile/           ← Профиль
+│   ├── profileDetail/     ← Детали профиля
+│   ├── payment/           ← Платежи
+│   ├── notifications/     ← Уведомления
+│   └── login/             ← Вход
 │
-├── shared/               ← Общие ресурсы
-│   ├── api/              ← Axios инстанц
-│   ├── config/           ← Config и env
-│   ├── hooks/            ← Переиспользуемые хуки
-│   ├── lib/              ← Утилиты
-│   ├── styles/           ← Глобальные стили
-│   ├── types/            ← TypeScript типы
-│   └── ui/               ← Переиспользуемые компоненты
+├── widgets/               ← Составные компоненты
+│   ├── TopBar/            ← Верхняя панель
+│   ├── BottomBar/         ← Нижняя навигация
+│   ├── DashboardCharts/   ← Графики дашборда
+│   ├── EvaluateLesson/    ← Оценка занятий
+│   ├── FutureExams/       ← Предстоящие экзамены
+│   ├── Grades/            ← Компонент оценок
+│   ├── HomeworkList/      ← Список ДЗ
+│   ├── Leaderboard/       ← Лидерборд
+│   ├── Library/           ← Библиотека
+│   ├── Loading/           ← Загрузочные экраны
+│   ├── Payment/           ← Компоненты платежей
+│   ├── Profile/           ← Компоненты профиля
+│   ├── ReviewList/        ← Отзывы
+│   └── Schedule/          ← Расписание
 │
-└── widgets/              ← Составные компоненты
-		├── TopBar/
-		├── BottomBar/
-		├── HomeworkList/
-		└── ... (другие)
+├── shared/                ← Общие ресурсы
+│   ├── api/               ← Axios инстанц
+│   ├── config/            ← Config, env, endpoints
+│   ├── hooks/             ← Переиспользуемые хуки
+│   ├── lib/               ← Утилиты (кеш, appRelease, тема, и др.)
+│   ├── styles/            ← Глобальные стили, тема
+│   ├── types/             ← TypeScript типы
+│   ├── ui/                ← Переиспользуемые компоненты
+│   └── utils/             ← dateUtils, formatUtils, nameUtils
+│
+└── main.tsx               ← Точка входа
 ```
 
 ---
 
-## 🔑 Ключевые концепции
+## Ключевые концепции
 
 ### Zustand Store
 
-Паттерн для управления состоянием:
-
 ```typescript
-// Определение
 const useMyStore = create<MyState>()(
-	persist(
-		set => ({
-			data: [],
-			setData: data => set({ data }),
-			reset: () => set({ data: [] }),
-		}),
-		{ name: 'my-store' },
-	),
+  persist(
+    set => ({
+      data: [],
+      setData: data => set({ data }),
+      reset: () => set({ data: [] }),
+    }),
+    { name: 'my-store' },
+  ),
 )
 
 // Использование
 const data = useMyStore(s => s.data)
-const setData = useMyStore(s => s.setData)
 ```
 
 ### API запросы
 
-Паттерн для работы с API:
-
 ```typescript
-// API функция
 export const myApi = {
-	getData: () => api.get<MyData[]>('/endpoint'),
-}
-
-// Hook для загрузки
-export function useMyData() {
-	const [data, setData] = useState<MyData[]>([])
-	const load = useCallback(async () => {
-		const res = await myApi.getData()
-		setData(res.data)
-	}, [])
-
-	return { data, load }
+  getData: () => api.get<MyData[]>('/endpoint'),
 }
 ```
 
-### Кеширование
+### Changelog формат (для релизов)
 
-Стратегия кеширования данных:
+В поле `release_notes` GitHub Actions используйте `\n` для разделения строк:
 
-```typescript
-const CACHE_TTL = 15 * 60 * 1000 // 15 минут
-
-if (isCacheValid(loadedAt, CACHE_TTL)) {
-	return cachedData
-}
+```
+add: Новая функция\nfix: Исправление бага\nchange: Изменение UI\nimprove: Улучшение UX
 ```
 
-### Protected Routes
-
-Защита маршрутов от неаутентифицированных пользователей:
-
-```typescript
-<Route
-	path="/protected"
-	element={
-		<ProtectedRoute>
-			<Page />
-		</ProtectedRoute>
-	}
-/>
-```
+Доступные лейблы: `add`, `feat`, `fix`, `change`, `update`, `improve`, `remove`, `refactor`.
 
 ---
 
-## 🎯 Типичный workflow
-
-### Добавление нового домена
-
-```
-1. Создайте entity (User, Grades, Homework)
-	 └── api/ (API запросы)
-	 └── model/ (Zustand store, типы)
-	 └── hooks/ (Хуки для загрузки)
-	 └── index.ts (Public API)
-
-2. Создайте features (Auth, SendHomework, ChangeUser)
-	 └── hooks/ (Business logic)
-	 └── ui/ (Компоненты функции)
-	 └── index.ts (Public API)
-
-3. Создайте страницу (LoginPage, HomePage)
-	 └── ui/ (Page компонент)
-	 └── index.ts
-
-4. Добавьте маршрут в router/index.tsx
-
-5. Добавьте в pageConfig
-```
-
----
-
-## 🔐 Security Best Practices
-
-- ✅ Используйте HTTPS в production
-- ✅ Не коммитьте secrets в git
-- ✅ Используйте environment variables для sensitive data
-- ✅ Валидируйте input от пользователя
-- ✅ Санитизируйте вывод
-- ✅ Используйте CSP headers
-- ✅ Включите CORS
-
----
-
-## 📞 Контакты и помощь
-
-### Остались вопросы?
-
-1. **Поиск в документации** - используйте Ctrl+F
-2. **Примеры в коде** - ищите похожий функционал в entities/features
-3. **Типы TypeScript** - hover в IDE покажет помощь
-4. **Логирование** - добавьте console.log для отладки
-
-### Структура логирования
-
-```typescript
-// Используйте префиксы для лучшей отладки
-console.log('[useGrades] Loading grades...')
-console.warn('[useGrades] Cache stale, reloading')
-console.error('[useGrades] Failed:', error)
-```
-
----
-
-## 📊 Document Map
-
-```
-DOCUMENTATION.md
-├── Overview & Stack
-├── Project Structure
-├── Architecture (high-level)
-├── Setup & Running
-├── Modules guide
-├── State management
-└── API integration
-
-ARCHITECTURE.md
-├── FSD Pattern (detailed)
-├── Layer descriptions
-├── Dependencies rules
-├── Data flow
-└── Examples
-
-API_REFERENCE.md
-├── All endpoints
-├── Request/Response format
-├── Error handling
-├── Auth & tokens
-└── Rate limiting
-
-DEVELOPMENT_GUIDE.md
-├── Getting started
-├── Adding Entity
-├── Adding Feature
-├── Adding Page
-├── Styling
-├── Debugging
-├── Testing (planned)
-└── Troubleshooting
-
-UI_COMPONENTS_GUIDE.md
-├── Component patterns
-├── Tailwind guidelines
-├── Form patterns
-├── Modals & Lists
-├── Accessibility
-└── Performance
-
-DEPLOYMENT_GUIDE.md
-├── Production setup
-├── Web deployment
-├── Mobile build
-├── Docker & Nginx
-├── CI/CD
-└── Monitoring
-```
-
----
-
-## 📈 Версия документации
-
-| Версия | Дата      | Изменения                  |
-| ------ | --------- | -------------------------- |
-| 1.0    | Март 2026 | Первая версия документации |
-
----
-
-## ✅ Checklist перед коммитом
+## Checklist перед коммитом
 
 - [ ] Код следует FSD архитектуре
 - [ ] Нет console.log в production коде
 - [ ] TypeScript типы корректны
 - [ ] Store правильно сброшен при logout
 - [ ] API запросы обрабатывают ошибки
-- [ ] Компоненты responsive & dark-mode friendly
-- [ ] Доступность (A11y) проверена
-- [ ] Нет хардкода, используются env variables
-- [ ] Документация обновлена если нужно
+- [ ] Компоненты responsive и поддерживают обе темы
 
 ---
 
-## 🎓 Обучающие материалы
+## Обучающие материалы
 
-### Для изучения технологий
-
-- [React 19 Documentation](https://react.dev)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Vite Guide](https://vitejs.dev/guide/)
-- [Zustand Documentation](https://github.com/pmndrs/zustand)
+- [React 19](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org/docs/)
+- [Vite](https://vitejs.dev/guide/)
+- [Zustand](https://github.com/pmndrs/zustand)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [React Router v7](https://reactrouter.com)
-- [Capacitor Guide](https://capacitorjs.com/docs)
-
-### Статьи и примеры
-
-- FSD (Feature-Sliced Design) - https://feature-sliced.design
-- Zustand Store Patterns - https://github.com/pmndrs/zustand/discussions
-- React Performance - https://react.dev/learn/render-and-commit
+- [Capacitor](https://capacitorjs.com/docs)
+- [Feature-Sliced Design](https://feature-sliced.design)
 
 ---
 
-**Последнее обновление:** Март 2026  
-**Статус:** ✅ В разработке  
-**Версия проекта:** 0.0.0
+**Последнее обновление:** Апрель 2026
+**Статус:** В разработке

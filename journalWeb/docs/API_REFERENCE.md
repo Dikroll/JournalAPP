@@ -829,6 +829,37 @@ interface ReviewItem {
 
 ---
 
+### App Version
+
+#### Get Latest App Version
+
+```
+GET /app/version
+```
+
+**Response (200):**
+
+```typescript
+interface AppReleaseInfo {
+  version: string    // e.g. "1.3.0"
+  build: number      // e.g. 15
+  apk_url: string    // URL to download APK
+  changelog: string  // Multiline changelog with labels
+}
+```
+
+**Changelog format:**
+
+```
+add: Новая функция
+fix: Исправление бага
+change: Изменение UI
+```
+
+This endpoint is called by the `appUpdate` feature to check for updates. The `version.json` file is updated automatically by the Android Release CI workflow.
+
+---
+
 ## Error Handling
 
 ### Стандартные HTTP коды
@@ -1083,4 +1114,4 @@ GET /api/v2/endpoint
 ---
 
 **Документация API версия:** 1.0  
-**Последнее обновление:** Март 2026
+**Последнее обновление:** Апрель 2026

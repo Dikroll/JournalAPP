@@ -1,12 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { ChangelogFeedEntry } from '@/shared/lib/appRelease'
 
-export interface ChangelogEntry {
-	id: string
-	version: string
-	date?: string
-	items: string[]
-}
+export type ChangelogEntry = ChangelogFeedEntry
 
 export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 	{
@@ -14,17 +10,17 @@ export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 		version: '1.3.0',
 		date: '2026-04-09',
 		items: [
-			'Оценка занятий — оценивайте пары и преподавателей прямо из уведомлений',
-			'Расписание на неделю — обновлённый дизайн, плоский список вместо вложенных карточек',
-			'Библиотека — улучшены заглушки для материалов без обложки',
-			'Уведомления — индикатор на иконке при наличии непрочитанного',
+			{ label: 'add', text: 'Оценка занятий — оценивайте пары и преподавателей прямо из уведомлений' },
+			{ label: 'change', text: 'Расписание на неделю — обновлённый дизайн, плоский список вместо вложенных карточек' },
+			{ label: 'improve', text: 'Библиотека — улучшены заглушки для материалов без обложки' },
+			{ label: 'add', text: 'Уведомления — индикатор на иконке при наличии непрочитанного' },
 		],
 	},
 	{
 		id: 'v1.0.0',
 		version: '1.0.0',
 		date: '2025-02-01',
-		items: ['Первый релиз приложения'],
+		items: [{ label: null, text: 'Первый релиз приложения' }],
 	},
 ]
 

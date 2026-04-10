@@ -11,7 +11,7 @@ export interface ChangelogFeedEntry {
 	id: string
 	version: string
 	date?: string
-	items: string[]
+	items: ChangelogItem[]
 }
 
 function normalizeVersion(version: string): number[] {
@@ -53,18 +53,52 @@ export function isRemoteReleaseNewer(params: {
 	return compareVersions(serverVersion, currentVersion) > 0
 }
 
-export function parseChangelogItems(changelog: string): string[] {
+export interface ChangelogItem {
+	label: string | null
+	text: string
+}
+
+const CHANGELOG_LABEL_RE = /^(fix|add|change|remove|update|feat|refactor|improve):\s*/i
+
+export function parseChangelogItems(changelog: string): ChangelogItem[] {
 	const items = changelog
 		.split('\n')
 		.map(line => line.trim())
 		.filter(Boolean)
 		.map(line => line.replace(/^[-*•]\s*/, ''))
+		.map(line => {
+			const match = line.match(CHANGELOG_LABEL_RE)
+			if (match) {
+				return { label: match[1].toLowerCase(), text: line.slice(match[0].length) }
+			}
+			return { label: null, text: line }
+		})
 
 	if (items.length === 0) {
-		return ['Описание обновления скоро появится']
+		return [{ label: null, text: 'Описание обновления скоро появится' }]
 	}
 
 	return items
+}
+
+export function getChangelogLabelStyle(label: string): string {
+	switch (label) {
+		case 'fix':
+			return 'bg-[#EF4444]/15 text-[#F87171]'
+		case 'add':
+		case 'feat':
+			return 'bg-[#22C55E]/15 text-[#4ADE80]'
+		case 'change':
+		case 'update':
+		case 'improve':
+			return 'bg-[#3B82F6]/15 text-[#60A5FA]'
+		case 'remove':
+			return 'bg-[#F59E0B]/15 text-[#FBBF24]'
+		case 'refactor':
+			return 'bg-[#8B5CF6]/15 text-[#A78BFA]'
+		default:
+			return 'bg-white/10 text-[#9CA3AF]'
+	}
 }
 
 export function toChangelogFeedEntry(

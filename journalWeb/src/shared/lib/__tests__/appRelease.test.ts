@@ -66,24 +66,45 @@ describe('isRemoteReleaseNewer', () => {
 
 describe('parseChangelogItems', () => {
 	it('разбирает строки с дефисом', () => {
-		expect(parseChangelogItems('- Фикс бага\n- Новая фича')).toEqual(['Фикс бага', 'Новая фича'])
+		expect(parseChangelogItems('- Фикс бага\n- Новая фича')).toEqual([
+			{ label: null, text: 'Фикс бага' },
+			{ label: null, text: 'Новая фича' },
+		])
 	})
 
 	it('разбирает строки со звёздочкой и точкой', () => {
-		expect(parseChangelogItems('* Пункт 1\n• Пункт 2')).toEqual(['Пункт 1', 'Пункт 2'])
+		expect(parseChangelogItems('* Пункт 1\n• Пункт 2')).toEqual([
+			{ label: null, text: 'Пункт 1' },
+			{ label: null, text: 'Пункт 2' },
+		])
 	})
 
 	it('игнорирует пустые строки', () => {
-		expect(parseChangelogItems('- Пункт\n\n- Другой')).toEqual(['Пункт', 'Другой'])
+		expect(parseChangelogItems('- Пункт\n\n- Другой')).toEqual([
+			{ label: null, text: 'Пункт' },
+			{ label: null, text: 'Другой' },
+		])
 	})
 
 	it('пустая строка → fallback', () => {
-		expect(parseChangelogItems('')).toEqual(['Описание обновления скоро появится'])
-		expect(parseChangelogItems('   ')).toEqual(['Описание обновления скоро появится'])
+		expect(parseChangelogItems('')).toEqual([{ label: null, text: 'Описание обновления скоро появится' }])
+		expect(parseChangelogItems('   ')).toEqual([{ label: null, text: 'Описание обновления скоро появится' }])
 	})
 
 	it('строки без маркеров остаются как есть', () => {
-		expect(parseChangelogItems('Просто текст')).toEqual(['Просто текст'])
+		expect(parseChangelogItems('Просто текст')).toEqual([{ label: null, text: 'Просто текст' }])
+	})
+
+	it('парсит лейблы fix/add/change', () => {
+		expect(parseChangelogItems('fix: Баг\nadd: Фича\nchange: Дизайн')).toEqual([
+			{ label: 'fix', text: 'Баг' },
+			{ label: 'add', text: 'Фича' },
+			{ label: 'change', text: 'Дизайн' },
+		])
+	})
+
+	it('лейблы регистронезависимы', () => {
+		expect(parseChangelogItems('FIX: Баг')).toEqual([{ label: 'fix', text: 'Баг' }])
 	})
 })
 
@@ -95,7 +116,7 @@ describe('toChangelogFeedEntry', () => {
 	})
 
 	it('парсит changelog в items', () => {
-		expect(toChangelogFeedEntry(release).items).toEqual(['Фикс'])
+		expect(toChangelogFeedEntry(release).items).toEqual([{ label: null, text: 'Фикс' }])
 	})
 
 	it('пробрасывает дату если передана', () => {

@@ -620,6 +620,90 @@ CatGame(): ReactNode
 
 ---
 
+### Feature: App Update (`src/features/appUpdate/`)
+
+#### `index.ts`
+
+**Exports:**
+
+- Hook: `useAppUpdate`
+- Hook: `useInitAppUpdate`
+- Store: `useAppUpdateStore`
+- Component: `AppUpdateSheet`
+
+#### `hooks/useAppUpdate.ts`
+
+**Function Signature:**
+
+```typescript
+useAppUpdate(): {
+  status: UpdateStatus
+  serverInfo: AppReleaseInfo | null
+  latestRelease: AppReleaseInfo | null
+  downloadProgress: number
+  errorMessage: string | null
+  checkForUpdate(): Promise<void>
+  downloadAndInstall(): Promise<void>
+  dismiss(): void
+}
+```
+
+**Features:**
+
+- Dynamic import of Capacitor plugins (App, Filesystem, ApkInstaller)
+- Version comparison via `isRemoteReleaseNewer` from shared/lib
+- APK download with progress tracking
+- Install permission handling
+
+#### `hooks/useInitAppUpdate.ts`
+
+**Function Signature:**
+
+```typescript
+useInitAppUpdate(): void
+```
+
+**Features:** Calls `checkForUpdate()` once after 3s delay on app start.
+
+#### `model/store.ts`
+
+**Exports:** `useAppUpdateStore` (Zustand store)
+**State:**
+
+```typescript
+interface AppUpdateState {
+  status: UpdateStatus // 'idle' | 'checking' | 'available' | 'downloading' | 'error'
+  serverInfo: AppReleaseInfo | null
+  latestRelease: AppReleaseInfo | null
+  downloadProgress: number
+  errorMessage: string | null
+  // + setters, reset, openSheet
+}
+```
+
+**Note:** Uses `AppReleaseInfo` type from `shared/lib/appRelease.ts` (no duplicate type).
+
+#### `ui/AppUpdateSheet.tsx`
+
+**Component:** BottomSheet with update download UI, changelog display with labeled items via `parseChangelogItems()` and `getChangelogLabelStyle()` from shared/lib.
+
+---
+
+### Feature: Send Notifications (`src/features/sendNotifications/`)
+
+#### `model/store.ts`
+
+**Exports:**
+
+- Type: `ChangelogEntry` (alias for `ChangelogFeedEntry` from shared/lib)
+- Constant: `FALLBACK_CHANGELOG`
+- Store: `useNotificationsStore`
+- Function: `getUnreadCount(lastReadId, entries)`
+
+**Note:** `ChangelogEntry` is a type alias for `ChangelogFeedEntry` from `shared/lib/appRelease.ts` — no duplicate interface.
+
+---
+
 ### Feature: Send Homework (`src/features/sendHomework/`)
 
 - Hooks and UI for homework submission
@@ -628,25 +712,67 @@ CatGame(): ReactNode
 
 ### Feature: Refresh Grades (`src/features/refreshGrades/`)
 
-- Utilities for cache invalidation
+- Cache invalidation for grades
 
 ---
 
 ### Feature: Refresh Homework (`src/features/refreshHomework/`)
 
-- Utilities for cache invalidation
+- Cache invalidation for homework
+
+---
+
+### Feature: Refresh Library (`src/features/refreshLibrary/`)
+
+- Cache invalidation for library materials
+
+---
+
+### Feature: Refresh Schedule (`src/features/refreshSchedule/`)
+
+- Cache invalidation for schedule
 
 ---
 
 ### Feature: Sort Subjects (`src/features/sortSubjects/`)
 
-- Utilities for subject ordering
+- Subject ordering utilities
 
 ---
 
 ### Feature: Select Spec (`src/features/selectSpec/`)
 
 - Selection UI for specialization
+
+---
+
+### Feature: Logout (`src/features/logout/`)
+
+- Logout logic and store reset
+
+---
+
+### Feature: Clear Cache (`src/features/clearCache/`)
+
+- Cache clearing functionality
+
+---
+
+### Feature: Show Onboarding (`src/features/showOnboarding/`)
+
+- Onboarding flow for new users
+
+---
+
+### Feature: Show Preview (`src/features/showPreview/`)
+
+- Image/file preview functionality
+
+---
+
+### Feature: Play Video (`src/features/playVideo/`)
+
+- Video playback for library materials
 
 ---
 
@@ -660,7 +786,9 @@ CatGame(): ReactNode
 GradesPage
 HomePage
 HomeworkPage
+LibraryPage
 LoginPage
+NotificationsPage
 ProfileDetailsPage
 ProfilePage
 SchedulePage
@@ -737,6 +865,29 @@ SchedulePage(): ReactNode
 PaymentPage(): ReactNode
 ```
 
+### `src/pages/library/ui/LibraryPage.tsx`
+
+**Component Signature:**
+
+```typescript
+LibraryPage(): ReactNode
+```
+
+### `src/pages/notifications/ui/NotificationsPage.tsx`
+
+**Component Signature:**
+
+```typescript
+NotificationsPage(): ReactNode
+```
+
+**Features:**
+
+- Tabs: changelog, feedback (оценки занятий), news
+- Refresh button for changelog
+- Update banner when new APK available
+- Unread badge tracking via `useNotificationsStore`
+
 ---
 
 ## WIDGETS - Reusable Components
@@ -799,6 +950,18 @@ PaymentPage(): ReactNode
 - `PaymentHistoryCard` - Payment history
 - `PaymentRequisitesCard` - Payment details
 - `PaymentScheduleCard` - Payment schedule
+
+#### Library Widgets
+
+- `Library` - Library materials list
+
+#### Evaluate Lesson Widgets
+
+- `EvaluateLesson` / `EvaluateLessonList` - Lesson feedback form
+
+#### Loading Widgets
+
+- `Loading` - Loading screens and splash
 
 ### `src/widgets/TopBar/ui/TopBar.tsx`
 
@@ -936,6 +1099,18 @@ useLazyItems<T>(items: T[], pageSize: number): {
 useSwipeBack(callback: () => void): void
 ```
 
+#### `useEntityFetch()`
+
+Generic hook for entity data fetching with caching.
+
+#### `usePhotoViewer()`
+
+Hook for photo viewer modal state management.
+
+#### `useScrollableTabs()`
+
+Hook for horizontally scrollable tab navigation.
+
 ---
 
 ### Shared UI Components (`src/shared/ui/index.ts`)
@@ -1014,21 +1189,48 @@ StatusView(props: { status: LoadingState; error?: string | null }): ReactNode
 
 ---
 
-### Shared Library (`src/shared/lib/index.ts`)
+### Shared Library (`src/shared/lib/`)
 
-#### Image Cache
+#### App Release (`appRelease.ts`)
+
+```typescript
+// Types
+interface AppReleaseInfo { version, build, apk_url, changelog }
+interface ChangelogItem { label: string | null, text: string }
+interface ChangelogFeedEntry { id, version, date?, items: ChangelogItem[] }
+
+// Functions
+compareVersions(left: string, right: string): number
+isRemoteReleaseNewer(params): boolean
+parseChangelogItems(changelog: string): ChangelogItem[]
+getChangelogLabelStyle(label: string): string
+toChangelogFeedEntry(release, date?): ChangelogFeedEntry
+fetchLatestAppRelease(signal?): Promise<AppReleaseInfo>
+```
+
+#### Image Cache (`imageCache.ts`)
 
 - `getCachedImageUrl(url: string | null): string`
 - `preloadImages(urls: string[]): void`
 
-#### Validation
+#### Validation (`isCacheValid.ts`)
 
 - `isCacheValid(loadedAt: number | null, ttlMs: number): boolean`
 
+#### Theme (`themeStore.ts`)
+
+- Zustand store for light/dark theme management
+
 #### Utils
 
-- `ScrollToTop` - Scroll to top component
-- `storage` - LocalStorage wrapper (get/set/remove)
+- `ScrollToTop` (`scrollToTop.ts`) - Scroll to top component
+- `storage` (`storage.ts`) - LocalStorage wrapper (get/set/remove)
+- `resetAllAppState` (`resetAllAppState.ts`) - Reset all stores on logout
+- `formatDate` (`formatDate.ts`) - Date formatting
+- `getAuthToken` (`getAuthToken.ts`) - Get auth token from store
+- `materialUrls` (`materialUrls.ts`) - Material URL utilities
+- `pluralize` (`pluralize.ts`) - Russian pluralization
+- `youtube` (`youtube.ts`) - YouTube URL parsing
 
 ---
 
@@ -1156,13 +1358,13 @@ Widget Components - render UI
 
 ## File Count Summary
 
-**Total TypeScript/TSX files:** 206
+**Total TypeScript/TSX files:** ~289
 
 **Breakdown by category:**
 
 - Entity modules: ~80 files
-- Feature modules: ~40 files
-- Page components: ~30 files
-- Widget components: ~25 files
-- Shared utilities: ~20 files
-- Config & types: ~11 files
+- Feature modules: ~60 files
+- Page components: ~35 files
+- Widget components: ~50 files
+- Shared utilities: ~45 files
+- Config & types: ~19 files

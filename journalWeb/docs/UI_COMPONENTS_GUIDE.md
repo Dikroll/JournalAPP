@@ -165,6 +165,54 @@ import { AvatarPlaceholder } from '@/shared/ui'
 />
 ```
 
+#### Badge
+
+Бейдж для статусов и лейблов.
+
+```typescript
+import { Badge } from '@/shared/ui'
+
+<Badge variant='success' size='xs'>Новое</Badge>
+```
+
+#### BottomSheet
+
+Модальное окно снизу экрана.
+
+```typescript
+import { BottomSheet } from '@/shared/ui'
+
+<BottomSheet onBackdropClick={dismiss} zIndex={300} maxWidth='max-w-lg'>
+  {/* content */}
+</BottomSheet>
+```
+
+#### IconButton
+
+Кнопка-иконка.
+
+```typescript
+import { IconButton } from '@/shared/ui'
+
+<IconButton icon={<X size={14} />} onClick={onClose} aria-label='Закрыть' />
+```
+
+#### GlowBackground
+
+Фоновое свечение для декоративных эффектов.
+
+#### InlineImage
+
+Inline изображение с обработкой загрузки.
+
+#### PhotoViewerModal
+
+Полноэкранный просмотрщик фотографий.
+
+#### SuccessStateView
+
+Состояние успешного завершения действия.
+
 ---
 
 ## Tailwind CSS Классы
@@ -655,4 +703,4 @@ export class ErrorBoundary extends Component<Props, State> {
 ---
 
 **Версия документации:** 1.0  
-**Последнее обновление:** Март 2026
+**Последнее обновление:** Апрель 2026

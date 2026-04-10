@@ -18,6 +18,34 @@ npm install
 npm run dev
 ```
 
+Когда запускаешь workflow Android Release на GitHub, в поле Release notes пишешь так:
+
+add: Оценка занятий\nfix: Изменения светлой темы\nchange: Новое отображение расписания\nimprove:  
+ Анимации кнопок
+
+Доступные лейблы:
+
+┌─────────────────┬────────────┬─────────────────────────┐  
+ │ Лейбл │ Цвет │ Когда использовать │  
+ ├─────────────────┼────────────┼─────────────────────────┤
+│ add / feat │ зелёный │ Новая функция │
+├─────────────────┼────────────┼─────────────────────────┤
+│ fix │ красный │ Исправление бага │
+├─────────────────┼────────────┼─────────────────────────┤
+│ change / update │ синий │ Изменение существующего │
+├─────────────────┼────────────┼─────────────────────────┤  
+ │ improve │ синий │ Улучшение UX/UI │
+├─────────────────┼────────────┼─────────────────────────┤  
+ │ remove │ жёлтый │ Удаление функции │
+├─────────────────┼────────────┼─────────────────────────┤
+│ refactor │ фиолетовый │ Внутренние изменения │  
+ └─────────────────┴────────────┴─────────────────────────┘
+
+\n разделяет пункты — CI конвертирует их в реальные переносы строк. Каждый пункт с лейблом отобразится
+отдельной строкой с цветным бейджом и в шторке обновления, и на странице уведомлений.
+
+Если строка без лейбла — она просто покажется как текст без бейджа
+
 Приложение будет доступно на `http://localhost:5173`
 
 ### Структура проекта
@@ -312,66 +340,66 @@ import { useState } from 'react'
 import { useSubmitAssignment } from '../hooks/useSubmitAssignment'
 
 interface Props {
-  assignmentId: number
-  onSuccess?: () => void
+	assignmentId: number
+	onSuccess?: () => void
 }
 
 export function SubmitButton({ assignmentId, onSuccess }: Props) {
-  const [open, setOpen] = useState(false)
-  const [file, setFile] = useState<File | null>(null)
-  const { submit, loading, error } = useSubmitAssignment()
+	const [open, setOpen] = useState(false)
+	const [file, setFile] = useState<File | null>(null)
+	const { submit, loading, error } = useSubmitAssignment()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!file) return
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!file) return
 
-    const success = await submit(assignmentId, file)
-    if (success) {
-      setFile(null)
-      setOpen(false)
-      onSuccess?.()
-    }
-  }
+		const success = await submit(assignmentId, file)
+		if (success) {
+			setFile(null)
+			setOpen(false)
+			onSuccess?.()
+		}
+	}
 
-  return (
-    <>
-      <button
-        onClick={() => setOpen(true)}
-        className="px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Отправить
-      </button>
+	return (
+		<>
+			<button
+				onClick={() => setOpen(true)}
+				className='px-4 py-2 bg-blue-600 text-white rounded'
+			>
+				Отправить
+			</button>
 
-      {open && (
-        <div className="modal">
-          <form onSubmit={handleSubmit}>
-            <input
-              type="file"
-              onChange={(e) => setFile(e.currentTarget.files?.[0] ?? null)}
-            />
+			{open && (
+				<div className='modal'>
+					<form onSubmit={handleSubmit}>
+						<input
+							type='file'
+							onChange={e => setFile(e.currentTarget.files?.[0] ?? null)}
+						/>
 
-            {error && <p className="text-red-500">{error}</p>}
+						{error && <p className='text-red-500'>{error}</p>}
 
-            <button
-              type="submit"
-              disabled={!file || loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-            >
-              {loading ? 'Отправляю...' : 'Отправить'}
-            </button>
+						<button
+							type='submit'
+							disabled={!file || loading}
+							className='px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50'
+						>
+							{loading ? 'Отправляю...' : 'Отправить'}
+						</button>
 
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="px-4 py-2 text-gray-600"
-            >
-              Отмена
-            </button>
-          </form>
-        </div>
-      )}
-    </>
-  )
+						<button
+							type='button'
+							onClick={() => setOpen(false)}
+							className='px-4 py-2 text-gray-600'
+						>
+							Отмена
+						</button>
+					</form>
+				</div>
+			)}
+		</>
+	)
 }
 ```
 
@@ -403,54 +431,48 @@ import { PageHeader } from '@/shared/ui'
 import { BottomBar, TopBar } from '@/widgets'
 
 export function AssignmentsPage() {
-  const { items, status, error, load } = useAssignment()
+	const { items, status, error, load } = useAssignment()
 
-  return (
-    <div className="min-h-screen bg-background">
-      <TopBar />
+	return (
+		<div className='min-h-screen bg-background'>
+			<TopBar />
 
-      <main className="px-4 py-4">
-        <PageHeader
-          title="Задания"
-          action={
-            <button
-              onClick={() => load(true)}
-              disabled={status === 'loading'}
-            >
-              Обновить
-            </button>
-          }
-        />
+			<main className='px-4 py-4'>
+				<PageHeader
+					title='Задания'
+					action={
+						<button onClick={() => load(true)} disabled={status === 'loading'}>
+							Обновить
+						</button>
+					}
+				/>
 
-        {status === 'loading' && <p>Загрузка...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+				{status === 'loading' && <p>Загрузка...</p>}
+				{error && <p className='text-red-500'>{error}</p>}
 
-        <div className="space-y-2">
-          {items.map(assignment => (
-            <AssignmentCard
-              key={assignment.id}
-              assignment={assignment}
-            />
-          ))}
-        </div>
-      </main>
+				<div className='space-y-2'>
+					{items.map(assignment => (
+						<AssignmentCard key={assignment.id} assignment={assignment} />
+					))}
+				</div>
+			</main>
 
-      <BottomBar />
-    </div>
-  )
+			<BottomBar />
+		</div>
+	)
 }
 
 function AssignmentCard({ assignment }: { assignment: Assignment }) {
-  return (
-    <div className="p-4 bg-surface rounded-lg border border-border">
-      <h3 className="font-semibold">{assignment.title}</h3>
-      <p className="text-sm text-text-secondary">{assignment.description}</p>
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-sm">{assignment.due_date}</span>
-        <SubmitButton assignmentId={assignment.id} />
-      </div>
-    </div>
-  )
+	return (
+		<div className='p-4 bg-surface rounded-lg border border-border'>
+			<h3 className='font-semibold'>{assignment.title}</h3>
+			<p className='text-sm text-text-secondary'>{assignment.description}</p>
+			<div className='flex justify-between items-center mt-2'>
+				<span className='text-sm'>{assignment.due_date}</span>
+				<SubmitButton assignmentId={assignment.id} />
+			</div>
+		</div>
+	)
 }
 ```
 
@@ -467,26 +489,26 @@ export { AssignmentsPage } from './assignments/ui/AssignmentsPage'
 import { AssignmentsPage } from '@/pages'
 
 export function AppRouter() {
-  return (
-    <HashRouter>
-      <Routes>
-        {/* ... */}
-        <Route
-          path="/*"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Routes>
-                  {/* ... */}
-                  <Route path="/assignments" element={<AssignmentsPage />} />
-                </Routes>
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </HashRouter>
-  )
+	return (
+		<HashRouter>
+			<Routes>
+				{/* ... */}
+				<Route
+					path='/*'
+					element={
+						<ProtectedRoute>
+							<AppLayout>
+								<Routes>
+									{/* ... */}
+									<Route path='/assignments' element={<AssignmentsPage />} />
+								</Routes>
+							</AppLayout>
+						</ProtectedRoute>
+					}
+				/>
+			</Routes>
+		</HashRouter>
+	)
 }
 ```
 
@@ -510,18 +532,14 @@ export const pageConfig = {
 import { useGradesStore } from '@/entities/grades'
 
 export function MyComponent() {
-  // Читаем значения
-  const entries = useGradesStore(s => s.entries)
-  const status = useGradesStore(s => s.status)
+	// Читаем значения
+	const entries = useGradesStore(s => s.entries)
+	const status = useGradesStore(s => s.status)
 
-  // Вызываем действия
-  const update = useGradesStore(s => s.update)
+	// Вызываем действия
+	const update = useGradesStore(s => s.update)
 
-  return (
-    <div>
-      {/* Компонент */}
-    </div>
-  )
+	return <div>{/* Компонент */}</div>
 }
 ```
 
@@ -891,8 +909,8 @@ const entries = useGradesStore(s => s.entries)
 // React Profiler
 import { Profiler } from 'react'
 
-<Profiler id="MyComponent" onRender={onRender}>
-  <MyComponent />
+;<Profiler id='MyComponent' onRender={onRender}>
+	<MyComponent />
 </Profiler>
 
 // Web Performance API

@@ -1,25 +1,19 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-export interface AppVersionInfo {
-	version: string
-	build: number
-	apk_url: string
-	changelog: string
-}
+import type { AppReleaseInfo } from '@/shared/lib/appRelease'
 
 type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'error'
 
 interface AppUpdateState {
 	status: UpdateStatus
-	serverInfo: AppVersionInfo | null
-	latestRelease: AppVersionInfo | null
+	serverInfo: AppReleaseInfo | null
+	latestRelease: AppReleaseInfo | null
 	downloadProgress: number
 	errorMessage: string | null
 
 	setStatus: (s: UpdateStatus) => void
-	setServerInfo: (info: AppVersionInfo) => void
-	setLatestRelease: (info: AppVersionInfo) => void
+	setServerInfo: (info: AppReleaseInfo) => void
+	setLatestRelease: (info: AppReleaseInfo) => void
 	setProgress: (p: number) => void
 	setError: (msg: string) => void
 	reset: () => void

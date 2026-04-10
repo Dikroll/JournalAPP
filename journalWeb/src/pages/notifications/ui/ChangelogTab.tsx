@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
+import { getChangelogLabelStyle } from '@/shared/lib/appRelease'
 import { Badge } from '@/shared/ui'
 import { formatDate } from '@/shared/utils/dateUtils'
-import { CheckCircle } from 'lucide-react'
 
 export function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 	return (
@@ -47,12 +47,13 @@ export function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 					<ul className='space-y-1.5'>
 						{entry.items.map((item, i) => (
 							<li key={i} className='flex items-start gap-2'>
-								<CheckCircle
-									size={13}
-									className='text-status-checked flex-shrink-0 mt-0.5'
-								/>
+								{item.label && (
+									<span className={`shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase leading-none ${getChangelogLabelStyle(item.label)}`}>
+										{item.label}
+									</span>
+								)}
 								<span className='text-sm text-app-text leading-snug'>
-									{item}
+									{item.text}
 								</span>
 							</li>
 						))}
