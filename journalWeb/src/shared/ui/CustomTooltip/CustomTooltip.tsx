@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+
 interface CustomTooltipProps {
 	active?: boolean
 	payload?: any[]
@@ -11,7 +13,24 @@ export function CustomTooltip({
 	label,
 	suffix,
 }: CustomTooltipProps) {
-	if (!active || !payload?.length) return null
+	const [hidden, setHidden] = useState(false)
+	const prevActive = useRef(false)
+
+	// Reset hidden state when Recharts activates a new point
+	useEffect(() => {
+		if (active && !prevActive.current) setHidden(false)
+		prevActive.current = !!active
+	}, [active])
+
+	// Hide on any scroll (page scroll, swiper, etc.)
+	useEffect(() => {
+		if (!active || hidden) return
+		const hide = () => setHidden(true)
+		window.addEventListener('scroll', hide, { capture: true, passive: true })
+		return () => window.removeEventListener('scroll', hide, { capture: true })
+	}, [active, hidden])
+
+	if (!active || hidden || !payload?.length) return null
 
 	return (
 		<div
@@ -29,23 +48,11 @@ export function CustomTooltip({
 			}}
 		>
 			{label && (
-				<p
-					style={{
-						color: '#6B7280',
-						fontSize: '10px',
-						marginBottom: '2px',
-					}}
-				>
+				<p style={{ color: '#6B7280', fontSize: '10px', marginBottom: '2px' }}>
 					{label}
 				</p>
 			)}
-			<p
-				style={{
-					color: '#F2F2F2',
-					fontSize: '13px',
-					fontWeight: 600,
-				}}
-			>
+			<p style={{ color: '#F2F2F2', fontSize: '13px', fontWeight: 600 }}>
 				{payload[0].value}
 				{suffix ?? ''}
 			</p>

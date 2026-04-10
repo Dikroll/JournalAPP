@@ -2,7 +2,6 @@ import type { ChartPoint } from '@/entities/dashboard'
 import { useGradesCharts } from '@/entities/dashboard'
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui/'
-import { useTooltipDismiss } from '@/shared/utils/toollipUtils'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
@@ -64,10 +63,9 @@ const CHART_HEIGHT = 192
 
 const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const { active: tooltipActive, handlers } = useTooltipDismiss()
 
 	return (
-		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }} {...handlers}>
+		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<LineChart
 					width={width}
@@ -78,14 +76,12 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
 					<YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} {...axisProps} width={30} />
-					{tooltipActive && (
-						<Tooltip
-							content={<CustomTooltip />}
-							cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
-							isAnimationActive={false}
-							wrapperStyle={tooltipWrapperStyle}
-						/>
-					)}
+					<Tooltip
+						content={<CustomTooltip />}
+						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
+						isAnimationActive={false}
+						wrapperStyle={tooltipWrapperStyle}
+					/>
 					<Line
 						type='monotone'
 						dataKey='value'
@@ -103,10 +99,9 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 
 const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const { active: tooltipActive, handlers } = useTooltipDismiss()
 
 	return (
-		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }} {...handlers}>
+		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<BarChart
 					width={width}
@@ -122,14 +117,12 @@ const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] })
 						{...axisProps}
 						width={36}
 					/>
-					{tooltipActive && (
-						<Tooltip
-							content={<CustomTooltip suffix='%' />}
-							cursor={<NoCursor />}
-							isAnimationActive={false}
-							wrapperStyle={tooltipWrapperStyle}
-						/>
-					)}
+					<Tooltip
+						content={<CustomTooltip suffix='%' />}
+						cursor={<NoCursor />}
+						isAnimationActive={false}
+						wrapperStyle={tooltipWrapperStyle}
+					/>
 					<Bar
 						dataKey='value'
 						fill='#F0A020'

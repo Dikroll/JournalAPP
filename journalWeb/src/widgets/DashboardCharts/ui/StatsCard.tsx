@@ -1,6 +1,5 @@
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui'
-import { useTooltipDismiss } from '@/shared/utils/toollipUtils'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Line, LineChart, Tooltip, XAxis } from 'recharts'
@@ -35,7 +34,6 @@ export const StatsCard = memo(function StatsCard({
 	color = '#F20519',
 }: StatsCardProps) {
 	const { ref, width, height } = useElementSize()
-	const { active: tooltipActive, handlers: tooltipHandlers } = useTooltipDismiss()
 
 	const isNeutral = trend === 0
 	const isPositive = trend !== undefined && trend > 0
@@ -76,11 +74,7 @@ export const StatsCard = memo(function StatsCard({
 			</div>
 
 			{data && data.length > 0 && (
-				<div
-					ref={ref}
-					className='w-full flex-1 min-h-0'
-					{...tooltipHandlers}
-				>
+				<div ref={ref} className='w-full flex-1 min-h-0'>
 					{width > 0 && height > 0 && (
 						<LineChart
 							width={width}
@@ -99,13 +93,11 @@ export const StatsCard = memo(function StatsCard({
 								strokeLinejoin='round'
 								isAnimationActive={false}
 							/>
-							{tooltipActive && (
-								<Tooltip
-									content={<CustomTooltip />}
-									cursor={{ stroke: 'var(--color-border-strong)' }}
-									wrapperStyle={tooltipWrapperStyle}
-								/>
-							)}
+							<Tooltip
+								content={<CustomTooltip />}
+								cursor={{ stroke: 'var(--color-border-strong)' }}
+								wrapperStyle={tooltipWrapperStyle}
+							/>
 						</LineChart>
 					)}
 				</div>
