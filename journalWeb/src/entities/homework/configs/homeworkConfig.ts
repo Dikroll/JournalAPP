@@ -59,11 +59,12 @@ export function getGradeStyle(grade: number | null | undefined): {
 } {
 	if (grade == null) {
 		return {
-			bg: 'bg-white dark:bg-app-surface',
+			bg: 'bg-app-surface',
 			badge: 'bg-app-surface-strong text-app-muted border-app-border-strong',
 		}
 	}
-	return { bg: 'bg-white dark:bg-app-surface', badge: 'grade-badge-5' }
+	const clamped = Math.max(2, Math.min(5, grade))
+	return { bg: 'bg-app-surface', badge: `grade-badge-${clamped}` }
 }
 
 export const STATUS_ORDER: HomeworkStatus[] = [

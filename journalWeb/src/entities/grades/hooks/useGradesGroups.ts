@@ -23,7 +23,12 @@ function expandEntries(entries: GradeEntry[]): GradeEntryExpanded[] {
 		const averageMark = flatMarks.length
 			? flatMarks.reduce((s, m) => s + m.value, 0) / flatMarks.length
 			: null
-		return { ...e, flatMarks, averageMark }
+		// Если есть итоговая оценка — студент присутствовал
+		const attended =
+			e.marks?.final != null && e.attended === 'absent'
+				? 'present' as const
+				: e.attended
+		return { ...e, attended, flatMarks, averageMark }
 	})
 }
 

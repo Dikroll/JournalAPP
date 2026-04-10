@@ -35,6 +35,29 @@ export function SpecSelector({
 		return () => document.removeEventListener('mousedown', handler)
 	}, [close])
 
+	// Close on Android back / browser back
+	useEffect(() => {
+		if (!open) return
+		const onBack = () => {
+			close()
+		}
+		window.addEventListener('popstate', onBack)
+		// Push a dummy state so back button closes the dropdown
+		history.pushState({ specSelector: true }, '')
+		return () => {
+			window.removeEventListener('popstate', onBack)
+			// Clean up dummy state if still present
+			if (history.state?.specSelector) history.back()
+		}
+	}, [open, close])
+
+	// Focus input when opened
+	useEffect(() => {
+		if (open && inputRef.current) {
+			inputRef.current.focus()
+		}
+	}, [open])
+
 	const handleSelect = (subject: Subject | null) => {
 		onChange(subject)
 		close()
@@ -76,9 +99,22 @@ export function SpecSelector({
 					)}
 				</div>
 
-				<div className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-app-border text-app-muted hover:text-app-text flex-shrink-0'>
+				<div
+					className='flex items-center justify-end gap-1.5 px-5 h-full cursor-pointer border-l border-app-border text-app-muted hover:text-app-text flex-shrink-0'
+					onClick={e => {
+						e.stopPropagation()
+						open ? close() : setOpen(true)
+					}}
+				>
 					{(selected || search) && (
-						<button type='button' onClick={handleClear} className='p-0.5'>
+						<button
+							type='button'
+							onClick={e => {
+								e.stopPropagation()
+								handleClear(e)
+							}}
+							className='p-0.5'
+						>
 							<X size={13} />
 						</button>
 					)}
@@ -92,10 +128,10 @@ export function SpecSelector({
 
 			{open && !loading && (
 				<div
-					className='absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl overflow-hidden backdrop-blur-xl'
+					className='absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl overflow-hidden'
 					style={{
-						background: 'var(--color-app-surface)',
-						border: '1px solid var(--color-app-border)',
+						background: 'var(--color-modal-bg)',
+						border: '1px solid var(--color-border)',
 						boxShadow: 'var(--shadow-dropdown)',
 					}}
 				>
@@ -103,11 +139,12 @@ export function SpecSelector({
 						<button
 							type='button'
 							onClick={() => handleSelect(null)}
-							className={`w-full text-left px-4 py-3 text-sm border-b border-app-border ${
+							className={`w-full text-left px-4 py-3 text-sm border-b ${
 								!selectedId
 									? 'text-app-text font-medium bg-app-surface-hover'
 									: 'text-app-muted hover:text-app-text hover:bg-app-surface-hover'
 							}`}
+							style={{ borderColor: 'var(--color-border)' }}
 						>
 							Все предметы
 						</button>
@@ -120,11 +157,12 @@ export function SpecSelector({
 									key={spec.id}
 									type='button'
 									onClick={() => handleSelect(spec)}
-									className={`w-full text-left px-4 py-3 text-sm border-b border-app-border last:border-0 ${
-								spec.id === selectedId
-									? 'text-app-text font-medium bg-app-surface-hover'
-									: 'text-app-muted hover:text-app-text hover:bg-app-surface-hover'
-							}`}
+									className={`w-full text-left px-4 py-3 text-sm border-b last:border-0 ${
+										spec.id === selectedId
+											? 'text-app-text font-medium bg-app-surface-hover'
+											: 'text-app-muted hover:text-app-text hover:bg-app-surface-hover'
+									}`}
+									style={{ borderColor: 'var(--color-border)' }}
 								>
 									<span className='block truncate'>{spec.name}</span>
 									<span className='text-[10px] text-app-faint'>

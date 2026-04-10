@@ -46,7 +46,7 @@ export const ProfileHeader = memo(
 									<button
 										type='button'
 										onClick={() => photoViewer.open(photoUrl, user.full_name)}
-										className='w-16 h-16 rounded-full overflow-hidden cursor-pointer hover:opacity-80 transition-opacity'
+										className='w-16 h-16 rounded-full overflow-hidden cursor-pointer hover:opacity-80 transition-opacity border-2 border-white/30'
 									>
 										<img
 											src={photoUrl}
@@ -55,7 +55,7 @@ export const ProfileHeader = memo(
 											height={64}
 											loading='eager'
 											decoding='async'
-											className='w-full h-full object-cover border-2 border-white/30'
+											className='w-full h-full object-cover'
 										/>
 									</button>
 								) : (

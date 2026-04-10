@@ -1,13 +1,14 @@
 import { useScheduleWeek } from '@/entities/schedule'
 import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
-import { Badge } from '@/shared/ui'
+import { Badge, IconButton } from '@/shared/ui'
 import {
 	RU_DAYS_SHORT,
 	formatDateCompact,
 	getTodayString,
 	toDateString,
 } from '@/shared/utils'
-import { Coffee } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Coffee } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { LessonCard } from '../../ScheduleList/ui/LessonCard'
 
 function getWeekDays(anyDateStr: string): string[] {
@@ -22,6 +23,19 @@ function getWeekDays(anyDateStr: string): string[] {
 	})
 }
 
+function shiftWeek(dateStr: string, delta: number): string {
+	const d = new Date(`${dateStr}T00:00:00`)
+	d.setDate(d.getDate() + delta * 7)
+	return toDateString(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
+function formatWeekRange(days: string[]): string {
+	if (days.length < 2) return ''
+	const first = formatDateCompact(days[0])
+	const last = formatDateCompact(days[6])
+	return `${first} — ${last}`
+}
+
 function pluralLessons(n: number) {
 	if (n === 1) return '1 пара'
 	if (n < 5) return `${n} пары`
@@ -30,9 +44,16 @@ function pluralLessons(n: number) {
 
 export function ScheduleWeekView() {
 	const today = getTodayString()
-	const { lessons, status } = useScheduleWeek(today)
+	const [anchor, setAnchor] = useState(today)
+	const { lessons, status } = useScheduleWeek(anchor)
 	const nowMinutes = useCurrentMinutes()
-	const weekDays = getWeekDays(today)
+	const weekDays = getWeekDays(anchor)
+
+	const isCurrentWeek = weekDays.includes(today)
+
+	const goPrev = useCallback(() => setAnchor(a => shiftWeek(a, -1)), [])
+	const goNext = useCallback(() => setAnchor(a => shiftWeek(a, 1)), [])
+	const goToday = useCallback(() => setAnchor(today), [today])
 
 	if (status === 'loading' && lessons.length === 0) {
 		return (
@@ -65,6 +86,43 @@ export function ScheduleWeekView() {
 
 	return (
 		<div className='flex flex-col gap-5'>
+			{/* Week navigation */}
+			<div className='flex items-center justify-between'>
+				<IconButton
+					icon={<ChevronLeft size={18} />}
+					onClick={goPrev}
+					size='md'
+					shape='square'
+					variant='surface'
+					aria-label='Предыдущая неделя'
+				/>
+
+				<button
+					type='button'
+					onClick={isCurrentWeek ? undefined : goToday}
+					className='text-center'
+					disabled={isCurrentWeek}
+				>
+					<p className='text-sm font-semibold text-app-text'>
+						{formatWeekRange(weekDays)}
+					</p>
+					{!isCurrentWeek && (
+						<p className='text-[11px] text-brand font-medium mt-0.5'>
+							К текущей неделе
+						</p>
+					)}
+				</button>
+
+				<IconButton
+					icon={<ChevronRight size={18} />}
+					onClick={goNext}
+					size='md'
+					shape='square'
+					variant='surface'
+					aria-label='Следующая неделя'
+				/>
+			</div>
+
 			{weekDays.map((dateStr, idx) => {
 				const dayLessons = byDate[dateStr] ?? []
 				const isToday = dateStr === today

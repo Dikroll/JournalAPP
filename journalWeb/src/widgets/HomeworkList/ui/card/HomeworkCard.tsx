@@ -47,35 +47,13 @@ export const HomeworkCard = memo(
 						<button
 							type='button'
 							onClick={() => setViewerOpen(true)}
-							className='relative w-full aspect-video bg-app-surface-strong block overflow-hidden focus:outline-none'
+							className='w-full aspect-video bg-app-surface-strong block overflow-hidden focus:outline-none'
 						>
 							<img
 								src={photoUrl}
 								alt={hw.theme ?? hw.spec_name}
 								className='w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]'
 							/>
-
-							<div className='absolute top-3 left-3'>
-								<span
-								className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${config.textColor} border border-[var(--color-border)] backdrop-blur-xl`}
-								style={{ background: 'var(--color-overlay-nav)' }}
-							>
-								{config.icon && <config.icon size={11} />}
-								{config.label}
-							</span>
-						</div>
-							{isChecked && grade != null && (
-								<div className='absolute top-3 right-3'>
-									<div
-										className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-bold border ${
-											gradeStyle!.badge
-										} border-[var(--color-border)] backdrop-blur-xl`}
-									style={{ background: 'var(--color-overlay-nav)' }}
-									>
-										{grade}
-									</div>
-								</div>
-							)}
 						</button>
 					)}
 

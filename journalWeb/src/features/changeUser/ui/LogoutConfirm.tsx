@@ -9,10 +9,20 @@ interface Props {
 
 export function LogoutConfirm({ onConfirm, onCancel }: Props) {
 	useEffect(() => {
-		const prev = document.body.style.overflow
-		document.body.style.overflow = 'hidden'
+		const scrollY = window.scrollY
+		const { body } = document
+		body.style.position = 'fixed'
+		body.style.top = `-${scrollY}px`
+		body.style.left = '0'
+		body.style.right = '0'
+		body.style.overflow = 'hidden'
 		return () => {
-			document.body.style.overflow = prev
+			body.style.position = ''
+			body.style.top = ''
+			body.style.left = ''
+			body.style.right = ''
+			body.style.overflow = ''
+			window.scrollTo(0, scrollY)
 		}
 	}, [])
 
