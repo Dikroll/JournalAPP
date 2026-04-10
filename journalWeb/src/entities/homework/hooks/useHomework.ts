@@ -1,11 +1,10 @@
 import { useUserStore } from '@/entities/user'
-import { ttl } from '@/shared/config'
+import { timing, ttl } from '@/shared/config'
 import { isCacheValid, preloadImages } from '@/shared/lib'
 import { useCallback, useEffect, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
 
-const AUTO_REFRESH_MS = 90 * 60 * 1000
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 
 export function resetHomeworkFetch() {}
@@ -124,7 +123,7 @@ export function useHomework() {
 	useEffect(() => {
 		if (!groupId) return
 		loadAll()
-		const timer = setInterval(() => loadAll(true), AUTO_REFRESH_MS)
+		const timer = setInterval(() => loadAll(true), timing.HOMEWORK_AUTO_REFRESH)
 		return () => clearInterval(timer)
 	}, [groupId, loadAll])
 

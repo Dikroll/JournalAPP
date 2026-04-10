@@ -9,6 +9,7 @@ import {
 	useSortSubjectsStore,
 } from '@/features/sortSubjects'
 import { useLazyItems } from '@/shared/hooks'
+import { formatDayMonth } from '@/shared/utils/dateUtils'
 import { useMemo } from 'react'
 
 interface Props {
@@ -69,7 +70,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 											{value}
 										</div>
 										<div className='text-xs text-app-muted whitespace-nowrap'>
-											{entry.date.slice(8, 10)}.{entry.date.slice(5, 7)}
+											{formatDayMonth(entry.date)}
 										</div>
 
 										<span

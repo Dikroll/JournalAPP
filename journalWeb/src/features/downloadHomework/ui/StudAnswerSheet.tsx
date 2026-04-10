@@ -1,3 +1,4 @@
+import { timing } from '@/shared/config'
 import { CatGame } from '@/shared/ui/CatGame'
 import { IconButton } from '@/shared/ui'
 import { MessageSquare, X } from 'lucide-react'
@@ -24,7 +25,7 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 	const handleClose = () => {
 		setVisible(false)
 		setDragY(0)
-		setTimeout(onClose, 300)
+		setTimeout(onClose, timing.SHEET_CLOSE_ANIMATION)
 	}
 
 	useEffect(() => {

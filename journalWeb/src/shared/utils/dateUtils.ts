@@ -100,6 +100,12 @@ export function formatDateRelative(dateStr: string): string {
 	})
 }
 
+/** Форматирует ISO дату в формате "09.04" (dd.MM) */
+export function formatDayMonth(dateStr: string): string {
+	const d = new Date(`${dateStr}T00:00:00`)
+	return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })
+}
+
 /** Форматирует дату в формате "5 апр" */
 export function formatDateCompact(date: string | Date): string {
 	const d = typeof date === 'string' ? new Date(date) : date

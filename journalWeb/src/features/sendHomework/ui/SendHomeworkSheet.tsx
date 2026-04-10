@@ -1,5 +1,6 @@
 import { useHomework } from '@/entities/homework'
 import { useUserStore } from '@/entities/user'
+import { timing } from '@/shared/config'
 import { IconButton, SuccessStateView } from '@/shared/ui'
 import { Loader2, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
@@ -44,7 +45,7 @@ export function SendHomeworkSheet({
 			setTimeout(() => {
 				reset()
 				onClose()
-			}, 1500),
+			}, timing.SUCCESS_DISMISS_DELAY),
 		refresh,
 	)
 
