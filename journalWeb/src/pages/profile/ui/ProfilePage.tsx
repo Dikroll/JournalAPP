@@ -11,8 +11,8 @@ export function ProfilePage() {
 	if (!user) {
 		return (
 			<div className='px-4 pt-4 space-y-3'>
-				<div className='bg-white/5 rounded-[28px] h-48 animate-pulse border border-white/10' />
-				<div className='bg-white/5 rounded-[24px] h-24 animate-pulse border border-white/10' />
+				<div className='bg-app-surface rounded-[28px] h-48 animate-pulse border border-app-border' />
+				<div className='bg-app-surface rounded-[24px] h-24 animate-pulse border border-app-border' />
 			</div>
 		)
 	}
@@ -35,7 +35,7 @@ export function ProfilePage() {
 						</div>
 						<Link
 							to={pageConfig.payment}
-							className='px-4 py-2 rounded-[14px] bg-white/10 border border-white/10 text-sm text-[#F2F2F2] font-medium'
+							className='px-4 py-2 rounded-[14px] bg-app-surface border border-app-border text-sm text-app-text font-medium'
 						>
 							История
 						</Link>
