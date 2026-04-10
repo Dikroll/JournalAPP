@@ -37,7 +37,8 @@ export function NotificationsPage() {
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
 	const setLatestRelease = useAppUpdateStore(s => s.setLatestRelease)
-	const { serverInfo, status: updateStatus, downloadAndInstall } = useAppUpdate()
+	const { serverInfo, status: updateStatus } = useAppUpdate()
+	const openSheet = useAppUpdateStore(s => s.openSheet)
 
 	useSwipeBack()
 
@@ -147,7 +148,7 @@ export function NotificationsPage() {
 				{activeTab === 'changelog' && serverInfo && (
 					<button
 						type='button'
-						onClick={downloadAndInstall}
+						onClick={openSheet}
 						disabled={updateStatus === 'downloading'}
 						className='w-full mb-3 flex items-center justify-between px-4 py-3.5 rounded-[18px] border disabled:opacity-60'
 						style={{

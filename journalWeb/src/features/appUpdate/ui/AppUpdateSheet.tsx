@@ -2,6 +2,42 @@ import { BottomSheet, IconButton } from '@/shared/ui'
 import { Download, X } from 'lucide-react'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 
+const LABEL_PATTERN = /^(fix|add|change|remove|update|feat|refactor|improve):\s*/i
+
+function parseChangelog(raw: string) {
+	return raw
+		.split('\n')
+		.map(line => line.trim())
+		.filter(Boolean)
+		.map(line => {
+			const match = line.match(LABEL_PATTERN)
+			if (match) {
+				return { label: match[1].toLowerCase(), text: line.slice(match[0].length) }
+			}
+			return { label: null, text: line }
+		})
+}
+
+function changelogLabelStyle(label: string) {
+	switch (label) {
+		case 'fix':
+			return 'bg-[#EF4444]/15 text-[#F87171]'
+		case 'add':
+		case 'feat':
+			return 'bg-[#22C55E]/15 text-[#4ADE80]'
+		case 'change':
+		case 'update':
+		case 'improve':
+			return 'bg-[#3B82F6]/15 text-[#60A5FA]'
+		case 'remove':
+			return 'bg-[#F59E0B]/15 text-[#FBBF24]'
+		case 'refactor':
+			return 'bg-[#8B5CF6]/15 text-[#A78BFA]'
+		default:
+			return 'bg-white/10 text-[#9CA3AF]'
+	}
+}
+
 export function AppUpdateSheet() {
 	const {
 		status,
@@ -49,10 +85,19 @@ export function AppUpdateSheet() {
 				{/* Changelog */}
 				{serverInfo.changelog && (
 					<div className='bg-white/5 border border-white/8 rounded-2xl px-4 py-3'>
-						<p className='text-xs text-[#9CA3AF] mb-1'>Что нового</p>
-						<p className='text-sm text-[#E5E7EB] leading-relaxed'>
-							{serverInfo.changelog}
-						</p>
+						<p className='text-xs text-[#9CA3AF] mb-2'>Что нового</p>
+						<ul className='space-y-1.5'>
+							{parseChangelog(serverInfo.changelog).map((entry, i) => (
+								<li key={i} className='flex items-start gap-2 text-sm text-[#E5E7EB] leading-relaxed'>
+									{entry.label && (
+										<span className={`shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase leading-none ${changelogLabelStyle(entry.label)}`}>
+											{entry.label}
+										</span>
+									)}
+									<span>{entry.text}</span>
+								</li>
+							))}
+						</ul>
 					</div>
 				)}
 

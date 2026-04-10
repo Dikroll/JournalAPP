@@ -137,7 +137,17 @@ jobs:
           SHA=$(curl -s -H "Authorization: token ${API_REPO_TOKEN}" \
             "https://api.github.com/repos/Dikroll/JournalAPI/contents/src/version.json" \
             | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'])")
-          CONTENT=$(python3 -c "import json,base64,os; d={'version':os.environ['VERSION'],'build':int(os.environ['BUILD']),'apk_url':os.environ['APK_URL'],'changelog':os.environ['CHANGELOG']}; print(base64.b64encode(json.dumps(d,indent=2,ensure_ascii=False).encode()).decode())")
+          CONTENT=$(python3 -c "
+          import json,base64,os
+          cl = os.environ['CHANGELOG'].replace(r'\n', '\n').strip()
+          d = {
+            'version': os.environ['VERSION'],
+            'build': int(os.environ['BUILD']),
+            'apk_url': os.environ['APK_URL'],
+            'changelog': cl
+          }
+          print(base64.b64encode(json.dumps(d, indent=2, ensure_ascii=False).encode()).decode())
+          ")
           curl -s -X PUT \
             -H "Authorization: token ${API_REPO_TOKEN}" \
             -H "Content-Type: application/json" \

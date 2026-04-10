@@ -23,6 +23,7 @@ interface AppUpdateState {
 	setProgress: (p: number) => void
 	setError: (msg: string) => void
 	reset: () => void
+	openSheet: () => void
 }
 
 export const useAppUpdateStore = create<AppUpdateState>()(
@@ -44,6 +45,11 @@ export const useAppUpdateStore = create<AppUpdateState>()(
 					status: 'idle',
 					downloadProgress: 0,
 					errorMessage: null,
+				}),
+			openSheet: () =>
+				set(state => {
+					if (state.serverInfo) return { status: 'available' }
+					return {}
 				}),
 		}),
 		{
