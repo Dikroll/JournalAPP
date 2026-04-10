@@ -1,4 +1,5 @@
 import { LogOut, Plus } from 'lucide-react'
+import { useEffect } from 'react'
 import { useAccountSwitcher } from '../hooks/useAccountSwitcher'
 import { AccountRow } from './AccountRow'
 import { LogoutConfirm } from './LogoutConfirm'
@@ -20,6 +21,14 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 		handleLogout,
 	} = useAccountSwitcher(onReset, onClose)
 
+	useEffect(() => {
+		const prev = document.body.style.overflow
+		document.body.style.overflow = 'hidden'
+		return () => {
+			document.body.style.overflow = prev
+		}
+	}, [])
+
 	if (confirmLogout) {
 		return (
 			<LogoutConfirm
@@ -32,21 +41,20 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 	return (
 		<div
 			className='fixed inset-0 flex items-end z-[200]'
-			style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+			style={{ background: 'var(--color-modal-backdrop)', backdropFilter: 'blur(4px)' }}
 			onClick={onClose}
 		>
 			<div
-				className='w-full rounded-t-[28px] p-5 space-y-3'
+				className='w-full rounded-t-[28px] p-5 space-y-3 border-t border-x border-app-border'
 				style={{
-					background: '#1A1C21',
-					border: '1px solid rgba(255,255,255,0.08)',
+					background: 'var(--color-modal-bg)',
 					maxHeight: '80dvh',
 					overflowY: 'auto',
 				}}
 				onClick={e => e.stopPropagation()}
 			>
-				<div className='w-10 h-1 bg-white/20 rounded-full mx-auto mb-2' />
-				<p className='text-sm font-semibold text-[#F2F2F2] mb-3'>Аккаунты</p>
+				<div className='w-10 h-1 bg-glass-strong rounded-full mx-auto mb-2' />
+				<p className='text-sm font-semibold text-app-text mb-3'>Аккаунты</p>
 
 				<div className='space-y-2'>
 					{accounts.map(account => (
@@ -69,7 +77,7 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 							onClose()
 							onAddAccount()
 						}}
-						className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-white/5 border border-white/8 text-[#9CA3AF] text-sm hover:bg-white/8'
+						className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-glass border border-glass-border text-app-muted text-sm hover:bg-glass-hover'
 					>
 						<Plus size={15} />
 						Добавить аккаунт
@@ -82,7 +90,7 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 						e.preventDefault()
 						setConfirmLogout(true)
 					}}
-					className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444] text-sm font-medium hover:bg-[#EF4444]/15'
+					className='w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-danger-subtle border border-danger-border text-danger text-sm font-medium hover:bg-danger-subtle'
 				>
 					<LogOut size={15} />
 					Выйти из аккаунта

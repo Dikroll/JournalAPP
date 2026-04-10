@@ -17,7 +17,7 @@ export function StarRating({
 }) {
 	return (
 		<div>
-			<p className='text-xs text-[#9CA3AF] mb-2.5'>Полезность задания</p>
+			<p className='text-xs text-app-muted mb-2.5'>Полезность задания</p>
 			<div className='flex items-center gap-2'>
 				{[1, 2, 3, 4, 5].map(n => (
 					<button
@@ -28,16 +28,16 @@ export function StarRating({
 					>
 						<Star
 							size={26}
-							className={
-								n <= value
-									? 'text-[#3B82F6] fill-[#3B82F6]'
-									: 'text-white/15 fill-transparent'
-							}
+							className='transition-colors'
+							style={{
+								color: n <= value ? '#FBBF24' : 'var(--color-border)',
+								fill: n <= value ? '#FBBF24' : 'transparent',
+							}}
 						/>
 					</button>
 				))}
 				{value > 0 && (
-					<span className='ml-1 text-xs text-[#9CA3AF]'>{LABELS[value]}</span>
+					<span className='ml-1 text-xs text-app-muted'>{LABELS[value]}</span>
 				)}
 			</div>
 		</div>

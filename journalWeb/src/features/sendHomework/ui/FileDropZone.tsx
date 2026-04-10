@@ -19,11 +19,17 @@ export function FileDropZone({
 
 	if (file)
 		return (
-			<div className='flex items-center gap-3 px-4 py-3 bg-white/5 rounded-2xl border border-white/10'>
-				<FileText size={18} className='text-[#3B82F6] shrink-0' />
+			<div
+				className='flex items-center gap-3 px-4 py-3 rounded-2xl'
+				style={{
+					background: 'var(--color-surface-strong)',
+					border: '1px solid var(--color-border)',
+				}}
+			>
+				<FileText size={18} className='text-blue-500 shrink-0' />
 				<div className='flex-1 min-w-0'>
-					<p className='text-sm text-[#F2F2F2] truncate'>{file.name}</p>
-					<p className='text-xs text-[#9CA3AF] mt-0.5'>{fmtSize(file.size)}</p>
+					<p className='text-sm text-app-text truncate'>{file.name}</p>
+					<p className='text-xs text-app-muted mt-0.5'>{fmtSize(file.size)}</p>
 				</div>
 				<button
 					type='button'
@@ -31,9 +37,9 @@ export function FileDropZone({
 						e.preventDefault()
 						onChange(null)
 					}}
-					className='shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10'
+					className='shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-app-surface hover:bg-app-surface-hover border border-app-border'
 				>
-					<X size={13} className='text-[#9CA3AF]' />
+					<X size={13} className='text-app-muted' />
 				</button>
 			</div>
 		)
@@ -57,20 +63,20 @@ export function FileDropZone({
 					const f = e.dataTransfer.files[0]
 					if (f) onChange(f)
 				}}
-				className={`w-full flex flex-col items-center gap-2 py-5 rounded-2xl border border-dashed ${
-					drag
-						? 'border-[#3B82F6]/50 bg-[#3B82F6]/5'
-						: 'border-white/15 bg-white/3 hover:border-white/25 hover:bg-white/5'
-				}`}
+				className='w-full flex flex-col items-center gap-2 py-5 rounded-2xl border border-dashed'
+				style={{
+					borderColor: drag ? 'var(--color-brand)' : 'var(--color-border)',
+					background: drag ? 'var(--color-brand-subtle)' : 'var(--color-surface-strong)',
+				}}
 			>
 				<Upload
 					size={20}
-					className={drag ? 'text-[#3B82F6]' : 'text-[#9CA3AF]'}
+					className={drag ? 'text-brand' : 'text-app-muted'}
 				/>
-				<p className='text-sm text-[#9CA3AF]'>
-					Перетащите или <span className='text-[#F2F2F2]'>выберите файл</span>
+				<p className='text-sm text-app-muted'>
+					Перетащите или <span className='text-app-text'>выберите файл</span>
 				</p>
-				<p className='text-xs text-[#6B7280]'>Без .txt и .csv</p>
+				<p className='text-xs text-app-muted'>Без .txt и .csv</p>
 			</button>
 			<input
 				ref={ref}

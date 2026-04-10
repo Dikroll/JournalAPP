@@ -29,7 +29,7 @@ const shapeStyles: Record<IconButtonShape, string> = {
 
 const variantStyles: Record<IconButtonVariant, string> = {
 	overlay:
-		'bg-white/5 border border-white/10 text-[#6B7280] hover:text-[#F2F2F2] hover:bg-white/10',
+		'bg-glass border border-glass-border text-app-muted hover:text-app-text hover:bg-glass-active',
 	surface:
 		'bg-app-surface border border-app-border text-app-muted active:scale-95 transition-transform',
 }

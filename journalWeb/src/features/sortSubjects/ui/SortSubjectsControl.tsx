@@ -13,7 +13,7 @@ export function SortSubjectsControl() {
 
 	return (
 		<div className='flex items-center justify-between'>
-			<div className='flex items-center gap-1.5 text-xs text-[#9CA3AF]'>
+			<div className='flex items-center gap-1.5 text-xs text-app-muted'>
 				<ArrowDownUp size={12} />
 				<span>Сортировка</span>
 			</div>
@@ -25,8 +25,8 @@ export function SortSubjectsControl() {
 						onClick={() => setSortKey(key)}
 						className={`px-2.5 py-1 rounded-xl text-xs font-medium border ${
 							sortKey === key
-								? 'bg-white/15 text-[#F2F2F2] border-white/20'
-								: 'bg-white/5 text-[#6B7280] border-white/10 hover:text-[#F2F2F2] hover:bg-white/8'
+								? 'bg-glass-strong text-app-text border-glass-strong'
+								: 'bg-glass text-app-muted border-glass-border hover:text-app-text hover:bg-glass-hover'
 						}`}
 					>
 						{label}

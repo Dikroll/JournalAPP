@@ -35,7 +35,7 @@ export function LoginForm() {
 			>
 				<form
 					onSubmit={submit}
-					className='w-full min-h-[360px] flex flex-col gap-4 bg-white/5 backdrop-blur-3xl p-8 rounded-[24px] border border-white/20 justify-center'
+					className='w-full min-h-[360px] flex flex-col gap-4 bg-glass backdrop-blur-3xl p-8 rounded-[24px] border border-glass-strong justify-center'
 					style={{ boxShadow: '0 2px 6px rgba(255,255,255,0.155)' }}
 				>
 					<style>{`
@@ -46,23 +46,23 @@ export function LoginForm() {
 						}
 					`}</style>
 					<div className='text-center mb-2'>
-						<h1 className='text-lg font-semibold text-[#F2F2F2] tracking-wide flex items-center justify-center gap-[2px]'>
-							<span className='bg-[#D50416] text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold'>
+						<h1 className='text-lg font-semibold text-app-text tracking-wide flex items-center justify-center gap-[2px]'>
+							<span className='bg-brand text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold'>
 								IT
 							</span>
-							<span className='relative text-[#F2F2F2] font-semibold'>
+							<span className='relative text-app-text font-semibold'>
 								TOP
-								<span className='absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-[#D50416]' />
+								<span className='absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-brand' />
 							</span>
 							<span className='ml-[10px]'>COLLEGE</span>
 						</h1>
-						<p className='text-xs text-[#9CA3AF] mt-1'>Student Portal</p>
+						<p className='text-xs text-app-muted mt-1'>Student Portal</p>
 					</div>
 
 					{error && (
-						<div className='flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2'>
+						<div className='flex items-center gap-2 bg-danger-subtle border border-danger-border rounded-lg px-3 py-2'>
 							<svg
-								className='shrink-0 text-red-400'
+								className='shrink-0 text-danger'
 								width='14'
 								height='14'
 								viewBox='0 0 24 24'
@@ -74,7 +74,7 @@ export function LoginForm() {
 								<line x1='12' y1='8' x2='12' y2='12' />
 								<line x1='12' y1='16' x2='12.01' y2='16' />
 							</svg>
-							<p className='text-red-400 text-xs'>{error}</p>
+							<p className='text-danger text-xs'>{error}</p>
 						</div>
 					)}
 
@@ -86,7 +86,7 @@ export function LoginForm() {
 						autoComplete='username'
 						name='username'
 						required
-						className='bg-white/5 border border-white/10 focus:border-[#D50416] outline-none rounded-lg px-3 py-2 text-sm text-[#F2F2F2] placeholder:text-[#9CA3AF] transition'
+						className='bg-glass border border-glass-border focus:border-brand outline-none rounded-lg px-3 py-2 text-sm text-app-text placeholder:text-app-muted transition'
 					/>
 
 					<div className='relative'>
@@ -98,7 +98,7 @@ export function LoginForm() {
 							autoComplete='current-password'
 							name='password'
 							required
-							className='w-full bg-white/5 border border-white/10 focus:border-[#D50416] outline-none rounded-lg px-3 py-2 pr-10 text-sm text-[#F2F2F2] placeholder:text-[#9CA3AF] transition'
+							className='w-full bg-glass border border-glass-border focus:border-brand outline-none rounded-lg px-3 py-2 pr-10 text-sm text-app-text placeholder:text-app-muted transition'
 						/>
 						<button
 							type='button'
@@ -106,7 +106,7 @@ export function LoginForm() {
 								e.preventDefault()
 								setShowPassword(!showPassword)
 							}}
-							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF]'
+							className='absolute right-3 top-1/2 -translate-y-1/2 text-app-muted hover:text-app-text'
 							tabIndex={-1}
 						>
 							{showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -116,7 +116,7 @@ export function LoginForm() {
 					<button
 						type='submit'
 						disabled={loading}
-						className='mt-2 bg-[#D50416] hover:bg-[#b8030f] transition text-white font-medium rounded-lg px-3 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed'
+						className='mt-2 bg-brand hover:bg-brand/90 transition text-white font-medium rounded-lg px-3 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed'
 					>
 						{loading ? (
 							<span className='flex items-center justify-center gap-2'>

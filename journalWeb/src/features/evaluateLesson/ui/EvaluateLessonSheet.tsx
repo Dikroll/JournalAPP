@@ -1,13 +1,10 @@
 import type { FeedbackTag, PendingFeedback } from '@/entities/feedback'
-import { feedbackApi, useFeedbackStore } from '@/entities/feedback'
 import { FEEDBACK_TAG_LABELS } from '@/shared/config/feedbackTags'
-import { BottomSheet, SuccessStateView } from '@/shared/ui'
+import { BottomSheet, SheetButton, SuccessStateView } from '@/shared/ui'
 import { BookOpen, Loader2, User } from 'lucide-react'
-import { useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useEvaluateLesson } from '../hooks/useEvaluateLesson'
 import { StarRating } from './StarRating'
-
-type Step = 'lesson' | 'teacher' | 'submitting' | 'success' | 'error'
 
 interface Props {
 	item: PendingFeedback
@@ -55,56 +52,26 @@ function TagPicker({
 }
 
 export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
-	const [step, setStep] = useState<Step>('lesson')
-	const [markLesson, setMarkLesson] = useState(0)
-	const [markTeach, setMarkTeach] = useState(0)
-	const [tagsLesson, setTagsLesson] = useState<Set<number>>(new Set())
-	const [tagsTeach, setTagsTeach] = useState<Set<number>>(new Set())
-	const [commentLesson, setCommentLesson] = useState('')
-	const [commentTeach, setCommentTeach] = useState('')
-
-	const removePending = useFeedbackStore(s => s.removePending)
-
-	const toggleTag = useCallback(
-		(set: Set<number>, setFn: (s: Set<number>) => void, id: number) => {
-			const next = new Set(set)
-			if (next.has(id)) next.delete(id)
-			else next.add(id)
-			setFn(next)
-		},
-		[],
-	)
-
-	const handleSubmit = useCallback(async () => {
-		if (markLesson === 0 || markTeach === 0) return
-		setStep('submitting')
-		try {
-			await feedbackApi.evaluate({
-				key: item.key,
-				mark_lesson: markLesson,
-				mark_teach: markTeach,
-				tags_lesson: [...tagsLesson],
-				tags_teach: [...tagsTeach],
-				comment_lesson: commentLesson,
-				comment_teach: commentTeach,
-			})
-			removePending(item.key)
-			setStep('success')
-		} catch {
-			setStep('error')
-		}
-	}, [
-		item.key,
+	const {
+		step,
 		markLesson,
+		setMarkLesson,
 		markTeach,
+		setMarkTeach,
 		tagsLesson,
+		toggleLessonTag,
 		tagsTeach,
+		toggleTeachTag,
 		commentLesson,
+		setCommentLesson,
 		commentTeach,
-		removePending,
-	])
-
-	const isSubmitting = step === 'submitting'
+		setCommentTeach,
+		submit,
+		goToTeacher,
+		goToLesson,
+		retryFromTeacher,
+		isSubmitting,
+	} = useEvaluateLesson(item.key)
 
 	const content = (
 		<BottomSheet onBackdropClick={isSubmitting ? undefined : onClose}>
@@ -122,18 +89,9 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 						title='Спасибо за оценку!'
 						subtitle='Ваш отзыв поможет улучшить качество занятий'
 					/>
-					<button
-						type='button'
-						onClick={onClose}
-						className='w-full h-12 rounded-2xl text-sm font-semibold mt-2'
-						style={{
-							background: 'var(--color-surface-strong)',
-							border: '1px solid var(--color-border)',
-							color: 'var(--color-text)',
-						}}
-					>
-						Закрыть
-					</button>
+					<div className='mt-2'>
+						<SheetButton onClick={onClose}>Закрыть</SheetButton>
+					</div>
 				</>
 			)}
 
@@ -143,17 +101,9 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 						Не удалось отправить оценку
 					</p>
 					<p className='text-xs text-app-muted'>Попробуйте ещё раз</p>
-					<button
-						type='button'
-						onClick={() => setStep('teacher')}
-						className='h-10 px-6 rounded-2xl text-sm font-semibold'
-						style={{
-							background: 'var(--color-brand)',
-							color: '#fff',
-						}}
-					>
+					<SheetButton variant='primary' onClick={retryFromTeacher}>
 						Повторить
-					</button>
+					</SheetButton>
 				</div>
 			)}
 
@@ -175,9 +125,7 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 							<TagPicker
 								tags={tags}
 								selected={tagsLesson}
-								onToggle={id =>
-									toggleTag(tagsLesson, setTagsLesson, id)
-								}
+								onToggle={toggleLessonTag}
 							/>
 						</div>
 					)}
@@ -200,18 +148,9 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 						/>
 					</div>
 
-					<button
-						type='button'
-						disabled={markLesson === 0}
-						onClick={() => setStep('teacher')}
-						className='w-full h-12 rounded-2xl text-sm font-semibold transition-all disabled:opacity-40'
-						style={{
-							background: 'var(--color-brand)',
-							color: '#fff',
-						}}
-					>
+					<SheetButton variant='primary' onClick={goToTeacher} disabled={markLesson === 0}>
 						Далее — оценка преподавателя
-					</button>
+					</SheetButton>
 				</div>
 			)}
 
@@ -233,11 +172,7 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 							<TagPicker
 								tags={tags}
 								selected={tagsTeach}
-								onToggle={id =>
-									isSubmitting
-										? undefined
-										: toggleTag(tagsTeach, setTagsTeach, id)
-								}
+								onToggle={isSubmitting ? () => {} : toggleTeachTag}
 							/>
 						</div>
 					)}
@@ -262,34 +197,27 @@ export function EvaluateLessonSheet({ item, tags, onClose }: Props) {
 					</div>
 
 					<div className='flex gap-2'>
-						<button
-							type='button'
-							disabled={isSubmitting}
-							onClick={() => setStep('lesson')}
-							className='flex-1 h-12 rounded-2xl text-sm font-semibold transition-all disabled:opacity-40'
-							style={{
-								background: 'var(--color-surface-strong)',
-								border: '1px solid var(--color-border)',
-								color: 'var(--color-text)',
-							}}
-						>
-							Назад
-						</button>
-						<button
-							type='button'
-							disabled={markTeach === 0 || isSubmitting}
-							onClick={handleSubmit}
-							className='flex-1 h-12 rounded-2xl text-sm font-semibold transition-all disabled:opacity-40 flex items-center justify-center gap-2'
-							style={{
-								background: 'var(--color-brand)',
-								color: '#fff',
-							}}
-						>
-							{isSubmitting && (
-								<Loader2 size={16} className='animate-spin' />
-							)}
-							Отправить
-						</button>
+						<div className='flex-1'>
+							<SheetButton onClick={goToLesson} disabled={isSubmitting}>
+								Назад
+							</SheetButton>
+						</div>
+						<div className='flex-1'>
+							<SheetButton
+								variant='primary'
+								onClick={submit}
+								disabled={markTeach === 0 || isSubmitting}
+							>
+								{isSubmitting ? (
+									<span className='flex items-center justify-center gap-2'>
+										<Loader2 size={16} className='animate-spin' />
+										Отправка
+									</span>
+								) : (
+									'Отправить'
+								)}
+							</SheetButton>
+						</div>
 					</div>
 				</div>
 			)}

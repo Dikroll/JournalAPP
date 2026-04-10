@@ -88,6 +88,19 @@
 	                        backdrop-blur-[24px] (arbitrary value)
 	   ──────────────────────────────────────────────────────── */
 
+	--color-glass: rgba(255, 255, 255, 0.05);
+	--color-glass-hover: rgba(255, 255, 255, 0.08);
+	--color-glass-active: rgba(255, 255, 255, 0.10);
+	--color-glass-border: rgba(255, 255, 255, 0.08);
+	--color-glass-strong: rgba(255, 255, 255, 0.10);
+
+	--color-danger: #EF4444;
+	--color-danger-subtle: rgba(239, 68, 68, 0.10);
+	--color-danger-border: rgba(239, 68, 68, 0.20);
+
+	--color-modal-bg: #1A1C21;
+	--color-modal-backdrop: rgba(0, 0, 0, 0.6);
+
 	--color-gradient-from: #F20519;
 	--color-gradient-to: #F29F05;
 
@@ -136,6 +149,19 @@
 	--color-brand-border: rgba(37, 99, 235, 0.2);
 	--color-gradient-from: #2563eb;
 	--color-gradient-to: #7c3aed;
+
+	--color-glass: rgba(15, 23, 42, 0.04);
+	--color-glass-hover: rgba(15, 23, 42, 0.06);
+	--color-glass-active: rgba(15, 23, 42, 0.08);
+	--color-glass-border: rgba(15, 23, 42, 0.08);
+	--color-glass-strong: rgba(15, 23, 42, 0.06);
+
+	--color-danger: #DC2626;
+	--color-danger-subtle: rgba(220, 38, 38, 0.08);
+	--color-danger-border: rgba(220, 38, 38, 0.18);
+
+	--color-modal-bg: #ffffff;
+	--color-modal-backdrop: rgba(0, 0, 0, 0.3);
 
 	--color-highlight-bg: rgba(37, 99, 235, 0.08);
 	--color-highlight-border: rgba(37, 99, 235, 0.22);
@@ -246,6 +272,19 @@
 		--color-brand-border: rgba(37, 99, 235, 0.2);
 		--color-gradient-from: #2563eb;
 		--color-gradient-to: #7c3aed;
+
+		--color-glass: rgba(15, 23, 42, 0.04);
+		--color-glass-hover: rgba(15, 23, 42, 0.06);
+		--color-glass-active: rgba(15, 23, 42, 0.08);
+		--color-glass-border: rgba(15, 23, 42, 0.08);
+		--color-glass-strong: rgba(15, 23, 42, 0.06);
+
+		--color-danger: #DC2626;
+		--color-danger-subtle: rgba(220, 38, 38, 0.08);
+		--color-danger-border: rgba(220, 38, 38, 0.18);
+
+		--color-modal-bg: #ffffff;
+		--color-modal-backdrop: rgba(0, 0, 0, 0.3);
 
 		--color-highlight-bg: rgba(37, 99, 235, 0.08);
 		--color-highlight-border: rgba(37, 99, 235, 0.22);
@@ -378,6 +417,15 @@
 	--color-brand-hover: var(--color-brand-hover);
 	--color-brand-subtle: var(--color-brand-subtle);
 	--color-brand-border: var(--color-brand-border);
+
+	--color-glass: var(--color-glass);
+	--color-glass-hover: var(--color-glass-hover);
+	--color-glass-active: var(--color-glass-active);
+	--color-glass-border: var(--color-glass-border);
+
+	--color-danger: var(--color-danger);
+	--color-danger-subtle: var(--color-danger-subtle);
+	--color-danger-border: var(--color-danger-border);
 
 	--color-status-new: var(--color-new);
 	--color-status-pending: var(--color-pending);

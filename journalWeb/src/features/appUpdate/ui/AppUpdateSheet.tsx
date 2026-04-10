@@ -1,5 +1,5 @@
 import { getChangelogLabelStyle, parseChangelogItems } from '@/shared/lib/appRelease'
-import { BottomSheet, IconButton } from '@/shared/ui'
+import { BottomSheet, GlassCard, IconButton, SheetButton } from '@/shared/ui'
 import { Download, X } from 'lucide-react'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 
@@ -29,10 +29,10 @@ export function AppUpdateSheet() {
 							<Download size={18} className='text-brand' />
 						</div>
 						<div>
-							<p className='text-sm font-semibold text-[#F2F2F2]'>
+							<p className='text-sm font-semibold text-app-text'>
 								Доступно обновление
 							</p>
-							<p className='text-xs text-[#6B7280] mt-0.5'>
+							<p className='text-xs text-app-muted mt-0.5'>
 								Версия {serverInfo.version}
 							</p>
 						</div>
@@ -49,11 +49,11 @@ export function AppUpdateSheet() {
 
 				{/* Changelog */}
 				{serverInfo.changelog && (
-					<div className='bg-white/5 border border-white/8 rounded-2xl px-4 py-3'>
-						<p className='text-xs text-[#9CA3AF] mb-2'>Что нового</p>
+					<GlassCard>
+						<p className='text-xs text-app-muted mb-2'>Что нового</p>
 						<ul className='space-y-1.5'>
 							{parseChangelogItems(serverInfo.changelog).map((entry, i) => (
-								<li key={i} className='flex items-start gap-2 text-sm text-[#E5E7EB] leading-relaxed'>
+								<li key={i} className='flex items-start gap-2 text-sm text-app-text leading-relaxed'>
 									{entry.label && (
 										<span className={`shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase leading-none ${getChangelogLabelStyle(entry.label)}`}>
 											{entry.label}
@@ -63,19 +63,19 @@ export function AppUpdateSheet() {
 								</li>
 							))}
 						</ul>
-					</div>
+					</GlassCard>
 				)}
 
 				{/* Прогресс скачивания */}
 				{isDownloading && (
 					<div className='space-y-2'>
 						<div className='flex items-center justify-between'>
-							<p className='text-xs text-[#9CA3AF]'>Скачивание...</p>
-							<p className='text-xs font-semibold text-[#F2F2F2]'>
+							<p className='text-xs text-app-muted'>Скачивание...</p>
+							<p className='text-xs font-semibold text-app-text'>
 								{downloadProgress}%
 							</p>
 						</div>
-						<div className='h-2 bg-white/10 rounded-full overflow-hidden'>
+						<div className='h-2 bg-glass-active rounded-full overflow-hidden'>
 							<div
 								className='h-full rounded-full transition-all duration-300'
 								style={{
@@ -84,7 +84,7 @@ export function AppUpdateSheet() {
 								}}
 							/>
 						</div>
-						<p className='text-[11px] text-[#6B7280]'>
+						<p className='text-[11px] text-app-muted'>
 							После скачивания откроется установщик Android
 						</p>
 					</div>
@@ -92,32 +92,20 @@ export function AppUpdateSheet() {
 
 				{/* Ошибка */}
 				{isError && errorMessage && (
-					<div className='bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-2xl px-4 py-3'>
-						<p className='text-sm text-[#EF4444]'>{errorMessage}</p>
+					<div className='bg-danger-subtle border border-danger-border rounded-2xl px-4 py-3'>
+						<p className='text-sm text-danger'>{errorMessage}</p>
 					</div>
 				)}
 
 				{/* Кнопки */}
 				{!isDownloading && (
 					<div className='space-y-2'>
-						<button
-							type='button'
-							onClick={downloadAndInstall}
-							className='w-full py-3.5 rounded-[18px] text-sm font-semibold text-white'
-							style={{
-								background: 'linear-gradient(90deg, var(--color-brand), var(--color-brand-hover))',
-							}}
-						>
+						<SheetButton variant='primary' onClick={downloadAndInstall}>
 							{isError ? 'Попробовать снова' : 'Скачать и установить'}
-						</button>
-
-						<button
-							type='button'
-							onClick={dismiss}
-							className='w-full py-3.5 rounded-[18px] text-sm font-medium text-[#9CA3AF] bg-white/5 border border-white/8'
-						>
+						</SheetButton>
+						<SheetButton onClick={dismiss}>
 							Напомнить позже
-						</button>
+						</SheetButton>
 					</div>
 				)}
 			</div>

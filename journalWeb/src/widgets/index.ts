@@ -43,8 +43,8 @@ export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
 
-// EvaluateLesson
-export { EvaluateLessonList } from './EvaluateLesson/ui/EvaluateLessonList'
+// EvaluateLesson (moved to features/evaluateLesson)
+export { EvaluateLessonList } from '@/features/evaluateLesson'
 
 // Library
 export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'

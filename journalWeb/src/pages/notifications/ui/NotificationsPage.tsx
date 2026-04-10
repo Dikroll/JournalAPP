@@ -5,19 +5,19 @@ import {
 } from '@/features/sendNotifications'
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
 import { useAppUpdate, useAppUpdateStore } from '@/features/appUpdate'
-import { fetchLatestAppRelease, toChangelogFeedEntry } from '@/shared/lib/appRelease'
+import { RefreshNotificationsButton } from '@/features/refreshNotifications'
+import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { IconButton } from '@/shared/ui'
-import { EvaluateLessonList } from '@/widgets'
+import { EvaluateLessonList } from '@/features/evaluateLesson'
 import {
 	ArrowLeft,
 	ClipboardCheck,
 	Download,
 	Megaphone,
-	RefreshCw,
 	Sparkles,
 } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChangelogTab } from './ChangelogTab'
 import { ComingSoonTab } from './ComingSoonTab'
@@ -33,29 +33,12 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
-	const [refreshing, setRefreshing] = useState(false)
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
-	const setLatestRelease = useAppUpdateStore(s => s.setLatestRelease)
 	const { serverInfo, status: updateStatus } = useAppUpdate()
 	const openSheet = useAppUpdateStore(s => s.openSheet)
 
 	useSwipeBack()
-
-	const handleRefresh = useCallback(async () => {
-		if (refreshing) return
-		setRefreshing(true)
-		try {
-			const fresh = await fetchLatestAppRelease()
-			if (fresh.version !== latestRelease?.version) {
-				setLatestRelease(fresh)
-			}
-		} catch {
-			// сеть недоступна — оставляем текущие данные
-		} finally {
-			setRefreshing(false)
-		}
-	}, [refreshing, latestRelease?.version, setLatestRelease])
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
@@ -91,18 +74,7 @@ export function NotificationsPage() {
 					)}
 				</div>
 
-				{activeTab === 'changelog' && (
-					<IconButton
-						icon={<RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />}
-						onClick={handleRefresh}
-						disabled={refreshing}
-						size='md'
-						shape='square'
-						variant='surface'
-						style={{ boxShadow: 'var(--shadow-card)' }}
-						aria-label='Обновить'
-					/>
-				)}
+				<RefreshNotificationsButton />
 			</div>
 
 			<div className='px-4 mb-4'>

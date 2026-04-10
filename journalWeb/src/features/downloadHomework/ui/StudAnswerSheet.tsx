@@ -94,8 +94,9 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 						? 'none'
 						: 'transform 0.3s cubic-bezier(0.32,0.72,0,1)',
 					transform: visible ? `translateY(${dragY}px)` : 'translateY(100%)',
+					background: 'var(--color-modal-bg)',
 				}}
-				className='w-full max-w-lg bg-[#1a1a24] border-t border-x border-white/10 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden'
+				className='w-full max-w-lg border-t border-x border-app-border rounded-t-3xl shadow-2xl flex flex-col overflow-hidden'
 			>
 				{/* Drag handle */}
 				<div
@@ -105,20 +106,20 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 					onTouchEnd={onTouchEnd}
 					onMouseDown={onMouseDown}
 				>
-					<div className='w-10 h-1 rounded-full bg-white/20' />
+					<div className='w-10 h-1 rounded-full bg-glass-strong' />
 				</div>
 
 				{/* Header */}
 				<div className='flex items-center justify-between px-4 pt-1 pb-3 flex-shrink-0'>
 					<div className='flex items-center gap-2.5'>
-						<div className='w-9 h-9 rounded-2xl bg-white/8 flex items-center justify-center'>
-							<MessageSquare size={16} className='text-[#9CA3AF]' />
+						<div className='w-9 h-9 rounded-2xl bg-glass border border-glass-border flex items-center justify-center'>
+							<MessageSquare size={16} className='text-app-muted' />
 						</div>
 						<div>
-							<p className='text-xs text-[#6B7280] leading-none mb-1'>
+							<p className='text-xs text-app-muted leading-none mb-1'>
 								Мой ответ
 							</p>
-							<p className='text-sm font-semibold text-[#F2F2F2] leading-none line-clamp-1'>
+							<p className='text-sm font-semibold text-app-text leading-none line-clamp-1'>
 								{homeworkTheme}
 							</p>
 						</div>
@@ -133,21 +134,21 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 
 				{/* Answer — scrollable, max ~5 lines visible */}
 				<div
-					className='mx-4 mb-3 rounded-2xl bg-white/5 border border-white/8 px-4 py-3 flex-shrink-0 overflow-y-auto'
+					className='mx-4 mb-3 rounded-2xl bg-glass border border-glass-border px-4 py-3 flex-shrink-0 overflow-y-auto'
 					style={{ maxHeight: '9rem' }}
 				>
-					<p className='text-sm text-[#E5E7EB] leading-relaxed whitespace-pre-wrap break-words'>
+					<p className='text-sm text-app-text leading-relaxed whitespace-pre-wrap break-words'>
 						{answer}
 					</p>
 				</div>
 
 				{/* Label */}
 				<div className='flex items-center gap-3 px-4 mb-2 flex-shrink-0'>
-					<div className='h-px flex-1 bg-white/8' />
-					<p className='text-[10px] text-[#3a3a52] tracking-widest uppercase select-none'>
+					<div className='h-px flex-1 bg-glass-border' />
+					<p className='text-[10px] text-app-muted tracking-widest uppercase select-none'>
 						пока ждёшь оценку...
 					</p>
-					<div className='h-px flex-1 bg-white/8' />
+					<div className='h-px flex-1 bg-glass-border' />
 				</div>
 
 				{/* Game — fixed comfortable height */}
