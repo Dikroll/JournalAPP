@@ -2,8 +2,9 @@ import type { ChartPoint } from '@/entities/dashboard'
 import { useGradesCharts } from '@/entities/dashboard'
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui/'
+import { useTooltipDismiss } from '@/shared/utils/toollipUtils'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
-import { memo, useCallback, useRef } from 'react'
+import { memo } from 'react'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -63,19 +64,10 @@ const CHART_HEIGHT = 192
 
 const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const containerRef = useRef<HTMLDivElement>(null)
-
-	// Stable merged ref — only created once since `ref` from useElementSize is stable
-	const mergedRef = useCallback(
-		(node: HTMLDivElement | null) => {
-			ref(node)
-			containerRef.current = node
-		},
-		[ref],
-	)
+	const { active: tooltipActive, handlers } = useTooltipDismiss()
 
 	return (
-		<div ref={mergedRef} className='w-full' style={{ height: CHART_HEIGHT }}>
+		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }} {...handlers}>
 			{width > 0 && (
 				<LineChart
 					width={width}
@@ -86,14 +78,14 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
 					<YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} {...axisProps} width={30} />
-					<Tooltip
-						content={<CustomTooltip containerRef={containerRef} />}
-						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
-						isAnimationActive={false}
-						wrapperStyle={tooltipWrapperStyle}
-						position={{ y: -48 }}
-						allowEscapeViewBox={{ x: true, y: true }}
-					/>
+					{tooltipActive && (
+						<Tooltip
+							content={<CustomTooltip />}
+							cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
+							isAnimationActive={false}
+							wrapperStyle={tooltipWrapperStyle}
+						/>
+					)}
 					<Line
 						type='monotone'
 						dataKey='value'
@@ -111,18 +103,10 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 
 const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] }) {
 	const { ref, width } = useElementSize()
-	const containerRef = useRef<HTMLDivElement>(null)
-
-	const mergedRef = useCallback(
-		(node: HTMLDivElement | null) => {
-			ref(node)
-			containerRef.current = node
-		},
-		[ref],
-	)
+	const { active: tooltipActive, handlers } = useTooltipDismiss()
 
 	return (
-		<div ref={mergedRef} className='w-full' style={{ height: CHART_HEIGHT }}>
+		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }} {...handlers}>
 			{width > 0 && (
 				<BarChart
 					width={width}
@@ -138,14 +122,14 @@ const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] })
 						{...axisProps}
 						width={36}
 					/>
-					<Tooltip
-						content={<CustomTooltip containerRef={containerRef} suffix='%' />}
-						cursor={<NoCursor />}
-						isAnimationActive={false}
-						wrapperStyle={tooltipWrapperStyle}
-						position={{ y: -48 }}
-						allowEscapeViewBox={{ x: true, y: true }}
-					/>
+					{tooltipActive && (
+						<Tooltip
+							content={<CustomTooltip suffix='%' />}
+							cursor={<NoCursor />}
+							isAnimationActive={false}
+							wrapperStyle={tooltipWrapperStyle}
+						/>
+					)}
 					<Bar
 						dataKey='value'
 						fill='#F0A020'

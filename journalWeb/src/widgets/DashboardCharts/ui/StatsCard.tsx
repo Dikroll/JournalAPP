@@ -1,7 +1,8 @@
 import { useElementSize } from '@/shared/hooks'
 import { CustomTooltip } from '@/shared/ui'
+import { useTooltipDismiss } from '@/shared/utils/toollipUtils'
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
-import { memo, useCallback, useRef } from 'react'
+import { memo } from 'react'
 import { Line, LineChart, Tooltip, XAxis } from 'recharts'
 
 interface StatsCardProps {
@@ -34,16 +35,7 @@ export const StatsCard = memo(function StatsCard({
 	color = '#F20519',
 }: StatsCardProps) {
 	const { ref, width, height } = useElementSize()
-	const containerRef = useRef<HTMLDivElement>(null)
-
-	// Stable merged ref — avoids reconnecting ResizeObserver on every render
-	const mergedRef = useCallback(
-		(node: HTMLDivElement | null) => {
-			ref(node)
-			containerRef.current = node
-		},
-		[ref],
-	)
+	const { active: tooltipActive, handlers: tooltipHandlers } = useTooltipDismiss()
 
 	const isNeutral = trend === 0
 	const isPositive = trend !== undefined && trend > 0
@@ -54,7 +46,7 @@ export const StatsCard = memo(function StatsCard({
 			className='bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border flex flex-col overflow-hidden aspect-square'
 			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
-			<div className='flex flex-col p-4 flex-1'>
+			<div className='flex flex-col p-4 flex-1 min-h-0'>
 				<div className='flex items-center justify-between mb-2'>
 					<h3 className='text-xs text-app-muted'>{title}</h3>
 					{icon && <div className='text-app-muted'>{icon}</div>}
@@ -85,16 +77,16 @@ export const StatsCard = memo(function StatsCard({
 
 			{data && data.length > 0 && (
 				<div
-					ref={mergedRef}
-					className='w-full px-6 pb-2'
-					style={{ height: 128, overflow: 'visible' }}
+					ref={ref}
+					className='w-full flex-1 min-h-0'
+					{...tooltipHandlers}
 				>
 					{width > 0 && height > 0 && (
 						<LineChart
 							width={width}
 							height={height}
 							data={data}
-							margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
+							margin={{ top: 4, right: 8, left: 8, bottom: 4 }}
 						>
 							<XAxis dataKey='label' hide />
 							<Line
@@ -107,13 +99,13 @@ export const StatsCard = memo(function StatsCard({
 								strokeLinejoin='round'
 								isAnimationActive={false}
 							/>
-							<Tooltip
-								content={<CustomTooltip containerRef={containerRef} />}
-								cursor={{ stroke: 'var(--color-border-strong)' }}
-								wrapperStyle={tooltipWrapperStyle}
-								position={{ y: -48 }}
-								allowEscapeViewBox={{ x: true, y: true }}
-							/>
+							{tooltipActive && (
+								<Tooltip
+									content={<CustomTooltip />}
+									cursor={{ stroke: 'var(--color-border-strong)' }}
+									wrapperStyle={tooltipWrapperStyle}
+								/>
+							)}
 						</LineChart>
 					)}
 				</div>
