@@ -8,13 +8,11 @@ interface ScheduleState {
 	todayLoadedAt: number | null
 	error: string | null
 
-	// Кеш по месяцам: ключ — 'YYYY-MM'
-	months: Record<string, LessonItem[]>
+	months: Record<string, LessonItem[]> // 'YYYY-MM'
 	monthStatus: Record<string, LoadingState>
 	monthLoadedAt: Record<string, number>
 
-	// Кеш по неделям: ключ — любая дата недели 'YYYY-MM-DD'
-	weeks: Record<string, LessonItem[]>
+	weeks: Record<string, LessonItem[]> // 'YYYY-MM-DD'
 	weekStatus: Record<string, LoadingState>
 	weekLoadedAt: Record<string, number>
 

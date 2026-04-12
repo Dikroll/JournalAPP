@@ -8,23 +8,8 @@ const CACHE_TTL_MS = ttl.SCHEDULE * 1000
 
 const FETCH_TIMEOUT_MS = 15_000
 
-export function resetScheduleTodayFetch() {
-	// оставлен для совместимости с resetAllStores — больше не нужен,
-	// но удалять нельзя чтобы не ломать импорты
-}
+export function resetScheduleTodayFetch() {}
 
-/**
- * ИСПРАВЛЕНИЕ: модульный `let fetching = false` заменён на useRef.
- *
- * Проблема была в том, что если запрос зависал или падал до .finally(),
- * модульная переменная оставалась true НАВСЕГДА до перезагрузки страницы.
- * Это приводило к тому, что страница schedule не открывалась с первого клика —
- * хук молча возвращал ничего, видя fetching = true.
- *
- * useRef живёт только пока компонент смонтирован, поэтому при переходе
- * на другую страницу и обратно флаг сбрасывается автоматически.
- * Дополнительно добавлен таймаут-страховка на случай зависших запросов.
- */
 export function useScheduleToday() {
 	const today = useScheduleStore(s => s.today)
 	const todayStatus = useScheduleStore(s => s.todayStatus)
@@ -45,7 +30,6 @@ export function useScheduleToday() {
 		fetchingRef.current = true
 		setTodayStatus('loading')
 
-		// Страховочный таймаут: если запрос завис — разблокируем флаг
 		timeoutRef.current = setTimeout(() => {
 			if (fetchingRef.current) {
 				fetchingRef.current = false
@@ -77,7 +61,6 @@ export function useScheduleToday() {
 			})
 	}, [todayLoadedAt])
 
-	// Чистим таймаут при размонтировании
 	useEffect(() => {
 		return () => {
 			if (timeoutRef.current) {

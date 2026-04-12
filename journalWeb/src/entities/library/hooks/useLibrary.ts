@@ -132,7 +132,6 @@ export function useLibrary({
 		loadMaterials(false)
 	}, [autoLoad, materialsKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-	// Счётчики грузятся один раз при смене предмета — не при смене вкладки
 	useEffect(() => {
 		if (!autoLoad) return
 		loadCounters(false)

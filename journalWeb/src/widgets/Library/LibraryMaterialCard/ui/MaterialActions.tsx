@@ -13,7 +13,6 @@ interface Props {
 }
 
 async function openExternalUrl(rawUrl: string) {
-	// fixUrl превращает /files/<token> → https://api.domain/files/<token>
 	const absolute = fixUrl(rawUrl) ?? rawUrl
 	if (Capacitor.isNativePlatform()) {
 		await Browser.open({ url: absolute })

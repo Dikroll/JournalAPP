@@ -64,7 +64,7 @@
 	--color-grade-2-border: rgba(224, 53, 53, 0.35);
 	--color-grade-2-badge: #e03535;
 
-	/* ── Shadows ──────────────────────────────────────────────
+	/* Shadows
 	   --shadow-card     : карточки (HomeworkCard, GradesCard, LessonCard…)
 	   --shadow-nav      : нижний навбар
 	   --shadow-modal    : bottom sheets и центрированные модалки
@@ -79,7 +79,7 @@
 	--shadow-dropdown: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 	--shadow-tooltip: 0 4px 20px rgba(0, 0, 0, 0.4);
 
-	/* ── Backdrop blur — допустимые уровни ────────────────────
+	/* Backdrop blur
 	   backdrop-blur-sm  (4px)  : полупрозрачный оверлей за модалкой/шторкой
 	   backdrop-blur-xl  (24px) : карточки, хедеры, навбар, сами шторки
 	   backdrop-blur-3xl (64px) : LoginForm (намеренно усиленный)
@@ -383,7 +383,7 @@
 	}
 }
 
-/* ── Utility classes ─────────────────────────────────────── */
+/* Utility classes */
 
 .card {
 	background: var(--color-surface);

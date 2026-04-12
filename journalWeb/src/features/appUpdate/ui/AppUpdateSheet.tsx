@@ -13,7 +13,6 @@ export function AppUpdateSheet() {
 		dismiss,
 	} = useAppUpdate()
 
-	// Показываем только когда есть доступное обновление или идёт скачивание/ошибка
 	if (status === 'idle' || status === 'checking' || !serverInfo) return null
 
 	const isDownloading = status === 'downloading'

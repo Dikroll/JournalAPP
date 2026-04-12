@@ -41,13 +41,10 @@ const TYPE_PLACEHOLDER_ICONS_LG: Record<number, React.ReactNode> = {
 	8: <FileText size={96} />,
 }
 
-// ── YouTube превью ─────────────────────────────────────────────
-// Thumbnail грузится как обычная картинка — ноль запросов к Google.
-// При клике: нативный плеер на Capacitor, оверлей на вебе.
 
 interface YoutubePreviewProps {
 	thumbnailUrl: string | null
-	watchUrl: string // оригинальный URL для нативного плеера
+	watchUrl: string
 	title: string
 	typeColor: { border: string; bg: string; text: string }
 }
@@ -61,12 +58,8 @@ function YoutubePreview({
 	const [thumbErr, setThumbErr] = useState(false)
 	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer()
 
-	// Нативный плеер получает оригинальный watchUrl,
-	// веб-оверлей открывается с embedUrl (autoplay=1 добавляет сам оверлей)
 	const handleClick = () => {
 		openVideo(watchUrl)
-		// При fallback на веб useVideoPlayer запишет watchUrl в overlayUrl,
-		// но VideoPlayerOverlay умеет конвертировать watch?v= → embed сам через getEmbedUrl
 	}
 
 	const previewHeight = { aspectRatio: '16/9' } as React.CSSProperties
@@ -115,7 +108,6 @@ function YoutubePreview({
 		)
 	}
 
-	// Fallback без thumbnail
 	return (
 		<>
 			<button
@@ -150,7 +142,7 @@ function YoutubePreview({
 	)
 }
 
-// ── Главный компонент ──────────────────────────────────────────
+
 
 interface Props {
 	material: LibraryMaterial
@@ -174,7 +166,7 @@ export const MaterialCover = memo(function MaterialCover({
 		isVideo && material.url ? getYouTubeThumbnail(material.url) : null
 	const isExternalVideo = isVideo && !!material.url && !youtubeEmbed
 
-	// ── 1. YouTube ──────────────────────────────────────────────
+	// YouTube
 	if (youtubeEmbed) {
 		return (
 			<YoutubePreview
@@ -186,7 +178,7 @@ export const MaterialCover = memo(function MaterialCover({
 		)
 	}
 
-	// ── 2. Внешнее видео + обложка ──────────────────────────────
+	// Внешнее видео + обложка
 	if (isExternalVideo && photoUrl && !imgError) {
 		return (
 			<>
@@ -231,7 +223,7 @@ export const MaterialCover = memo(function MaterialCover({
 		)
 	}
 
-	// ── 3. Внешнее видео без обложки ────────────────────────────
+	// Внешнее видео без обложки
 	if (isExternalVideo) {
 		return (
 			<>
@@ -273,7 +265,7 @@ export const MaterialCover = memo(function MaterialCover({
 		)
 	}
 
-	// ── 4. Обычная обложка ──────────────────────────────────────
+	// Обычная обложка
 	if (photoUrl && !imgError) {
 		return (
 			<>
@@ -304,7 +296,7 @@ export const MaterialCover = memo(function MaterialCover({
 		)
 	}
 
-	// ── 5. Заглушка ─────────────────────────────────────────────
+	// Заглушка
 	return (
 		<div
 			className='w-full flex items-center justify-center relative overflow-hidden'

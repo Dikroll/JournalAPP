@@ -55,10 +55,9 @@ export function useLogin() {
 			const { access_token } = await authApi.login(payload)
 
 			if (isAddingAccount) {
-				// Clear previous user's cached data but keep auth
 				resetAllAppState({
 					resetAuth: false,
-					resetTheme: false, // Keep user's theme preference
+					resetTheme: false,
 					resetOnboarding: false,
 				})
 			}

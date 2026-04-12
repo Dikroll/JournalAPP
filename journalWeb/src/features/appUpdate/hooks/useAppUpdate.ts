@@ -52,11 +52,9 @@ export function useAppUpdate() {
 		await loadPlugins()
 
 		try {
-			// Always fetch release info — needed for changelog on all platforms
-			const releaseInfo = await fetchLatestAppRelease()
+				const releaseInfo = await fetchLatestAppRelease()
 			setLatestRelease(releaseInfo)
 
-			// APK updates only apply to Android
 			if (Capacitor?.getPlatform() !== 'android') return
 
 			setStatus('checking')

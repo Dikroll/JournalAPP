@@ -18,7 +18,6 @@ export function BottomSheet({
 	const dragStart = useRef(0)
 	const sheetRef = useRef<HTMLDivElement>(null)
 
-	// Block body scroll (works on iOS too)
 	useEffect(() => {
 		const scrollY = window.scrollY
 		const { body } = document
@@ -42,7 +41,6 @@ export function BottomSheet({
 	}, [onBackdropClick])
 
 	const onTouchStart = useCallback((e: React.TouchEvent) => {
-		// Only start drag from the handle area (top 40px of the sheet)
 		const sheet = sheetRef.current
 		if (!sheet) return
 		const rect = sheet.getBoundingClientRect()

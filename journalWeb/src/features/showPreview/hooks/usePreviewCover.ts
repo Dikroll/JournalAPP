@@ -2,9 +2,6 @@ import type { LibraryMaterial } from '@/entities/library'
 import { getCachedImageUrl } from '@/shared/lib'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-/**
- * Парсит YouTube URL в embed ссылку
- */
 function toYouTubeEmbed(url: string): string | null {
 	if (url.includes('youtube.com/embed/')) return url
 	if (url.includes('youtu.be/')) {
@@ -16,10 +13,6 @@ function toYouTubeEmbed(url: string): string | null {
 	return null
 }
 
-/**
- * Управляет логикой загрузки превью, просмотра картинок и видео
- * Ленивая загрузка: парсит видео только при открытии viewer (не при рендере карточки)
- */
 export function usePreviewCover(material: LibraryMaterial) {
 	const [viewerOpen, setViewerOpen] = useState(false)
 	const [photoUrl, setPhotoUrl] = useState<string | null>(null)
@@ -29,14 +22,12 @@ export function usePreviewCover(material: LibraryMaterial) {
 	const hasCoverImage = material.cover_image !== null
 	const cachedVideoUrl = useRef<string | null>(null)
 
-	// Парсим видео ТОЛЬКО когда viewer открывается, не при рендере
 	useEffect(() => {
 		if (!viewerOpen || !isVideo || !material.url) {
 			setYoutubeEmbed(null)
 			return
 		}
 
-		// Кэшируем чтобы не перепарсивать
 		if (cachedVideoUrl.current === material.url) return
 
 		cachedVideoUrl.current = material.url
@@ -44,7 +35,6 @@ export function usePreviewCover(material: LibraryMaterial) {
 		setYoutubeEmbed(embed)
 	}, [viewerOpen, isVideo, material.url])
 
-	// Загружаем image ТОЛЬКО когда viewer открыт
 	useEffect(() => {
 		if (!viewerOpen || !material.cover_image) {
 			setPhotoUrl(null)
@@ -59,11 +49,8 @@ export function usePreviewCover(material: LibraryMaterial) {
 	const isExternalVideo = isVideo && material.url && !youtubeEmbed
 
 	return {
-		// State
 		viewerOpen,
 		setViewerOpen: setViewerOpenCallback,
-
-		// Вычисленные значения
 		photoUrl,
 		youtubeEmbed,
 		isExternalVideo,

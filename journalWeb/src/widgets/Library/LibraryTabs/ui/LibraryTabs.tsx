@@ -54,7 +54,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 	const activeCounterKey = MATERIAL_TYPE_TO_COUNTER_KEY[active]
 	const activeCounter = counters?.[activeCounterKey] ?? null
 
-	// ── touch-хендлеры ──────────────────────────────────────────
+	// touch-хендлеры
 
 	const handleTouchStart = useCallback((e: React.TouchEvent) => {
 		touchStartX.current = e.touches[0].clientX
@@ -85,7 +85,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 	return (
 		<div className='space-y-3'>
-			{/* ── Строка вкладок ── */}
+			{/* Строка вкладок */}
 			<div className='relative'>
 				{showLeft && (
 					<div
@@ -194,7 +194,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 				))}
 			</div>
 
-			{/* ── Счётчик под табами ── */}
+			{/* Счётчик под табами */}
 			{!isLoading && !error && activeCounter !== null && (
 				<div className='flex items-center justify-between px-0.5'>
 					<p className='text-xs text-app-faint'>
@@ -208,7 +208,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 				</div>
 			)}
 
-			{/* ── Контент ── */}
+			{/* Контент */}
 			{isLoading && <SkeletonList count={3} height={180} />}
 
 			{!isLoading && error && (

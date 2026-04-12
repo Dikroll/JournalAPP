@@ -12,17 +12,13 @@ export function useLogout() {
 	const logout = useCallback(async () => {
 		setLoading(true)
 		try {
-			// Clear user entity first
 			clearUser()
-
-			// Reset all app state (including auth)
 			resetAllAppState({
 				resetAuth: true,
 				resetTheme: true,
 				resetOnboarding: true,
 			})
 
-			// Navigate to login
 			navigate(pageConfig.login, { replace: true })
 		} finally {
 			setLoading(false)

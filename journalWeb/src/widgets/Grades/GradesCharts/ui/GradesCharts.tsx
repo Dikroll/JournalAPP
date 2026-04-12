@@ -43,7 +43,6 @@ function NoCursor() {
 	return null
 }
 
-// Static objects — defined once, never recreated
 const axisProps = {
 	fontSize: 12,
 	tickLine: false,

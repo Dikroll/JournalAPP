@@ -16,13 +16,11 @@ export function CustomTooltip({
 	const [hidden, setHidden] = useState(false)
 	const prevActive = useRef(false)
 
-	// Reset hidden state when Recharts activates a new point
 	useEffect(() => {
 		if (active && !prevActive.current) setHidden(false)
 		prevActive.current = !!active
 	}, [active])
 
-	// Hide on any scroll (page scroll, swiper, etc.)
 	useEffect(() => {
 		if (!active || hidden) return
 		const hide = () => setHidden(true)

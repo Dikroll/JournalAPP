@@ -35,23 +35,19 @@ export function SpecSelector({
 		return () => document.removeEventListener('mousedown', handler)
 	}, [close])
 
-	// Close on Android back / browser back
 	useEffect(() => {
 		if (!open) return
 		const onBack = () => {
 			close()
 		}
 		window.addEventListener('popstate', onBack)
-		// Push a dummy state so back button closes the dropdown
 		history.pushState({ specSelector: true }, '')
 		return () => {
 			window.removeEventListener('popstate', onBack)
-			// Clean up dummy state if still present
 			if (history.state?.specSelector) history.back()
 		}
 	}, [open, close])
 
-	// Focus input when opened
 	useEffect(() => {
 		if (open && inputRef.current) {
 			inputRef.current.focus()
