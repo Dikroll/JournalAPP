@@ -20,11 +20,16 @@ export function useGrades() {
 			entries.length > 0 &&
 			loadedAt &&
 			Date.now() - loadedAt < ttl.ACTIVITY * 1000
-		)
+		) {
+			if (status === 'idle') update({ status: 'success' })
 			return
+		}
 
 		if (!getIsOnline()) {
-			if (loadedAt !== null) return
+			if (loadedAt !== null) {
+				if (status === 'idle') update({ status: 'success' })
+				return
+			}
 			update({ status: 'error', error: 'Нет подключения к интернету' })
 			return
 		}

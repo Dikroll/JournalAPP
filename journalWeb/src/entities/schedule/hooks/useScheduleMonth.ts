@@ -23,10 +23,16 @@ export function useScheduleMonth(date: string) {
 	useEffect(() => {
 		if (!date) return
 		if (fetchingRef.current) return
-		if (isCacheValid(monthLoadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(monthLoadedAt, CACHE_TTL_MS)) {
+			if (status === 'idle') setMonthStatus(date, 'success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (monthLoadedAt !== null) return
+			if (monthLoadedAt !== null) {
+				if (status === 'idle') setMonthStatus(date, 'success')
+				return
+			}
 			setMonthStatus(date, 'error')
 			return
 		}

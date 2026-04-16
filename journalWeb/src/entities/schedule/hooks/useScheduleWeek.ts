@@ -23,10 +23,16 @@ export function useScheduleWeek(date: string) {
 	useEffect(() => {
 		if (!date) return
 		if (fetchingRef.current) return
-		if (isCacheValid(weekLoadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(weekLoadedAt, CACHE_TTL_MS)) {
+			if (status === 'idle') setWeekStatus(date, 'success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (weekLoadedAt !== null) return
+			if (weekLoadedAt !== null) {
+				if (status === 'idle') setWeekStatus(date, 'success')
+				return
+			}
 			setWeekStatus(date, 'error')
 			return
 		}

@@ -25,6 +25,7 @@ export function usePayment() {
 			setStatus('success')
 		},
 		onError: () => setStatus('error'),
+		onCacheHit: () => setStatus('success'),
 	})
 
 	return { summary, status }

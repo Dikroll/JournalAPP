@@ -29,6 +29,7 @@ export function useFutureExams() {
 			setStatus('success')
 		},
 		onError: () => setStatus('error'),
+		onCacheHit: () => setStatus('success'),
 	})
 
 	return { exams, status }

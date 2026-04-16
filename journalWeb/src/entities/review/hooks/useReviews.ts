@@ -27,6 +27,7 @@ export function useReviews() {
 			setStatus('success')
 		},
 		onError: () => setStatus('error'),
+		onCacheHit: () => setStatus('success'),
 	})
 
 	return { reviews, status }

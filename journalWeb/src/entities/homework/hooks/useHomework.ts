@@ -45,11 +45,17 @@ export function useHomework() {
 		if (!gid) return
 		if (isLoadingAllRef.current) return
 
-		const { loadedAt } = useHomeworkStore.getState()
-		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
+		const { loadedAt, status: currentStatus } = useHomeworkStore.getState()
+		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) {
+			if (currentStatus === 'idle') setStatus('success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (loadedAt !== null) return
+			if (loadedAt !== null) {
+				if (currentStatus === 'idle') setStatus('success')
+				return
+			}
 			setError('Нет подключения к интернету')
 			setStatus('error')
 			return

@@ -17,6 +17,8 @@ interface UseEntityFetchOptions<T> {
 	onError?: (err: unknown) => void
 	/** Вызывается при начале загрузки */
 	onStart?: () => void
+	/** Вызывается когда данные есть из кеша/persist и fetch не нужен (нормализация статуса) */
+	onCacheHit?: () => void
 }
 
 /**
@@ -35,16 +37,23 @@ export function useEntityFetch<T>({
 	onSuccess,
 	onError,
 	onStart,
+	onCacheHit,
 }: UseEntityFetchOptions<T>) {
 	const fetchingRef = useRef(false)
 
 	useEffect(() => {
 		if (fetchingRef.current) return
 		if (status === 'loading') return
-		if (isCacheValid(loadedAt, ttlMs)) return
+		if (isCacheValid(loadedAt, ttlMs)) {
+			if (status === 'idle') onCacheHit?.()
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (loadedAt !== null) return
+			if (loadedAt !== null) {
+				if (status === 'idle') onCacheHit?.()
+				return
+			}
 			onError?.(new Error('Нет подключения к интернету'))
 			return
 		}

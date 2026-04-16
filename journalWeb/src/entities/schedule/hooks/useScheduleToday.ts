@@ -26,10 +26,16 @@ export function useScheduleToday() {
 
 	useEffect(() => {
 		if (fetchingRef.current) return
-		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) {
+			if (todayStatus === 'idle') setTodayStatus('success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (todayLoadedAt !== null) return
+			if (todayLoadedAt !== null) {
+				if (todayStatus === 'idle') setTodayStatus('success')
+				return
+			}
 			setTodayStatus('error')
 			setError('Нет подключения к интернету')
 			return

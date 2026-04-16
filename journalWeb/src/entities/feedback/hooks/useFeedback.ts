@@ -33,10 +33,16 @@ export function useFeedback() {
 	// Fetch pending
 	useEffect(() => {
 		if (fetchingPendingRef.current) return
-		if (isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) {
+			if (pendingStatus === 'idle') setPendingStatus('success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (pendingLoadedAt !== null) return
+			if (pendingLoadedAt !== null) {
+				if (pendingStatus === 'idle') setPendingStatus('success')
+				return
+			}
 			setPendingStatus('error')
 			setError('Нет подключения к интернету')
 			return
@@ -79,10 +85,16 @@ export function useFeedback() {
 	// Fetch tags
 	useEffect(() => {
 		if (fetchingTagsRef.current) return
-		if (isCacheValid(tagsLoadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(tagsLoadedAt, CACHE_TTL_MS)) {
+			if (tagsStatus === 'idle') setTagsStatus('success')
+			return
+		}
 
 		if (!getIsOnline()) {
-			if (tagsLoadedAt !== null) return
+			if (tagsLoadedAt !== null) {
+				if (tagsStatus === 'idle') setTagsStatus('success')
+				return
+			}
 			setTagsStatus('error')
 			return
 		}

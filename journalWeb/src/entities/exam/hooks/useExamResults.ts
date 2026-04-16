@@ -25,6 +25,7 @@ export function useExamResults() {
 			setStatus('success')
 		},
 		onError: () => setStatus('error'),
+		onCacheHit: () => setStatus('success'),
 	})
 
 	return { exams: results, status }

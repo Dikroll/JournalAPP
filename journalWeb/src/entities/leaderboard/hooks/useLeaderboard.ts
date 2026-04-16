@@ -39,6 +39,10 @@ export function useLeaderboard() {
 			update('group', { status: 'error' })
 			update('stream', { status: 'error' })
 		},
+		onCacheHit: () => {
+			update('group', { status: 'success' })
+			update('stream', { status: 'success' })
+		},
 	})
 
 	const groupStudents = groupData?.top_group ?? []

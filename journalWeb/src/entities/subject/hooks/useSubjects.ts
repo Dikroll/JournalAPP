@@ -27,6 +27,7 @@ export function useSubjects() {
 			setStatus('success')
 		},
 		onError: () => setStatus('error'),
+		onCacheHit: () => setStatus('success'),
 	})
 
 	return { subjects, status }
