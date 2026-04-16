@@ -1,4 +1,6 @@
 import { useScheduleWeek } from '@/entities/schedule'
+import { getGapBetweenLessons, formatGapMinutes } from '@/entities/schedule/lib/scheduleGaps'
+import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
 import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
 import { Badge, IconButton } from '@/shared/ui'
 import {
@@ -9,6 +11,7 @@ import {
 } from '@/shared/utils'
 import { ChevronLeft, ChevronRight, Coffee } from 'lucide-react'
 import { useCallback, useState } from 'react'
+import { GapIndicator } from '../../ScheduleList/ui/GapIndicator'
 import { LessonCard } from '../../ScheduleList/ui/LessonCard'
 
 function getWeekDays(anyDateStr: string): string[] {
@@ -126,6 +129,21 @@ export function ScheduleWeekView() {
 			{weekDays.map((dateStr, idx) => {
 				const dayLessons = byDate[dateStr] ?? []
 				const isToday = dateStr === today
+				const todayTimeInfo = isToday ? getScheduleTimeInfo(dayLessons, nowMinutes) : null
+
+				function getTimeLabel(lesson: typeof dayLessons[number]): string | undefined {
+					if (!todayTimeInfo) return undefined
+					if (todayTimeInfo.type === 'in-lesson' && todayTimeInfo.currentLesson?.lesson === lesson.lesson) {
+						return `ост. ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
+					}
+					if (todayTimeInfo.type === 'before-lessons' && todayTimeInfo.nextLesson?.lesson === lesson.lesson) {
+						return `через ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
+					}
+					if (todayTimeInfo.type === 'in-gap' && todayTimeInfo.nextLesson?.lesson === lesson.lesson) {
+						return `через ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
+					}
+					return undefined
+				}
 				const isPast = dateStr < today
 				const isWeekend = idx >= 5
 				const isEmpty = dayLessons.length === 0
@@ -186,16 +204,23 @@ export function ScheduleWeekView() {
 						{/* Lessons — flat list */}
 						{!isEmpty ? (
 							<ul className='flex flex-col gap-3'>
-								{dayLessons.map(lesson => (
-									<LessonCard
-										key={`${lesson.started_at}-${lesson.room}`}
-										lesson={lesson}
-										isCurrent={
-											isToday &&
-											nowMinutes >= toMinutes(lesson.started_at) &&
-											nowMinutes <= toMinutes(lesson.finished_at)
-										}
-									/>
+								{dayLessons.map((lesson, i) => (
+									<li key={`${lesson.started_at}-${lesson.room}`} className='flex flex-col'>
+										{i > 0 && (
+											<GapIndicator
+												gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
+											/>
+										)}
+										<LessonCard
+											lesson={lesson}
+											isCurrent={
+												isToday &&
+												nowMinutes >= toMinutes(lesson.started_at) &&
+												nowMinutes <= toMinutes(lesson.finished_at)
+											}
+											timeLabel={getTimeLabel(lesson)}
+										/>
+									</li>
 								))}
 							</ul>
 						) : (

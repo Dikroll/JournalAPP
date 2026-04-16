@@ -24,10 +24,7 @@ export const LibraryView = ({ showSpecSelector = true }: LibraryViewProps) => {
 	return (
 		<div className='min-h-screen text-app-text pb-28 overflow-y-auto p-4'>
 			<div className='space-y-4'>
-				<PageHeader
-					title='Библиотека материалов'
-					actions={<RefreshLibraryButton />}
-				/>
+				<PageHeader title='Библиотека' actions={<RefreshLibraryButton />} />
 
 				{showSpecSelector && (
 					<SpecSelector

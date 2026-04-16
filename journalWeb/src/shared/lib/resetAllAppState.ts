@@ -7,6 +7,10 @@ import { useLibraryStore } from '@/entities/library/model/store'
 import { usePaymentStore } from '@/entities/payment/model/store'
 import { useProfileDetailsStore } from '@/entities/profile/model/store'
 import { useReviewStore } from '@/entities/review/model/store'
+import {
+	DEFAULT_STATUSES,
+	useLessonNotesStore,
+} from '@/entities/schedule/model/notesStore'
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
@@ -83,10 +87,21 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		months: {},
 		monthStatus: {},
 		monthLoadedAt: {},
+		weeks: {},
+		weekStatus: {},
+		weekLoadedAt: {},
 		today: [],
 		todayStatus: 'idle',
 		todayLoadedAt: null,
 		error: null,
+	})
+
+	try {
+		useLessonNotesStore.persist.clearStorage?.()
+	} catch {}
+	useLessonNotesStore.setState({
+		notes: {},
+		statuses: DEFAULT_STATUSES,
 	})
 
 	useProfileDetailsStore.setState({
