@@ -1,6 +1,7 @@
 import { ttl } from '@/shared/config'
 import { CACHE_KEYS } from '@/shared/lib'
 import { storage } from '@/shared/lib/storage'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
@@ -21,6 +22,12 @@ export function useGrades() {
 			Date.now() - loadedAt < ttl.ACTIVITY * 1000
 		)
 			return
+
+		if (!getIsOnline()) {
+			if (loadedAt !== null) return
+			update({ status: 'error', error: 'Нет подключения к интернету' })
+			return
+		}
 
 		const cached = storage.get<GradeEntry[]>(CACHE_KEYS.GRADES_ALL)
 		if (cached) {
@@ -48,7 +55,8 @@ export function useGrades() {
 				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY)
 			})
 			.catch(() => {
-				update({ status: 'error', error: 'Не удалось загрузить оценки' })
+				if (entries.length === 0)
+					update({ status: 'error', error: 'Не удалось загрузить оценки' })
 			})
 			.finally(() => {
 				fetchingRef.current = false

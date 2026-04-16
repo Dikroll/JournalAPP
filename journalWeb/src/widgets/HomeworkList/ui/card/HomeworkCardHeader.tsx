@@ -1,6 +1,7 @@
 import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { STATUS_CONFIG } from '@/entities/homework'
-import { GraduationCap } from 'lucide-react'
+import { useOfflineQueueStore } from '@/features/offlineQueue'
+import { CloudOff, GraduationCap } from 'lucide-react'
 
 interface Props {
 	hw: HomeworkItemWithStatus
@@ -12,6 +13,10 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
 	const config = STATUS_CONFIG[hw.statusKey]
 	const StatusIcon = config.icon
 	const isChecked = hw.statusKey === 'checked'
+
+	const queueItem = useOfflineQueueStore(s =>
+		s.items.find(i => i.homeworkId === hw.id),
+	)
 
 	return (
 		<div className='flex items-start justify-between mb-3'>
@@ -26,6 +31,22 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
 					>
 						{config.label}
 					</span>
+					{queueItem && (
+						<span
+							className={`flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
+								queueItem.status === 'failed'
+									? 'text-status-overdue bg-overdue-bg'
+									: 'text-amber-500 bg-amber-500/10'
+							}`}
+						>
+							<CloudOff size={10} />
+							{queueItem.status === 'failed'
+								? 'Ошибка отправки'
+								: queueItem.status === 'processing'
+									? 'Отправляется...'
+									: 'Ожидает сети'}
+						</span>
+					)}
 				</div>
 				<h3 className='text-base font-semibold text-app-text leading-snug'>
 					{hw.spec_name}

@@ -1,3 +1,4 @@
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect } from 'react'
 import { profileApi } from '../api/index'
 import { useProfileDetailsStore } from '../model/store'
@@ -10,6 +11,12 @@ export function useProfileDetails() {
 
 	useEffect(() => {
 		if (details) return
+
+		if (!getIsOnline()) {
+			setStatus('error')
+			return
+		}
+
 		setStatus('loading')
 		profileApi
 			.getDetails()
@@ -17,7 +24,9 @@ export function useProfileDetails() {
 				setDetails(d)
 				setStatus('success')
 			})
-			.catch(() => setStatus('error'))
+			.catch(() => {
+				if (!details) setStatus('error')
+			})
 	}, [])
 
 	return { details, status }

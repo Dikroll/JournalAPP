@@ -80,18 +80,18 @@ export const StatsCard = memo(function StatsCard({
 							width={width}
 							height={height}
 							data={data}
-							margin={{ top: 4, right: 8, left: 8, bottom: 4 }}
+							margin={{ top: 4, right: 10, left: 10, bottom: 4 }}
 						>
 							<XAxis dataKey='label' hide />
 							<Line
 								type='monotone'
 								dataKey='value'
 								stroke={color}
-								strokeWidth={4}
+								strokeWidth={5}
 								dot={false}
 								strokeLinecap='round'
 								strokeLinejoin='round'
-								isAnimationActive={false}
+								isAnimationActive={true}
 							/>
 							<Tooltip
 								content={<CustomTooltip />}

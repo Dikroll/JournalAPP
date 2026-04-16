@@ -152,6 +152,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		statuses: DEFAULT_STATUSES,
 	})
 
+	try {
+		useProfileDetailsStore.persist.clearStorage?.()
+	} catch {}
 	useProfileDetailsStore.setState({
 		details: null,
 		status: 'idle',

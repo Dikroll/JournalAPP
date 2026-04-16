@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { ProfileDetails } from './types'
 
 interface ProfileDetailsState {
@@ -8,9 +9,19 @@ interface ProfileDetailsState {
 	setStatus: (s: 'idle' | 'loading' | 'success' | 'error') => void
 }
 
-export const useProfileDetailsStore = create<ProfileDetailsState>()(set => ({
-	details: null,
-	status: 'idle',
-	setDetails: details => set({ details }),
-	setStatus: status => set({ status }),
-}))
+export const useProfileDetailsStore = create<ProfileDetailsState>()(
+	persist(
+		set => ({
+			details: null,
+			status: 'idle',
+			setDetails: details => set({ details }),
+			setStatus: status => set({ status }),
+		}),
+		{
+			name: 'profile-details-store',
+			partialize: state => ({
+				details: state.details,
+			}),
+		},
+	),
+)

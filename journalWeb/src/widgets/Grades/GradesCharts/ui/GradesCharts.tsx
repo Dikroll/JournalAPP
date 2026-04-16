@@ -74,11 +74,16 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 					tabIndex={-1}
 				>
 					<XAxis dataKey='label' {...axisProps} height={24} />
-					<YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} {...axisProps} width={30} />
+					<YAxis
+						domain={[1, 5]}
+						ticks={[1, 2, 3, 4, 5]}
+						{...axisProps}
+						width={30}
+					/>
 					<Tooltip
 						content={<CustomTooltip />}
 						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
-						isAnimationActive={false}
+						isAnimationActive={true}
 						wrapperStyle={tooltipWrapperStyle}
 					/>
 					<Line
@@ -96,7 +101,11 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 	)
 })
 
-const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] }) {
+const AttendanceChart = memo(function AttendanceChart({
+	data,
+}: {
+	data: any[]
+}) {
 	const { ref, width } = useElementSize()
 
 	return (
@@ -134,7 +143,10 @@ const AttendanceChart = memo(function AttendanceChart({ data }: { data: any[] })
 	)
 })
 
-export const GradesCharts = memo(function GradesCharts({ progress, attendance }: Props) {
+export const GradesCharts = memo(function GradesCharts({
+	progress,
+	attendance,
+}: Props) {
 	const { progressData, attendanceData, progressTrend, attendanceTrend } =
 		useGradesCharts(progress, attendance)
 
@@ -146,7 +158,9 @@ export const GradesCharts = memo(function GradesCharts({ progress, attendance }:
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-app-text'>Динамика оценок</h3>
+						<h3 className='text-base font-bold text-app-text'>
+							Динамика оценок
+						</h3>
 						{progressTrend != null && <TrendBadge trend={progressTrend} />}
 					</div>
 					<ProgressChart data={progressData} />

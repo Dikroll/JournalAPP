@@ -106,7 +106,6 @@ export function useSendHomework(
 					createdAt: Date.now(),
 				})
 
-				removeItem(homeworkId)
 				setState(s => ({ ...s, step: 'queued' }))
 				onSuccess?.()
 			} catch {

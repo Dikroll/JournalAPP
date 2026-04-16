@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config'
 import { isCacheValid } from '@/shared/lib'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useCallback } from 'react'
 import { gradesApi } from '../api'
 import { useGradesStore } from '../model/store'
@@ -18,6 +19,12 @@ export function useGradesBySubject() {
 			if (!force && isCacheValid(existing?.loadedAt ?? null, CACHE_TTL_MS))
 				return
 
+			if (!getIsOnline()) {
+				if (existing?.entries?.length) return
+				updateSubject(specId, { status: 'error' })
+				return
+			}
+
 			fetching.add(specId)
 			updateSubject(specId, { status: 'loading' })
 
@@ -29,7 +36,8 @@ export function useGradesBySubject() {
 					loadedAt: Date.now(),
 				})
 			} catch {
-				updateSubject(specId, { status: 'error' })
+				if (!existing?.entries?.length)
+					updateSubject(specId, { status: 'error' })
 			} finally {
 				fetching.delete(specId)
 			}
