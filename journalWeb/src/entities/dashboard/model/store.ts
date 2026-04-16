@@ -1,5 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { ChartPoint } from './types'
 
 interface DashboardChartsState {
@@ -13,13 +14,25 @@ interface DashboardChartsState {
 	setLoadedAt: (t: number) => void
 }
 
-export const useDashboardChartsStore = create<DashboardChartsState>()(set => ({
-	progress: [],
-	attendance: [],
-	status: 'idle',
-	loadedAt: null,
-	setProgress: progress => set({ progress }),
-	setAttendance: attendance => set({ attendance }),
-	setStatus: status => set({ status }),
-	setLoadedAt: loadedAt => set({ loadedAt }),
-}))
+export const useDashboardChartsStore = create<DashboardChartsState>()(
+	persist(
+		set => ({
+			progress: [],
+			attendance: [],
+			status: 'idle',
+			loadedAt: null,
+			setProgress: progress => set({ progress }),
+			setAttendance: attendance => set({ attendance }),
+			setStatus: status => set({ status }),
+			setLoadedAt: loadedAt => set({ loadedAt }),
+		}),
+		{
+			name: 'dashboard-store',
+			partialize: state => ({
+				progress: state.progress,
+				attendance: state.attendance,
+				loadedAt: state.loadedAt,
+			}),
+		},
+	),
+)

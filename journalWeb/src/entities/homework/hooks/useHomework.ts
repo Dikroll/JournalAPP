@@ -1,6 +1,7 @@
 import { useUserStore } from '@/entities/user'
 import { timing, ttl } from '@/shared/config'
 import { isCacheValid, preloadImages } from '@/shared/lib'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useCallback, useEffect, useRef } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
@@ -47,6 +48,13 @@ export function useHomework() {
 		const { loadedAt } = useHomeworkStore.getState()
 		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) return
 
+		if (!getIsOnline()) {
+			if (loadedAt !== null) return
+			setError('Нет подключения к интернету')
+			setStatus('error')
+			return
+		}
+
 		isLoadingAllRef.current = true
 		setStatus('loading')
 		setError(null)
@@ -83,7 +91,8 @@ export function useHomework() {
 			if (photoUrls.length > 0) preloadImages(photoUrls)
 		} catch {
 			setError('Не удалось загрузить домашние задания')
-			setStatus('error')
+			const { loadedAt: currentLoadedAt } = useHomeworkStore.getState()
+			if (currentLoadedAt === null) setStatus('error')
 		} finally {
 			isLoadingAllRef.current = false
 		}

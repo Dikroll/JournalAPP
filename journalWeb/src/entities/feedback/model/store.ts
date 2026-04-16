@@ -1,5 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { FeedbackTag, PendingFeedback } from './types'
 
 interface FeedbackState {
@@ -26,29 +27,42 @@ interface FeedbackState {
 	removePending: (key: string) => void
 }
 
-export const useFeedbackStore = create<FeedbackState>()(set => ({
-	pending: [],
-	pendingStatus: 'idle',
-	pendingLoadedAt: null,
+export const useFeedbackStore = create<FeedbackState>()(
+	persist(
+		set => ({
+			pending: [],
+			pendingStatus: 'idle',
+			pendingLoadedAt: null,
 
-	tags: [],
-	tagsStatus: 'idle',
-	tagsLoadedAt: null,
+			tags: [],
+			tagsStatus: 'idle',
+			tagsLoadedAt: null,
 
-	error: null,
+			error: null,
 
-	setPending: pending => set({ pending }),
-	setPendingStatus: pendingStatus => set({ pendingStatus }),
-	setPendingLoadedAt: pendingLoadedAt => set({ pendingLoadedAt }),
+			setPending: pending => set({ pending }),
+			setPendingStatus: pendingStatus => set({ pendingStatus }),
+			setPendingLoadedAt: pendingLoadedAt => set({ pendingLoadedAt }),
 
-	setTags: tags => set({ tags }),
-	setTagsStatus: tagsStatus => set({ tagsStatus }),
-	setTagsLoadedAt: tagsLoadedAt => set({ tagsLoadedAt }),
+			setTags: tags => set({ tags }),
+			setTagsStatus: tagsStatus => set({ tagsStatus }),
+			setTagsLoadedAt: tagsLoadedAt => set({ tagsLoadedAt }),
 
-	setError: error => set({ error }),
+			setError: error => set({ error }),
 
-	removePending: key =>
-		set(state => ({
-			pending: state.pending.filter(p => p.key !== key),
-		})),
-}))
+			removePending: key =>
+				set(state => ({
+					pending: state.pending.filter(p => p.key !== key),
+				})),
+		}),
+		{
+			name: 'feedback-store',
+			partialize: state => ({
+				pending: state.pending,
+				pendingLoadedAt: state.pendingLoadedAt,
+				tags: state.tags,
+				tagsLoadedAt: state.tagsLoadedAt,
+			}),
+		},
+	),
+)

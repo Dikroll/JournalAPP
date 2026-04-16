@@ -63,7 +63,7 @@ export function GradesPage() {
 	const isLoading = status === 'loading' || status === 'idle'
 	const showCharts = chartsStatus === 'success' && progress.length > 0
 
-	if (status === 'error') {
+	if (status === 'error' && entries.length === 0) {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen'>
 				<ErrorView message={error ?? undefined} onRetry={refresh} />

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { isCacheValid } from '../lib/isCacheValid'
+import { getIsOnline } from '../model/networkStore'
 
 interface UseEntityFetchOptions<T> {
 	/** Уже загруженные данные — если есть и кеш валиден, запрос не делается */
@@ -23,16 +24,8 @@ interface UseEntityFetchOptions<T> {
  * Заменяет повторяющийся паттерн fetchingRef + isCacheValid + setStatus
  * в useFutureExams, useExamResults, usePayment, useReviews, useSubjects и др.
  *
- * @example
- * useEntityFetch({
- *   loadedAt,
- *   ttlMs: CACHE_TTL_MS,
- *   status,
- *   fetchFn: () => examApi.getFutureExams(),
- *   onStart: () => setStatus('loading'),
- *   onSuccess: (data) => { setExams(data); setLoadedAt(Date.now()); setStatus('success') },
- *   onError: () => setStatus('error'),
- * })
+ * Offline-aware: если нет сети и есть кешированные данные — показываем стэйл.
+ * Если нет сети и данных нет — вызываем onError.
  */
 export function useEntityFetch<T>({
 	loadedAt,
@@ -49,6 +42,12 @@ export function useEntityFetch<T>({
 		if (fetchingRef.current) return
 		if (status === 'loading') return
 		if (isCacheValid(loadedAt, ttlMs)) return
+
+		if (!getIsOnline()) {
+			if (loadedAt !== null) return
+			onError?.(new Error('Нет подключения к интернету'))
+			return
+		}
 
 		fetchingRef.current = true
 		onStart?.()

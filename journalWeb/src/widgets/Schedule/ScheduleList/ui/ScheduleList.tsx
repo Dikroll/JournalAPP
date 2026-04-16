@@ -23,7 +23,7 @@ export function ScheduleList() {
 		)
 	}
 
-	if (status === 'error') {
+	if (status === 'error' && today.length === 0) {
 		return (
 			<div className='flex flex-col items-center gap-3 py-4'>
 				<p className='text-status-overdue text-sm text-center'>

@@ -72,7 +72,7 @@ export function ScheduleWeekView() {
 		)
 	}
 
-	if (status === 'error') {
+	if (status === 'error' && lessons.length === 0) {
 		return (
 			<p className='text-status-overdue text-sm text-center py-6'>
 				Не удалось загрузить расписание на неделю

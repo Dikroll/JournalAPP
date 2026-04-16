@@ -45,7 +45,7 @@ export function PaymentPage() {
 			<div className='px-4 space-y-3'>
 				{status === 'loading' && <SkeletonList count={3} height={150} />}
 
-				{status === 'error' && (
+				{status === 'error' && !summary && (
 					<ErrorView message='Не удалось загрузить данные' />
 				)}
 

@@ -1,5 +1,6 @@
 import { useDashboardChartsStore } from '@/entities/dashboard/model/store'
 import { useExamStore } from '@/entities/exam/model/store'
+import { useFeedbackStore } from '@/entities/feedback/model/store'
 import { useGradesStore } from '@/entities/grades/model/store'
 import { useHomeworkStore } from '@/entities/homework/model/store'
 import { useLeaderboardStore } from '@/entities/leaderboard/model/store'
@@ -14,6 +15,10 @@ import {
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
+import {
+	clearAllQueueFiles,
+	useOfflineQueueStore,
+} from '@/features/offlineQueue'
 
 import { storage } from '@/shared/lib/storage'
 import { useThemeStore } from '@/shared/lib/themeStore'
@@ -39,9 +44,21 @@ export function resetAllAppState(options: ResetOptions = {}) {
 
 	storage.clear('cache:')
 
+	try {
+		useGradesStore.persist.clearStorage?.()
+	} catch {}
 	useGradesStore.getState().reset()
+
+	try {
+		useHomeworkStore.persist.clearStorage?.()
+	} catch {}
 	useHomeworkStore.getState().reset()
+
 	useLibraryStore.getState().reset()
+
+	try {
+		usePaymentStore.persist.clearStorage?.()
+	} catch {}
 	usePaymentStore.getState().reset()
 
 	try {
@@ -65,6 +82,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		loadedAt: null,
 	})
 
+	try {
+		useDashboardChartsStore.persist.clearStorage?.()
+	} catch {}
 	useDashboardChartsStore.setState({
 		progress: [],
 		attendance: [],
@@ -72,17 +92,26 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		loadedAt: null,
 	})
 
+	try {
+		useLeaderboardStore.persist.clearStorage?.()
+	} catch {}
 	useLeaderboardStore.setState({
 		group: { data: null, status: 'idle', loadedAt: null },
 		stream: { data: null, status: 'idle', loadedAt: null },
 	})
 
+	try {
+		useReviewStore.persist.clearStorage?.()
+	} catch {}
 	useReviewStore.setState({
 		reviews: [],
 		status: 'idle',
 		loadedAt: null,
 	})
 
+	try {
+		useScheduleStore.persist.clearStorage?.()
+	} catch {}
 	useScheduleStore.setState({
 		months: {},
 		monthStatus: {},
@@ -93,6 +122,25 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		today: [],
 		todayStatus: 'idle',
 		todayLoadedAt: null,
+		error: null,
+	})
+
+	try {
+		useOfflineQueueStore.persist.clearStorage?.()
+	} catch {}
+	useOfflineQueueStore.setState({ items: [] })
+	clearAllQueueFiles().catch(() => {})
+
+	try {
+		useFeedbackStore.persist.clearStorage?.()
+	} catch {}
+	useFeedbackStore.setState({
+		pending: [],
+		pendingStatus: 'idle',
+		pendingLoadedAt: null,
+		tags: [],
+		tagsStatus: 'idle',
+		tagsLoadedAt: null,
 		error: null,
 	})
 

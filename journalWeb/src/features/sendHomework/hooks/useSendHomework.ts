@@ -1,11 +1,13 @@
 import { useHomeworkStore } from '@/entities/homework'
+import { useOfflineQueueStore } from '@/features/offlineQueue'
+import { saveFileForQueue } from '@/features/offlineQueue/lib/fileStorage'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useCallback, useState } from 'react'
 import { sendHomeworkApi } from '../api'
+import type { SendStep } from '../model/types'
 
 const FORBIDDEN = ['.txt', '.csv']
 const MIN_TEXT = 5
-
-export type SendStep = 'idle' | 'uploading' | 'submitting' | 'success' | 'error'
 
 interface State {
 	file: File | null
@@ -24,6 +26,7 @@ export function useSendHomework(
 ) {
 	const invalidate = useHomeworkStore(s => s.invalidate)
 	const removeItem = useHomeworkStore(s => s.removeItem)
+	const addToQueue = useOfflineQueueStore(s => s.addItem)
 
 	const [state, setState] = useState<State>({
 		file: null,
@@ -75,6 +78,44 @@ export function useSendHomework(
 					? `Текст слишком короткий — минимум ${MIN_TEXT} символов`
 					: 'Прикрепите файл или введите текстовый ответ',
 			}))
+			return
+		}
+
+		if (!getIsOnline()) {
+			try {
+				const queueId = `hw-${Date.now()}`
+				let fileLocalPath: string | null = null
+
+				if (hasFile) {
+					fileLocalPath = await saveFileForQueue(state.file!, queueId)
+				}
+
+				addToQueue({
+					id: queueId,
+					homeworkId,
+					studId: studId ?? homeworkId,
+					userId,
+					text: trimmed,
+					mark: state.mark,
+					fileName: state.file?.name ?? null,
+					fileLocalPath,
+					fileMimeType: state.file?.type ?? null,
+					status: 'pending',
+					attempts: 0,
+					lastError: null,
+					createdAt: Date.now(),
+				})
+
+				removeItem(homeworkId)
+				setState(s => ({ ...s, step: 'queued' }))
+				onSuccess?.()
+			} catch {
+				setState(s => ({
+					...s,
+					step: 'error',
+					error: 'Не удалось сохранить задание для отложенной отправки',
+				}))
+			}
 			return
 		}
 
@@ -139,6 +180,7 @@ export function useSendHomework(
 		userId,
 		invalidate,
 		removeItem,
+		addToQueue,
 		onSuccess,
 		onRefresh,
 	])

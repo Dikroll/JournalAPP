@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config'
 import { isCacheValid } from '@/shared/lib'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
 import { useScheduleStore } from '../model/store'
@@ -24,6 +25,12 @@ export function useScheduleMonth(date: string) {
 		if (fetchingRef.current) return
 		if (isCacheValid(monthLoadedAt, CACHE_TTL_MS)) return
 
+		if (!getIsOnline()) {
+			if (monthLoadedAt !== null) return
+			setMonthStatus(date, 'error')
+			return
+		}
+
 		fetchingRef.current = true
 		setMonthStatus(date, 'loading')
 
@@ -35,7 +42,7 @@ export function useScheduleMonth(date: string) {
 				setMonthStatus(date, 'success')
 			})
 			.catch(() => {
-				setMonthStatus(date, 'error')
+				if (lessons.length === 0) setMonthStatus(date, 'error')
 			})
 			.finally(() => {
 				fetchingRef.current = false

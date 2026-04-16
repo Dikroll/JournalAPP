@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config/cacheConfig'
 import { isCacheValid } from '@/shared/lib/isCacheValid'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { feedbackApi } from '../api'
 import { useFeedbackStore } from '../model/store'
@@ -34,6 +35,13 @@ export function useFeedback() {
 		if (fetchingPendingRef.current) return
 		if (isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) return
 
+		if (!getIsOnline()) {
+			if (pendingLoadedAt !== null) return
+			setPendingStatus('error')
+			setError('Нет подключения к интернету')
+			return
+		}
+
 		fetchingPendingRef.current = true
 		setPendingStatus('loading')
 
@@ -57,7 +65,7 @@ export function useFeedback() {
 					(err as { response?: { data?: { detail?: string } } })?.response
 						?.data?.detail ?? 'Ошибка загрузки оценок занятий'
 				setError(msg)
-				setPendingStatus('error')
+				if (pending.length === 0) setPendingStatus('error')
 			})
 			.finally(() => {
 				fetchingPendingRef.current = false
@@ -72,6 +80,12 @@ export function useFeedback() {
 	useEffect(() => {
 		if (fetchingTagsRef.current) return
 		if (isCacheValid(tagsLoadedAt, CACHE_TTL_MS)) return
+
+		if (!getIsOnline()) {
+			if (tagsLoadedAt !== null) return
+			setTagsStatus('error')
+			return
+		}
 
 		fetchingTagsRef.current = true
 		setTagsStatus('loading')
@@ -91,7 +105,7 @@ export function useFeedback() {
 				setTagsStatus('success')
 			})
 			.catch(() => {
-				setTagsStatus('error')
+				if (tags.length === 0) setTagsStatus('error')
 			})
 			.finally(() => {
 				fetchingTagsRef.current = false

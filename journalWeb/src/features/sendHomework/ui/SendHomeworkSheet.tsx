@@ -49,7 +49,7 @@ export function SendHomeworkSheet({
 		refresh,
 	)
 
-	const isSuccess = step === 'success'
+	const isSuccess = step === 'success' || step === 'queued'
 	const showTextarea = !file
 
 	const content = (
@@ -77,8 +77,16 @@ export function SendHomeworkSheet({
 
 			{isSuccess ? (
 				<SuccessStateView
-					title='Задание отправлено!'
-					subtitle='Ожидайте проверки преподавателя'
+					title={
+						step === 'queued'
+							? 'Задание сохранено'
+							: 'Задание отправлено!'
+					}
+					subtitle={
+						step === 'queued'
+							? 'Будет отправлено при подключении к интернету'
+							: 'Ожидайте проверки преподавателя'
+					}
 				/>
 			) : (
 				<div className='space-y-4'>

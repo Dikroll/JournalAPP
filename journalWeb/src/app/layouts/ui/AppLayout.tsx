@@ -1,6 +1,6 @@
 import { useMidnightRefresh } from '@/app/hooks/useMidnightRefresh'
 import { pageConfig } from '@/shared/config'
-import { GlowBackground } from '@/shared/ui'
+import { GlowBackground, OfflineBanner } from '@/shared/ui'
 import { BottomBar, TopBar } from '@/widgets'
 import { Outlet, useLocation } from 'react-router-dom'
 
@@ -22,6 +22,8 @@ export function AppLayout() {
 			}}
 		>
 			<GlowBackground useVariables />
+
+			<OfflineBanner />
 
 			<div style={{ display: showTopBar ? 'block' : 'none' }}>
 				<TopBar />

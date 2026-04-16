@@ -1,4 +1,6 @@
 export { useContainerReady } from './useContainerReady'
+export { useNetworkInit } from './useNetworkInit'
+export { useRefetchOnReconnect } from './useRefetchOnReconnect'
 export { toMinutes, useCurrentMinutes } from './useCurrentTime'
 export { useElementSize } from './useElementSize'
 export { useEntityFetch } from './useEntityFetch'

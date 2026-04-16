@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config/cacheConfig'
 import { isCacheValid } from '@/shared/lib/isCacheValid'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
 import { useScheduleStore } from '../model/store'
@@ -27,6 +28,13 @@ export function useScheduleToday() {
 		if (fetchingRef.current) return
 		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) return
 
+		if (!getIsOnline()) {
+			if (todayLoadedAt !== null) return
+			setTodayStatus('error')
+			setError('Нет подключения к интернету')
+			return
+		}
+
 		fetchingRef.current = true
 		setTodayStatus('loading')
 
@@ -50,7 +58,7 @@ export function useScheduleToday() {
 					(err as { response?: { data?: { detail?: string } } })?.response?.data
 						?.detail ?? 'Ошибка загрузки расписания'
 				setError(msg)
-				setTodayStatus('error')
+				if (today.length === 0) setTodayStatus('error')
 			})
 			.finally(() => {
 				fetchingRef.current = false

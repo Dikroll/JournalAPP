@@ -1,5 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { PaymentIndex, PaymentSummary } from './types'
 
 interface PaymentState {
@@ -22,30 +23,43 @@ interface PaymentState {
 	reset: () => void
 }
 
-export const usePaymentStore = create<PaymentState>()(set => ({
-	summary: null,
-	summaryStatus: 'idle',
-	summaryLoadedAt: null,
-
-	index: null,
-	indexStatus: 'idle',
-	indexLoadedAt: null,
-
-	setSummary: summary => set({ summary }),
-	setSummaryStatus: summaryStatus => set({ summaryStatus }),
-	setSummaryLoadedAt: summaryLoadedAt => set({ summaryLoadedAt }),
-
-	setIndex: index => set({ index }),
-	setIndexStatus: indexStatus => set({ indexStatus }),
-	setIndexLoadedAt: indexLoadedAt => set({ indexLoadedAt }),
-
-	reset: () =>
-		set({
+export const usePaymentStore = create<PaymentState>()(
+	persist(
+		set => ({
 			summary: null,
 			summaryStatus: 'idle',
 			summaryLoadedAt: null,
+
 			index: null,
 			indexStatus: 'idle',
 			indexLoadedAt: null,
+
+			setSummary: summary => set({ summary }),
+			setSummaryStatus: summaryStatus => set({ summaryStatus }),
+			setSummaryLoadedAt: summaryLoadedAt => set({ summaryLoadedAt }),
+
+			setIndex: index => set({ index }),
+			setIndexStatus: indexStatus => set({ indexStatus }),
+			setIndexLoadedAt: indexLoadedAt => set({ indexLoadedAt }),
+
+			reset: () =>
+				set({
+					summary: null,
+					summaryStatus: 'idle',
+					summaryLoadedAt: null,
+					index: null,
+					indexStatus: 'idle',
+					indexLoadedAt: null,
+				}),
 		}),
-}))
+		{
+			name: 'payment-store',
+			partialize: state => ({
+				summary: state.summary,
+				summaryLoadedAt: state.summaryLoadedAt,
+				index: state.index,
+				indexLoadedAt: state.indexLoadedAt,
+			}),
+		},
+	),
+)

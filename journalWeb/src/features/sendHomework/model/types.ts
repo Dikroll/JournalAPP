@@ -7,3 +7,11 @@ export interface SubmitHomeworkPayload {
 	spent_hours?: number
 	spent_minutes?: number
 }
+
+export type SendStep =
+	| 'idle'
+	| 'uploading'
+	| 'submitting'
+	| 'success'
+	| 'queued'
+	| 'error'

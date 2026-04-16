@@ -48,7 +48,7 @@ export function ProfileDetailsPage() {
 
 			<div className='px-4 space-y-3'>
 				{status === 'loading' && <SkeletonList count={3} height={120} />}
-				{status === 'error' && (
+				{status === 'error' && !details && (
 					<ErrorView message='Не удалось загрузить данные' />
 				)}
 				{details && (

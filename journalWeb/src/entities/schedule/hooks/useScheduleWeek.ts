@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config'
 import { isCacheValid } from '@/shared/lib'
+import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
 import { useScheduleStore } from '../model/store'
@@ -24,6 +25,12 @@ export function useScheduleWeek(date: string) {
 		if (fetchingRef.current) return
 		if (isCacheValid(weekLoadedAt, CACHE_TTL_MS)) return
 
+		if (!getIsOnline()) {
+			if (weekLoadedAt !== null) return
+			setWeekStatus(date, 'error')
+			return
+		}
+
 		fetchingRef.current = true
 		setWeekStatus(date, 'loading')
 
@@ -35,7 +42,7 @@ export function useScheduleWeek(date: string) {
 				setWeekStatus(date, 'success')
 			})
 			.catch(() => {
-				setWeekStatus(date, 'error')
+				if (lessons.length === 0) setWeekStatus(date, 'error')
 			})
 			.finally(() => {
 				fetchingRef.current = false

@@ -51,7 +51,9 @@ export function HomeworkPage() {
 		loadSubject(selectedSpec.id, selectedSpec.name)
 	}, [selectedSpec?.id])
 
-	if (status === 'error') {
+	const hasData = counters !== null || Object.keys(items).length > 0
+
+	if (status === 'error' && !hasData) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<ErrorView message={error ?? undefined} />
