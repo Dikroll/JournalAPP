@@ -908,7 +908,6 @@ const entries = useGradesStore(s => s.entries)
 ```typescript
 // React Profiler
 import { Profiler } from 'react'
-
 ;<Profiler id='MyComponent' onRender={onRender}>
 	<MyComponent />
 </Profiler>

@@ -29,7 +29,6 @@ export function GradesPage() {
 
 	const progress = useDashboardChartsStore(s => s.progress)
 	const attendance = useDashboardChartsStore(s => s.attendance)
-	const chartsStatus = useDashboardChartsStore(s => s.status)
 
 	const handleSpecChange = useCallback(
 		(spec: { id: number } | null) => {
@@ -61,7 +60,7 @@ export function GradesPage() {
 	)
 
 	const isLoading = status === 'loading' || status === 'idle'
-	const showCharts = chartsStatus === 'success' && progress.length > 0
+	const showCharts = progress.length > 0
 
 	if (status === 'error' && entries.length === 0) {
 		return (
