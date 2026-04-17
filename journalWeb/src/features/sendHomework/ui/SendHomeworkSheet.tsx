@@ -1,12 +1,19 @@
 import { useHomework } from '@/entities/homework'
 import { useUserStore } from '@/entities/user'
 import { timing } from '@/shared/config'
-import { BottomSheet, IconButton, SheetButton, SuccessStateView } from '@/shared/ui'
+import { BottomSheet, IconButton, SheetButton, StarRating, SuccessStateView } from '@/shared/ui'
 import { Loader2, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useSendHomework } from '../hooks/useSendHomework'
 import { FileDropZone } from './FileDropZone'
-import { StarRating } from './StarRating'
+
+const HOMEWORK_LABELS: Record<number, string> = {
+	1: 'Бесполезно',
+	2: 'Сомнительно',
+	3: 'Пойдет',
+	4: 'Полезно',
+	5: 'Круто',
+}
 
 interface Props {
 	homeworkId: number
@@ -126,7 +133,7 @@ export function SendHomeworkSheet({
 					)}
 
 					<div className='pt-1'>
-						<StarRating value={mark} onChange={setMark} />
+						<StarRating value={mark} onChange={setMark} size={26} title='Полезность задания' labels={HOMEWORK_LABELS} />
 					</div>
 
 					{error && <p className='text-xs text-danger px-1'>{error}</p>}

@@ -7,7 +7,8 @@ import type { Subject } from '@/entities/subject'
 import { useSubjects } from '@/entities/subject'
 import { RefreshHomeworkButton } from '@/features/refreshHomework'
 import { SpecSelector } from '@/features/selectSpec'
-import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
+import type { Segment } from '@/shared/ui'
+import { ErrorView, PageHeader, SegmentedControl, SkeletonList } from '@/shared/ui'
 import {
 	HomeworkCountersBar,
 	HomeworkStatusView,
@@ -18,7 +19,7 @@ import { useEffect, useState } from 'react'
 
 type GroupBy = 'status' | 'subject'
 
-const GROUP_TABS: { key: GroupBy; label: string; icon: React.ReactNode }[] = [
+const GROUP_TABS: Segment<GroupBy>[] = [
 	{ key: 'status', label: 'По статусу', icon: <LayoutList size={13} /> },
 	{ key: 'subject', label: 'По предметам', icon: <BookOpen size={13} /> },
 ]
@@ -77,26 +78,7 @@ export function HomeworkPage() {
 					/>
 				)}
 
-				<div className='flex gap-2'>
-					{GROUP_TABS.map(({ key, label, icon }) => (
-						<button
-							key={key}
-							type='button'
-							onClick={e => {
-								e.preventDefault()
-								setGroupBy(key)
-							}}
-							className={`flex-1 flex items-center justify-center gap-1.5 h-10 px-2 rounded-2xl text-xs font-medium whitespace-nowrap ${
-								groupBy === key
-									? 'bg-app-surface-strong text-app-text border border-app-border-strong'
-									: 'bg-app-surface text-app-muted border border-app-border hover:text-app-text hover:bg-app-surface-hover'
-							}`}
-						>
-							{icon}
-							{label}
-						</button>
-					))}
-				</div>
+				<SegmentedControl segments={GROUP_TABS} active={groupBy} onChange={setGroupBy} />
 
 				<SpecSelector
 					subjects={specList}

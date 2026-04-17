@@ -1,11 +1,11 @@
 import { useProfileDetails } from '@/entities/profile'
-import { AccountSwitcher } from '@/features/changeUser'
-import { ClearCacheSheet } from '@/features/clearCache'
 import { resetAllAppState } from '@/shared/lib'
 import { pageConfig } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'
 import {
+	AccountSwitcher,
+	ClearCacheSheet,
 	ProfileAvatar,
 	ProfileInfoCard,
 	ProfilePaymentCard,

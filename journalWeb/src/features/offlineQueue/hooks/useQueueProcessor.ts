@@ -69,6 +69,7 @@ async function processQueue() {
 			}
 
 			removeItem(item.id)
+			useHomeworkStore.getState().removeItem(item.homeworkId)
 			useHomeworkStore.getState().invalidate()
 		} catch (err) {
 			updateItem(item.id, {

@@ -22,7 +22,9 @@ export { HomeworkSubjectView } from '@/widgets/HomeworkList/ui/views/HomeworkSub
 export { HomeworkCard } from './HomeworkList/ui/card/HomeworkCard'
 export { HomeworkCountersBar } from './HomeworkList/ui/shared/HomeworkCounterBar'
 // Schedule
+export { HomeScheduleSection } from './Schedule/HomeScheduleSection/ui/HomeScheduleSection'
 export { ScheduleCalendar } from './Schedule/ScheduleCalendar/ui/ScheduleCalendar'
+export { LessonList } from './Schedule/ScheduleList/ui/LessonList'
 export { ScheduleList } from './Schedule/ScheduleList/ui/ScheduleList'
 export { ScheduleWeekView } from './Schedule/ScheduleWeekView/ui/ScheduleWeekView'
 
@@ -43,8 +45,10 @@ export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
 
-// EvaluateLesson (moved to features/evaluateLesson)
+// Features re-exports (widget-level access)
 export { EvaluateLessonList } from '@/features/evaluateLesson'
+export { AccountSwitcher } from '@/features/changeUser'
+export { ClearCacheSheet } from '@/features/clearCache'
 
 // Library
 export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'

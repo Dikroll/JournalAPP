@@ -9,6 +9,10 @@ interface ScheduleState {
 	todayLoadedAt: number | null
 	error: string | null
 
+	days: Record<string, LessonItem[]> // 'YYYY-MM-DD'
+	dayStatus: Record<string, LoadingState>
+	dayLoadedAt: Record<string, number>
+
 	months: Record<string, LessonItem[]> // 'YYYY-MM'
 	monthStatus: Record<string, LoadingState>
 	monthLoadedAt: Record<string, number>
@@ -21,6 +25,10 @@ interface ScheduleState {
 	setTodayStatus: (s: LoadingState) => void
 	setTodayLoadedAt: (t: number) => void
 	setError: (e: string | null) => void
+
+	setDay: (date: string, lessons: LessonItem[]) => void
+	setDayStatus: (date: string, s: LoadingState) => void
+	setDayLoadedAt: (date: string, t: number) => void
 
 	setMonth: (date: string, lessons: LessonItem[]) => void
 	setMonthStatus: (date: string, s: LoadingState) => void
@@ -40,6 +48,9 @@ export const useScheduleStore = create<ScheduleState>()(
 			todayStatus: 'idle',
 			todayLoadedAt: null,
 			error: null,
+			days: {},
+			dayStatus: {},
+			dayLoadedAt: {},
 			months: {},
 			monthStatus: {},
 			monthLoadedAt: {},
@@ -51,6 +62,17 @@ export const useScheduleStore = create<ScheduleState>()(
 			setTodayStatus: todayStatus => set({ todayStatus }),
 			setTodayLoadedAt: todayLoadedAt => set({ todayLoadedAt }),
 			setError: error => set({ error }),
+
+			setDay: (date, lessons) =>
+				set(state => ({ days: { ...state.days, [date]: lessons } })),
+			setDayStatus: (date, s) =>
+				set(state => ({
+					dayStatus: { ...state.dayStatus, [date]: s },
+				})),
+			setDayLoadedAt: (date, t) =>
+				set(state => ({
+					dayLoadedAt: { ...state.dayLoadedAt, [date]: t },
+				})),
 
 			setMonth: (date, lessons) =>
 				set(state => ({ months: { ...state.months, [date]: lessons } })),
@@ -81,6 +103,8 @@ export const useScheduleStore = create<ScheduleState>()(
 			partialize: state => ({
 				today: state.today,
 				todayLoadedAt: state.todayLoadedAt,
+				days: state.days,
+				dayLoadedAt: state.dayLoadedAt,
 				months: state.months,
 				monthLoadedAt: state.monthLoadedAt,
 				weeks: state.weeks,

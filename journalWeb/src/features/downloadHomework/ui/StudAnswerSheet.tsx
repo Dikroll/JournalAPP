@@ -1,5 +1,5 @@
 import { timing } from '@/shared/config'
-import { CatGame } from '@/shared/ui/CatGame'
+import { CatGame } from '@/features/playCatGame'
 import { IconButton } from '@/shared/ui'
 import { MessageSquare, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'

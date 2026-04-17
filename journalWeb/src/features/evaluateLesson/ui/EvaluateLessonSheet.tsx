@@ -1,10 +1,9 @@
 import type { FeedbackTag, PendingFeedback } from '@/entities/feedback'
 import { FEEDBACK_TAG_LABELS } from '@/shared/config/feedbackTags'
-import { BottomSheet, SheetButton, SuccessStateView } from '@/shared/ui'
+import { BottomSheet, SheetButton, StarRating, SuccessStateView } from '@/shared/ui'
 import { BookOpen, Loader2, User } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useEvaluateLesson } from '../hooks/useEvaluateLesson'
-import { StarRating } from './StarRating'
 
 interface Props {
 	item: PendingFeedback

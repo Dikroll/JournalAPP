@@ -33,6 +33,8 @@ export function useHomework() {
 
 	const groupIdRef = useRef(groupId)
 
+	const loadedAt = useHomeworkStore(s => s.loadedAt)
+
 	const isLoadingAllRef = useRef(false)
 	const isLoadingMoreRef = useRef(new Set<number>())
 
@@ -141,6 +143,13 @@ export function useHomework() {
 		const timer = setInterval(() => loadAll(true), timing.HOMEWORK_AUTO_REFRESH)
 		return () => clearInterval(timer)
 	}, [groupId, loadAll])
+
+	// Re-fetch immediately when cache is invalidated externally (e.g. queue processor)
+	useEffect(() => {
+		if (loadedAt === null && groupId) {
+			loadAll(true)
+		}
+	}, [loadedAt, groupId, loadAll])
 
 	return {
 		items,

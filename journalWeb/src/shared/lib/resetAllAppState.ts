@@ -113,6 +113,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		useScheduleStore.persist.clearStorage?.()
 	} catch {}
 	useScheduleStore.setState({
+		days: {},
+		dayStatus: {},
+		dayLoadedAt: {},
 		months: {},
 		monthStatus: {},
 		monthLoadedAt: {},

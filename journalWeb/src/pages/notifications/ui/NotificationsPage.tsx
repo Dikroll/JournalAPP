@@ -8,8 +8,9 @@ import { useAppUpdate, useAppUpdateStore } from '@/features/appUpdate'
 import { RefreshNotificationsButton } from '@/features/refreshNotifications'
 import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { IconButton } from '@/shared/ui'
-import { EvaluateLessonList } from '@/features/evaluateLesson'
+import type { Segment } from '@/shared/ui'
+import { IconButton, SegmentedControl } from '@/shared/ui'
+import { EvaluateLessonList } from '@/widgets'
 import {
 	ArrowLeft,
 	ClipboardCheck,
@@ -24,7 +25,7 @@ import { ComingSoonTab } from './ComingSoonTab'
 
 type Tab = 'changelog' | 'feedback' | 'news'
 
-const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
+const TABS: Segment<Tab>[] = [
 	{ key: 'changelog', label: 'Обновления', icon: <Sparkles size={13} /> },
 	{ key: 'feedback', label: 'Оценки', icon: <ClipboardCheck size={13} /> },
 	{ key: 'news', label: 'Новости', icon: <Megaphone size={13} /> },
@@ -53,6 +54,15 @@ export function NotificationsPage() {
 
 	const unread = getUnreadCount(lastReadChangelogId, entries)
 
+	const tabsWithBadge = useMemo<Segment<Tab>[]>(() =>
+		TABS.map(tab =>
+			tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null
+				? { ...tab, badge: unread }
+				: tab,
+		),
+		[unread, lastReadChangelogId],
+	)
+
 	return (
 		<div className='min-h-screen pb-28 text-app-text'>
 			<div className='flex items-center gap-3 px-4 pt-4 pb-4'>
@@ -78,42 +88,7 @@ export function NotificationsPage() {
 			</div>
 
 			<div className='px-4 mb-4'>
-				<div className='flex gap-2'>
-					{TABS.map(({ key, label, icon }) => {
-						const isActive = activeTab === key
-						const showBadge =
-							key === 'changelog' && unread > 0 && lastReadChangelogId !== null
-
-						return (
-							<button
-								key={key}
-								type='button'
-								onClick={() => setActiveTab(key)}
-								className='relative flex-1 flex items-center justify-center gap-1.5 h-10 rounded-2xl text-xs font-medium transition-all'
-								style={{
-									background: isActive
-										? 'var(--color-surface-strong)'
-										: 'var(--color-surface)',
-									border: isActive
-										? '1.5px solid var(--color-border-strong)'
-										: '1px solid var(--color-border)',
-									color: isActive
-										? 'var(--color-text)'
-										: 'var(--color-text-muted)',
-									boxShadow: isActive ? 'var(--shadow-card)' : 'none',
-								}}
-							>
-								{icon}
-								{label}
-								{showBadge && (
-									<span className='absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand text-white text-[9px] font-bold flex items-center justify-center'>
-										{unread}
-									</span>
-								)}
-							</button>
-						)
-					})}
-				</div>
+				<SegmentedControl segments={tabsWithBadge} active={activeTab} onChange={setActiveTab} />
 			</div>
 
 			<div className='px-4'>

@@ -1,1 +1,1 @@
-export { CatGame } from '@/shared/ui/CatGame'
+export { CatGame } from './ui/CatGame'
