@@ -20,12 +20,12 @@ export function AccountRow({
 		<div
 			className={`flex items-center gap-3 p-3 rounded-2xl transition-colors ${
 				isActive
-					? 'bg-glass-active border border-glass-strong'
-					: 'bg-glass border border-glass-border hover:bg-glass-hover cursor-pointer active:bg-glass-active'
+					? 'bg-glass-active border border-status-comment'
+					: 'bg-glass border border-app-border hover:bg-glass-hover cursor-pointer active:bg-glass-active'
 			}`}
 			onClick={!isActive && !isSwitching ? onSwitch : undefined}
 		>
-			<div className='w-10 h-10 rounded-full overflow-hidden bg-glass-active border border-glass-border flex-shrink-0 flex items-center justify-center'>
+			<div className='w-10 h-10 rounded-full overflow-hidden bg-glass-active border border-app-border flex-shrink-0 flex items-center justify-center'>
 				{account.avatarUrl ? (
 					<img
 						src={account.avatarUrl}

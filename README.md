@@ -20,13 +20,13 @@ bun run dev
 
 ### Основная документация
 
-| Документ                                              | Назначение                                                        |
-| ----------------------------------------------------- | ----------------------------------------------------------------- |
-| [DOCUMENTATION.md](journalWeb/docs/DOCUMENTATION.md)  | **Полный обзор проекта** — стек, модули, API, hooks               |
-| [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md)    | **Архитектура FSD** — слои, паттерны, data flow, правила          |
-| [API_REFERENCE.md](journalWeb/docs/API_REFERENCE.md)  | **API Endpoints** — все endpoints, request/response примеры       |
-| [SRC_STRUCTURE.md](journalWeb/docs/SRC_STRUCTURE.md)  | **Структура кода** — все файлы, экспорты, сигнатуры функций       |
-| [UI_COMPONENTS_GUIDE.md](journalWeb/docs/UI_COMPONENTS_GUIDE.md) | **UI паттерны** — компоненты, Tailwind, accessibility  |
+| Документ                                                         | Назначение                                                  |
+| ---------------------------------------------------------------- | ----------------------------------------------------------- |
+| [DOCUMENTATION.md](journalWeb/docs/DOCUMENTATION.md)             | **Полный обзор проекта** — стек, модули, API, hooks         |
+| [ARCHITECTURE.md](journalWeb/docs/ARCHITECTURE.md)               | **Архитектура FSD** — слои, паттерны, data flow, правила    |
+| [API_REFERENCE.md](journalWeb/docs/API_REFERENCE.md)             | **API Endpoints** — все endpoints, request/response примеры |
+| [SRC_STRUCTURE.md](journalWeb/docs/SRC_STRUCTURE.md)             | **Структура кода** — все файлы, экспорты, сигнатуры функций |
+| [UI_COMPONENTS_GUIDE.md](journalWeb/docs/UI_COMPONENTS_GUIDE.md) | **UI паттерны** — компоненты, Tailwind, accessibility       |
 
 ---
 
@@ -239,14 +239,14 @@ src/
 
 ```typescript
 const useMyStore = create<MyState>()(
-  persist(
-    set => ({
-      data: [],
-      setData: data => set({ data }),
-      reset: () => set({ data: [] }),
-    }),
-    { name: 'my-store' },
-  ),
+	persist(
+		set => ({
+			data: [],
+			setData: data => set({ data }),
+			reset: () => set({ data: [] }),
+		}),
+		{ name: 'my-store' },
+	),
 )
 
 // Использование
@@ -257,7 +257,7 @@ const data = useMyStore(s => s.data)
 
 ```typescript
 export const myApi = {
-  getData: () => api.get<MyData[]>('/endpoint'),
+	getData: () => api.get<MyData[]>('/endpoint'),
 }
 ```
 

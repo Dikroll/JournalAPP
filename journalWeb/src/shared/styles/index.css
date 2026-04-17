@@ -24,6 +24,10 @@ body {
 	scrollbar-width: none;
 	overflow-x: hidden;
 	overscroll-behavior-x: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 body {

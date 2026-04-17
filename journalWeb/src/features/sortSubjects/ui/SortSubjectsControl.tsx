@@ -25,8 +25,8 @@ export function SortSubjectsControl() {
 						onClick={() => setSortKey(key)}
 						className={`px-2.5 py-1 rounded-xl text-xs font-medium border ${
 							sortKey === key
-								? 'bg-glass-strong text-app-text border-glass-strong'
-								: 'bg-glass text-app-muted border-glass-border hover:text-app-text hover:bg-glass-hover'
+								? 'bg-glass-strong text-app-text border-status-pending'
+								: 'bg-glass text-app-muted border-app-border hover:text-app-text hover:bg-glass-hover'
 						}`}
 					>
 						{label}

@@ -35,7 +35,7 @@ export function LoginForm() {
 			>
 				<form
 					onSubmit={submit}
-					className='w-full min-h-[360px] flex flex-col gap-4 bg-glass backdrop-blur-3xl p-8 rounded-[24px] border border-glass-strong justify-center'
+					className='w-full min-h-[360px] flex flex-col gap-4 bg-glass backdrop-blur-3xl p-8 rounded-[24px] border border-app-border justify-center'
 					style={{ boxShadow: '0 2px 6px rgba(255,255,255,0.155)' }}
 				>
 					<style>{`
