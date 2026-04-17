@@ -1,15 +1,14 @@
-import type { Cloud, Dog, Star } from './types'
 import {
-	GW,
+	CAT_FLOOR,
+	CAT_W,
+	CAT_X,
 	GH,
 	GROUND,
-	CAT_X,
-	CAT_W,
-	CAT_H,
-	CAT_FLOOR,
-	RUNNER_TOP,
+	GW,
 	JUMPER_FLOOR,
+	RUNNER_TOP,
 } from './constants'
+import type { Cloud, Dog, Star } from './types'
 
 function rr(
 	ctx: CanvasRenderingContext2D,
@@ -41,7 +40,11 @@ export function drawSky(ctx: CanvasRenderingContext2D) {
 	ctx.fillRect(0, 0, GW, GROUND)
 }
 
-export function drawStars(ctx: CanvasRenderingContext2D, arr: Star[], f: number) {
+export function drawStars(
+	ctx: CanvasRenderingContext2D,
+	arr: Star[],
+	f: number,
+) {
 	for (const s of arr) {
 		const a = 0.15 + 0.85 * Math.abs(Math.sin((f + s.b) * 0.03))
 		ctx.fillStyle = `rgba(210,220,255,${a.toFixed(2)})`
@@ -72,7 +75,11 @@ export function drawGround(ctx: CanvasRenderingContext2D, f: number) {
 	}
 }
 
-export function drawHUD(ctx: CanvasRenderingContext2D, score: number, hi: number) {
+export function drawHUD(
+	ctx: CanvasRenderingContext2D,
+	score: number,
+	hi: number,
+) {
 	ctx.font = 'bold 11px monospace'
 	ctx.textAlign = 'right'
 
@@ -349,8 +356,12 @@ export function drawRunner(ctx: CanvasRenderingContext2D, d: Dog) {
 	ctx.quadraticCurveTo(x + 54, y + 8 + tw, x + 50, y - 6 + tw * 0.5)
 	ctx.stroke()
 	const tg = ctx.createRadialGradient(
-		x + 50, y - 6 + tw * 0.5, 1,
-		x + 50, y - 6 + tw * 0.5, 5,
+		x + 50,
+		y - 6 + tw * 0.5,
+		1,
+		x + 50,
+		y - 6 + tw * 0.5,
+		5,
 	)
 	tg.addColorStop(0, '#fde68a')
 	tg.addColorStop(1, '#d97706')
@@ -366,7 +377,14 @@ export function drawRunner(ctx: CanvasRenderingContext2D, d: Dog) {
 	ctx.fillStyle = bodyGrad
 	rr(ctx, x + 4, y + 14, 34, 22, 9)
 	ctx.fill()
-	const bellyGrad = ctx.createRadialGradient(x + 18, y + 25, 2, x + 18, y + 25, 13)
+	const bellyGrad = ctx.createRadialGradient(
+		x + 18,
+		y + 25,
+		2,
+		x + 18,
+		y + 25,
+		13,
+	)
 	bellyGrad.addColorStop(0, 'rgba(253,230,138,0.5)')
 	bellyGrad.addColorStop(1, 'rgba(253,230,138,0)')
 	ctx.fillStyle = bellyGrad
@@ -458,16 +476,48 @@ export function drawRunner(ctx: CanvasRenderingContext2D, d: Dog) {
 
 	ctx.fillStyle = '#b45309'
 	ctx.beginPath()
-	ctx.ellipse(x + 6, y + 32 + (ph ? 2 : 0), 4.5, 8, ph ? -0.3 : 0.3, 0, Math.PI * 2)
+	ctx.ellipse(
+		x + 6,
+		y + 32 + (ph ? 2 : 0),
+		4.5,
+		8,
+		ph ? -0.3 : 0.3,
+		0,
+		Math.PI * 2,
+	)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 14, y + 32 + (ph ? 0 : 2), 4.5, 8, ph ? 0.3 : -0.3, 0, Math.PI * 2)
+	ctx.ellipse(
+		x + 14,
+		y + 32 + (ph ? 0 : 2),
+		4.5,
+		8,
+		ph ? 0.3 : -0.3,
+		0,
+		Math.PI * 2,
+	)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 24, y + 31 + (ph ? 0 : 2), 4, 7, ph ? 0.2 : -0.2, 0, Math.PI * 2)
+	ctx.ellipse(
+		x + 24,
+		y + 31 + (ph ? 0 : 2),
+		4,
+		7,
+		ph ? 0.2 : -0.2,
+		0,
+		Math.PI * 2,
+	)
 	ctx.fill()
 	ctx.beginPath()
-	ctx.ellipse(x + 32, y + 31 + (ph ? 2 : 0), 4, 7, ph ? -0.2 : 0.2, 0, Math.PI * 2)
+	ctx.ellipse(
+		x + 32,
+		y + 31 + (ph ? 2 : 0),
+		4,
+		7,
+		ph ? -0.2 : 0.2,
+		0,
+		Math.PI * 2,
+	)
 	ctx.fill()
 	ctx.fillStyle = '#d97706'
 	ctx.beginPath()
@@ -507,8 +557,12 @@ export function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
 	ctx.quadraticCurveTo(x + 46, y + 2 + tw, x + 42, y - 8 + tw * 0.5)
 	ctx.stroke()
 	const ttg = ctx.createRadialGradient(
-		x + 42, y - 8 + tw * 0.5, 1,
-		x + 42, y - 8 + tw * 0.5, 5,
+		x + 42,
+		y - 8 + tw * 0.5,
+		1,
+		x + 42,
+		y - 8 + tw * 0.5,
+		5,
 	)
 	ttg.addColorStop(0, '#e5e7eb')
 	ttg.addColorStop(1, '#9ca3af')
@@ -668,16 +722,48 @@ export function drawJumper(ctx: CanvasRenderingContext2D, d: Dog) {
 	} else {
 		const ph = d.f % 12 < 6
 		ctx.beginPath()
-		ctx.ellipse(x + 2, y + 20 + (ph ? 2 : 0), 3.5, 7, ph ? -0.25 : 0.25, 0, Math.PI * 2)
+		ctx.ellipse(
+			x + 2,
+			y + 20 + (ph ? 2 : 0),
+			3.5,
+			7,
+			ph ? -0.25 : 0.25,
+			0,
+			Math.PI * 2,
+		)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 8, y + 20 + (ph ? 0 : 2), 3.5, 7, ph ? 0.25 : -0.25, 0, Math.PI * 2)
+		ctx.ellipse(
+			x + 8,
+			y + 20 + (ph ? 0 : 2),
+			3.5,
+			7,
+			ph ? 0.25 : -0.25,
+			0,
+			Math.PI * 2,
+		)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 18, y + 19 + (ph ? 0 : 2), 3, 6, ph ? 0.2 : -0.2, 0, Math.PI * 2)
+		ctx.ellipse(
+			x + 18,
+			y + 19 + (ph ? 0 : 2),
+			3,
+			6,
+			ph ? 0.2 : -0.2,
+			0,
+			Math.PI * 2,
+		)
 		ctx.fill()
 		ctx.beginPath()
-		ctx.ellipse(x + 24, y + 19 + (ph ? 2 : 0), 3, 6, ph ? -0.2 : 0.2, 0, Math.PI * 2)
+		ctx.ellipse(
+			x + 24,
+			y + 19 + (ph ? 2 : 0),
+			3,
+			6,
+			ph ? -0.2 : 0.2,
+			0,
+			Math.PI * 2,
+		)
 		ctx.fill()
 	}
 
