@@ -93,10 +93,15 @@ export const useHomeworkStore = create<HomeworkState>()(
 			loadedAt: null,
 
 			setItems: (statusKey, items) =>
-				set(state => ({
-					items: { ...state.items, [statusKey]: items },
-					pages: { ...state.pages, [statusKey]: 1 },
-				})),
+				set(state => {
+					const nextExpanded = new Set(state.expandedStatuses)
+					nextExpanded.delete(statusKey)
+					return {
+						items: { ...state.items, [statusKey]: items },
+						pages: { ...state.pages, [statusKey]: 1 },
+						expandedStatuses: nextExpanded,
+					}
+				}),
 
 			appendItems: (statusKey, newItems, page) =>
 				set(state => ({

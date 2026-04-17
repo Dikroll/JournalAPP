@@ -1,7 +1,12 @@
 import { useScheduleMonth } from '@/entities/schedule'
 import { useMonthNav } from '@/shared/hooks'
 import { MonthGrid } from '@/shared/ui'
-import { formatDateLong, getTodayString, toDateString } from '@/shared/utils'
+import {
+	formatDateLong,
+	getDayOfWeek,
+	getTodayString,
+	toDateString,
+} from '@/shared/utils'
 import { useState } from 'react'
 import { LessonList } from '../../ScheduleList/ui/LessonList'
 
@@ -23,7 +28,7 @@ export function ScheduleCalendar() {
 				onPrevMonth={prevMonth}
 				onNextMonth={nextMonth}
 				renderDay={({ dateStr, day, isToday }) => {
-					const dow = new Date(`${dateStr}T00:00:00`).getDay()
+					const dow = getDayOfWeek(dateStr)
 					const isWeekend = dow === 0 || dow === 6
 					const hasLesson = daysWithLessons.has(dateStr)
 					const isSelected = dateStr === selectedDate

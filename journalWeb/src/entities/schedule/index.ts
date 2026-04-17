@@ -1,4 +1,5 @@
 export { scheduleApi } from './api'
+export { useHomeSchedule } from './hooks/useHomeSchedule'
 export { useScheduleByDate } from './hooks/useScheduleByDate'
 export { useScheduleMonth } from './hooks/useScheduleMonth'
 export { useScheduleToday } from './hooks/useScheduleToday'

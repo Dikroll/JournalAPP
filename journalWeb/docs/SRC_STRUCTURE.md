@@ -269,9 +269,35 @@ interface HomeworkState {
 **Exports:**
 
 - API: `scheduleApi`
-- Hooks: `useScheduleMonth`, `useScheduleToday`
-- Store: `useScheduleStore`
-- Types: `LessonItem`
+- Hooks: `useHomeSchedule`, `useScheduleByDate`, `useScheduleMonth`, `useScheduleToday`, `useScheduleWeek`
+- Stores: `useScheduleStore`, `useLessonNotesStore`
+- Notes helpers: `makeLessonKey`, `getNotesForKey`, `DEFAULT_STATUSES`
+- Types: `LessonItem`, `LessonNote`, `NoteStatus`
+
+#### `hooks/useHomeSchedule.ts`
+
+**Function Signature:**
+
+```typescript
+useHomeSchedule(): {
+  offset: -1 | 0 | 1
+  dateStr: string
+  title: string
+  todayLessons: LessonItem[]
+  todayStatus: LoadingState
+  otherLessons: LessonItem[]
+  otherStatus: LoadingState
+  goPrev(): void
+  goNext(): void
+  goToday(): void
+}
+```
+
+**Features:**
+
+- Owns offset nav for home schedule widget
+- Preloads yesterday + tomorrow via `useScheduleByDate`
+- Auto-shifts to tomorrow after lessons end using `getScheduleTimeInfo`
 
 #### `hooks/useScheduleToday.ts`
 
@@ -629,7 +655,7 @@ CatGame(): ReactNode
 - Hook: `useAppUpdate`
 - Hook: `useInitAppUpdate`
 - Store: `useAppUpdateStore`
-- Component: `AppUpdateSheet`
+- Components: `AppUpdateBanner`, `AppUpdateSheet`
 
 #### `hooks/useAppUpdate.ts`
 
@@ -928,8 +954,16 @@ NotificationsPage(): ReactNode
 
 #### Schedule Widgets
 
+- `HomeScheduleSection` - Home-page schedule section with prev/today/next nav
 - `ScheduleCalendar` - Calendar schedule view
 - `ScheduleList` - List schedule view
+- `ScheduleWeekView` - Weekly schedule view
+- `LessonList` - Shared lesson list
+
+#### Notifications Widgets
+
+- `ChangelogTab` - Version changelog list
+- `ComingSoonTab` - Placeholder for planned sections
 
 #### Exam Widgets
 
@@ -1160,8 +1194,16 @@ PageHeader(props: { title: string; subtitle?: string }): ReactNode
 **Component Signature:**
 
 ```typescript
-RefreshButton(props: { onRefresh: () => void; isLoading?: boolean }): ReactNode
+RefreshButton(props: {
+  isRefreshing: boolean
+  onRefresh: () => void
+  disabled?: boolean
+  className?: string
+  minSpinMs?: number
+}): ReactNode
 ```
+
+**Features:** Optional `minSpinMs` keeps the spin animation for at least N ms after `isRefreshing` flips false (subsumes the ad-hoc local-spinner pattern in feature wrappers).
 
 #### `ShowMoreBtn`
 

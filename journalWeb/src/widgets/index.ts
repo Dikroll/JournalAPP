@@ -54,3 +54,7 @@ export { ClearCacheSheet } from '@/features/clearCache'
 export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'
 export { LibraryTabs } from './Library/LibraryTabs/ui/LibraryTabs'
 export { LibraryView } from './Library/LibraryView/ui/LibraryView'
+
+// Notifications
+export { ChangelogTab } from './Notifications/ChangelogTab/ui/ChangelogTab'
+export { ComingSoonTab } from './Notifications/ComingSoonTab/ui/ComingSoonTab'

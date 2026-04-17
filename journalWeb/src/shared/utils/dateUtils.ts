@@ -50,6 +50,11 @@ export function getFirstDayOfMonth(year: number, month: number): number {
 	return (new Date(year, month, 1).getDay() + 6) % 7
 }
 
+/** JS-совместимый день недели для ISO-даты: 0=вс, 1=пн, ..., 6=сб. */
+export function getDayOfWeek(dateStr: string): number {
+	return new Date(`${dateStr}T00:00:00`).getDay()
+}
+
 export function formatDate(raw: string) {
 	const d = new Date(raw)
 	return d.toLocaleDateString('ru-RU', {

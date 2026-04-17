@@ -2,7 +2,11 @@ import type { GradeEntryExpanded } from '@/entities/grades'
 import { getGradeDotColor } from '@/entities/grades'
 import { useMonthNav } from '@/shared/hooks'
 import { MonthGrid } from '@/shared/ui'
-import { formatDateWithWeekday, toDateString } from '@/shared/utils'
+import {
+	formatDateWithWeekday,
+	getTodayString,
+	toDateString,
+} from '@/shared/utils'
 import { useCallback, useMemo, useState } from 'react'
 import { GradeEntryRow } from '../../GradesList/ui/GradeEntryRow'
 
@@ -12,10 +16,7 @@ interface Props {
 
 export function GradesCalendar({ byMonth }: Props) {
 	const months = Object.keys(byMonth).sort()
-	const now = new Date()
-	const defaultMonth =
-		months[months.length - 1] ??
-		`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+	const defaultMonth = months[months.length - 1] ?? getTodayString().slice(0, 7)
 
 	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth)
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)

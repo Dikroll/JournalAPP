@@ -1,13 +1,20 @@
-import { ttl } from '@/shared/config/cacheConfig'
-import { isCacheValid } from '@/shared/lib/isCacheValid'
 import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
+import type { LessonItem } from '../model/types'
 import { useScheduleStore } from '../model/store'
 
-const CACHE_TTL_MS = ttl.SCHEDULE * 1000
-
 const FETCH_TIMEOUT_MS = 15_000
+
+let inFlightPromise: Promise<LessonItem[]> | null = null
+
+function fetchTodayDeduped(): Promise<LessonItem[]> {
+	if (inFlightPromise) return inFlightPromise
+	inFlightPromise = scheduleApi.getToday().finally(() => {
+		inFlightPromise = null
+	})
+	return inFlightPromise
+}
 
 export function resetScheduleTodayFetch() {}
 
@@ -23,13 +30,11 @@ export function useScheduleToday() {
 
 	const fetchingRef = useRef(false)
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const hasFetchedRef = useRef(false)
 
 	useEffect(() => {
+		if (todayLoadedAt === null) hasFetchedRef.current = false
 		if (fetchingRef.current) return
-		if (isCacheValid(todayLoadedAt, CACHE_TTL_MS)) {
-			if (todayStatus === 'idle') setTodayStatus('success')
-			return
-		}
 
 		if (!getIsOnline()) {
 			if (todayLoadedAt !== null) {
@@ -41,19 +46,23 @@ export function useScheduleToday() {
 			return
 		}
 
+		if (hasFetchedRef.current) return
+		hasFetchedRef.current = true
+
 		fetchingRef.current = true
-		setTodayStatus('loading')
+		if (today.length === 0) setTodayStatus('loading')
 
 		timeoutRef.current = setTimeout(() => {
 			if (fetchingRef.current) {
 				fetchingRef.current = false
-				setTodayStatus('error')
-				setError('Превышено время ожидания')
+				if (today.length === 0) {
+					setTodayStatus('error')
+					setError('Превышено время ожидания')
+				}
 			}
 		}, FETCH_TIMEOUT_MS)
 
-		scheduleApi
-			.getToday()
+		fetchTodayDeduped()
 			.then(data => {
 				setToday(data)
 				setTodayLoadedAt(Date.now())

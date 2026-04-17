@@ -1,62 +1,20 @@
-import {
-	useScheduleByDate,
-	useScheduleToday,
-} from '@/entities/schedule'
-import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
-import { useCurrentMinutes } from '@/shared/hooks'
+import { useHomeSchedule } from '@/entities/schedule'
 import { IconButton } from '@/shared/ui'
-import { formatDateLong, toDateString } from '@/shared/utils'
+import { formatDateLong } from '@/shared/utils'
 import { LessonList, ScheduleList } from '@/widgets'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-function getDateByOffset(offset: number): string {
-	const d = new Date()
-	d.setDate(d.getDate() + offset)
-	return toDateString(d.getFullYear(), d.getMonth(), d.getDate())
-}
-
-function getTitle(offset: number): string {
-	switch (offset) {
-		case -1:
-			return 'Расписание на вчера'
-		case 0:
-			return 'Расписание на сегодня'
-		case 1:
-			return 'Расписание на завтра'
-		default:
-			return 'Расписание'
-	}
-}
 
 export function HomeScheduleSection() {
-	const { today, status: todayStatus } = useScheduleToday()
-	const nowMinutes = useCurrentMinutes()
-	const [offset, setOffset] = useState(0)
-	const autoShiftedRef = useRef(false)
-
-	const dateStr = getDateByOffset(offset)
-	const { lessons: otherLessons, status: otherStatus } = useScheduleByDate(
-		offset !== 0 ? dateStr : null,
-	)
-
-	useEffect(() => {
-		if (autoShiftedRef.current) return
-		if (todayStatus !== 'success') return
-		if (today.length === 0) return
-
-		const sorted = [...today].sort((a, b) => a.lesson - b.lesson)
-		const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
-
-		if (timeInfo.type === 'after-lessons') {
-			setOffset(1)
-			autoShiftedRef.current = true
-		}
-	}, [todayStatus, today, nowMinutes])
-
-	const goPrev = useCallback(() => setOffset(o => Math.max(o - 1, -1)), [])
-	const goNext = useCallback(() => setOffset(o => Math.min(o + 1, 1)), [])
-	const goToday = useCallback(() => setOffset(0), [])
+	const {
+		offset,
+		dateStr,
+		title,
+		otherLessons,
+		otherStatus,
+		goPrev,
+		goNext,
+		goToday,
+	} = useHomeSchedule()
 
 	return (
 		<>
@@ -74,7 +32,7 @@ export function HomeScheduleSection() {
 					{/* ТЕКСТ */}
 					<div className='flex flex-col justify-center'>
 						<h1 className='text-lg font-bold leading-tight text-app-text'>
-							{getTitle(offset)}
+							{title}
 						</h1>
 						<p className='text-xs text-app-muted leading-tight mt-0.5 capitalize'>
 							{formatDateLong(dateStr)}
@@ -117,29 +75,21 @@ export function HomeScheduleSection() {
 
 			{offset === 0 ? (
 				<ScheduleList />
+			) : otherStatus === 'loading' && otherLessons.length === 0 ? (
+				<div className='flex flex-col gap-3'>
+					{[0, 1, 2].map(i => (
+						<div
+							key={i}
+							className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
+						/>
+					))}
+				</div>
+			) : otherStatus === 'error' && otherLessons.length === 0 ? (
+				<p className='text-status-overdue text-sm text-center py-4'>
+					Ошибка загрузки расписания
+				</p>
 			) : (
-				<>
-					{otherStatus === 'loading' && (
-						<div className='flex flex-col gap-3'>
-							{[0, 1, 2].map(i => (
-								<div
-									key={i}
-									className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
-								/>
-							))}
-						</div>
-					)}
-
-					{otherStatus === 'error' && (
-						<p className='text-status-overdue text-sm text-center py-4'>
-							Ошибка загрузки расписания
-						</p>
-					)}
-
-					{otherStatus === 'success' && (
-						<LessonList lessons={otherLessons} forDate={dateStr} />
-					)}
-				</>
+				<LessonList lessons={otherLessons} forDate={dateStr} />
 			)}
 		</>
 	)

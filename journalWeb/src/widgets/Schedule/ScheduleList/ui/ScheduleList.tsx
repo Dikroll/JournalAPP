@@ -1,8 +1,11 @@
 import { useScheduleToday } from '@/entities/schedule'
-import { getGapBetweenLessons } from '@/entities/schedule/lib/scheduleGaps'
-import { formatGapMinutes } from '@/entities/schedule/lib/scheduleGaps'
+import {
+	formatGapMinutes,
+	getGapBetweenLessons,
+} from '@/entities/schedule/lib/scheduleGaps'
 import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
 import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
+import { InlineImage } from '@/shared/ui'
 import { GapIndicator } from './GapIndicator'
 import { LessonCard } from './LessonCard'
 
@@ -34,7 +37,17 @@ export function ScheduleList() {
 	}
 
 	if (today.length === 0 && status === 'success') {
-		return <p className='text-app-muted text-sm'>Пар сегодня нет</p>
+		return (
+			<div className='flex flex-col items-center gap-3 py-4'>
+				<InlineImage
+					src='/homework.svg'
+					alt='Нет пар'
+					width={300}
+					height={300}
+				/>
+				<p className='text-app-muted text-sm text-center'>Пар сегодня нет</p>
+			</div>
+		)
 	}
 
 	if (today.length === 0) return null
@@ -42,14 +55,23 @@ export function ScheduleList() {
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson)
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
 
-	function getTimeLabel(lesson: typeof sorted[number]): string | undefined {
-		if (timeInfo.type === 'in-lesson' && timeInfo.currentLesson?.lesson === lesson.lesson) {
+	function getTimeLabel(lesson: (typeof sorted)[number]): string | undefined {
+		if (
+			timeInfo.type === 'in-lesson' &&
+			timeInfo.currentLesson?.lesson === lesson.lesson
+		) {
 			return `ост. ${formatGapMinutes(timeInfo.minutesLeft)}`
 		}
-		if (timeInfo.type === 'before-lessons' && timeInfo.nextLesson?.lesson === lesson.lesson) {
+		if (
+			timeInfo.type === 'before-lessons' &&
+			timeInfo.nextLesson?.lesson === lesson.lesson
+		) {
 			return `через ${formatGapMinutes(timeInfo.minutesLeft)}`
 		}
-		if (timeInfo.type === 'in-gap' && timeInfo.nextLesson?.lesson === lesson.lesson) {
+		if (
+			timeInfo.type === 'in-gap' &&
+			timeInfo.nextLesson?.lesson === lesson.lesson
+		) {
 			return `через ${formatGapMinutes(timeInfo.minutesLeft)}`
 		}
 		return undefined
@@ -58,11 +80,12 @@ export function ScheduleList() {
 	return (
 		<ul className='flex flex-col gap-3 mb-4'>
 			{sorted.map((lesson, i) => (
-				<li key={`${lesson.started_at}-${lesson.room}`} className='flex flex-col'>
+				<li
+					key={`${lesson.started_at}-${lesson.room}`}
+					className='flex flex-col'
+				>
 					{i > 0 && (
-						<GapIndicator
-							gap={getGapBetweenLessons(sorted[i - 1], lesson)}
-						/>
+						<GapIndicator gap={getGapBetweenLessons(sorted[i - 1], lesson)} />
 					)}
 					<LessonCard
 						lesson={lesson}
