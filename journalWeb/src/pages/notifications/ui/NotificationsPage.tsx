@@ -1,5 +1,7 @@
+import { useFeedbackStore } from '@/entities/feedback'
 import {
 	FALLBACK_CHANGELOG,
+	getNewPendingCount,
 	getUnreadCount,
 	useNotificationsStore,
 } from '@/features/sendNotifications'
@@ -36,7 +38,10 @@ export function NotificationsPage() {
 	const navigate = useNavigate()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
+	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
+	const markPendingSeen = useNotificationsStore(s => s.markPendingSeen)
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
+	const pending = useFeedbackStore(s => s.pending)
 
 	useSwipeBack()
 
@@ -51,15 +56,33 @@ export function NotificationsPage() {
 		}
 	}, [latestRelease, entries, setLastRead])
 
+	const pendingKeys = useMemo(() => pending.map(p => p.key), [pending])
+
+	const newPendingCount = useMemo(
+		() => getNewPendingCount(seenPendingKeys, pendingKeys),
+		[seenPendingKeys, pendingKeys],
+	)
+
+	useEffect(() => {
+		if (activeTab !== 'feedback') return
+		if (newPendingCount === 0) return
+		markPendingSeen(pendingKeys)
+	}, [activeTab, newPendingCount, pendingKeys, markPendingSeen])
+
 	const unread = getUnreadCount(lastReadChangelogId, entries)
 
-	const tabsWithBadge = useMemo<Segment<Tab>[]>(() =>
-		TABS.map(tab =>
-			tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null
-				? { ...tab, badge: unread }
-				: tab,
-		),
-		[unread, lastReadChangelogId],
+	const tabsWithBadge = useMemo<Segment<Tab>[]>(
+		() =>
+			TABS.map(tab => {
+				if (tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null) {
+					return { ...tab, badge: unread }
+				}
+				if (tab.key === 'feedback' && newPendingCount > 0) {
+					return { ...tab, badge: newPendingCount }
+				}
+				return tab
+			}),
+		[unread, lastReadChangelogId, newPendingCount],
 	)
 
 	return (

@@ -27,6 +27,8 @@ export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 interface NotificationsState {
 	lastReadChangelogId: string | null
 	setLastRead: (id: string) => void
+	seenPendingKeys: string[]
+	markPendingSeen: (keys: string[]) => void
 }
 
 export const useNotificationsStore = create<NotificationsState>()(
@@ -34,11 +36,14 @@ export const useNotificationsStore = create<NotificationsState>()(
 		set => ({
 			lastReadChangelogId: null,
 			setLastRead: id => set({ lastReadChangelogId: id }),
+			seenPendingKeys: [],
+			markPendingSeen: keys => set({ seenPendingKeys: keys }),
 		}),
 		{
 			name: 'notifications-store',
 			partialize: state => ({
 				lastReadChangelogId: state.lastReadChangelogId,
+				seenPendingKeys: state.seenPendingKeys,
 			}),
 		},
 	),
@@ -51,4 +56,15 @@ export function getUnreadCount(
 	if (!lastReadId) return entries.length
 	const idx = entries.findIndex(entry => entry.id === lastReadId)
 	return idx === -1 ? entries.length : idx
+}
+
+export function getNewPendingCount(
+	seenKeys: string[],
+	pendingKeys: string[],
+): number {
+	if (pendingKeys.length === 0) return 0
+	const seen = new Set(seenKeys)
+	let n = 0
+	for (const k of pendingKeys) if (!seen.has(k)) n++
+	return n
 }
