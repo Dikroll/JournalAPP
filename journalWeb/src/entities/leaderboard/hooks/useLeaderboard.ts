@@ -15,9 +15,9 @@ function preload(d: LeaderboardResponse) {
 }
 
 export function useLeaderboard() {
-	const groupData = useLeaderboardStore(s => s.group.data)
-	const status = useLeaderboardStore(s => s.group.status)
-	const loadedAt = useLeaderboardStore(s => s.group.loadedAt)
+	const data = useLeaderboardStore(s => s.data)
+	const status = useLeaderboardStore(s => s.status)
+	const loadedAt = useLeaderboardStore(s => s.loadedAt)
 	const update = useLeaderboardStore(s => s.update)
 
 	useEntityFetch({
@@ -25,30 +25,19 @@ export function useLeaderboard() {
 		ttlMs: CACHE_TTL_MS,
 		status,
 		fetchFn: () => leaderboardApi.getAll(),
-		onStart: () => {
-			update('group', { status: 'loading' })
-			update('stream', { status: 'loading' })
+		onStart: () => update({ status: 'loading' }),
+		onSuccess: fetched => {
+			update({ data: fetched, status: 'success', loadedAt: Date.now() })
+			preload(fetched)
 		},
-		onSuccess: data => {
-			const now = Date.now()
-			update('group', { data, status: 'success', loadedAt: now })
-			update('stream', { data, status: 'success', loadedAt: now })
-			preload(data)
-		},
-		onError: () => {
-			update('group', { status: 'error' })
-			update('stream', { status: 'error' })
-		},
-		onCacheHit: () => {
-			update('group', { status: 'success' })
-			update('stream', { status: 'success' })
-		},
+		onError: () => update({ status: 'error' }),
+		onCacheHit: () => update({ status: 'success' }),
 	})
 
-	const groupStudents = groupData?.top_group ?? []
-	const streamStudents = groupData?.top_stream ?? []
-	const myRankGroup = groupData?.my_rank?.group
-	const myRankStream = groupData?.my_rank?.stream
+	const groupStudents = data?.top_group ?? []
+	const streamStudents = data?.top_stream ?? []
+	const myRankGroup = data?.my_rank?.group
+	const myRankStream = data?.my_rank?.stream
 
 	return { groupStudents, streamStudents, myRankGroup, myRankStream, status }
 }

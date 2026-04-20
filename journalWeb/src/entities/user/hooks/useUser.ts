@@ -3,7 +3,8 @@ import { userApi } from '../api'
 import { useUserStore } from '../model/store'
 
 export function useUser() {
-	const { user, setUser } = useUserStore()
+	const user = useUserStore(s => s.user)
+	const setUser = useUserStore(s => s.setUser)
 
 	useEffect(() => {
 		if (user) return

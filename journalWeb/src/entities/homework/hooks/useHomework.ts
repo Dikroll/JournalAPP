@@ -2,77 +2,50 @@ import { useUserStore } from '@/entities/user'
 import { timing, ttl } from '@/shared/config'
 import { isCacheValid, preloadImages } from '@/shared/lib'
 import { getIsOnline } from '@/shared/model/networkStore'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { homeworkApi } from '../api'
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from '../model/store'
 
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000
 
-export function resetHomeworkFetch() {}
+const loadingAllByGroup = new Map<number, Promise<void>>()
+const loadingMoreByKey = new Map<string, Promise<void>>()
 
-export function useHomework() {
-	const groupId = useUserStore(s => s.user?.group?.id)
+async function runLoadAll(groupId: number, force: boolean) {
+	if (loadingAllByGroup.has(groupId)) {
+		await loadingAllByGroup.get(groupId)
+		return
+	}
 
-	const {
-		items,
-		expandedStatuses,
-		counters,
-		status,
-		error,
-		filterStatus,
-		setItems,
-		appendItems,
-		setExpanded,
-		setCounters,
-		setStatus,
-		setError,
-		setFilter,
-		setLoadedAt,
-		setKnownSpecs,
-	} = useHomeworkStore()
+	const store = useHomeworkStore.getState()
+	const { loadedAt, status: currentStatus } = store
 
-	const groupIdRef = useRef(groupId)
+	if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) {
+		if (currentStatus === 'idle') store.setStatus('success')
+		return
+	}
 
-	const loadedAt = useHomeworkStore(s => s.loadedAt)
-
-	const isLoadingAllRef = useRef(false)
-	const isLoadingMoreRef = useRef(new Set<number>())
-
-	useEffect(() => {
-		groupIdRef.current = groupId
-	}, [groupId])
-
-	const loadAll = useCallback(async (force = false) => {
-		const gid = groupIdRef.current
-		if (!gid) return
-		if (isLoadingAllRef.current) return
-
-		const { loadedAt, status: currentStatus } = useHomeworkStore.getState()
-		if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) {
-			if (currentStatus === 'idle') setStatus('success')
+	if (!getIsOnline()) {
+		if (loadedAt !== null) {
+			if (currentStatus === 'idle') store.setStatus('success')
 			return
 		}
+		store.setError('Нет подключения к интернету')
+		store.setStatus('error')
+		return
+	}
 
-		if (!getIsOnline()) {
-			if (loadedAt !== null) {
-				if (currentStatus === 'idle') setStatus('success')
-				return
-			}
-			setError('Нет подключения к интернету')
-			setStatus('error')
-			return
-		}
+	store.setStatus('loading')
+	store.setError(null)
 
-		isLoadingAllRef.current = true
-		setStatus('loading')
-		setError(null)
-
+	const promise = (async () => {
 		try {
-			const { counters, items } = await homeworkApi.getAll(gid)
-			setCounters(counters)
+			const { counters, items } = await homeworkApi.getAll(groupId)
+			const latest = useHomeworkStore.getState()
+			latest.setCounters(counters)
 
 			const specsMap = new Map<number, string>()
-			const photoUrls: (string | null)[] = []
+			const photoUrls: string[] = []
 
 			Object.values(items)
 				.flat()
@@ -83,56 +56,86 @@ export function useHomework() {
 					if (hw.photo_url) photoUrls.push(hw.photo_url)
 				})
 
-			setKnownSpecs(
+			latest.setKnownSpecs(
 				Array.from(specsMap.entries())
 					.map(([specId, specName]) => ({ specId, specName }))
 					.sort((a, b) => a.specName.localeCompare(b.specName, 'ru')),
 			)
 
 			Object.entries(items).forEach(([statusKey, list]) => {
-				setItems(Number(statusKey), list)
+				latest.setItems(Number(statusKey), list)
 			})
 
-			setLoadedAt(Date.now())
-			setStatus('success')
+			latest.setLoadedAt(Date.now())
+			latest.setStatus('success')
 
 			if (photoUrls.length > 0) preloadImages(photoUrls)
 		} catch {
-			setError('Не удалось загрузить домашние задания')
-			const { loadedAt: currentLoadedAt } = useHomeworkStore.getState()
-			if (currentLoadedAt === null) setStatus('error')
+			const latest = useHomeworkStore.getState()
+			latest.setError('Не удалось загрузить домашние задания')
+			if (latest.loadedAt === null) latest.setStatus('error')
 		} finally {
-			isLoadingAllRef.current = false
+			loadingAllByGroup.delete(groupId)
 		}
-	}, [])
+	})()
+
+	loadingAllByGroup.set(groupId, promise)
+	await promise
+}
+
+async function runLoadMore(groupId: number, statusKey: number) {
+	const mapKey = `${groupId}-${statusKey}`
+	if (loadingMoreByKey.has(mapKey)) return loadingMoreByKey.get(mapKey)
+
+	const promise = (async () => {
+		try {
+			const store = useHomeworkStore.getState()
+			const currentPage = store.pages[statusKey] ?? 1
+			const nextPage = currentPage + 1
+			const newItems = await homeworkApi.getByStatus(statusKey, groupId, nextPage)
+			store.appendItems(statusKey, newItems, nextPage)
+
+			const newPhotos = newItems
+				.map(hw => hw.photo_url)
+				.filter((u): u is string => !!u)
+			if (newPhotos.length > 0) preloadImages(newPhotos)
+
+			if (newItems.length < PAGE_SIZE) {
+				store.setExpanded(statusKey, true)
+			}
+		} catch {
+		} finally {
+			loadingMoreByKey.delete(mapKey)
+		}
+	})()
+
+	loadingMoreByKey.set(mapKey, promise)
+	return promise
+}
+
+export function useHomework() {
+	const groupId = useUserStore(s => s.user?.group?.id)
+
+	const items = useHomeworkStore(s => s.items)
+	const expandedStatuses = useHomeworkStore(s => s.expandedStatuses)
+	const counters = useHomeworkStore(s => s.counters)
+	const status = useHomeworkStore(s => s.status)
+	const error = useHomeworkStore(s => s.error)
+	const filterStatus = useHomeworkStore(s => s.filterStatus)
+	const loadedAt = useHomeworkStore(s => s.loadedAt)
+	const setFilter = useHomeworkStore(s => s.setFilter)
+
+	const loadAll = useCallback((force = false) => {
+		if (!groupId) return Promise.resolve()
+		return runLoadAll(groupId, force)
+	}, [groupId])
 
 	const loadMore = useCallback(
-		async (statusKey: number) => {
-			const gid = groupIdRef.current
-			if (!gid) return
-			if (isLoadingMoreRef.current.has(statusKey)) return
-			isLoadingMoreRef.current.add(statusKey)
-
-			try {
-				const currentPage = useHomeworkStore.getState().pages[statusKey] ?? 1
-				const nextPage = currentPage + 1
-				const newItems = await homeworkApi.getByStatus(statusKey, gid, nextPage)
-				appendItems(statusKey, newItems, nextPage)
-
-				const newPhotos = newItems
-					.map(hw => hw.photo_url)
-					.filter(Boolean) as string[]
-				if (newPhotos.length > 0) preloadImages(newPhotos)
-
-				if (newItems.length < PAGE_SIZE) {
-					setExpanded(statusKey, true)
-				}
-			} catch {
-			} finally {
-				isLoadingMoreRef.current.delete(statusKey)
-			}
+		(statusKey: number) => {
+			if (!groupId) return Promise.resolve()
+			return runLoadMore(groupId, statusKey)
 		},
-		[appendItems, setExpanded],
+		[groupId],
 	)
 
 	const refresh = useCallback(() => loadAll(true), [loadAll])

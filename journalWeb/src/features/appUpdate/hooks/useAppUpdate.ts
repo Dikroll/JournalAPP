@@ -34,19 +34,17 @@ async function loadPlugins() {
 }
 
 export function useAppUpdate() {
-	const {
-		status,
-		serverInfo,
-		latestRelease,
-		downloadProgress,
-		errorMessage,
-		setStatus,
-		setServerInfo,
-		setLatestRelease,
-		setProgress,
-		setError,
-		reset,
-	} = useAppUpdateStore()
+	const status = useAppUpdateStore(s => s.status)
+	const serverInfo = useAppUpdateStore(s => s.serverInfo)
+	const latestRelease = useAppUpdateStore(s => s.latestRelease)
+	const downloadProgress = useAppUpdateStore(s => s.downloadProgress)
+	const errorMessage = useAppUpdateStore(s => s.errorMessage)
+	const setStatus = useAppUpdateStore(s => s.setStatus)
+	const setServerInfo = useAppUpdateStore(s => s.setServerInfo)
+	const setLatestRelease = useAppUpdateStore(s => s.setLatestRelease)
+	const setProgress = useAppUpdateStore(s => s.setProgress)
+	const setError = useAppUpdateStore(s => s.setError)
+	const reset = useAppUpdateStore(s => s.reset)
 
 	const checkForUpdate = useCallback(async () => {
 		await loadPlugins()

@@ -15,6 +15,7 @@ import {
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
+import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
 import {
 	clearAllQueueFiles,
 	useOfflineQueueStore,
@@ -43,6 +44,7 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	} = options
 
 	storage.clear('cache:')
+	resetInitUserFetch()
 
 	try {
 		useGradesStore.persist.clearStorage?.()
@@ -96,8 +98,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		useLeaderboardStore.persist.clearStorage?.()
 	} catch {}
 	useLeaderboardStore.setState({
-		group: { data: null, status: 'idle', loadedAt: null },
-		stream: { data: null, status: 'idle', loadedAt: null },
+		data: null,
+		status: 'idle',
+		loadedAt: null,
 	})
 
 	try {

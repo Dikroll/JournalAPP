@@ -1,45 +1,50 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { LeaderboardResponse, LeaderboardScope } from './types'
+import type { LeaderboardResponse } from './types'
 
-interface ScopedData {
+interface LeaderboardState {
 	data: LeaderboardResponse | null
 	status: LoadingState
 	loadedAt: number | null
+	update: (patch: Partial<Omit<LeaderboardState, 'update'>>) => void
 }
 
-interface LeaderboardState {
-	group: ScopedData
-	stream: ScopedData
-
-	update: (scope: LeaderboardScope, patch: Partial<ScopedData>) => void
+interface LegacyScoped {
+	data?: LeaderboardResponse | null
+	loadedAt?: number | null
 }
-
-const empty: ScopedData = { data: null, status: 'idle', loadedAt: null }
 
 export const useLeaderboardStore = create<LeaderboardState>()(
 	persist(
 		set => ({
-			group: { ...empty },
-			stream: { ...empty },
-			update: (scope, patch) =>
-				set(state => ({ [scope]: { ...state[scope], ...patch } })),
+			data: null,
+			status: 'idle',
+			loadedAt: null,
+			update: patch => set(patch),
 		}),
 		{
 			name: 'leaderboard-store',
+			version: 2,
 			partialize: state => ({
-				group: {
-					data: state.group.data,
-					status: 'idle',
-					loadedAt: state.group.loadedAt,
-				},
-				stream: {
-					data: state.stream.data,
-					status: 'idle',
-					loadedAt: state.stream.loadedAt,
-				},
+				data: state.data,
+				loadedAt: state.loadedAt,
 			}),
+			migrate: (persisted, version) => {
+				if (
+					version < 2 &&
+					persisted &&
+					typeof persisted === 'object' &&
+					'group' in persisted
+				) {
+					const group = (persisted as { group?: LegacyScoped }).group
+					return {
+						data: group?.data ?? null,
+						loadedAt: group?.loadedAt ?? null,
+					}
+				}
+				return persisted as { data: LeaderboardResponse | null; loadedAt: number | null }
+			},
 		},
 	),
 )

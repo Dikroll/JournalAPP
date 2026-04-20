@@ -5,6 +5,7 @@ import { useNetworkStore } from '../model/networkStore'
 
 const PROBE_URL = `${API_BASE_URL}/app/version`
 const FAILURE_THRESHOLD = 2
+const MIN_PROBE_GAP_MS = 15_000
 
 async function probeReachability(signal: AbortSignal): Promise<boolean> {
 	try {
@@ -30,17 +31,22 @@ export function useNetworkInit() {
 		let consecutiveFailures = 0
 		let osSaysOnline = true
 		let cancelled = false
+		let lastProbeAt = 0
 
 		function applyState(reachable: boolean) {
 			if (cancelled) return
 			setOnline(osSaysOnline && reachable)
 		}
 
-		async function runProbe() {
+		async function runProbe(force = false) {
 			if (!osSaysOnline) {
 				consecutiveFailures = 0
 				return
 			}
+			const now = Date.now()
+			if (!force && now - lastProbeAt < MIN_PROBE_GAP_MS) return
+			lastProbeAt = now
+
 			if (currentAbort) currentAbort.abort()
 			const abort = new AbortController()
 			currentAbort = abort
@@ -71,7 +77,7 @@ export function useNetworkInit() {
 				applyState(false)
 				return
 			}
-			runProbe()
+			runProbe(true)
 		}
 
 		async function initCapacitorNetwork() {
@@ -107,7 +113,7 @@ export function useNetworkInit() {
 		document.addEventListener('visibilitychange', handleVisibility)
 
 		initCapacitorNetwork().then(() => {
-			if (!cancelled) runProbe()
+			if (!cancelled) runProbe(true)
 		})
 
 		intervalId = setInterval(runProbe, timing.NETWORK_PROBE_INTERVAL)
