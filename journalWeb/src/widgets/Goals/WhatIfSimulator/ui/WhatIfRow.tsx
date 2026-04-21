@@ -1,19 +1,14 @@
+import { GRADE_BG, GRADE_COLOR } from '@/shared/config'
 import type { GradeType } from '@/shared/types'
 import { Minus, Plus } from 'lucide-react'
 
 const LABEL: Record<GradeType, string> = {
-	control: 'Контроль',
-	homework: 'ДЗ',
-	lab: 'Лаб',
-	classwork: 'КР',
-	practical: 'Практ',
+	control: 'Контрольная',
+	homework: 'Домашка',
+	lab: 'Лабораторная',
+	classwork: 'Классная',
+	practical: 'Практическая',
 	final: 'Зачёт',
-}
-
-const VALUE_COLOR: Record<3 | 4 | 5, string> = {
-	3: '#f0a020',
-	4: '#4d9ef7',
-	5: '#22c98a',
 }
 
 interface Props {
@@ -39,45 +34,51 @@ export function WhatIfRow({
 
 	return (
 		<div
-			className='rounded-[18px] px-3 py-2.5 mb-2'
+			className='rounded-[18px] p-3 mb-2 transition-colors'
 			style={{
-				background: active
-					? 'var(--color-brand-subtle)'
-					: 'var(--color-surface)',
+				background: active ? GRADE_BG[value] : 'var(--color-surface)',
 				border: `1px solid ${
-					active ? 'var(--color-brand-border)' : 'var(--color-border)'
+					active ? GRADE_COLOR[value] + '55' : 'var(--color-border)'
 				}`,
 			}}
 		>
-			<div className='flex items-center justify-between gap-2 mb-2'>
+			<div className='flex items-center justify-between gap-3 mb-2.5'>
 				<div className='min-w-0'>
-					<div className='text-[13px] font-semibold text-app-text truncate'>
+					<div className='text-[14px] font-semibold text-app-text truncate'>
 						{LABEL[type]}
 					</div>
 					{hint && (
-						<div className='text-[10px] text-app-muted truncate'>{hint}</div>
+						<div className='text-[11px] text-app-muted truncate'>{hint}</div>
 					)}
 				</div>
-				<div className='flex items-center gap-1 shrink-0'>
+				<div
+					className='flex items-center gap-2 shrink-0 rounded-full px-1 py-1'
+					style={{
+						background: 'var(--color-surface-strong)',
+						border: '1px solid var(--color-border)',
+					}}
+				>
 					<button
 						type='button'
 						onClick={dec}
 						aria-label='Меньше'
 						disabled={repeat === 0}
-						className='rounded-full flex items-center justify-center disabled:opacity-40'
+						className='rounded-full flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform'
 						style={{
-							width: 32,
-							height: 32,
-							background: 'var(--color-surface-strong)',
-							border: '1px solid var(--color-border)',
+							width: 30,
+							height: 30,
+							background: 'var(--color-surface)',
 							color: 'var(--color-text)',
 						}}
 					>
 						<Minus size={14} />
 					</button>
 					<div
-						className='text-center font-semibold text-[13px] tabular-nums'
-						style={{ minWidth: 28, color: 'var(--color-text)' }}
+						className='text-center font-bold text-[15px] tabular-nums'
+						style={{
+							minWidth: 20,
+							color: active ? GRADE_COLOR[value] : 'var(--color-text)',
+						}}
 					>
 						{repeat}
 					</div>
@@ -86,13 +87,12 @@ export function WhatIfRow({
 						onClick={inc}
 						aria-label='Больше'
 						disabled={repeat >= 10}
-						className='rounded-full flex items-center justify-center disabled:opacity-40'
+						className='rounded-full flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform'
 						style={{
-							width: 32,
-							height: 32,
-							background: 'var(--color-brand)',
+							width: 30,
+							height: 30,
+							background: GRADE_COLOR[value],
 							color: '#fff',
-							border: '1px solid var(--color-brand)',
 						}}
 					>
 						<Plus size={14} />
@@ -100,13 +100,7 @@ export function WhatIfRow({
 				</div>
 			</div>
 
-			<div
-				className='flex gap-1 p-1 rounded-[12px]'
-				style={{
-					background: 'var(--color-surface-strong)',
-					border: '1px solid var(--color-border)',
-				}}
-			>
+			<div className='flex gap-1.5'>
 				{([3, 4, 5] as const).map(v => {
 					const selected = v === value
 					return (
@@ -114,11 +108,14 @@ export function WhatIfRow({
 							key={v}
 							type='button'
 							onClick={() => onChangeValue(v)}
-							className='flex-1 rounded-[10px] text-[13px] font-semibold transition-colors'
+							className='flex-1 rounded-[12px] text-[14px] font-semibold transition-all active:scale-[0.97]'
 							style={{
-								minHeight: 32,
-								background: selected ? VALUE_COLOR[v] : 'transparent',
-								color: selected ? '#fff' : 'var(--color-text)',
+								minHeight: 38,
+								background: selected ? GRADE_COLOR[v] : 'transparent',
+								color: selected ? '#fff' : GRADE_COLOR[v],
+								border: `1px solid ${
+									selected ? GRADE_COLOR[v] : 'var(--color-border)'
+								}`,
 							}}
 						>
 							{v}

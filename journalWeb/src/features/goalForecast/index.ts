@@ -17,3 +17,7 @@ export type { GoalDetailData } from './hooks/useGoalDetail'
 export { useGoalDetail } from './hooks/useGoalDetail'
 export type { OverallSummary } from './hooks/useOverallSummary'
 export { useOverallSummary } from './hooks/useOverallSummary'
+export {
+	useFutureScheduledSubjects,
+	normalizeSubjectName,
+} from './hooks/useScheduledSubjects'

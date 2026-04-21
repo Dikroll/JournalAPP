@@ -70,7 +70,7 @@ describe('computeAttendance', () => {
 
 describe('computeDistribution', () => {
 	it('all zeros on empty', () => {
-		expect(computeDistribution([])).toEqual({ 2: 0, 3: 0, 4: 0, 5: 0 })
+		expect(computeDistribution([])).toEqual({ 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
 	})
 
 	it('rounds float marks to integer buckets', () => {
@@ -80,12 +80,24 @@ describe('computeDistribution', () => {
 			entry('2026-01-03', 'present', { lab: 3 }),
 			entry('2026-01-04', 'present', { practical: 2 }),
 		]
-		expect(computeDistribution(entries)).toEqual({ 2: 1, 3: 1, 4: 2, 5: 1 })
+		expect(computeDistribution(entries)).toEqual({
+			1: 0,
+			2: 1,
+			3: 1,
+			4: 2,
+			5: 1,
+		})
 	})
 
 	it('ignores null/zero marks', () => {
 		const entries = [entry('2026-01-01', 'present', { homework: 0 })]
-		expect(computeDistribution(entries)).toEqual({ 2: 0, 3: 0, 4: 0, 5: 0 })
+		expect(computeDistribution(entries)).toEqual({
+			1: 0,
+			2: 0,
+			3: 0,
+			4: 0,
+			5: 0,
+		})
 	})
 })
 

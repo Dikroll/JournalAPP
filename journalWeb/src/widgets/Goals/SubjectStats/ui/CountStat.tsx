@@ -7,22 +7,23 @@ interface Props {
 export function CountStat({ data }: Props) {
 	return (
 		<div
-			className='rounded-[20px] p-3'
+			className='rounded-[20px] p-4'
 			style={{
 				background: 'var(--color-surface)',
 				border: '1px solid var(--color-border)',
+				boxShadow: 'var(--shadow-card)',
 			}}
 		>
-			<div className='text-[10px] uppercase tracking-wider text-app-muted'>
+			<div className='text-[12px] uppercase tracking-wider text-app-muted'>
 				оценок
 			</div>
-			<div className='text-[22px] font-semibold mt-1 text-app-text'>
+			<div className='text-[24px] font-semibold mt-1.5 text-app-text tabular-nums'>
 				{data.withMarks}
-				<span className='text-[13px] font-normal text-app-muted'>
+				<span className='text-[14px] font-normal text-app-muted'>
 					/{data.lessons}
 				</span>
 			</div>
-			<div className='text-[10px] text-app-muted mt-0.5'>
+			<div className='text-[12px] text-app-muted mt-1'>
 				пар всего {data.lessons}
 			</div>
 		</div>

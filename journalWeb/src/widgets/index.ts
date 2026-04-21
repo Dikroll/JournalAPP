@@ -14,7 +14,6 @@ export { GradesCharts } from './Grades/GradesCharts/ui/GradesCharts'
 
 export { GradesRecentList } from './Grades/GradesList/ui/GradesRecentList'
 export { GradesSubjectList } from './Grades/GradesList/ui/GradesSubjectList'
-export { GradesSummary } from './Grades/GradesSummary/ui/GradesSummary'
 export { GradesTabs } from './Grades/GradesTabs/ui/GradesTabs'
 // Homework
 export { HomeworkStatusView } from '@/widgets/HomeworkList/ui/views/HomeworkStatusView'

@@ -1,4 +1,5 @@
 import type { Attendance } from '@/features/goalForecast'
+import { GRADE_COLOR, NEUTRAL_COLOR } from '@/shared/config'
 
 interface Props {
 	data: Attendance
@@ -7,27 +8,33 @@ interface Props {
 export function AttendanceStat({ data }: Props) {
 	const color =
 		data.ratePercent >= 90
-			? '#22c98a'
+			? GRADE_COLOR[5]
 			: data.ratePercent >= 75
-				? '#4d9ef7'
+				? GRADE_COLOR[4]
 				: data.ratePercent >= 60
-					? '#f0a020'
-					: '#e03535'
+					? GRADE_COLOR[3]
+					: data.ratePercent >= 40
+						? GRADE_COLOR[2]
+						: NEUTRAL_COLOR
 	return (
 		<div
-			className='rounded-[20px] p-3'
+			className='rounded-[20px] p-4'
 			style={{
 				background: 'var(--color-surface)',
 				border: '1px solid var(--color-border)',
+				boxShadow: 'var(--shadow-card)',
 			}}
 		>
-			<div className='text-[10px] uppercase tracking-wider text-app-muted'>
+			<div className='text-[12px] uppercase tracking-wider text-app-muted'>
 				посещаемость
 			</div>
-			<div className='text-[22px] font-semibold mt-1' style={{ color }}>
+			<div
+				className='text-[24px] font-semibold mt-1.5 tabular-nums'
+				style={{ color }}
+			>
 				{data.ratePercent}%
 			</div>
-			<div className='text-[10px] text-app-muted mt-0.5'>
+			<div className='text-[12px] text-app-muted mt-1'>
 				{data.absent} проп · {data.late} опозд
 			</div>
 		</div>

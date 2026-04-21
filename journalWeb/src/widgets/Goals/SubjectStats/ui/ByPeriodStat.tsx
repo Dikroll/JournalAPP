@@ -1,14 +1,8 @@
 import type { PeriodItem } from '@/features/goalForecast'
+import { gradeColor } from '@/shared/config'
 
 interface Props {
 	data: PeriodItem[]
-}
-
-function gradeColor(v: number): string {
-	if (v >= 5) return '#22c98a'
-	if (v >= 4) return '#4d9ef7'
-	if (v >= 3) return '#f0a020'
-	return '#e03535'
 }
 
 export function ByPeriodStat({ data }: Props) {

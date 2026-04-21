@@ -14,7 +14,7 @@ export interface Attendance {
 	ratePercent: number
 }
 
-export type Distribution = Record<2 | 3 | 4 | 5, number>
+export type Distribution = Record<1 | 2 | 3 | 4 | 5, number>
 
 export interface ByTypeItem {
 	type: GradeType
@@ -66,11 +66,17 @@ export function computeAttendance(entries: GradeEntry[]): Attendance {
 }
 
 export function computeDistribution(entries: GradeEntry[]): Distribution {
-	const dist: Distribution = { 2: 0, 3: 0, 4: 0, 5: 0 }
+	const dist: Distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
 	for (const e of entries) {
 		for (const v of flatMarks(e)) {
 			const bucket = Math.round(v)
-			if (bucket === 2 || bucket === 3 || bucket === 4 || bucket === 5) {
+			if (
+				bucket === 1 ||
+				bucket === 2 ||
+				bucket === 3 ||
+				bucket === 4 ||
+				bucket === 5
+			) {
 				dist[bucket] += 1
 			}
 		}

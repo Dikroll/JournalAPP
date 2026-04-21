@@ -1,3 +1,4 @@
+import { gradeColor } from '@/shared/config'
 import type { GradeType } from '@/shared/types'
 
 interface RecentMark {
@@ -17,13 +18,6 @@ const TYPE_LABEL: Record<GradeType, string> = {
 	classwork: 'КР',
 	practical: 'Практ',
 	final: 'Зачёт',
-}
-
-function gradeColor(v: number): string {
-	if (v >= 5) return '#22c98a'
-	if (v >= 4) return '#4d9ef7'
-	if (v >= 3) return '#f0a020'
-	return '#e03535'
 }
 
 function fmtDate(iso: string): string {

@@ -1,67 +1,42 @@
 import type { GoalCardData } from '@/features/goalForecast'
-import { ChevronRight } from 'lucide-react'
+import { gradeColor, RISK_BG, RISK_COLOR } from '@/shared/config'
+import { Check, ChevronRight } from 'lucide-react'
 
 interface Props {
 	data: GoalCardData
 	onPress: (specId: number) => void
 }
 
-const riskStyle: Record<
-	GoalCardData['risk'],
-	{ label: string; color: string; bg: string; border: string }
-> = {
-	safe: {
-		label: 'на курсе',
-		color: '#22c98a',
-		bg: 'rgba(34,201,138,0.08)',
-		border: 'rgba(34,201,138,0.28)',
-	},
-	watch: {
-		label: 'на грани',
-		color: '#f0a020',
-		bg: 'rgba(240,160,32,0.08)',
-		border: 'rgba(240,160,32,0.28)',
-	},
-	danger: {
-		label: 'недобор',
-		color: '#e03535',
-		bg: 'rgba(224,53,53,0.06)',
-		border: 'rgba(224,53,53,0.28)',
-	},
-	no_goal: {
-		label: 'без цели',
-		color: '#8a94a6',
-		bg: 'transparent',
-		border: 'var(--color-border)',
-	},
-}
-
-function gradeColor(v: number | null): string {
-	if (v === null) return '#8a94a6'
-	if (v >= 5) return '#22c98a'
-	if (v >= 4) return '#4d9ef7'
-	if (v >= 3) return '#f0a020'
-	return '#e03535'
+const riskLabel: Record<GoalCardData['risk'], string> = {
+	safe: 'на курсе',
+	watch: 'на грани',
+	danger: 'недобор',
+	no_goal: 'без цели',
 }
 
 function fmt(v: number | null): string {
 	return v === null ? '—' : v.toFixed(1)
 }
 
+function completionLabel(data: GoalCardData): string {
+	if (data.completionReason === 'final_mark') return 'зачёт получен'
+	if (data.completionReason === 'stale') return 'завершён'
+	return 'завершён'
+}
+
 export function GoalCard({ data, onPress }: Props) {
-	const style = riskStyle[data.risk]
-	const surface =
-		style.bg === 'transparent' ? 'var(--color-surface)' : style.bg
+	const color = RISK_COLOR[data.risk]
+	const bg = RISK_BG[data.risk]
 	return (
 		<button
 			type='button'
 			onClick={() => onPress(data.specId)}
-			className='w-full text-left rounded-[22px] p-4 mb-2 block active:scale-[0.99] transition-transform'
+			className='w-full text-left rounded-[22px] p-4 mb-2 block active:scale-[0.99] transition-transform bg-app-surface'
 			style={{
-				background: surface,
-				border: `1px solid ${style.border}`,
+				border: '1px solid var(--color-border)',
 				boxShadow: 'var(--shadow-card)',
 				minHeight: 96,
+				opacity: data.completed ? 0.75 : 1,
 			}}
 		>
 			<div className='flex items-center justify-between gap-2'>
@@ -69,16 +44,22 @@ export function GoalCard({ data, onPress }: Props) {
 					{data.specName}
 				</strong>
 				<div className='flex items-center gap-1 shrink-0'>
-					<span
-						className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]'
-						style={{
-							color: style.color,
-							background: 'rgba(255,255,255,0.04)',
-							border: `1px solid ${style.color}33`,
-						}}
-					>
-						● {style.label}
-					</span>
+					{data.completed ? (
+						<span
+							className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] text-app-muted'
+							style={{ background: 'var(--color-surface-strong)' }}
+						>
+							<Check size={10} />
+							{completionLabel(data)}
+						</span>
+					) : (
+						<span
+							className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]'
+							style={{ color, background: bg }}
+						>
+							● {riskLabel[data.risk]}
+						</span>
+					)}
 					<ChevronRight size={16} className='text-app-muted' />
 				</div>
 			</div>
@@ -107,8 +88,8 @@ export function GoalCard({ data, onPress }: Props) {
 						цель
 					</div>
 					<div
-						className='text-[20px] font-semibold mt-0.5'
-						style={{ color: 'var(--color-brand)' }}
+						className='text-[20px] font-semibold mt-0.5 text-app-text'
+						style={{ opacity: data.target === null ? 0.5 : 1 }}
 					>
 						{data.target ?? '—'}
 					</div>
