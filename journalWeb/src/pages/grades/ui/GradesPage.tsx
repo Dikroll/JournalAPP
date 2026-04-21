@@ -1,4 +1,3 @@
-import { useDashboardChartsStore } from '@/entities/dashboard'
 import {
 	useGrades,
 	useGradesBySubject,
@@ -10,11 +9,11 @@ import { SpecSelector } from '@/features/selectSpec'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
+	GoalsSummaryCard,
 	GradesCalendar,
 	GradesExamList,
 	GradesRecentList,
 	GradesSubjectList,
-	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
 import { useCallback, useMemo, useState } from 'react'
@@ -26,9 +25,6 @@ export function GradesPage() {
 	const { entries, status, error, refresh } = useGrades()
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
-
-	const progress = useDashboardChartsStore(s => s.progress)
-	const attendance = useDashboardChartsStore(s => s.attendance)
 
 	const handleSpecChange = useCallback(
 		(spec: { id: number } | null) => {
@@ -60,7 +56,6 @@ export function GradesPage() {
 	)
 
 	const isLoading = status === 'loading' || status === 'idle'
-	const showCharts = progress.length > 0
 
 	if (status === 'error' && entries.length === 0) {
 		return (
@@ -75,9 +70,7 @@ export function GradesPage() {
 			<div className='p-4 space-y-4'>
 				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
-				{showCharts && (
-					<GradesSummary progress={progress} attendance={attendance} />
-				)}
+				<GoalsSummaryCard />
 
 				<SpecSelector
 					subjects={specList}

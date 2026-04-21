@@ -6,6 +6,9 @@ import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
+const PROGRESS_COLOR = '#F20519'
+const ATTENDANCE_COLOR = '#F0A020'
+
 interface Props {
 	progress: ChartPoint[]
 	attendance: ChartPoint[]
@@ -89,10 +92,10 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 					<Line
 						type='monotone'
 						dataKey='value'
-						stroke='#F20519'
+						stroke={PROGRESS_COLOR}
 						strokeWidth={3}
-						dot={{ fill: '#F20519', r: 4, strokeWidth: 0 }}
-						activeDot={{ r: 6, strokeWidth: 0, fill: '#F20519' }}
+						dot={{ fill: PROGRESS_COLOR, r: 4, strokeWidth: 0 }}
+						activeDot={{ r: 6, strokeWidth: 0, fill: PROGRESS_COLOR }}
 						isAnimationActive={false}
 					/>
 				</LineChart>
@@ -133,7 +136,7 @@ const AttendanceChart = memo(function AttendanceChart({
 					/>
 					<Bar
 						dataKey='value'
-						fill='#F0A020'
+						fill={ATTENDANCE_COLOR}
 						radius={[8, 8, 0, 0]}
 						isAnimationActive={false}
 					/>

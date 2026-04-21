@@ -14,7 +14,6 @@ export { GradesCharts } from './Grades/GradesCharts/ui/GradesCharts'
 
 export { GradesRecentList } from './Grades/GradesList/ui/GradesRecentList'
 export { GradesSubjectList } from './Grades/GradesList/ui/GradesSubjectList'
-export { GradesSummary } from './Grades/GradesSummary/ui/GradesSummary'
 export { GradesTabs } from './Grades/GradesTabs/ui/GradesTabs'
 // Homework
 export { HomeworkStatusView } from '@/widgets/HomeworkList/ui/views/HomeworkStatusView'
@@ -58,3 +57,15 @@ export { LibraryView } from './Library/LibraryView/ui/LibraryView'
 // Notifications
 export { ChangelogTab } from './Notifications/ChangelogTab/ui/ChangelogTab'
 export { ComingSoonTab } from './Notifications/ComingSoonTab/ui/ComingSoonTab'
+
+// Goals
+export { EmptyGoalsState } from './Goals/EmptyGoalsState/ui/EmptyGoalsState'
+export { GoalCard } from './Goals/GoalCard/ui/GoalCard'
+export { GoalHero } from './Goals/GoalHero/ui/GoalHero'
+export { GoalsList } from './Goals/GoalsList/ui/GoalsList'
+export { GoalsSummaryCard } from './Goals/GoalsSummaryCard/ui/GoalsSummaryCard'
+export { OverallGoalSummary } from './Goals/OverallGoalSummary/ui/OverallGoalSummary'
+export { RecentMarks } from './Goals/RecentMarks/ui/RecentMarks'
+export { SetGoalSheet } from './Goals/SetGoalSheet/ui/SetGoalSheet'
+export { SubjectStats } from './Goals/SubjectStats/ui/SubjectStats'
+export { WhatIfSimulator } from './Goals/WhatIfSimulator/ui/WhatIfSimulator'

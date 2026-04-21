@@ -1,11 +1,7 @@
-export interface GradeMarks {
-	control: number | null
-	homework: number | null
-	lab: number | null
-	classwork: number | null
-	practical: number | null
-	final: number | null
-}
+import type { GradeMarks, GradeType } from '@/shared/types'
+
+export type { GradeMarks, GradeType } from '@/shared/types'
+
 export interface GradeEntryExpanded extends GradeEntry {
 	flatMarks: Array<{ type: GradeType; value: number }>
 	averageMark: number | null
@@ -29,4 +25,3 @@ export interface SubjectStats {
 	averageGrade: number
 	totalMarks: number
 }
-export type GradeType = keyof GradeMarks
