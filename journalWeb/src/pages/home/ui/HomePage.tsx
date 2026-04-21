@@ -1,16 +1,9 @@
-import {
-	DashboardCharts,
-	FutureExams,
-	GoalsSummaryCard,
-	HomeScheduleSection,
-} from '@/widgets'
+import { DashboardCharts, FutureExams, HomeScheduleSection } from '@/widgets'
 export function HomePage() {
 	return (
 		<div className='min-h-screen pb-28'>
 			<div className='px-4 pt-2 pb-4'>
 				<DashboardCharts />
-
-				<GoalsSummaryCard />
 
 				<HomeScheduleSection />
 
