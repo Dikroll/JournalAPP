@@ -7,6 +7,7 @@ import {
 import { useSubjects } from '@/entities/subject'
 import { RefreshGradesButton } from '@/features/refreshGrades'
 import { SpecSelector } from '@/features/selectSpec'
+import { pageConfig } from '@/shared/config'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
@@ -17,11 +18,14 @@ import {
 	GradesSummary,
 	GradesTabs,
 } from '@/widgets'
+import { Target } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null)
+	const navigate = useNavigate()
 
 	const { entries, status, error, refresh } = useGrades()
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
@@ -73,7 +77,31 @@ export function GradesPage() {
 	return (
 		<div className='min-h-screen text-app-text pb-28'>
 			<div className='p-4 space-y-4'>
-				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
+				<PageHeader
+					title='Оценки'
+					actions={
+						<>
+							<button
+								type='button'
+								onClick={() => navigate(pageConfig.goals)}
+								aria-label='Цели'
+								className='rounded-full'
+								style={{
+									width: 36,
+									height: 36,
+									background: 'var(--color-surface)',
+									border: '1px solid var(--color-border)',
+									display: 'inline-flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<Target size={18} />
+							</button>
+							<RefreshGradesButton />
+						</>
+					}
+				/>
 
 				{showCharts && (
 					<GradesSummary progress={progress} attendance={attendance} />
