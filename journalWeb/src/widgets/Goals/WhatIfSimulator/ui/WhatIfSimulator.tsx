@@ -65,7 +65,7 @@ export function WhatIfSimulator({ entries }: Props) {
 	return (
 		<div>
 			<div className='text-[10px] uppercase tracking-wider text-app-muted mt-3 mb-2 px-1'>
-				What-if — если я получу…
+				Что если я получу…
 			</div>
 			{present.map(type => (
 				<WhatIfRow

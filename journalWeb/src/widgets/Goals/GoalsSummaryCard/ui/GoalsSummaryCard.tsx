@@ -1,5 +1,6 @@
 import { useOverallSummary } from '@/features/goalForecast'
 import { pageConfig } from '@/shared/config'
+import { ChevronRight, Target } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 function fmt(v: number | null): string {
@@ -10,8 +11,44 @@ export function GoalsSummaryCard() {
 	const summary = useOverallSummary()
 	const navigate = useNavigate()
 
-	if (summary.totalSubjectsWithGoals === 0 && summary.atRiskCount === 0)
-		return null
+	const hasGoals = summary.totalSubjectsWithGoals > 0
+	const handleClick = () => navigate(pageConfig.goals)
+
+	if (!hasGoals) {
+		return (
+			<button
+				type='button'
+				onClick={handleClick}
+				className='w-full rounded-[22px] p-4 mb-3 text-left flex items-center gap-3'
+				style={{
+					background: 'var(--color-brand-subtle)',
+					border: '1px dashed var(--color-brand-border)',
+					minHeight: 76,
+				}}
+			>
+				<div
+					className='rounded-[14px] flex items-center justify-center shrink-0'
+					style={{
+						width: 44,
+						height: 44,
+						background: 'var(--color-brand)',
+						color: '#fff',
+					}}
+				>
+					<Target size={22} />
+				</div>
+				<div className='flex-1 min-w-0'>
+					<div className='text-[14px] font-semibold text-app-text'>
+						Цели на семестр
+					</div>
+					<div className='text-[11px] text-app-muted mt-0.5'>
+						Поставь цель — покажу прогноз и риск хвоста
+					</div>
+				</div>
+				<ChevronRight size={18} className='text-app-muted shrink-0' />
+			</button>
+		)
+	}
 
 	const color =
 		summary.risk === 'danger'
@@ -23,16 +60,12 @@ export function GoalsSummaryCard() {
 					: '#8a94a6'
 
 	const captionText =
-		summary.totalSubjectsWithGoals === 0
-			? `${summary.atRiskCount} в риске`
-			: summary.atRiskCount > 0
-				? `${summary.atRiskCount} в риске`
-				: 'всё в норме'
+		summary.atRiskCount > 0 ? `${summary.atRiskCount} в риске` : 'всё в норме'
 
 	return (
 		<button
 			type='button'
-			onClick={() => navigate(pageConfig.goals)}
+			onClick={handleClick}
 			className='w-full rounded-[22px] p-4 mb-3 text-left'
 			style={{
 				background:
@@ -42,14 +75,29 @@ export function GoalsSummaryCard() {
 				minHeight: 88,
 			}}
 		>
-			<div className='flex justify-between text-[11px] text-app-muted mb-1'>
-				<span>Цели семестра</span>
-				<span style={{ color }}>{captionText}</span>
+			<div className='flex items-center justify-between mb-1.5'>
+				<div className='flex items-center gap-2'>
+					<Target size={14} style={{ color: 'var(--color-brand)' }} />
+					<span className='text-[11px] text-app-muted'>Цели семестра</span>
+				</div>
+				<div className='flex items-center gap-1.5'>
+					<span
+						className='text-[10px] rounded-full px-2 py-0.5'
+						style={{
+							color,
+							background: 'rgba(255,255,255,0.04)',
+							border: `1px solid ${color}33`,
+						}}
+					>
+						● {captionText}
+					</span>
+					<ChevronRight size={16} className='text-app-muted' />
+				</div>
 			</div>
 			<div className='flex items-baseline justify-between'>
 				<div>
 					<span
-						className='text-[22px] font-semibold'
+						className='text-[24px] font-semibold'
 						style={{ color: 'var(--color-brand)' }}
 					>
 						{fmt(summary.forecast)}
