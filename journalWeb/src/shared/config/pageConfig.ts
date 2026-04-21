@@ -8,6 +8,7 @@ class PageConfig {
 	readonly profile = '/profile'
 	readonly profileDetails = '/profile/details'
 	readonly grades = '/grades'
+	readonly goals = '/goals'
 	readonly payment = '/payment'
 	readonly market = '/market'
 	readonly notifications = '/notifications'

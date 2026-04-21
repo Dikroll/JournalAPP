@@ -1,6 +1,8 @@
 import { useAuthStore } from '@/features/auth'
 import { useHydrationStore } from '@/features/auth/model/store'
 import {
+	GoalDetailPage,
+	GoalsPage,
 	GradesPage,
 	HomePage,
 	HomeworkPage,
@@ -85,6 +87,8 @@ export function AppRouter() {
 					<Route path='homework' element={<HomeworkPage />} />
 					<Route path='library' element={<LibraryPage />} />
 					<Route path='grades' element={<GradesPage />} />
+					<Route path='goals' element={<GoalsPage />} />
+					<Route path='goals/:specId' element={<GoalDetailPage />} />
 					<Route path='profile' element={<ProfilePage />} />
 					<Route path='profile/details' element={<ProfileDetailsPage />} />
 					<Route path='payment' element={<PaymentPage />} />

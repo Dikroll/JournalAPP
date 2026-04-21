@@ -1,3 +1,5 @@
+export { GoalDetailPage } from './goals/ui/GoalDetailPage'
+export { GoalsPage } from './goals/ui/GoalsPage'
 export { GradesPage } from './grades/ui/GradesPage'
 export { HomePage } from './home/ui/HomePage'
 export { HomeworkPage } from './homework/ui/HomeworkPage'
