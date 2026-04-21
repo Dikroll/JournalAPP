@@ -1,6 +1,6 @@
-export type { GradeMarks, GradeType } from '@/shared/types'
-
 import type { GradeMarks, GradeType } from '@/shared/types'
+
+export type { GradeMarks, GradeType } from '@/shared/types'
 
 export interface GradeEntryExpanded extends GradeEntry {
 	flatMarks: Array<{ type: GradeType; value: number }>
