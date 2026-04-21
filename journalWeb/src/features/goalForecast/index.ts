@@ -1,6 +1,6 @@
 export type { ForecastResult, Risk, Trend } from './lib/forecast'
 export { computeForecast, computeRisk, computeTrend, currentAverage } from './lib/forecast'
-export type { ByTypeItem, Distribution, PeriodItem, SubjectStats, Totals } from './lib/subjectStats'
+export type { Attendance, ByTypeItem, Distribution, PeriodItem, SubjectStats, Totals } from './lib/subjectStats'
 export {
 	computeAttendance,
 	computeByPeriod,
