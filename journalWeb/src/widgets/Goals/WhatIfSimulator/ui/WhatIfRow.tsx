@@ -4,7 +4,7 @@ import { Minus, Plus } from 'lucide-react'
 
 const LABEL: Record<GradeType, string> = {
 	control: 'Контрольная',
-	homework: 'Домашка',
+	homework: 'Домашняя',
 	lab: 'Лабораторная',
 	classwork: 'Классная',
 	practical: 'Практическая',
@@ -34,21 +34,24 @@ export function WhatIfRow({
 
 	return (
 		<div
-			className='rounded-[18px] p-3 mb-2 transition-colors'
+			className='rounded-[20px] p-4 mb-2 transition-colors'
 			style={{
 				background: active ? GRADE_BG[value] : 'var(--color-surface)',
 				border: `1px solid ${
 					active ? GRADE_COLOR[value] + '55' : 'var(--color-border)'
 				}`,
+				boxShadow: active ? 'none' : 'var(--shadow-card)',
 			}}
 		>
-			<div className='flex items-center justify-between gap-3 mb-2.5'>
+			<div className='flex items-center justify-between gap-3 mb-3'>
 				<div className='min-w-0'>
-					<div className='text-[14px] font-semibold text-app-text truncate'>
+					<div className='text-[15px] font-semibold text-app-text truncate'>
 						{LABEL[type]}
 					</div>
 					{hint && (
-						<div className='text-[11px] text-app-muted truncate'>{hint}</div>
+						<div className='text-[12px] text-app-muted truncate mt-0.5'>
+							{hint}
+						</div>
 					)}
 				</div>
 				<div
@@ -65,18 +68,18 @@ export function WhatIfRow({
 						disabled={repeat === 0}
 						className='rounded-full flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform'
 						style={{
-							width: 30,
-							height: 30,
+							width: 36,
+							height: 36,
 							background: 'var(--color-surface)',
 							color: 'var(--color-text)',
 						}}
 					>
-						<Minus size={14} />
+						<Minus size={16} />
 					</button>
 					<div
-						className='text-center font-bold text-[15px] tabular-nums'
+						className='text-center font-bold text-[16px] tabular-nums'
 						style={{
-							minWidth: 20,
+							minWidth: 22,
 							color: active ? GRADE_COLOR[value] : 'var(--color-text)',
 						}}
 					>
@@ -89,13 +92,13 @@ export function WhatIfRow({
 						disabled={repeat >= 10}
 						className='rounded-full flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform'
 						style={{
-							width: 30,
-							height: 30,
+							width: 36,
+							height: 36,
 							background: GRADE_COLOR[value],
 							color: '#fff',
 						}}
 					>
-						<Plus size={14} />
+						<Plus size={16} />
 					</button>
 				</div>
 			</div>
@@ -108,9 +111,9 @@ export function WhatIfRow({
 							key={v}
 							type='button'
 							onClick={() => onChangeValue(v)}
-							className='flex-1 rounded-[12px] text-[14px] font-semibold transition-all active:scale-[0.97]'
+							className='flex-1 rounded-[14px] text-[15px] font-semibold transition-all active:scale-[0.97]'
 							style={{
-								minHeight: 38,
+								minHeight: 44,
 								background: selected ? GRADE_COLOR[v] : 'transparent',
 								color: selected ? '#fff' : GRADE_COLOR[v],
 								border: `1px solid ${

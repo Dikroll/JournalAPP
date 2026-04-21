@@ -35,60 +35,60 @@ export function GoalCard({ data, onPress }: Props) {
 			style={{
 				border: '1px solid var(--color-border)',
 				boxShadow: 'var(--shadow-card)',
-				minHeight: 96,
+				minHeight: 112,
 				opacity: data.completed ? 0.75 : 1,
 			}}
 		>
 			<div className='flex items-center justify-between gap-2'>
-				<strong className='text-[14px] text-app-text truncate'>
+				<strong className='text-[15px] text-app-text truncate'>
 					{data.specName}
 				</strong>
 				<div className='flex items-center gap-1 shrink-0'>
 					{data.completed ? (
 						<span
-							className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] text-app-muted'
+							className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] text-app-muted'
 							style={{ background: 'var(--color-surface-strong)' }}
 						>
-							<Check size={10} />
+							<Check size={12} />
 							{completionLabel(data)}
 						</span>
 					) : (
 						<span
-							className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]'
+							className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px]'
 							style={{ color, background: bg }}
 						>
 							● {riskLabel[data.risk]}
 						</span>
 					)}
-					<ChevronRight size={16} className='text-app-muted' />
+					<ChevronRight size={18} className='text-app-muted' />
 				</div>
 			</div>
-			<div className='grid grid-cols-3 mt-3 gap-1'>
+			<div className='grid grid-cols-3 mt-4 gap-2'>
 				<div>
-					<div className='text-[10px] uppercase tracking-wider text-app-muted'>
+					<div className='text-[12px] uppercase tracking-wider text-app-muted'>
 						сейчас
 					</div>
-					<div className='text-[20px] font-semibold text-app-text mt-0.5'>
+					<div className='text-[24px] font-semibold text-app-text mt-1 tabular-nums leading-none'>
 						{fmt(data.currentAvg)}
 					</div>
 				</div>
 				<div className='text-center'>
-					<div className='text-[10px] uppercase tracking-wider text-app-muted'>
+					<div className='text-[12px] uppercase tracking-wider text-app-muted'>
 						прогноз
 					</div>
 					<div
-						className='text-[20px] font-semibold mt-0.5'
+						className='text-[24px] font-semibold mt-1 tabular-nums leading-none'
 						style={{ color: gradeColor(data.forecast) }}
 					>
 						{fmt(data.forecast)}
 					</div>
 				</div>
 				<div className='text-right'>
-					<div className='text-[10px] uppercase tracking-wider text-app-muted'>
+					<div className='text-[12px] uppercase tracking-wider text-app-muted'>
 						цель
 					</div>
 					<div
-						className='text-[20px] font-semibold mt-0.5 text-app-text'
+						className='text-[24px] font-semibold mt-1 text-app-text tabular-nums leading-none'
 						style={{ opacity: data.target === null ? 0.5 : 1 }}
 					>
 						{data.target ?? '—'}

@@ -1,4 +1,5 @@
 import type { OverallSummary } from '@/features/goalForecast'
+import { gradeColor } from '@/shared/config'
 
 interface Props {
 	summary: OverallSummary
@@ -21,40 +22,46 @@ export function OverallGoalSummary({ summary }: Props) {
 			? Math.min(100, Math.round((summary.forecast / summary.target) * 100))
 			: 0
 
+	const forecastColor = gradeColor(summary.forecast)
+
 	return (
 		<div
-			className='rounded-[22px] p-4 mb-3'
+			className='rounded-[22px] p-5 mb-3 bg-app-surface'
 			style={{
-				background:
-					'linear-gradient(135deg, rgba(213,4,22,0.14), rgba(242,159,5,0.08))',
-				border: '1px solid var(--color-brand-border)',
+				border: '1px solid var(--color-border)',
 				boxShadow: 'var(--shadow-card)',
 			}}
 		>
-			<div className='flex justify-between text-[11px] text-app-muted mb-1'>
+			<div className='flex justify-between items-center text-[12px] text-app-muted mb-2'>
 				<span>Сессия целиком</span>
 				<span>{riskText}</span>
 			</div>
 			<div className='flex items-baseline justify-between'>
-				<div>
-					<span className='text-[28px] font-semibold' style={{ color: 'var(--color-brand)' }}>
+				<div className='flex items-baseline gap-2'>
+					<span
+						className='text-[30px] font-bold tabular-nums leading-none'
+						style={{ color: forecastColor }}
+					>
 						{fmt(summary.forecast)}
 					</span>
-					<span className='text-[11px] text-app-muted ml-1.5'>прогноз</span>
+					<span className='text-[12px] text-app-muted'>прогноз</span>
 				</div>
-				<div className='text-[11px] text-app-muted'>
-					цель <strong className='text-app-text'>{fmt(summary.target)}</strong>
+				<div className='text-[12px] text-app-muted'>
+					цель{' '}
+					<strong className='text-app-text tabular-nums'>
+						{fmt(summary.target)}
+					</strong>
 				</div>
 			</div>
 			<div
-				className='h-1 rounded-full mt-2 overflow-hidden'
-				style={{ background: 'rgba(255,255,255,0.08)' }}
+				className='h-1.5 rounded-full mt-3 overflow-hidden'
+				style={{ background: 'var(--color-surface-strong)' }}
 			>
 				<div
-					className='h-full rounded-full'
+					className='h-full rounded-full transition-all'
 					style={{
 						width: `${progressPct}%`,
-						background: 'linear-gradient(90deg, var(--color-gradient-from), var(--color-gradient-to))',
+						background: forecastColor,
 					}}
 				/>
 			</div>

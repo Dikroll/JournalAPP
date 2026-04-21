@@ -86,7 +86,7 @@ export function GoalsPage() {
 				)}
 
 				{active.length > 0 && (
-					<div className='text-[10px] uppercase tracking-wider text-app-muted mt-2 mb-1 px-1'>
+					<div className='text-[13px] uppercase tracking-wider text-app-muted mt-3 mb-2 px-1'>
 						{filterId ? 'Предмет' : 'Активные предметы'}
 					</div>
 				)}
@@ -106,13 +106,13 @@ export function GoalsPage() {
 							<button
 								type='button'
 								onClick={() => setShowCompleted(v => !v)}
-								className='w-full flex items-center justify-between px-1 mt-2 mb-1'
+								className='w-full flex items-center justify-between px-1 mt-3 mb-2'
 							>
-								<span className='text-[10px] uppercase tracking-wider text-app-muted'>
+								<span className='text-[13px] uppercase tracking-wider text-app-muted'>
 									Завершённые · {completed.length}
 								</span>
 								<ChevronDown
-									size={14}
+									size={16}
 									className='text-app-muted transition-transform'
 									style={{
 										transform: showCompleted ? 'rotate(180deg)' : 'none',

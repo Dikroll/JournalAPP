@@ -69,25 +69,25 @@ export function GoalsSummaryCard() {
 		<button
 			type='button'
 			onClick={() => navigate(pageConfig.goals)}
-			className='w-full text-left rounded-[24px] p-5 border border-app-border bg-app-surface active:scale-[0.99] transition-transform'
+			className='w-full text-left rounded-[22px] p-5 border border-app-border bg-app-surface active:scale-[0.99] transition-transform'
 			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
-			<div className='flex items-center justify-between mb-5'>
+			<div className='flex items-center justify-between mb-4'>
 				<div className='flex items-center gap-2'>
-					<Target size={14} className='text-app-muted' />
-					<span className='text-[11px] uppercase tracking-wider text-app-muted'>
+					<Target size={16} className='text-app-muted' />
+					<span className='text-[13px] uppercase tracking-wider text-app-muted'>
 						Сводка оценок
 					</span>
 				</div>
 				<ChevronRight size={18} className='text-app-muted' />
 			</div>
 
-			<div className='grid grid-cols-3 gap-3 mb-5'>
+			<div className='grid grid-cols-3 gap-3 mb-4'>
 				<div>
 					<div className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
 						{avg != null ? avg.toFixed(1) : '—'}
 					</div>
-					<div className='text-[11px] text-app-muted mt-1.5'>средний балл</div>
+					<div className='text-[12px] text-app-muted mt-1.5'>средний балл</div>
 				</div>
 				<div>
 					<div
@@ -96,13 +96,13 @@ export function GoalsSummaryCard() {
 					>
 						{att != null ? `${att}%` : '—'}
 					</div>
-					<div className='text-[11px] text-app-muted mt-1.5'>посещаемость</div>
+					<div className='text-[12px] text-app-muted mt-1.5'>посещаемость</div>
 				</div>
 				<div>
 					<div className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
 						{totalMarks}
 					</div>
-					<div className='text-[11px] text-app-muted mt-1.5'>всего оценок</div>
+					<div className='text-[12px] text-app-muted mt-1.5'>всего оценок</div>
 				</div>
 			</div>
 
@@ -137,24 +137,25 @@ export function GoalsSummaryCard() {
 							return (
 								<div
 									key={v}
-									className='rounded-[12px] px-2 py-2 flex flex-col items-start'
+									className='rounded-[14px] py-2 flex flex-col items-center justify-center'
 									style={{
 										background: GRADE_BG[v],
 										opacity: count === 0 ? 0.45 : 1,
+										minHeight: 72,
 									}}
 								>
 									<span
-										className='text-[16px] font-bold leading-none tabular-nums'
+										className='text-[26px] font-bold leading-none tabular-nums'
 										style={{ color: GRADE_COLOR[v] }}
 									>
+										{v}
+									</span>
+									<span className='text-[13px] font-semibold text-app-text tabular-nums mt-1.5 leading-none'>
 										{count}
 									</span>
-									<div className='flex items-baseline justify-between w-full mt-1'>
-										<span className='text-[10px] text-app-muted'>× {v}</span>
-										<span className='text-[9px] text-app-muted tabular-nums'>
-											{pct}%
-										</span>
-									</div>
+									<span className='text-[11px] text-app-muted tabular-nums mt-1 leading-none'>
+										{pct}%
+									</span>
 								</div>
 							)
 						})}
@@ -164,7 +165,7 @@ export function GoalsSummaryCard() {
 
 			<div className='flex items-center justify-between pt-3 border-t border-app-border'>
 				<span
-					className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium'
+					className='inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium'
 					style={{
 						color: RISK_COLOR[badgeRisk],
 						background: RISK_BG[badgeRisk],
@@ -173,11 +174,15 @@ export function GoalsSummaryCard() {
 					● {badgeLabel}
 				</span>
 				{summary.totalSubjectsWithGoals > 0 && (
-					<span className='text-[11px] text-app-muted'>
+					<span className='text-[12px] text-app-muted'>
 						прогноз{' '}
-						<strong className='text-app-text'>{fmt(summary.forecast)}</strong> ·
-						цель{' '}
-						<strong className='text-app-text'>{fmt(summary.target)}</strong>
+						<strong className='text-app-text tabular-nums'>
+							{fmt(summary.forecast)}
+						</strong>{' '}
+						· цель{' '}
+						<strong className='text-app-text tabular-nums'>
+							{fmt(summary.target)}
+						</strong>
 					</span>
 				)}
 			</div>

@@ -83,44 +83,51 @@ export function WhatIfSimulator({ entries }: Props) {
 		})
 
 	return (
-		<div className='mt-4'>
-			<div className='flex items-center gap-2 px-1 mb-3'>
-				<Calculator size={14} className='text-app-muted' />
-				<span className='text-[11px] uppercase tracking-wider text-app-muted'>
+		<div className='mt-5'>
+			<div className='flex items-center gap-2 px-1 mb-2'>
+				<Calculator size={16} className='text-app-muted' />
+				<span className='text-[13px] uppercase tracking-wider text-app-muted'>
 					Калькулятор оценок
 				</span>
 			</div>
 
 			<div
-				className='rounded-[22px] p-5 mb-3'
+				className='rounded-[22px] p-4 mb-3'
 				style={{
 					background: 'var(--color-surface)',
 					border: '1px solid var(--color-border)',
 					boxShadow: 'var(--shadow-card)',
 				}}
 			>
-				<div className='flex items-end justify-between gap-4'>
-					<div className='min-w-0'>
-						<div className='text-[11px] text-app-muted'>сейчас</div>
+				<div className='grid grid-cols-2 gap-2'>
+					<div
+						className='rounded-[16px] p-4'
+						style={{ background: 'var(--color-surface-strong)' }}
+					>
+						<div className='text-[12px] text-app-text opacity-70'>сейчас</div>
 						<div
-							className='text-[22px] font-semibold tabular-nums leading-tight'
+							className='text-[28px] font-bold tabular-nums leading-none mt-1.5'
 							style={{ color: gradeColor(current) }}
 						>
 							{fmt(current)}
 						</div>
 					</div>
-
-					<div className='flex-1 flex items-center justify-center'>
+					<div
+						className='rounded-[16px] p-4 transition-colors'
+						style={{
+							background: active
+								? `${gradeColor(projected)}22`
+								: 'var(--color-surface-strong)',
+							border: `1px solid ${
+								active ? `${gradeColor(projected)}55` : 'transparent'
+							}`,
+						}}
+					>
+						<div className='text-[12px] text-app-text opacity-70'>
+							получится
+						</div>
 						<div
-							className='h-px w-full'
-							style={{ background: 'var(--color-border)' }}
-						/>
-					</div>
-
-					<div className='text-right min-w-0'>
-						<div className='text-[11px] text-app-muted'>получится</div>
-						<div
-							className='text-[28px] font-bold tabular-nums leading-tight'
+							className='text-[28px] font-bold tabular-nums leading-none mt-1.5'
 							style={{ color: gradeColor(projected) }}
 						>
 							{fmt(projected)}
@@ -128,13 +135,15 @@ export function WhatIfSimulator({ entries }: Props) {
 					</div>
 				</div>
 
-				{active && delta !== null && (
-					<div className='flex items-center justify-between mt-3 pt-3 border-t border-app-border'>
-						<span className='text-[11px] text-app-muted'>
-							+{totalRepeats} оценок
-						</span>
+				<div className='flex items-center justify-between mt-3 pt-3 border-t border-app-border gap-3'>
+					<span className='text-[12px] text-app-text opacity-70 leading-snug'>
+						{active
+							? `+${totalRepeats} будущих оценок`
+							: 'добавь оценки ниже — покажу новый средний'}
+					</span>
+					{active && delta !== null ? (
 						<span
-							className='text-[12px] font-semibold tabular-nums'
+							className='text-[14px] font-semibold tabular-nums shrink-0'
 							style={{
 								color:
 									delta > 0.01
@@ -147,24 +156,19 @@ export function WhatIfSimulator({ entries }: Props) {
 							{delta > 0 ? '+' : ''}
 							{delta.toFixed(2)}
 						</span>
-					</div>
-				)}
-			</div>
-
-			<div className='flex items-center justify-between px-1 mb-2'>
-				<span className='text-[11px] text-app-muted'>
-					Добавь будущие оценки, чтобы увидеть новый средний
-				</span>
-				{active && (
-					<button
-						type='button'
-						onClick={reset}
-						className='flex items-center gap-1 text-[11px] text-app-muted active:opacity-60'
-					>
-						<RotateCcw size={12} />
-						Сбросить
-					</button>
-				)}
+					) : null}
+					{active && (
+						<button
+							type='button'
+							onClick={reset}
+							aria-label='Сбросить'
+							className='flex items-center gap-1 text-[12px] text-app-muted active:opacity-60 shrink-0'
+						>
+							<RotateCcw size={14} />
+							Сбросить
+						</button>
+					)}
+				</div>
 			</div>
 
 			{present.map(type => (

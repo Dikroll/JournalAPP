@@ -40,22 +40,22 @@ export function DistributionStat({ data }: Props) {
 		>
 			<div className='flex items-start justify-between mb-4'>
 				<div>
-					<div className='text-[15px] font-semibold text-app-text'>
+					<div className='text-[16px] font-semibold text-app-text'>
 						Распределение оценок
 					</div>
-					<div className='text-[11px] text-app-muted mt-0.5'>
+					<div className='text-[12px] text-app-muted mt-1'>
 						каких оценок сколько получил
 					</div>
 				</div>
 				{total > 0 && goodCount > 0 && (
 					<div className='text-right shrink-0'>
 						<div
-							className='text-[14px] font-semibold'
+							className='text-[16px] font-semibold tabular-nums'
 							style={{ color: GRADE_COLOR[5] }}
 						>
 							{goodPct}%
 						</div>
-						<div className='text-[10px] text-app-muted'>4 и 5</div>
+						<div className='text-[12px] text-app-muted'>4 и 5</div>
 					</div>
 				)}
 			</div>
@@ -91,17 +91,17 @@ export function DistributionStat({ data }: Props) {
 								</Pie>
 							</PieChart>
 							<div className='absolute inset-0 flex flex-col items-center justify-center pointer-events-none'>
-								<span className='text-[28px] font-bold text-app-text leading-none'>
+								<span className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
 									{total}
 								</span>
-								<span className='text-[11px] text-app-muted mt-1'>
+								<span className='text-[12px] text-app-muted mt-1.5'>
 									{gradeNoun(total)}
 								</span>
 							</div>
 						</div>
 					</div>
 
-					<div className='space-y-2'>
+					<div className='space-y-2.5'>
 						{([5, 4, 3, 2, 1] as const).map(g => {
 							const count = data[g]
 							const pct = total > 0 ? (count / total) * 100 : 0
@@ -117,7 +117,7 @@ export function DistributionStat({ data }: Props) {
 											style={{ background: GRADE_COLOR[g] }}
 										/>
 										<span
-											className='text-[13px] font-semibold'
+											className='text-[14px] font-semibold tabular-nums'
 											style={{ color: GRADE_COLOR[g] }}
 										>
 											{g}
@@ -141,12 +141,12 @@ export function DistributionStat({ data }: Props) {
 									</div>
 									<div
 										className='text-right tabular-nums shrink-0'
-										style={{ width: 56 }}
+										style={{ width: 64 }}
 									>
-										<span className='text-[13px] font-semibold text-app-text'>
+										<span className='text-[14px] font-semibold text-app-text'>
 											{count}
 										</span>
-										<span className='text-[10px] text-app-muted ml-1'>
+										<span className='text-[12px] text-app-muted ml-1.5'>
 											{Math.round(pct)}%
 										</span>
 									</div>

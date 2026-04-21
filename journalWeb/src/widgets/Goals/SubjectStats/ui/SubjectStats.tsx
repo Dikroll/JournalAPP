@@ -10,8 +10,8 @@ interface Props {
 
 export function SubjectStats({ stats }: Props) {
 	return (
-		<div className='mt-4'>
-			<div className='text-[11px] uppercase tracking-wider text-app-muted mb-3 px-1'>
+		<div className='mt-5'>
+			<div className='text-[13px] uppercase tracking-wider text-app-muted mb-3 px-1'>
 				Статистика
 			</div>
 			<div className='grid grid-cols-2 gap-3 mb-3'>
