@@ -1,6 +1,7 @@
 import { useDashboardChartsStore } from '@/entities/dashboard/model/store'
 import { useExamStore } from '@/entities/exam/model/store'
 import { useFeedbackStore } from '@/entities/feedback/model/store'
+import { useGoalsStore } from '@/entities/goals'
 import { useGradesStore } from '@/entities/grades/model/store'
 import { useHomeworkStore } from '@/entities/homework/model/store'
 import { useLeaderboardStore } from '@/entities/leaderboard/model/store'
@@ -157,6 +158,11 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		notes: {},
 		statuses: DEFAULT_STATUSES,
 	})
+
+	try {
+		useGoalsStore.persist.clearStorage?.()
+	} catch {}
+	useGoalsStore.setState({ targets: {} })
 
 	try {
 		useProfileDetailsStore.persist.clearStorage?.()
