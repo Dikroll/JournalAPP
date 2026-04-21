@@ -2,7 +2,7 @@ import type { GradeEntry } from '@/entities/grades'
 import { describe, expect, it } from 'vitest'
 import { whatIfAverage } from '../whatIf'
 
-function entry(marks: Partial<GradeEntry['marks']>): GradeEntry {
+function entry(marks: Partial<NonNullable<GradeEntry['marks']>>): GradeEntry {
 	return {
 		date: '2026-01-01',
 		lesson_number: 1,
