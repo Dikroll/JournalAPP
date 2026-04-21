@@ -1,7 +1,26 @@
+import { lastValue, useDashboardChartsStore } from '@/entities/dashboard'
+import { useGrades } from '@/entities/grades'
 import { useOverallSummary } from '@/features/goalForecast'
 import { pageConfig } from '@/shared/config'
-import { Target, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronRight, Target, TrendingDown, TrendingUp } from 'lucide-react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+type Mark = 2 | 3 | 4 | 5
+
+const MARK_COLOR: Record<Mark, string> = {
+	5: '#22c98a',
+	4: '#4d9ef7',
+	3: '#f0a020',
+	2: '#e03535',
+}
+
+const MARK_BG: Record<Mark, string> = {
+	5: 'rgba(34,201,138,0.12)',
+	4: 'rgba(77,158,247,0.12)',
+	3: 'rgba(240,160,32,0.12)',
+	2: 'rgba(224,53,53,0.12)',
+}
 
 function fmt(v: number | null): string {
 	return v === null ? '—' : v.toFixed(2)
@@ -21,7 +40,7 @@ function pickBadge(
 ): Badge {
 	if (totalSubjectsWithGoals === 0) {
 		return {
-			label: 'без целей',
+			label: 'поставь цели',
 			color: '#8a94a6',
 			bg: 'rgba(138,148,166,0.12)',
 			Icon: null,
@@ -39,7 +58,7 @@ function pickBadge(
 		}
 	}
 	return {
-		label: 'всё в норме',
+		label: 'цели в норме',
 		color: '#22c98a',
 		bg: 'rgba(34,201,138,0.14)',
 		Icon: TrendingUp,
@@ -47,8 +66,31 @@ function pickBadge(
 }
 
 export function GoalsSummaryCard() {
-	const summary = useOverallSummary()
 	const navigate = useNavigate()
+	const progress = useDashboardChartsStore(s => s.progress)
+	const attendance = useDashboardChartsStore(s => s.attendance)
+	const { entries } = useGrades()
+	const summary = useOverallSummary()
+
+	const avg = lastValue(progress)
+	const att = lastValue(attendance)
+
+	const distribution = useMemo(() => {
+		const counts: Record<Mark, number> = { 2: 0, 3: 0, 4: 0, 5: 0 }
+		for (const e of entries) {
+			if (!e.marks) continue
+			for (const v of Object.values(e.marks)) {
+				if (typeof v === 'number' && v >= 2 && v <= 5) {
+					counts[v as Mark] += 1
+				}
+			}
+		}
+		return counts
+	}, [entries])
+
+	const totalMarks =
+		distribution[2] + distribution[3] + distribution[4] + distribution[5]
+
 	const badge = pickBadge(
 		summary.risk,
 		summary.atRiskCount,
@@ -56,72 +98,85 @@ export function GoalsSummaryCard() {
 	)
 	const { Icon } = badge
 
-	const headline =
-		summary.totalSubjectsWithGoals === 0
-			? 'Поставь'
-			: fmt(summary.forecast)
-
 	return (
 		<button
 			type='button'
 			onClick={() => navigate(pageConfig.goals)}
-			className='relative w-full text-left rounded-[24px] p-4 border border-app-border bg-app-surface overflow-hidden active:scale-[0.99] transition-transform'
-			style={{ minHeight: 156 }}
+			className='w-full text-left rounded-[24px] p-4 border border-app-border bg-app-surface active:scale-[0.99] transition-transform'
+			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
-			<div className='flex items-center justify-between'>
-				<span className='text-xs text-app-muted'>Цели семестра</span>
-				<Target size={16} className='text-app-muted' />
+			<div className='flex items-center justify-between mb-4'>
+				<div className='flex items-center gap-2'>
+					<Target size={14} className='text-app-muted' />
+					<span className='text-[11px] uppercase tracking-wider text-app-muted'>
+						Сводка семестра
+					</span>
+				</div>
+				<ChevronRight size={18} className='text-app-muted' />
 			</div>
 
-			<div className='mt-3'>
-				<div
-					className='text-[34px] font-bold leading-none text-app-text'
-					style={{
-						letterSpacing: summary.totalSubjectsWithGoals === 0 ? 0 : '-0.5px',
-					}}
-				>
-					{headline}
+			<div className='grid grid-cols-2 gap-3 mb-4'>
+				<div>
+					<div className='text-[32px] font-bold text-app-text leading-none'>
+						{avg != null ? avg.toFixed(1) : '—'}
+					</div>
+					<div className='text-[11px] text-app-muted mt-1.5'>средний балл</div>
+				</div>
+				<div className='text-right'>
+					<div
+						className='text-[32px] font-bold leading-none'
+						style={{ color: '#4d9ef7' }}
+					>
+						{att != null ? `${att}%` : '—'}
+					</div>
+					<div className='text-[11px] text-app-muted mt-1.5'>посещаемость</div>
 				</div>
 			</div>
 
-			<div className='mt-3 flex items-center gap-2 flex-wrap'>
+			{totalMarks > 0 && (
+				<>
+					<div className='text-[10px] uppercase tracking-wider text-app-muted mb-2'>
+						Распределение · {totalMarks} оц
+					</div>
+					<div className='grid grid-cols-4 gap-2 mb-4'>
+						{([5, 4, 3, 2] as const).map(v => (
+							<div
+								key={v}
+								className='rounded-[14px] px-2 py-2.5 flex flex-col items-start'
+								style={{
+									background: MARK_BG[v],
+									border: `1px solid ${MARK_COLOR[v]}33`,
+								}}
+							>
+								<span
+									className='text-[18px] font-bold leading-none'
+									style={{ color: MARK_COLOR[v] }}
+								>
+									{distribution[v]}
+								</span>
+								<span className='text-[10px] text-app-muted mt-1'>× {v}</span>
+							</div>
+						))}
+					</div>
+				</>
+			)}
+
+			<div className='flex items-center justify-between pt-3 border-t border-app-border'>
 				<span
-					className='inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium'
+					className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium'
 					style={{ color: badge.color, background: badge.bg }}
 				>
-					{Icon && <Icon size={12} />}
-					{badge.label}
+					{Icon && <Icon size={12} />}● {badge.label}
 				</span>
-				{summary.totalSubjectsWithGoals > 0 && summary.target !== null && (
+				{summary.totalSubjectsWithGoals > 0 && (
 					<span className='text-[11px] text-app-muted'>
-						цель{' '}
+						прогноз{' '}
+						<strong className='text-app-text'>{fmt(summary.forecast)}</strong>{' '}
+						· цель{' '}
 						<strong className='text-app-text'>{fmt(summary.target)}</strong>
 					</span>
 				)}
 			</div>
-
-			<svg
-				aria-hidden
-				viewBox='0 0 320 60'
-				preserveAspectRatio='none'
-				className='absolute left-0 right-0 bottom-0 w-full'
-				style={{ height: 52, pointerEvents: 'none' }}
-			>
-				<defs>
-					<linearGradient id='goalsCardStroke' x1='0' y1='0' x2='1' y2='0'>
-						<stop offset='0%' stopColor='#F20519' />
-						<stop offset='100%' stopColor='#F29F05' />
-					</linearGradient>
-				</defs>
-				<path
-					d='M0 40 C 40 10, 80 55, 130 38 S 230 10, 280 30 S 320 38, 320 38'
-					fill='none'
-					stroke='url(#goalsCardStroke)'
-					strokeWidth='2.5'
-					strokeLinecap='round'
-					opacity='0.9'
-				/>
-			</svg>
 		</button>
 	)
 }

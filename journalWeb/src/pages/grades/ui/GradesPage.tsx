@@ -76,11 +76,11 @@ export function GradesPage() {
 			<div className='p-4 space-y-4'>
 				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
+				<GoalsSummaryCard />
+
 				{showCharts && (
 					<GradesSummary progress={progress} attendance={attendance} />
 				)}
-
-				<GoalsSummaryCard />
 
 				<SpecSelector
 					subjects={specList}

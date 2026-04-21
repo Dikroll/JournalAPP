@@ -14,7 +14,11 @@ export function GoalsPage() {
 	return (
 		<div className='min-h-screen text-app-text pb-28'>
 			<div className='p-4'>
-				<PageHeader title='Цели' />
+				<PageHeader title='Цели семестра' />
+				<p className='text-[12px] text-app-muted mt-1 leading-snug'>
+					Поставь цель по каждому предмету — покажу прогноз на семестр, риск
+					хвоста и как подтянуть до нужной оценки.
+				</p>
 			</div>
 
 			<div className='px-4'>
@@ -32,6 +36,11 @@ export function GoalsPage() {
 					</div>
 				)}
 
+				{overview.length > 0 && (
+					<div className='text-[10px] uppercase tracking-wider text-app-muted mt-4 mb-2 px-1'>
+						Предметы
+					</div>
+				)}
 				<GoalsList
 					items={overview}
 					onItemPress={id => navigate(`/goals/${id}`)}
