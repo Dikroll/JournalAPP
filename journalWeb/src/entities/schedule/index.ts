@@ -1,4 +1,14 @@
 export { scheduleApi } from './api'
+export {
+	formatGapMinutes,
+	getGapBetweenLessons,
+} from './lib/scheduleGaps'
+export {
+	getLessonTimeLabel,
+	getScheduleTimeInfo,
+} from './lib/scheduleTime'
+export type { ScheduleTimeInfo } from './lib/scheduleTime'
+export { getWeekDays, groupLessonsByDate, shiftWeek } from './lib/week'
 export { useHomeSchedule } from './hooks/useHomeSchedule'
 export { useScheduleByDate } from './hooks/useScheduleByDate'
 export { useScheduleMonth } from './hooks/useScheduleMonth'

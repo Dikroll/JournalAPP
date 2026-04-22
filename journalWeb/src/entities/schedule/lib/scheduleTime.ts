@@ -88,3 +88,23 @@ export function getScheduleTimeInfo(
 
 	return { type: 'after-lessons', label: 'Пары закончились', minutesLeft: 0 }
 }
+
+export function getLessonTimeLabel(
+	info: ScheduleTimeInfo | null | undefined,
+	lesson: LessonItem,
+): string | undefined {
+	if (!info) return undefined
+	if (
+		info.type === 'in-lesson' &&
+		info.currentLesson?.lesson === lesson.lesson
+	) {
+		return `ост. ${formatGapMinutes(info.minutesLeft)}`
+	}
+	if (
+		(info.type === 'before-lessons' || info.type === 'in-gap') &&
+		info.nextLesson?.lesson === lesson.lesson
+	) {
+		return `через ${formatGapMinutes(info.minutesLeft)}`
+	}
+	return undefined
+}

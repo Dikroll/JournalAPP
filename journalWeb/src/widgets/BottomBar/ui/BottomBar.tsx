@@ -6,7 +6,6 @@ import {
 	GraduationCap,
 	Home,
 } from 'lucide-react'
-import { useCallback, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const tabs = [
@@ -20,25 +19,6 @@ const tabs = [
 export function BottomBar() {
 	const navigate = useNavigate()
 	const location = useLocation()
-
-	const touchStartY = useRef<number>(0)
-	const touchStartX = useRef<number>(0)
-
-	const handleTouchStart = useCallback((e: React.TouchEvent) => {
-		touchStartY.current = e.touches[0].clientY
-		touchStartX.current = e.touches[0].clientX
-	}, [])
-
-	const makeHandleTouchEnd = useCallback(
-		(to: string) => (e: React.TouchEvent) => {
-			e.preventDefault()
-			const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
-			const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
-			if (dy > 10 || dx > 10) return
-			navigate(to)
-		},
-		[navigate],
-	)
 
 	return (
 		<nav className='fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50'>
@@ -56,8 +36,6 @@ export function BottomBar() {
 							<button
 								key={to}
 								type='button'
-								onTouchStart={handleTouchStart}
-								onTouchEnd={makeHandleTouchEnd(to)}
 								onClick={() => navigate(to)}
 								className='relative flex flex-col items-center justify-center px-4 bg-transparent border-0 outline-none cursor-pointer'
 								style={{

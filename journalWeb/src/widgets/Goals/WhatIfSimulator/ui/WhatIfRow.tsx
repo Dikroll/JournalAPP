@@ -1,15 +1,7 @@
+import { GRADE_TYPE_LONG_LABEL } from '@/entities/grades'
 import { GRADE_BG, GRADE_COLOR } from '@/shared/config'
 import type { GradeType } from '@/shared/types'
 import { Minus, Plus } from 'lucide-react'
-
-const LABEL: Record<GradeType, string> = {
-	control: 'Контрольная',
-	homework: 'Домашняя',
-	lab: 'Лабораторная',
-	classwork: 'Классная',
-	practical: 'Практическая',
-	final: 'Зачёт',
-}
 
 interface Props {
 	type: GradeType
@@ -46,7 +38,7 @@ export function WhatIfRow({
 			<div className='flex items-center justify-between gap-3 mb-3'>
 				<div className='min-w-0'>
 					<div className='text-[15px] font-semibold text-app-text truncate'>
-						{LABEL[type]}
+						{GRADE_TYPE_LONG_LABEL[type]}
 					</div>
 					{hint && (
 						<div className='text-[12px] text-app-muted truncate mt-0.5'>

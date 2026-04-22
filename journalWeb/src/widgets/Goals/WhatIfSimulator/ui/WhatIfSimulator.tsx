@@ -1,39 +1,11 @@
 import type { GradeEntry } from '@/entities/grades'
-import {
-	currentAverage,
-	whatIfAverage,
-	type WhatIfFutureMark,
-} from '@/features/goalForecast'
 import { gradeColor } from '@/shared/config'
-import type { GradeType } from '@/shared/types'
 import { Calculator, RotateCcw } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useWhatIfSimulator } from '../model/useWhatIfSimulator'
 import { WhatIfRow } from './WhatIfRow'
 
 interface Props {
 	entries: GradeEntry[]
-}
-
-const VISIBLE_TYPES: GradeType[] = [
-	'homework',
-	'classwork',
-	'control',
-	'lab',
-	'practical',
-]
-
-interface RowState {
-	value: 3 | 4 | 5
-	repeat: number
-}
-
-const INITIAL_ROWS: Record<GradeType, RowState> = {
-	homework: { value: 5, repeat: 0 },
-	classwork: { value: 5, repeat: 0 },
-	control: { value: 4, repeat: 0 },
-	lab: { value: 5, repeat: 0 },
-	practical: { value: 5, repeat: 0 },
-	final: { value: 5, repeat: 0 },
 }
 
 function fmt(v: number | null): string {
@@ -41,49 +13,18 @@ function fmt(v: number | null): string {
 }
 
 export function WhatIfSimulator({ entries }: Props) {
-	const [rows, setRows] = useState<Record<GradeType, RowState>>(INITIAL_ROWS)
-
-	const present = useMemo(() => {
-		const seen = new Set<GradeType>()
-		for (const e of entries) {
-			if (!e.marks) continue
-			for (const [type, v] of Object.entries(e.marks) as [
-				GradeType,
-				number | null,
-			][]) {
-				if (v !== null && v !== 0) seen.add(type)
-			}
-		}
-		return VISIBLE_TYPES.filter(t => seen.has(t))
-	}, [entries])
-
-	const future: WhatIfFutureMark[] = useMemo(
-		() =>
-			present.map(type => ({
-				type,
-				value: rows[type].value,
-				repeat: rows[type].repeat,
-			})),
-		[present, rows],
-	)
-
-	const current = useMemo(() => currentAverage(entries), [entries])
-	const projected = useMemo(
-		() => whatIfAverage(entries, future),
-		[entries, future],
-	)
-
-	const totalRepeats = future.reduce((s, f) => s + f.repeat, 0)
-	const active = totalRepeats > 0
-	const delta =
-		projected !== null && current !== null ? projected - current : null
-
-	const reset = () =>
-		setRows(r => {
-			const next = { ...r }
-			for (const t of present) next[t] = { ...next[t], repeat: 0 }
-			return next
-		})
+	const {
+		rows,
+		present,
+		current,
+		projected,
+		delta,
+		totalRepeats,
+		active,
+		setRepeat,
+		setValue,
+		reset,
+	} = useWhatIfSimulator(entries)
 
 	return (
 		<div className='mt-5'>
@@ -180,12 +121,8 @@ export function WhatIfSimulator({ entries }: Props) {
 					type={type}
 					value={rows[type].value}
 					repeat={rows[type].repeat}
-					onChangeRepeat={next =>
-						setRows(r => ({ ...r, [type]: { ...r[type], repeat: next } }))
-					}
-					onChangeValue={next =>
-						setRows(r => ({ ...r, [type]: { ...r[type], value: next } }))
-					}
+					onChangeRepeat={next => setRepeat(type, next)}
+					onChangeValue={next => setValue(type, next)}
 				/>
 			))}
 		</div>

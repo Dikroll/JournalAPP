@@ -2,6 +2,7 @@ export {
 	getGradeColor,
 	getGradeStyle,
 	GRADE_TYPE_CONFIG,
+	GRADE_TYPE_LONG_LABEL,
 	gradeCircleStyle,
 } from './config/labelConfig'
 export type { GradeTypeStyle } from './config/labelConfig'

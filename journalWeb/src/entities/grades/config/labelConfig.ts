@@ -9,6 +9,15 @@ export interface GradeTypeStyle {
 	}
 }
 
+export const GRADE_TYPE_LONG_LABEL: Record<GradeType, string> = {
+	homework: 'Домашняя',
+	classwork: 'Классная',
+	control: 'Контрольная',
+	lab: 'Лабораторная',
+	practical: 'Практическая',
+	final: 'Зачёт',
+}
+
 export const GRADE_TYPE_CONFIG: Record<GradeType, GradeTypeStyle> = {
 	homework: {
 		label: 'ДЗ',
