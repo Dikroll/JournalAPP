@@ -1,6 +1,9 @@
 import type { GradeEntry } from '@/entities/grades'
-import { currentAverage } from '@/features/goalForecast'
-import { whatIfAverage, type WhatIfFutureMark } from '@/features/goalForecast'
+import {
+	currentAverage,
+	whatIfAverage,
+	type WhatIfFutureMark,
+} from '@/features/goalForecast'
 import { gradeColor } from '@/shared/config'
 import type { GradeType } from '@/shared/types'
 import { Calculator, RotateCcw } from 'lucide-react'
@@ -139,7 +142,7 @@ export function WhatIfSimulator({ entries }: Props) {
 					<span className='text-[12px] text-app-text opacity-70 leading-snug'>
 						{active
 							? `+${totalRepeats} будущих оценок`
-							: 'добавь оценки ниже — покажу новый средний'}
+							: 'добавь оценки ниже - будет новый балл'}
 					</span>
 					{active && delta !== null ? (
 						<span
@@ -149,8 +152,8 @@ export function WhatIfSimulator({ entries }: Props) {
 									delta > 0.01
 										? gradeColor(5)
 										: delta < -0.01
-											? gradeColor(2)
-											: 'var(--color-text-muted)',
+										? gradeColor(2)
+										: 'var(--color-text-muted)',
 							}}
 						>
 							{delta > 0 ? '+' : ''}
