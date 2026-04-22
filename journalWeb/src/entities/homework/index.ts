@@ -1,5 +1,4 @@
 export { homeworkApi } from './api'
-
 export {
 	getGradeStyle,
 	STATUS_CONFIG,
@@ -10,6 +9,13 @@ export {
 export { useHomework } from './hooks/useHomework'
 export { useHomeworkBySubject } from './hooks/useHomeworkBySubject'
 export { useHomeworkGroups } from './hooks/useHomeworkGroups'
+export { useHomeworkStatusFiltering } from './hooks/useHomeworkStatusFiltering'
+export { useHomeworkSubjectFiltering } from './hooks/useHomeworkSubjectFiltering'
+export {
+	canEditHomework,
+	deriveHomeworkCardState,
+	shouldShowStatusBadge,
+} from './lib/homeworkCardState'
 export { useHomeworkStore } from './model/store'
 export type { SubjectData } from './model/store'
 export type {

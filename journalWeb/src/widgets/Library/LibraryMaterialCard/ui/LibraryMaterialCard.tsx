@@ -3,8 +3,8 @@ import {
 	getMaterialTypeColor,
 	getMaterialTypeIcon,
 } from '@/shared/config/libraryMaterialTypes'
-import { formatDateCompact } from '@/shared/lib/formatDate'
 import { Badge } from '@/shared/ui'
+import { formatDateCompact } from '@/shared/utils'
 import { memo } from 'react'
 import { MaterialActions } from './MaterialActions'
 import { MaterialCover } from './MaterialCover'
@@ -45,7 +45,9 @@ export const LibraryMaterialCard = memo(
 									{material.type_name}
 								</span>
 								{material.is_new && (
-									<Badge variant='new' size='xs'>NEW</Badge>
+									<Badge variant='new' size='xs'>
+										NEW
+									</Badge>
 								)}
 							</div>
 							<h3 className='text-sm font-semibold text-app-text leading-snug'>

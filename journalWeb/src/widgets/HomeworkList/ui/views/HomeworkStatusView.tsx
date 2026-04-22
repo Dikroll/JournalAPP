@@ -7,12 +7,11 @@ import type {
 import {
 	STATUS_CONFIG,
 	STATUS_KEY_MAP,
-	STATUS_ORDER,
+	useHomeworkStatusFiltering,
 } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
 import { illustrations } from '@/shared/config/illustrationsConfig'
-import { InlineImage, ShowMoreBtn } from '@/shared/ui'
-import { useMemo } from 'react'
+import { EmptyState, ShowMoreBtn } from '@/shared/ui'
 import { HomeworkCard } from '../card/HomeworkCard'
 
 interface Props {
@@ -32,33 +31,22 @@ export function HomeworkStatusView({
 	onLoadMore,
 	onLoadMoreForSubject,
 }: Props) {
-	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
-
-	const emptyState = useMemo(
-		() => (
-			<div className='flex flex-col items-center justify-center py-4'>
-				<InlineImage
-					src={illustrations.noHomework}
-					alt='Нет домашних заданий'
-					width={280}
-					height={280}
-					className='mb-3'
-				/>
-				<p className='text-app-muted text-sm'>Нет домашних заданий</p>
-			</div>
-		),
-		[],
-	)
+	const { statusesToShow, hasAnyItems, filteredGroups } =
+		useHomeworkStatusFiltering(byStatus, filterStatus)
 
 	if (!selectedSpec) {
-		const hasAnyItems = statusesToShow.some(s => byStatus[s]?.items.length)
-		if (!hasAnyItems) return emptyState
+		if (!hasAnyItems) {
+			return (
+				<EmptyState
+					message='Нет домашних заданий'
+					illustration={illustrations.noHomework}
+				/>
+			)
+		}
 
 		return (
 			<div className='space-y-6'>
-				{statusesToShow.map(s => {
-					const group = byStatus[s]
-					if (!group?.items.length) return null
+				{filteredGroups.map(({ status: s, group }) => {
 					const { label, icon: Icon, textColor } = STATUS_CONFIG[s]
 					return (
 						<div key={s}>
@@ -102,12 +90,6 @@ export function HomeworkStatusView({
 			</div>
 		)
 	}
-
-	const hasAnyItems = statusesToShow.some(s => {
-		const numKey = STATUS_KEY_MAP[s]
-		return (subjectData.items[numKey] ?? []).length > 0
-	})
-	if (!hasAnyItems) return emptyState
 
 	return (
 		<div className='space-y-6'>

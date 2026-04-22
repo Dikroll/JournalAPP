@@ -1,15 +1,12 @@
+import { formatGradeOrEmpty } from '@/entities/goals/utils/goalLabels'
 import type { GradeEntry } from '@/entities/grades'
+import { useWhatIfSimulator } from '@/features/goalForecast'
 import { gradeColor } from '@/shared/config'
 import { Calculator, RotateCcw } from 'lucide-react'
-import { useWhatIfSimulator } from '../model/useWhatIfSimulator'
 import { WhatIfRow } from './WhatIfRow'
 
 interface Props {
 	entries: GradeEntry[]
-}
-
-function fmt(v: number | null): string {
-	return v === null ? '—' : v.toFixed(2)
 }
 
 export function WhatIfSimulator({ entries }: Props) {
@@ -53,7 +50,7 @@ export function WhatIfSimulator({ entries }: Props) {
 							className='text-[28px] font-bold tabular-nums leading-none mt-1.5'
 							style={{ color: gradeColor(current) }}
 						>
-							{fmt(current)}
+							{formatGradeOrEmpty(current, 2)}
 						</div>
 					</div>
 					<div
@@ -74,7 +71,7 @@ export function WhatIfSimulator({ entries }: Props) {
 							className='text-[28px] font-bold tabular-nums leading-none mt-1.5'
 							style={{ color: gradeColor(projected) }}
 						>
-							{fmt(projected)}
+							{formatGradeOrEmpty(projected, 2)}
 						</div>
 					</div>
 				</div>

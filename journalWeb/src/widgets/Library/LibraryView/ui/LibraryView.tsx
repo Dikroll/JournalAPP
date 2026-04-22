@@ -1,9 +1,6 @@
-import { useLibraryStore } from '@/entities/library'
-import { useSubjects } from '@/entities/subject'
 import { RefreshLibraryButton } from '@/features/refreshLibrary'
-import { SpecSelector } from '@/features/selectSpec'
+import { SpecSelector, useLibrarySpecSelection } from '@/features/selectSpec'
 import { PageHeader } from '@/shared/ui/PageHeader/PageHeader'
-import { useState } from 'react'
 import { LibraryTabs } from '../../LibraryTabs/ui/LibraryTabs'
 
 interface LibraryViewProps {
@@ -11,15 +8,8 @@ interface LibraryViewProps {
 }
 
 export const LibraryView = ({ showSpecSelector = true }: LibraryViewProps) => {
-	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null)
-	const { subjects, status: subjectsStatus } = useSubjects()
-	const { setSelectedSpec } = useLibraryStore()
-
-	const handleSpecChange = (spec: { id: number } | null) => {
-		const newSpecId = spec?.id ?? null
-		setSelectedSpecId(newSpecId)
-		setSelectedSpec(newSpecId)
-	}
+	const { selectedSpecId, subjects, subjectsStatus, handleSpecChange } =
+		useLibrarySpecSelection()
 
 	return (
 		<div className='min-h-screen text-app-text pb-28 overflow-y-auto p-4'>

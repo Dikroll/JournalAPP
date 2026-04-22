@@ -1,11 +1,8 @@
 import type { GradeEntry } from '@/entities/grades'
-import {
-	currentAverage,
-	whatIfAverage,
-	type WhatIfFutureMark,
-} from '@/features/goalForecast'
 import type { GradeType } from '@/shared/types'
 import { useMemo, useState } from 'react'
+import { currentAverage } from '../lib/forecast'
+import { type WhatIfFutureMark, whatIfAverage } from '../lib/whatIf'
 
 const VISIBLE_TYPES: GradeType[] = [
 	'homework',
@@ -47,16 +44,16 @@ export function useWhatIfSimulator(entries: GradeEntry[]): WhatIfSimulatorVM {
 
 	const present = useMemo(() => {
 		const seen = new Set<GradeType>()
-		for (const e of entries) {
-			if (!e.marks) continue
-			for (const [type, v] of Object.entries(e.marks) as [
+		for (const entry of entries) {
+			if (!entry.marks) continue
+			for (const [type, value] of Object.entries(entry.marks) as [
 				GradeType,
 				number | null,
 			][]) {
-				if (v !== null && v !== 0) seen.add(type)
+				if (value !== null && value !== 0) seen.add(type)
 			}
 		}
-		return VISIBLE_TYPES.filter(t => seen.has(t))
+		return VISIBLE_TYPES.filter(type => seen.has(type))
 	}, [entries])
 
 	const future: WhatIfFutureMark[] = useMemo(
@@ -75,22 +72,30 @@ export function useWhatIfSimulator(entries: GradeEntry[]): WhatIfSimulatorVM {
 		[entries, future],
 	)
 
-	const totalRepeats = future.reduce((s, f) => s + f.repeat, 0)
+	const totalRepeats = future.reduce((sum, mark) => sum + mark.repeat, 0)
 	const active = totalRepeats > 0
 	const delta =
 		projected !== null && current !== null ? projected - current : null
 
 	const setRepeat = (type: GradeType, next: number) =>
-		setRows(r => ({ ...r, [type]: { ...r[type], repeat: next } }))
+		setRows(currentRows => ({
+			...currentRows,
+			[type]: { ...currentRows[type], repeat: next },
+		}))
 
 	const setValue = (type: GradeType, next: 3 | 4 | 5) =>
-		setRows(r => ({ ...r, [type]: { ...r[type], value: next } }))
+		setRows(currentRows => ({
+			...currentRows,
+			[type]: { ...currentRows[type], value: next },
+		}))
 
 	const reset = () =>
-		setRows(r => {
-			const next = { ...r }
-			for (const t of present) next[t] = { ...next[t], repeat: 0 }
-			return next
+		setRows(currentRows => {
+			const nextRows = { ...currentRows }
+			for (const type of present) {
+				nextRows[type] = { ...nextRows[type], repeat: 0 }
+			}
+			return nextRows
 		})
 
 	return {

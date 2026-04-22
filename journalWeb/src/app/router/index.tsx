@@ -10,6 +10,7 @@ import {
 	LoginPage,
 	NotificationsPage,
 	PaymentPage,
+	ProfileActivityPage,
 	ProfileDetailsPage,
 	ProfilePage,
 	SchedulePage,
@@ -91,6 +92,7 @@ export function AppRouter() {
 					<Route path='goals/:specId' element={<GoalDetailPage />} />
 					<Route path='profile' element={<ProfilePage />} />
 					<Route path='profile/details' element={<ProfileDetailsPage />} />
+					<Route path='profile/activity' element={<ProfileActivityPage />} />
 					<Route path='payment' element={<PaymentPage />} />
 					<Route path='notifications' element={<NotificationsPage />} />
 				</Route>

@@ -1,27 +1,17 @@
+import {
+	formatGradeOrEmpty,
+	getCompletionLabel,
+	getRiskLabel,
+	gradeColor,
+	RISK_BG,
+	RISK_COLOR,
+} from '@/entities/goals'
 import type { GoalCardData } from '@/features/goalForecast'
-import { gradeColor, RISK_BG, RISK_COLOR } from '@/shared/config'
 import { Check, ChevronRight } from 'lucide-react'
 
 interface Props {
 	data: GoalCardData
 	onPress: (specId: number) => void
-}
-
-const riskLabel: Record<GoalCardData['risk'], string> = {
-	safe: 'на курсе',
-	watch: 'на грани',
-	danger: 'недобор',
-	no_goal: 'без цели',
-}
-
-function fmt(v: number | null): string {
-	return v === null ? '—' : v.toFixed(1)
-}
-
-function completionLabel(data: GoalCardData): string {
-	if (data.completionReason === 'final_mark') return 'зачёт получен'
-	if (data.completionReason === 'stale') return 'завершён'
-	return 'завершён'
 }
 
 export function GoalCard({ data, onPress }: Props) {
@@ -50,14 +40,14 @@ export function GoalCard({ data, onPress }: Props) {
 							style={{ background: 'var(--color-surface-strong)' }}
 						>
 							<Check size={12} />
-							{completionLabel(data)}
+							{getCompletionLabel(data.completionReason ?? 'stale')}
 						</span>
 					) : (
 						<span
 							className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px]'
 							style={{ color, background: bg }}
 						>
-							● {riskLabel[data.risk]}
+							● {getRiskLabel(data.risk)}
 						</span>
 					)}
 					<ChevronRight size={18} className='text-app-muted' />
@@ -69,7 +59,7 @@ export function GoalCard({ data, onPress }: Props) {
 						сейчас
 					</div>
 					<div className='text-[24px] font-semibold text-app-text mt-1 tabular-nums leading-none'>
-						{fmt(data.currentAvg)}
+						{formatGradeOrEmpty(data.currentAvg, 1)}
 					</div>
 				</div>
 				<div className='text-center'>
@@ -80,7 +70,7 @@ export function GoalCard({ data, onPress }: Props) {
 						className='text-[24px] font-semibold mt-1 tabular-nums leading-none'
 						style={{ color: gradeColor(data.forecast) }}
 					>
-						{fmt(data.forecast)}
+						{formatGradeOrEmpty(data.forecast, 1)}
 					</div>
 				</div>
 				<div className='text-right'>

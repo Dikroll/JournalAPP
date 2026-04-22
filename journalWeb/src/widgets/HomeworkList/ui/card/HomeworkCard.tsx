@@ -1,5 +1,5 @@
 import type { HomeworkItemWithStatus } from '@/entities/homework'
-import { getGradeStyle, STATUS_CONFIG } from '@/entities/homework'
+import { deriveHomeworkCardState } from '@/entities/homework'
 import { getCachedImageUrl } from '@/shared/lib'
 import { PhotoViewerModal } from '@/shared/ui'
 import { ChevronDown, MessageSquare } from 'lucide-react'
@@ -19,23 +19,16 @@ export const HomeworkCard = memo(
 		const [viewerOpen, setViewerOpen] = useState(false)
 
 		const photoUrl = getCachedImageUrl(hw.photo_url)
-
-		const config = STATUS_CONFIG[hw.statusKey]
-		const isChecked = hw.statusKey === 'checked'
-		const isReturned = hw.statusKey === 'returned'
-		const isOverdue = hw.statusKey === 'overdue'
-
-		const grade = isChecked ? hw.grade : null
-		const gradeStyle = grade != null ? getGradeStyle(grade) : null
-
-		const cardBg = gradeStyle
-			? gradeStyle.bg
-			: isOverdue
-			? 'bg-app-surface'
-			: 'bg-app-surface'
-
-		const hasComment = !!hw.comment
-		const commentAlwaysVisible = isReturned
+		const {
+			config,
+			isOverdue,
+			isReturned,
+			grade,
+			gradeStyle,
+			cardBg,
+			hasComment,
+			commentAlwaysVisible,
+		} = deriveHomeworkCardState(hw)
 
 		return (
 			<>

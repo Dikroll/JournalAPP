@@ -32,6 +32,7 @@ export { FutureExams } from './FutureExams/ui/FutureExams'
 
 // Profile
 export { Leaderboard } from './Leaderboard/ui/Leaderboard'
+export { ActivityIntroCard, ActivityList } from './Profile/Activity'
 export { ProfileAvatar } from './Profile/ProfileDetails/ui/ProfileAvatar'
 export { ProfileInfoCard } from './Profile/ProfileDetails/ui/ProfileInfoCard'
 export { ProfilePaymentCard } from './Profile/ProfileDetails/ui/ProfilePaymentCard'

@@ -24,6 +24,27 @@ export const ProfileHeader = memo(
 
 		const coins = user.points.coins.earned
 		const diamonds = user.points.diamonds.earned
+		const stats = [
+			{
+				icon: <Coins size={15} className='text-[#FFD700]' />,
+				label: 'Топмани',
+				value: coins.toLocaleString(),
+				to: pageConfig.profileActivity,
+				state: { initialFilter: 'COIN' as const },
+			},
+			{
+				icon: <Diamond size={15} className='text-[#00D9FF]' />,
+				label: 'Топгемы',
+				value: diamonds.toLocaleString(),
+				to: pageConfig.profileActivity,
+				state: { initialFilter: 'DIAMOND' as const },
+			},
+			{
+				icon: <TrendingUp size={15} className='text-status-checked' />,
+				label: 'Рейтинг',
+				value: rank ? `#${rank}` : '—',
+			},
+		]
 
 		return (
 			<>
@@ -84,36 +105,39 @@ export const ProfileHeader = memo(
 
 						{/* статистика */}
 						<div className='relative grid grid-cols-3 gap-2'>
-							{[
-								{
-									icon: <Coins size={15} className='text-[#FFD700]' />,
-									label: 'Топмани',
-									value: coins.toLocaleString(), // фикс: теперь coins = money
-								},
-								{
-									icon: <Diamond size={15} className='text-[#00D9FF]' />,
-									label: 'Топгемы',
-									value: diamonds.toLocaleString(), // фикс: diamonds = gems
-								},
-								{
-									icon: (
-										<TrendingUp size={15} className='text-status-checked' />
-									),
-									label: 'Рейтинг',
-									value: rank ? `#${rank}` : '—',
-								},
-							].map(({ icon, label, value }) => (
-								<div
-									key={label}
-									className='bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30'
-								>
-									<div className='flex items-center gap-1.5 mb-1'>
-										{icon}
-										<span className='text-[11px] text-white/70'>{label}</span>
+							{stats.map(({ icon, label, value, to, state }) => {
+								const content = (
+									<>
+										<div className='flex items-center gap-1.5 mb-1'>
+											{icon}
+											<span className='text-[11px] text-white/70'>{label}</span>
+										</div>
+										<div className='text-base font-bold text-white'>{value}</div>
+									</>
+								)
+
+								if (to) {
+									return (
+										<Link
+											key={label}
+											to={to}
+											state={state}
+											className='bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30 active:scale-[0.98] transition-transform'
+										>
+											{content}
+										</Link>
+									)
+								}
+
+								return (
+									<div
+										key={label}
+										className='bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30'
+									>
+										{content}
 									</div>
-									<div className='text-base font-bold text-white'>{value}</div>
-								</div>
-							))}
+								)
+							})}
 						</div>
 					</div>
 				</div>

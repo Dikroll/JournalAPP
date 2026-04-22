@@ -1,5 +1,5 @@
 import { userApi, useUserStore } from '@/entities/user'
-import { resetAllAppState } from '@/shared/lib'
+import { resetAllAppState } from '@/app/lib'
 import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
