@@ -21,7 +21,6 @@ import {
 	clearAllQueueFiles,
 	useOfflineQueueStore,
 } from '@/features/offlineQueue'
-
 import { storage } from '@/shared/lib/storage'
 import { useThemeStore } from '@/shared/lib/themeStore'
 import { useAuthStore } from '@/shared/model/authStore'
@@ -33,10 +32,6 @@ interface ResetOptions {
 	resetOnboarding?: boolean
 }
 
-/**
- * Сброс состояния при logout или смене аккаунта.
- * Очищает storage ДО сброса сторов, иначе persist middleware подхватит старые данные.
- */
 export function resetAllAppState(options: ResetOptions = {}) {
 	const {
 		resetAuth = true,
@@ -206,7 +201,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 			token: null,
 			isAuthenticated: false,
 			activeUsername: null,
-			accounts: state.accounts.filter(a => a.username !== state.activeUsername),
+			accounts: state.accounts.filter(
+				account => account.username !== state.activeUsername,
+			),
 		}))
 	}
 }

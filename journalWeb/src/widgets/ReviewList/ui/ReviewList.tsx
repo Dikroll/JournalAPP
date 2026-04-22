@@ -1,13 +1,14 @@
 import { useReviews } from '@/entities/review'
+import { useExpandableList } from '@/shared/hooks'
 import { MessageSquare } from 'lucide-react'
-import { useState } from 'react'
 import { ReviewCard } from './ReviewCard'
 
 const INITIAL_SHOW = 3
 
 export function ReviewsList() {
 	const { reviews, status } = useReviews()
-	const [expanded, setExpanded] = useState(false)
+	const { visible, expanded, toggleExpanded, canExpand, remaining } =
+		useExpandableList(reviews, INITIAL_SHOW)
 
 	if (status === 'loading') {
 		return (
@@ -23,8 +24,6 @@ export function ReviewsList() {
 	}
 
 	if (status === 'error' || reviews.length === 0) return null
-
-	const visible = expanded ? reviews : reviews.slice(0, INITIAL_SHOW)
 
 	return (
 		<div>
@@ -42,17 +41,15 @@ export function ReviewsList() {
 				))}
 			</div>
 
-			{reviews.length > INITIAL_SHOW && (
+			{canExpand && (
 				<button
 					onClick={e => {
 						e.preventDefault()
-						setExpanded(v => !v)
+						toggleExpanded()
 					}}
 					className='mt-3 w-full py-3 rounded-[18px] bg-app-surface border border-app-border text-app-muted text-sm font-medium hover:bg-app-surface-hover'
 				>
-					{expanded
-						? 'Свернуть'
-						: `Показать ещё ${reviews.length - INITIAL_SHOW}`}
+					{expanded ? 'Свернуть' : `Показать ещё ${remaining}`}
 				</button>
 			)}
 		</div>

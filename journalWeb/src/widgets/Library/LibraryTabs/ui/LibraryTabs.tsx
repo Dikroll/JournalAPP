@@ -15,7 +15,7 @@ import {
 	Presentation,
 	Video,
 } from 'lucide-react'
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useState } from 'react'
 import { LibraryMaterialCard } from '../../LibraryMaterialCard/ui/LibraryMaterialCard'
 
 type Tab = MaterialType
@@ -38,9 +38,6 @@ interface Props {
 
 export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 	const [active, setActive] = useState<Tab>(2)
-	const touchStartX = useRef(0)
-	const touchStartY = useRef(0)
-	const touchFiredRef = useRef(false)
 
 	const activeIndex = TABS.findIndex(t => t.key === active)
 	const { scrollRef, showLeft, showRight } = useScrollableTabs(activeIndex)
@@ -53,35 +50,6 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 	const activeCounterKey = MATERIAL_TYPE_TO_COUNTER_KEY[active]
 	const activeCounter = counters?.[activeCounterKey] ?? null
-
-	// touch-хендлеры
-
-	const handleTouchStart = useCallback((e: React.TouchEvent) => {
-		touchStartX.current = e.touches[0].clientX
-		touchStartY.current = e.touches[0].clientY
-	}, [])
-
-	const makeTabHandler = useCallback(
-		(key: Tab) => ({
-			onTouchEnd: (e: React.TouchEvent) => {
-				const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
-				const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
-				if (dx > 8 || dy > 8) return
-				e.preventDefault()
-				touchFiredRef.current = true
-				setActive(key)
-			},
-			onClick: (e: React.SyntheticEvent) => {
-				if (touchFiredRef.current) {
-					touchFiredRef.current = false
-					e.preventDefault()
-					return
-				}
-				setActive(key)
-			},
-		}),
-		[],
-	)
 
 	return (
 		<div className='space-y-3'>
@@ -140,15 +108,12 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 				>
 					{TABS.map(({ key, label, icon }) => {
 						const isActive = active === key
-						const handlers = makeTabHandler(key)
 
 						return (
 							<button
 								key={key}
 								type='button'
-								onTouchStart={handleTouchStart}
-								onTouchEnd={handlers.onTouchEnd}
-								onClick={handlers.onClick}
+								onClick={() => setActive(key)}
 								className='shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap transition-all'
 								style={{
 									height: 40,

@@ -1,9 +1,9 @@
-import { useScheduleToday } from '@/entities/schedule'
 import {
-	formatGapMinutes,
 	getGapBetweenLessons,
-} from '@/entities/schedule/lib/scheduleGaps'
-import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
+	getLessonTimeLabel,
+	getScheduleTimeInfo,
+	useScheduleToday,
+} from '@/entities/schedule'
 import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
 import { InlineImage } from '@/shared/ui'
 import { GapIndicator } from './GapIndicator'
@@ -55,28 +55,6 @@ export function ScheduleList() {
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson)
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
 
-	function getTimeLabel(lesson: (typeof sorted)[number]): string | undefined {
-		if (
-			timeInfo.type === 'in-lesson' &&
-			timeInfo.currentLesson?.lesson === lesson.lesson
-		) {
-			return `ост. ${formatGapMinutes(timeInfo.minutesLeft)}`
-		}
-		if (
-			timeInfo.type === 'before-lessons' &&
-			timeInfo.nextLesson?.lesson === lesson.lesson
-		) {
-			return `через ${formatGapMinutes(timeInfo.minutesLeft)}`
-		}
-		if (
-			timeInfo.type === 'in-gap' &&
-			timeInfo.nextLesson?.lesson === lesson.lesson
-		) {
-			return `через ${formatGapMinutes(timeInfo.minutesLeft)}`
-		}
-		return undefined
-	}
-
 	return (
 		<ul className='flex flex-col gap-3 mb-4'>
 			{sorted.map((lesson, i) => (
@@ -93,7 +71,7 @@ export function ScheduleList() {
 							nowMinutes >= toMinutes(lesson.started_at) &&
 							nowMinutes <= toMinutes(lesson.finished_at)
 						}
-						timeLabel={getTimeLabel(lesson)}
+						timeLabel={getLessonTimeLabel(timeInfo, lesson)}
 					/>
 				</li>
 			))}

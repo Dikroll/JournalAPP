@@ -17,6 +17,8 @@ export type { GoalDetailData } from './hooks/useGoalDetail'
 export { useGoalDetail } from './hooks/useGoalDetail'
 export type { OverallSummary } from './hooks/useOverallSummary'
 export { useOverallSummary } from './hooks/useOverallSummary'
+export type { RowState, WhatIfSimulatorVM } from './hooks/useWhatIfSimulator'
+export { useWhatIfSimulator } from './hooks/useWhatIfSimulator'
 export {
 	useFutureScheduledSubjects,
 	normalizeSubjectName,

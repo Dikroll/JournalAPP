@@ -54,10 +54,13 @@ export function GoalsPage() {
 					</button>
 					<PageHeader title='Сводка оценок' />
 				</div>
-				<p className='text-[12px] text-app-muted mt-2 leading-snug'>
-					Поставь цель по каждому предмету — покажу прогноз на семестр, риск
-					хвоста и как подтянуть до нужной оценки.
-				</p>
+				<div className='mt-5 mb-3 flex items-center justify-between'>
+					<div className='w-[2px] self-stretch bg-app-border mr-3 rounded-full' />
+					<p className='text-[12px] text-app-muted mt-2 leading-snug'>
+						Поставь цель по каждому предмету — покажу прогноз на семестр, риск
+						хвоста и как подтянуть до нужной оценки.
+					</p>
+				</div>
 			</div>
 
 			<div className='px-4 space-y-3'>

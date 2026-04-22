@@ -1,18 +1,12 @@
 import type {
 	GroupData,
-	HomeworkItemWithStatus,
 	HomeworkStatus,
 	SubjectData,
 } from '@/entities/homework'
-import {
-	STATUS_CONFIG,
-	STATUS_KEY_MAP,
-	STATUS_ORDER,
-} from '@/entities/homework'
+import { useHomeworkSubjectFiltering } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
 import { ChevronDown, RefreshCw } from 'lucide-react'
 import { HomeworkCard } from '../card/HomeworkCard'
-
 interface Props {
 	bySubject: Record<string, Record<HomeworkStatus, GroupData>>
 	filterStatus: HomeworkStatus | null
@@ -32,61 +26,40 @@ export function HomeworkSubjectView({
 	onLoadSubject,
 	onLoadMoreForSubject,
 }: Props) {
-	const statusesToShow = filterStatus ? [filterStatus] : STATUS_ORDER
+	const { subjectViews } = useHomeworkSubjectFiltering(
+		bySubject,
+		filterStatus,
+		selectedSpec,
+		specList,
+		subjects,
+	)
 
-	const specNames = selectedSpec
-		? Object.keys(bySubject).filter(n => n === selectedSpec.name)
-		: Object.keys(bySubject).sort((a, b) => a.localeCompare(b, 'ru'))
-
-	if (!specNames.length) {
+	if (!subjectViews.length) {
 		return <p className='text-app-muted text-sm'>Нет данных по предметам</p>
 	}
 
 	return (
 		<div className='space-y-8'>
-			{specNames.map(specName => {
-				const statusGroups = bySubject[specName]
-				const knownSpec = specList.find(s => s.name === specName)
-				const specId = knownSpec?.id ?? null
-				const subjectData = specId != null ? subjects[specId] : null
-				const isLoadingSubject = subjectData?.status === 'loading'
-
-				const hasAny = statusesToShow.some(
-					s => (statusGroups[s]?.items.length ?? 0) > 0,
-				)
-				if (!hasAny) return null
-
+			{subjectViews.map(({ specName, specId, isLoadingSubject, sections }) => {
 				return (
 					<div key={specName}>
 						<h2 className='text-base font-bold text-app-text mb-3'>
 							{specName}
 						</h2>
 
-						{statusesToShow.map(s => {
-							const numKey = STATUS_KEY_MAP[s]
-							const storeItems = subjectData?.items[numKey] ?? []
-							const baseItems = statusGroups[s]?.items ?? []
-
-							const displayItems: HomeworkItemWithStatus[] =
-								storeItems.length > 0
-									? storeItems.map(hw => ({ ...hw, statusKey: s }))
-									: baseItems
-
-							if (!displayItems.length) return null
-
-							const storeTotal = subjectData?.counters?.[s] ?? null
-							const total = storeTotal ?? displayItems.length
-							const isExpanded =
-								subjectData?.expandedStatuses.has(numKey) ?? false
-							const subjectNotFetched =
-								subjectData == null || subjectData.loadedAt == null
-							const hasMore =
-								subjectNotFetched ||
-								(!isExpanded && displayItems.length < total)
-							const { label, icon: Icon, textColor } = STATUS_CONFIG[s]
-
-							return (
-								<div key={s} className='mb-4'>
+						{sections.map(
+							({
+								status,
+								numKey,
+								label,
+								icon: Icon,
+								textColor,
+								displayItems,
+								total,
+								hasMore,
+								subjectNotFetched,
+							}) => (
+								<div key={status} className='mb-4'>
 									<h3 className='text-sm text-app-muted flex items-center gap-1.5 mb-2'>
 										<Icon size={13} className={textColor} />
 										{label}
@@ -97,7 +70,7 @@ export function HomeworkSubjectView({
 									</h3>
 									<div className='space-y-3'>
 										{displayItems.map(hw => (
-											<HomeworkCard key={hw.id} hw={hw as any} />
+											<HomeworkCard key={hw.id} hw={hw} />
 										))}
 									</div>
 									{hasMore && specId != null && (
@@ -130,8 +103,8 @@ export function HomeworkSubjectView({
 										</button>
 									)}
 								</div>
-							)
-						})}
+							),
+						)}
 					</div>
 				)
 			})}

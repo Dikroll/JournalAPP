@@ -1,8 +1,8 @@
 import { useUserStore } from '@/entities/user'
+import { resetAllAppState } from '@/app/lib'
 import { pageConfig } from '@/shared/config'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { resetAllAppState } from '@/shared/lib'
 
 export function useLogout() {
 	const [loading, setLoading] = useState(false)

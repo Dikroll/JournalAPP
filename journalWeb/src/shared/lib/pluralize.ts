@@ -27,3 +27,11 @@ export function pluralize(
 export function pluralizeCount(n: number): string {
 	return pluralize(n, 'материал', 'материала', 'материалов')
 }
+
+export function pluralizeLessons(n: number): string {
+	return `${n} ${pluralize(n, 'пара', 'пары', 'пар')}`
+}
+
+export function pluralizeGrades(n: number): string {
+	return pluralize(n, 'оценка', 'оценки', 'оценок')
+}

@@ -7,7 +7,8 @@ export function HomePage() {
 
 				<HomeScheduleSection />
 
-				<div className='mt-5 mb-3'>
+				<div className='mt-5 mb-3 flex items-center '>
+					<div className='w-[2px] self-stretch bg-app-border mr-3 rounded-full' />
 					<h1 className='text-lg font-bold leading-tight text-app-text'>
 						Будущие экзамены
 					</h1>

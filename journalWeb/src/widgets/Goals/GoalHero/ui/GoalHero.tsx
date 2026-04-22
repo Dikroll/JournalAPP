@@ -1,21 +1,14 @@
-import type { ForecastResult, Risk } from '@/features/goalForecast'
+import {
+	formatGradeOrEmpty,
+	getRiskLabel,
+} from '@/entities/goals/utils/goalLabels'
+import type { ForecastResult } from '@/features/goalForecast'
 import { GRADE_COLOR, RISK_BG, RISK_COLOR } from '@/shared/config'
 
 interface Props {
 	forecast: ForecastResult
 	target: number | null
 	onEdit: () => void
-}
-
-const riskLabel: Record<Risk, string> = {
-	safe: 'на курсе',
-	watch: 'на грани',
-	danger: 'недобор',
-	no_goal: 'без цели',
-}
-
-function fmt(v: number | null): string {
-	return v === null ? '—' : v.toFixed(1)
 }
 
 export function GoalHero({ forecast, target, onEdit }: Props) {
@@ -38,7 +31,7 @@ export function GoalHero({ forecast, target, onEdit }: Props) {
 					className='text-[32px] font-semibold tabular-nums leading-none'
 					style={{ color: GRADE_COLOR[4] }}
 				>
-					{fmt(forecast.forecast)}
+					{formatGradeOrEmpty(forecast.forecast, 1)}
 				</span>
 				<span className='text-[32px] font-semibold text-app-text tabular-nums leading-none'>
 					{target ?? '—'}
@@ -48,14 +41,14 @@ export function GoalHero({ forecast, target, onEdit }: Props) {
 				<span className='text-[13px] text-app-muted'>
 					текущий{' '}
 					<strong className='text-app-text tabular-nums'>
-						{fmt(forecast.currentAvg)}
+						{formatGradeOrEmpty(forecast.currentAvg, 1)}
 					</strong>
 				</span>
 				<span
 					className='text-[12px] font-medium rounded-full px-2.5 py-1'
 					style={{ color, background: bg }}
 				>
-					● {riskLabel[forecast.risk]}
+					● {getRiskLabel(forecast.risk)}
 				</span>
 			</div>
 			<button

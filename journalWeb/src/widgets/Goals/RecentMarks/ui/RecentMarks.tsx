@@ -1,5 +1,7 @@
+import { GRADE_TYPE_LONG_LABEL } from '@/entities/grades'
 import { gradeColor } from '@/shared/config'
 import type { GradeType } from '@/shared/types'
+import { formatDayMonth } from '@/shared/utils'
 
 interface RecentMark {
 	date: string
@@ -9,20 +11,6 @@ interface RecentMark {
 
 interface Props {
 	items: RecentMark[]
-}
-
-const TYPE_LABEL: Record<GradeType, string> = {
-	control: 'контрольная',
-	homework: 'домашняя',
-	lab: 'лабораторная',
-	classwork: 'классная',
-	practical: 'практическая',
-	final: 'зачёт',
-}
-
-function fmtDate(iso: string): string {
-	const [, m, d] = iso.split('-')
-	return `${Number(d)}.${m}`
 }
 
 export function RecentMarks({ items }: Props) {
@@ -43,7 +31,9 @@ export function RecentMarks({ items }: Props) {
 				<div className='grid grid-cols-2 gap-2'>
 					{items.slice(0, 6).map((m, i) => {
 						const color = gradeColor(m.value)
-						const label = TYPE_LABEL[m.type as GradeType] ?? m.type
+						const label =
+							GRADE_TYPE_LONG_LABEL[m.type as GradeType]?.toLowerCase() ??
+							m.type
 						return (
 							<div
 								key={`${m.date}-${m.type}-${i}`}
@@ -52,7 +42,7 @@ export function RecentMarks({ items }: Props) {
 							>
 								<div className='min-w-0'>
 									<div className='text-[13px] font-semibold text-app-text tabular-nums leading-none'>
-										{fmtDate(m.date)}
+										{formatDayMonth(m.date)}
 									</div>
 									<div className='text-[11px] text-app-text opacity-70 mt-1.5 truncate'>
 										{label}

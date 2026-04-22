@@ -1,48 +1,30 @@
-import { useScheduleWeek } from '@/entities/schedule'
-import { getGapBetweenLessons, formatGapMinutes } from '@/entities/schedule/lib/scheduleGaps'
-import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
+import {
+	getGapBetweenLessons,
+	getLessonTimeLabel,
+	getScheduleTimeInfo,
+	getWeekDays,
+	groupLessonsByDate,
+	shiftWeek,
+	useScheduleWeek,
+} from '@/entities/schedule'
 import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
+import { pluralizeLessons } from '@/shared/lib'
 import { Badge, IconButton } from '@/shared/ui'
 import {
 	RU_DAYS_SHORT,
 	formatDateCompact,
 	getTodayString,
-	toDateString,
 } from '@/shared/utils'
 import { ChevronLeft, ChevronRight, Coffee } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { GapIndicator } from '../../ScheduleList/ui/GapIndicator'
 import { LessonCard } from '../../ScheduleList/ui/LessonCard'
 
-function getWeekDays(anyDateStr: string): string[] {
-	const d = new Date(`${anyDateStr}T00:00:00`)
-	const dow = d.getDay()
-	const monday = new Date(d)
-	monday.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1))
-	return Array.from({ length: 7 }, (_, i) => {
-		const day = new Date(monday)
-		day.setDate(monday.getDate() + i)
-		return toDateString(day.getFullYear(), day.getMonth(), day.getDate())
-	})
-}
-
-function shiftWeek(dateStr: string, delta: number): string {
-	const d = new Date(`${dateStr}T00:00:00`)
-	d.setDate(d.getDate() + delta * 7)
-	return toDateString(d.getFullYear(), d.getMonth(), d.getDate())
-}
-
 function formatWeekRange(days: string[]): string {
 	if (days.length < 2) return ''
 	const first = formatDateCompact(days[0])
 	const last = formatDateCompact(days[6])
 	return `${first} — ${last}`
-}
-
-function pluralLessons(n: number) {
-	if (n === 1) return '1 пара'
-	if (n < 5) return `${n} пары`
-	return `${n} пар`
 }
 
 export function ScheduleWeekView() {
@@ -80,12 +62,7 @@ export function ScheduleWeekView() {
 		)
 	}
 
-	const byDate = Object.fromEntries(
-		weekDays.map(d => [
-			d,
-			lessons.filter(l => l.date === d).sort((a, b) => a.lesson - b.lesson),
-		]),
-	)
+	const byDate = groupLessonsByDate(lessons, weekDays)
 
 	return (
 		<div className='flex flex-col gap-5'>
@@ -129,21 +106,9 @@ export function ScheduleWeekView() {
 			{weekDays.map((dateStr, idx) => {
 				const dayLessons = byDate[dateStr] ?? []
 				const isToday = dateStr === today
-				const todayTimeInfo = isToday ? getScheduleTimeInfo(dayLessons, nowMinutes) : null
-
-				function getTimeLabel(lesson: typeof dayLessons[number]): string | undefined {
-					if (!todayTimeInfo) return undefined
-					if (todayTimeInfo.type === 'in-lesson' && todayTimeInfo.currentLesson?.lesson === lesson.lesson) {
-						return `ост. ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
-					}
-					if (todayTimeInfo.type === 'before-lessons' && todayTimeInfo.nextLesson?.lesson === lesson.lesson) {
-						return `через ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
-					}
-					if (todayTimeInfo.type === 'in-gap' && todayTimeInfo.nextLesson?.lesson === lesson.lesson) {
-						return `через ${formatGapMinutes(todayTimeInfo.minutesLeft)}`
-					}
-					return undefined
-				}
+				const todayTimeInfo = isToday
+					? getScheduleTimeInfo(dayLessons, nowMinutes)
+					: null
 				const isPast = dateStr < today
 				const isWeekend = idx >= 5
 				const isEmpty = dayLessons.length === 0
@@ -194,7 +159,7 @@ export function ScheduleWeekView() {
 							</div>
 							{!isEmpty ? (
 								<span className='text-xs text-app-muted'>
-									{pluralLessons(dayLessons.length)}
+									{pluralizeLessons(dayLessons.length)}
 								</span>
 							) : (
 								<span className='text-xs text-app-faint'>Нет пар</span>
@@ -218,7 +183,7 @@ export function ScheduleWeekView() {
 												nowMinutes >= toMinutes(lesson.started_at) &&
 												nowMinutes <= toMinutes(lesson.finished_at)
 											}
-											timeLabel={getTimeLabel(lesson)}
+											timeLabel={getLessonTimeLabel(todayTimeInfo, lesson)}
 										/>
 									</li>
 								))}

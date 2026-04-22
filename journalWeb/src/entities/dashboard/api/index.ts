@@ -1,6 +1,6 @@
 import { api } from '@/shared/api'
 import { apiConfig } from '@/shared/config'
-import type { ChartPoint } from '../model/types'
+import type { ChartPoint, DashboardActivityEntry } from '../model/types'
 
 export const dashboardApi = {
 	getProgressChart: () =>
@@ -9,5 +9,10 @@ export const dashboardApi = {
 	getAttendanceChart: () =>
 		api
 			.get<ChartPoint[]>(apiConfig.DASHBOARD_CHART_ATTENDANCE)
+			.then(r => r.data),
+
+	getActivity: () =>
+		api
+			.get<DashboardActivityEntry[]>(apiConfig.DASHBOARD_ACTIVITY)
 			.then(r => r.data),
 }

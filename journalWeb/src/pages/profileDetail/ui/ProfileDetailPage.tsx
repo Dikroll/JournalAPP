@@ -1,5 +1,5 @@
+import { resetAllAppState } from '@/app/lib'
 import { useProfileDetails } from '@/entities/profile'
-import { resetAllAppState } from '@/shared/lib'
 import { pageConfig } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'

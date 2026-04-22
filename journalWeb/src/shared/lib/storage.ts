@@ -73,4 +73,5 @@ export const CACHE_KEYS = {
 	GRADES_ALL: 'cache:grades:all',
 	PAYMENT_SUMMARY: 'cache:payment:summary',
 	PAYMENT_INDEX: 'cache:payment:index',
+	DASHBOARD_ACTIVITY: 'cache:dashboard:activity',
 }
