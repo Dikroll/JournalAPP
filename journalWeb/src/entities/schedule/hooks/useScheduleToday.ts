@@ -1,8 +1,8 @@
 import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
-import type { LessonItem } from '../model/types'
 import { useScheduleStore } from '../model/store'
+import type { LessonItem } from '../model/types'
 
 const FETCH_TIMEOUT_MS = 15_000
 
@@ -85,7 +85,14 @@ export function useScheduleToday() {
 					timeoutRef.current = null
 				}
 			})
-	}, [todayLoadedAt, today.length, setToday, setTodayStatus, setTodayLoadedAt, setError])
+	}, [
+		todayLoadedAt,
+		today.length,
+		setToday,
+		setTodayStatus,
+		setTodayLoadedAt,
+		setError,
+	])
 
 	useEffect(() => {
 		return () => {
