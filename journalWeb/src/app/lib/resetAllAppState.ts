@@ -13,6 +13,7 @@ import {
 	DEFAULT_STATUSES,
 	useLessonNotesStore,
 } from '@/entities/schedule/model/notesStore'
+import { resetScheduleTodayFetch } from '@/entities/schedule/hooks/useScheduleToday'
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
@@ -41,6 +42,7 @@ export function resetAllAppState(options: ResetOptions = {}) {
 
 	storage.clear('cache:')
 	resetInitUserFetch()
+	resetScheduleTodayFetch()
 
 	try {
 		useGradesStore.persist.clearStorage?.()
