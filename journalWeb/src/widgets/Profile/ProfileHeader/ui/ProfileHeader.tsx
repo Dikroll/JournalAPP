@@ -28,16 +28,16 @@ export const ProfileHeader = memo(
 			{
 				icon: <Coins size={15} className='text-[#FFD700]' />,
 				label: 'Топмани',
-				value: coins.toLocaleString(),
+				value: diamonds.toLocaleString(),
 				to: pageConfig.profileActivity,
-				state: { initialFilter: 'COIN' as const },
+				state: { initialFilter: 'DIAMOND' as const },
 			},
 			{
 				icon: <Diamond size={15} className='text-[#00D9FF]' />,
 				label: 'Топгемы',
-				value: diamonds.toLocaleString(),
+				value: coins.toLocaleString(),
 				to: pageConfig.profileActivity,
-				state: { initialFilter: 'DIAMOND' as const },
+				state: { initialFilter: 'COINS' as const },
 			},
 			{
 				icon: <TrendingUp size={15} className='text-status-checked' />,
@@ -52,7 +52,8 @@ export const ProfileHeader = memo(
 					<div
 						className='rounded-[28px] p-6 relative overflow-hidden'
 						style={{
-							background: 'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
+							background:
+								'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
 							boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)',
 						}}
 					>
@@ -103,7 +104,6 @@ export const ProfileHeader = memo(
 							</Link>
 						</div>
 
-						{/* статистика */}
 						<div className='relative grid grid-cols-3 gap-2'>
 							{stats.map(({ icon, label, value, to, state }) => {
 								const content = (
@@ -112,7 +112,9 @@ export const ProfileHeader = memo(
 											{icon}
 											<span className='text-[11px] text-white/70'>{label}</span>
 										</div>
-										<div className='text-base font-bold text-white'>{value}</div>
+										<div className='text-base font-bold text-white'>
+											{value}
+										</div>
 									</>
 								)
 

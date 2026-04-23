@@ -1,4 +1,4 @@
-import type { DashboardActivityEntry } from '../model/types'
+import type { DashboardActivityEntry, OperationType } from '../model/types'
 
 export type ActivityFilter = 'ALL' | 'COIN' | 'DIAMOND'
 
@@ -11,16 +11,39 @@ export interface ActivityViewItem {
 	pointTypeLabel: string
 	accentColor: string
 	accentBorder: string
+	isSpend: boolean
 }
 
 const ACHIEVEMENT_LABELS: Record<string, string> = {
 	PAIR_VISIT: 'Посещение пары',
-	EVALUATION_LESSON_MARK: 'Оценка за занятие',
+	EVALUATION_LESSON_MARK: 'Оценка занятия',
 	HOMETASK_INTIME: 'Домашнее задание сдано вовремя',
 	HOMEWORK_INTIME: 'Домашнее задание сдано вовремя',
 	ASSESSMENT: 'Оценка',
 	ASSESMENT: 'Оценка',
+	MARKET_ORDER: 'Покупка в магазине',
+	WORK_IN_CLASS: 'Работа в классе',
 	SURVEY: 'Опрос',
+}
+
+/**
+ * Achievements that represent spending/deducting resources
+ */
+const SPEND_ACHIEVEMENTS = new Set(['MARKET_ORDER'])
+
+/**
+ * Determine operation type based on achievement name
+ * @param achievement - Achievement/operation name
+ * @param operationType - Explicit operation type from API (takes precedence)
+ */
+export function getOperationType(
+	achievement: string,
+	operationType?: OperationType,
+): OperationType {
+	// API-provided type takes precedence
+	if (operationType) return operationType
+	// Determine based on achievement name
+	return SPEND_ACHIEVEMENTS.has(achievement) ? 'spend' : 'earn'
 }
 
 const ACHIEVEMENT_WORDS: Record<string, string> = {
@@ -53,28 +76,37 @@ export function filterActivityEntries(
 
 export function buildActivityViewItems(entries: DashboardActivityEntry[]) {
 	return entries.map<ActivityViewItem>((entry, index) => {
+		const operationType = getOperationType(
+			entry.achievement,
+			entry.operation_type,
+		)
+		const isSpend = operationType === 'spend'
+
 		const accentColor =
 			entry.point_type === 'COIN'
-				? 'rgba(255,215,0,0.18)'
+				? 'rgba(0,217,255,0.16)'
 				: entry.point_type === 'DIAMOND'
-					? 'rgba(0,217,255,0.16)'
-					: 'rgba(34,197,94,0.14)'
+				? 'rgba(255,215,0,0.18)'
+				: 'rgba(34,197,94,0.14)'
 		const accentBorder =
 			entry.point_type === 'COIN'
-				? 'rgba(255,215,0,0.32)'
+				? 'rgba(0,217,255,0.28)'
 				: entry.point_type === 'DIAMOND'
-					? 'rgba(0,217,255,0.28)'
-					: 'rgba(34,197,94,0.24)'
+				? 'rgba(255,215,0,0.32)'
+				: 'rgba(34,197,94,0.24)'
+
+		const pointsPrefix = isSpend ? '−' : '+'
 
 		return {
 			key: `${entry.date}-${entry.achievement}-${entry.point_type}-${entry.points}-${index}`,
 			dateLabel: formatActivityDate(entry.date),
 			title: getAchievementLabel(entry.achievement),
-			pointsLabel: `+${entry.points.toLocaleString('ru-RU')}`,
+			pointsLabel: `${pointsPrefix}${entry.points.toLocaleString('ru-RU')}`,
 			pointType: entry.point_type,
 			pointTypeLabel: getPointTypeLabel(entry.point_type),
 			accentColor,
 			accentBorder,
+			isSpend,
 		}
 	})
 }
@@ -102,16 +134,18 @@ function getAchievementLabel(achievement: string) {
 	return achievement
 		.split('_')
 		.filter(Boolean)
-		.map(word => ACHIEVEMENT_WORDS[word] ?? (word[0] + word.slice(1).toLowerCase()))
+		.map(
+			word => ACHIEVEMENT_WORDS[word] ?? word[0] + word.slice(1).toLowerCase(),
+		)
 		.join(' ')
 }
 
 function getPointTypeLabel(pointType: string) {
 	switch (pointType) {
 		case 'COIN':
-			return 'Топмани'
-		case 'DIAMOND':
 			return 'Топгемы'
+		case 'DIAMOND':
+			return 'Топмани'
 		default:
 			return 'Баллы'
 	}

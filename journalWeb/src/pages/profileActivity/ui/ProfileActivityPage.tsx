@@ -15,13 +15,13 @@ const FILTERS: Segment<ActivityFilter>[] = [
 	},
 	{
 		key: 'COIN',
-		label: 'Топмани',
-		icon: <Coins size={14} className='text-[#FFD700]' />,
+		label: 'Топгемы',
+		icon: <Diamond size={14} className='text-[#00D9FF]' />,
 	},
 	{
 		key: 'DIAMOND',
-		label: 'Топгемы',
-		icon: <Diamond size={14} className='text-[#00D9FF]' />,
+		label: 'Топмани',
+		icon: <Coins size={14} className='text-[#FFD700]' />,
 	},
 ]
 
