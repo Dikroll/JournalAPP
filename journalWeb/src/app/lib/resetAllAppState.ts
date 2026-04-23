@@ -88,6 +88,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		attendance: [],
 		status: 'idle',
 		loadedAt: null,
+		activity: [],
+		activityStatus: 'idle',
+		activityLoadedAt: null,
 	})
 
 	try {

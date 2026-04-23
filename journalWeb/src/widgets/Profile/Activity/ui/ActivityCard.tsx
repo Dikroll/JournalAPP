@@ -5,9 +5,9 @@ import { memo } from 'react'
 function getPointTypeIcon(pointType: string) {
 	switch (pointType) {
 		case 'COIN':
-			return <Coins size={16} className='text-[#FFD700]' />
-		case 'DIAMOND':
 			return <Diamond size={16} className='text-[#00D9FF]' />
+		case 'DIAMOND':
+			return <Coins size={16} className='text-[#FFD700]' />
 		default:
 			return <TrendingUp size={16} className='text-status-checked' />
 	}
@@ -18,10 +18,7 @@ interface Props {
 	index: number
 }
 
-export const ActivityCard = memo(function ActivityCard({
-	item,
-	index,
-}: Props) {
+export const ActivityCard = memo(function ActivityCard({ item, index }: Props) {
 	return (
 		<div
 			className='rounded-[26px] p-4 border border-app-border relative overflow-hidden'
@@ -66,7 +63,7 @@ export const ActivityCard = memo(function ActivityCard({
 				</div>
 
 				<div className='text-[11px] uppercase tracking-[0.12em] text-app-muted'>
-					Начисление
+					{item.isSpend ? 'Списание' : 'Начисление'}
 				</div>
 			</div>
 		</div>

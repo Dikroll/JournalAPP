@@ -30,7 +30,7 @@ export function ActivityList({
 				<div className='rounded-[20px] px-4 py-3 border border-app-border bg-app-surface/80 backdrop-blur-sm text-xs text-app-muted'>
 					{isFilterPending
 						? 'Переключаем список и подгружаем нужные записи.'
-						: 'Обновляем лог в фоне. Пока показываем последнюю сохранённую версию.'}
+						: 'Обновляем историю в фоне. Пока показываем последнюю сохранённую версию.'}
 				</div>
 			)}
 
@@ -39,7 +39,7 @@ export function ActivityList({
 			)}
 
 			{status === 'error' && activityCount === 0 && (
-				<ErrorView message='Не удалось загрузить лог изменений' />
+				<ErrorView message='Не удалось загрузить историю изменений' />
 			)}
 
 			{viewItems.length === 0 && status !== 'loading' && (
@@ -47,7 +47,9 @@ export function ActivityList({
 					className='rounded-[24px] p-5 border border-app-border bg-app-surface'
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
-					<p className='text-sm font-semibold text-app-text'>Записей пока нет</p>
+					<p className='text-sm font-semibold text-app-text'>
+						Записей пока нет
+					</p>
 					<p className='text-xs text-app-muted mt-1'>
 						Для выбранного типа начислений история пока пустая.
 					</p>
