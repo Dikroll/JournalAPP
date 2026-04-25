@@ -13,6 +13,12 @@ export interface ScheduleWidgetLesson {
 	date: string
 }
 
+export interface ScheduleWidgetStats {
+	averageGrade: number | null
+	attendancePercent: number | null
+	totalMarks: number
+}
+
 export interface ScheduleWidgetPayload {
 	date: string
 	savedAt: number
@@ -23,6 +29,8 @@ export interface ScheduleWidgetPayload {
 	tomorrowFirstLesson: ScheduleWidgetLesson | null
 	completedCount: number
 	totalCount: number
+	stats: ScheduleWidgetStats | null
+	weeklyLessons: Record<string, ScheduleWidgetLesson[]>
 }
 
 function toWidgetLesson(lesson: LessonItem): ScheduleWidgetLesson {
@@ -45,6 +53,8 @@ export function buildScheduleWidgetPayload(
 	lessons: LessonItem[],
 	now = new Date(),
 	tomorrowLessons: LessonItem[] = [],
+	stats: ScheduleWidgetStats | null = null,
+	weeklyMap: Record<string, LessonItem[]> = {},
 ): ScheduleWidgetPayload {
 	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson)
 	const nowMinutes = toMinutes(now.toTimeString().slice(0, 5))
@@ -55,6 +65,13 @@ export function buildScheduleWidgetPayload(
 	const tomorrowFirst = tomorrowSorted[0]
 		? toWidgetLesson(tomorrowSorted[0])
 		: null
+
+	const weeklyLessons: Record<string, ScheduleWidgetLesson[]> = {}
+	for (const [dateKey, items] of Object.entries(weeklyMap)) {
+		weeklyLessons[dateKey] = [...items]
+			.sort((a, b) => a.lesson - b.lesson)
+			.map(toWidgetLesson)
+	}
 
 	return {
 		date,
@@ -70,5 +87,7 @@ export function buildScheduleWidgetPayload(
 		tomorrowFirstLesson: tomorrowFirst,
 		completedCount: countCompleted(sorted, nowMinutes),
 		totalCount: sorted.length,
+		stats,
+		weeklyLessons,
 	}
 }
