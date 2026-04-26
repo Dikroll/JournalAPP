@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/schedule_widget_glow_background"
+    android:clipToOutline="true">
+
+    <!-- Logo-style red corner mark, pinned to the top-end. -->
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|end"
+        android:scaleType="fitXY"
+        android:importantForAccessibility="no"
+        android:src="@drawable/widget_logo_corner" />
+
+    <TextView
+        android:id="@+id/widget_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="9dp"
+        android:text=""
+        android:textColor="@color/widget_text_primary"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="7dp"
+        android:paddingVertical="2dp"
+        android:background="@drawable/schedule_widget_card_bg"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Header: title + progress badge (kept clear of the corner mark) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/widget_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="СЕГОДНЯ"
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06" />
+        </LinearLayout>
+
+        <!-- Lesson rows (variant B: uniform 1-line) -->
+        <LinearLayout
+            android:id="@+id/widget_rows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="6dp">
+
+            <!-- Row 1 -->
+            <LinearLayout
+                android:id="@+id/widget_row_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_1_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_1_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_1_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_1_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 2 -->
+            <LinearLayout
+                android:id="@+id/widget_row_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_2_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_2_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_2_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_2_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 3 -->
+            <LinearLayout
+                android:id="@+id/widget_row_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_3_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_3_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_3_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_3_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 4 -->
+            <LinearLayout
+                android:id="@+id/widget_row_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_4_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_4_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_4_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_4_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 5 -->
+            <LinearLayout
+                android:id="@+id/widget_row_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_5_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_5_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_5_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_5_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 6 -->
+            <LinearLayout
+                android:id="@+id/widget_row_6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_6_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_6_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_6_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_6_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <!-- Row 7 -->
+            <LinearLayout
+                android:id="@+id/widget_row_7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
+                <TextView android:id="@+id/widget_row_7_time" android:layout_width="42dp" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:textStyle="bold" />
+                <TextView android:id="@+id/widget_row_7_bar" android:layout_width="2dp" android:layout_height="16dp" android:layout_marginHorizontal="9dp" android:background="@color/widget_row_divider" android:text="" />
+                <TextView android:id="@+id/widget_row_7_subject" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:textSize="11sp" android:textColor="@color/widget_text_primary" android:maxLines="1" android:ellipsize="end" />
+                <TextView android:id="@+id/widget_row_7_room" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/widget_text_tertiary" android:layout_marginStart="6dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/widget_overflow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="end"
+                android:text=""
+                android:textColor="@color/widget_text_tertiary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Empty state copy: weekend / tomorrow / no data -->
+        <LinearLayout
+            android:id="@+id/widget_state_block"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/widget_state_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/widget_text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/widget_state_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text=""
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="12sp"
+                android:maxLines="3"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/widget_state_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="@color/widget_text_tertiary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

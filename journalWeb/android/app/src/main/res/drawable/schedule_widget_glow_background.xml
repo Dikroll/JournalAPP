@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Theme-aware background for the medium/large schedule widget.
+Colors auto-resolve via -night qualifier on the referenced color resources.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="24dp" />
+            <gradient
+                android:angle="270"
+                android:startColor="@color/widget_bg_top"
+                android:endColor="@color/widget_bg_bottom"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item android:bottom="-60dp" android:gravity="bottom">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="260dp"
+                android:centerX="0.5"
+                android:centerY="1.0"
+                android:startColor="@color/widget_glow_soft"
+                android:endColor="#00D50416" />
+        </shape>
+    </item>
+</layer-list>

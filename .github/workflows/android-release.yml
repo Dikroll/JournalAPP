@@ -56,9 +56,6 @@ jobs:
       - name: Build web bundle
         run: bun run build
 
-      - name: Add Android platform
-        run: bunx cap add android
-
       - name: Patch AndroidManifest permissions
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"

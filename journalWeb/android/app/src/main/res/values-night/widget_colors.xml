@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme — matches the app's dark mode. -->
+    <color name="widget_brand">#FA2727</color>
+    <color name="widget_brand_soft">#FA6D6D</color>
+
+    <color name="widget_text_primary">#FFFFFFFF</color>
+    <color name="widget_text_secondary">#80FFFFFF</color>
+    <color name="widget_text_tertiary">#66FFFFFF</color>
+    <color name="widget_text_dim">#A3FFFFFF</color>
+
+    <color name="widget_row_highlight">#14FFFFFF</color>
+    <color name="widget_row_divider">#1FFFFFFF</color>
+    <color name="widget_badge_bg">#1FFFFFFF</color>
+
+    <color name="widget_bg_top">#FF171A1D</color>
+    <color name="widget_bg_bottom">#FF11131A</color>
+    <color name="widget_glow_strong">#24D50416</color>
+    <color name="widget_glow_soft">#14D50416</color>
+
+    <!-- Goals widget palette (dark) — same brand hex as light, slightly stronger tile bg for contrast -->
+    <color name="widget_grade_5">#10B981</color>
+    <color name="widget_grade_4">#3B82F6</color>
+    <color name="widget_grade_3">#F59E0B</color>
+    <color name="widget_grade_2">#F97316</color>
+    <color name="widget_grade_1">#DC2626</color>
+    <color name="widget_grade_neutral">#A0A8B5</color>
+
+    <color name="widget_grade_5_bg">#4D10B981</color>
+    <color name="widget_grade_4_bg">#4D3B82F6</color>
+    <color name="widget_grade_3_bg">#4DF59E0B</color>
+    <color name="widget_grade_2_bg">#4DF97316</color>
+    <color name="widget_grade_1_bg">#4DDC2626</color>
+    <color name="widget_grade_neutral_bg">#1FA0A8B5</color>
+</resources>

@@ -9,8 +9,6 @@ staticfiles/images/*.jpg
 .git/
 .venv
 tests/
-android/
-ios/
 
 
 .env
@@ -38,3 +36,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.claude/worktrees/thirsty-swanson-b5e489

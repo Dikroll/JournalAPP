@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/summary_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/schedule_widget_glow_background_accent"
+    android:clipToOutline="true">
+
+    <!-- Logo-style red corner mark, pinned to the top-end. -->
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|end"
+        android:scaleType="fitXY"
+        android:importantForAccessibility="no"
+        android:src="@drawable/widget_logo_corner" />
+
+    <TextView
+        android:id="@+id/summary_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="9dp"
+        android:text=""
+        android:textColor="@color/widget_text_primary"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="7dp"
+        android:paddingVertical="2dp"
+        android:background="@drawable/schedule_widget_card_bg"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/summary_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="СЕГОДНЯ"
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <!-- Either a static time string OR a chronometer counting toward a target -->
+            <TextView
+                android:id="@+id/summary_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/widget_text_primary"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:visibility="gone" />
+
+            <Chronometer
+                android:id="@+id/summary_chrono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:format="%s"
+                android:textColor="@color/widget_text_primary"
+                android:textSize="31sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/summary_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text=""
+                android:textColor="@color/widget_text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:maxLines="3"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/summary_room"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/widget_text_secondary"
+                android:textSize="11sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

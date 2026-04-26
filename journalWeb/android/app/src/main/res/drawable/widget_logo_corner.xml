@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="50dp"
+    android:height="50dp"
+    android:viewportWidth="50"
+    android:viewportHeight="50">
+    <!--
+    Logo-inspired red corner mark: two perpendicular bars meeting at a rounded
+    outer top-right corner, with rounded caps on the inner ends and a generous
+    inner concave radius.
+
+    Geometry: thickness 6, outer radius 18, inner radius 12, cap radius 3.
+    Color: theme-aware via @color/widget_brand (light=#D50416, dark=#FA2727).
+    -->
+    <path
+        android:fillColor="@color/widget_brand"
+        android:pathData="M3,0
+                         L26,0
+                         A24,24 0 0 1 50,24
+                         L50,47
+                         A3,3 0 0 1 44,47
+                         L44,24
+                         A18,18 0 0 0 26,6
+                         L3,6
+                         A3,3 0 0 1 3,0
+                         Z" />
+</vector>

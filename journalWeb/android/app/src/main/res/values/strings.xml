@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Journal-v</string>
+    <string name="title_activity_main">Journal-v</string>
+    <string name="package_name">com.Dikroll.Journal</string>
+    <string name="custom_url_scheme">com.Dikroll.Journal</string>
+    <string name="schedule_widget_description">Следующая пара и расписание на сегодня</string>
+    <string name="schedule_summary_widget_description">Ближайшая пара и обратный отсчёт</string>
+    <string name="goals_summary_widget_description">Средний балл, посещаемость и распределение оценок</string>
+</resources>
