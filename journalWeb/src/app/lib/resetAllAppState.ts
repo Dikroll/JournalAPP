@@ -13,6 +13,7 @@ import {
 	DEFAULT_STATUSES,
 	useLessonNotesStore,
 } from '@/entities/schedule/model/notesStore'
+import { resetScheduleTodayFetch } from '@/entities/schedule/hooks/useScheduleToday'
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
@@ -21,6 +22,9 @@ import {
 	clearAllQueueFiles,
 	useOfflineQueueStore,
 } from '@/features/offlineQueue'
+import { clearGoalsWidget } from '@/features/goalsWidget'
+import { clearScheduleReminders } from '@/features/scheduleReminders/lib/mobileReminders'
+import { clearScheduleWidgets } from '@/features/scheduleWidgets'
 import { storage } from '@/shared/lib/storage'
 import { useThemeStore } from '@/shared/lib/themeStore'
 import { useAuthStore } from '@/shared/model/authStore'
@@ -41,6 +45,10 @@ export function resetAllAppState(options: ResetOptions = {}) {
 
 	storage.clear('cache:')
 	resetInitUserFetch()
+	resetScheduleTodayFetch()
+	clearScheduleReminders().catch(() => {})
+	clearScheduleWidgets().catch(() => {})
+	clearGoalsWidget().catch(() => {})
 
 	try {
 		useGradesStore.persist.clearStorage?.()
