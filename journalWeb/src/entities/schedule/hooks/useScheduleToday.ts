@@ -1,13 +1,12 @@
 import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
-import { useScheduleStore } from '../model/store'
 import type { LessonItem } from '../model/types'
+import { useScheduleStore } from '../model/store'
 
 const FETCH_TIMEOUT_MS = 15_000
 
 let inFlightPromise: Promise<LessonItem[]> | null = null
-let sessionInitialized = false
 
 function fetchTodayDeduped(): Promise<LessonItem[]> {
 	if (inFlightPromise) return inFlightPromise
@@ -17,10 +16,7 @@ function fetchTodayDeduped(): Promise<LessonItem[]> {
 	return inFlightPromise
 }
 
-export function resetScheduleTodayFetch() {
-	sessionInitialized = false
-	inFlightPromise = null
-}
+export function resetScheduleTodayFetch() {}
 
 export function useScheduleToday() {
 	const today = useScheduleStore(s => s.today)
@@ -34,8 +30,10 @@ export function useScheduleToday() {
 
 	const fetchingRef = useRef(false)
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const hasFetchedRef = useRef(false)
 
 	useEffect(() => {
+		if (todayLoadedAt === null) hasFetchedRef.current = false
 		if (fetchingRef.current) return
 
 		if (!getIsOnline()) {
@@ -48,9 +46,8 @@ export function useScheduleToday() {
 			return
 		}
 
-		// Only fetch if we haven't initialized in this session
-		if (sessionInitialized) return
-		sessionInitialized = true
+		if (hasFetchedRef.current) return
+		hasFetchedRef.current = true
 
 		fetchingRef.current = true
 		if (today.length === 0) setTodayStatus('loading')
@@ -85,14 +82,7 @@ export function useScheduleToday() {
 					timeoutRef.current = null
 				}
 			})
-	}, [
-		todayLoadedAt,
-		today.length,
-		setToday,
-		setTodayStatus,
-		setTodayLoadedAt,
-		setError,
-	])
+	}, [todayLoadedAt])
 
 	useEffect(() => {
 		return () => {

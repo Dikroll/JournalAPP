@@ -1,6 +1,5 @@
-import { useScheduleRemindersStore } from '@/features/scheduleReminders'
 import { useThemeStore } from '@/shared/lib/themeStore'
-import { BellRing, Moon, Sun, Trash2, Users } from 'lucide-react'
+import { Moon, Sun, Trash2, Users } from 'lucide-react'
 
 interface Props {
 	onAccounts: () => void
@@ -9,8 +8,6 @@ interface Props {
 
 export function SettingsSection({ onAccounts, onClearCache }: Props) {
 	const { theme, toggleTheme } = useThemeStore()
-	const remindersEnabled = useScheduleRemindersStore(s => s.enabled)
-	const setRemindersEnabled = useScheduleRemindersStore(s => s.setEnabled)
 
 	return (
 		<div className='space-y-2'>
@@ -83,57 +80,6 @@ export function SettingsSection({ onAccounts, onClearCache }: Props) {
 							className='absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300'
 							style={{
 								transform: theme === 'light' ? 'translateX(22px)' : 'translateX(3px)',
-							}}
-						/>
-					</div>
-				</button>
-
-				<div className='mx-4 h-px' style={{ background: 'var(--color-border)' }} />
-
-				<button
-					type='button'
-					onClick={() => setRemindersEnabled(!remindersEnabled)}
-					className='w-full flex items-center gap-3 px-4 py-3.5 active:bg-app-surface-hover transition-colors'
-					style={{ WebkitTapHighlightColor: 'transparent' }}
-				>
-					<div
-						className='w-8 h-8 rounded-xl flex items-center justify-center'
-						style={{
-							background: remindersEnabled
-								? 'var(--color-brand-subtle)'
-								: 'var(--color-surface-strong)',
-							border: remindersEnabled
-								? '1px solid var(--color-brand-border)'
-								: '1px solid var(--color-border)',
-						}}
-					>
-						<BellRing
-							size={15}
-							className={remindersEnabled ? 'text-brand' : 'text-app-muted'}
-						/>
-					</div>
-					<div className='flex-1 text-left'>
-						<p className='text-sm font-medium text-app-text'>
-							Напоминания о парах
-						</p>
-						<p className='text-[11px] text-app-faint mt-0.5'>
-							За 15 минут до начала пары в мобильном приложении
-						</p>
-					</div>
-					<div
-						className='relative w-11 h-[26px] rounded-full transition-colors duration-300'
-						style={{
-							background: remindersEnabled
-								? 'var(--color-brand)'
-								: 'var(--color-border-strong)',
-						}}
-					>
-						<div
-							className='absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300'
-							style={{
-								transform: remindersEnabled
-									? 'translateX(22px)'
-									: 'translateX(3px)',
 							}}
 						/>
 					</div>

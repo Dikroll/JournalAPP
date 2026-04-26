@@ -45,7 +45,7 @@ export function EmptyState({
 						<img
 							src={illustration}
 							alt={message}
-							className='w-66 h-66 mb-4 opacity-75'
+							className='w-24 h-24 mb-4 opacity-75'
 						/>
 				  )
 				: illustration && <div className='mb-4'>{illustration}</div>}
