@@ -5,6 +5,8 @@ import { Capacitor } from '@capacitor/core'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import {
 	buildLessonReminderDrafts,
+	DEFAULT_REMINDER_CONFIG,
+	type ReminderConfig,
 	type ReminderNotificationDraft,
 } from './reminderPlanner'
 import {
@@ -146,7 +148,10 @@ async function cancelScheduledByIds(ids: number[]) {
 	}
 }
 
-export async function syncScheduleReminders(lessons: LessonItem[]) {
+export async function syncScheduleReminders(
+	lessons: LessonItem[],
+	config: ReminderConfig = DEFAULT_REMINDER_CONFIG,
+) {
 	loadPlugins()
 	if (!Capacitor.isNativePlatform?.()) return
 
@@ -155,7 +160,7 @@ export async function syncScheduleReminders(lessons: LessonItem[]) {
 
 	await ensureAndroidChannel()
 
-	const drafts = buildLessonReminderDrafts(lessons)
+	const drafts = buildLessonReminderDrafts(lessons, new Date(), config)
 	const prevState = readReminderState()
 	await cancelScheduledByIds(prevState.scheduledIds)
 

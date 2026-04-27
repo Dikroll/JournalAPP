@@ -54,6 +54,17 @@ export function useInitScheduleReminders() {
 	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
 	const remindersEnabled = useScheduleRemindersStore(s => s.enabled)
+	const firstLessonEnabled = useScheduleRemindersStore(s => s.firstLessonEnabled)
+	const firstLessonOffset = useScheduleRemindersStore(s => s.firstLessonOffset)
+	const regularLessonEnabled = useScheduleRemindersStore(
+		s => s.regularLessonEnabled,
+	)
+	const regularLessonOffset = useScheduleRemindersStore(
+		s => s.regularLessonOffset,
+	)
+	const lunchBreakEnabled = useScheduleRemindersStore(s => s.lunchBreakEnabled)
+	const postLunchEnabled = useScheduleRemindersStore(s => s.postLunchEnabled)
+	const postLunchOffset = useScheduleRemindersStore(s => s.postLunchOffset)
 	const today = useScheduleStore(s => s.today)
 	const days = useScheduleStore(s => s.days)
 	const setDay = useScheduleStore(s => s.setDay)
@@ -96,8 +107,30 @@ export function useInitScheduleReminders() {
 			cancelScheduledReminders()
 			return
 		}
-		syncScheduleReminders(today)
-	}, [hasHydrated, isAuthenticated, remindersEnabled, today, days, gradeEntries])
+		syncScheduleReminders(today, {
+			firstLessonEnabled,
+			firstLessonOffsetMinutes: firstLessonOffset,
+			regularLessonEnabled,
+			regularLessonOffsetMinutes: regularLessonOffset,
+			lunchBreakEnabled,
+			postLunchEnabled,
+			postLunchOffsetMinutes: postLunchOffset,
+		})
+	}, [
+		hasHydrated,
+		isAuthenticated,
+		remindersEnabled,
+		firstLessonEnabled,
+		firstLessonOffset,
+		regularLessonEnabled,
+		regularLessonOffset,
+		lunchBreakEnabled,
+		postLunchEnabled,
+		postLunchOffset,
+		today,
+		days,
+		gradeEntries,
+	])
 
 	useEffect(() => {
 		if (!hasHydrated || !isAuthenticated) return

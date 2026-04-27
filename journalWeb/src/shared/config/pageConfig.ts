@@ -13,6 +13,7 @@ class PageConfig {
 	readonly payment = '/payment'
 	readonly market = '/market'
 	readonly notifications = '/notifications'
+	readonly notificationSettings = '/profile/notification-settings'
 }
 
 export const pageConfig = new PageConfig()
