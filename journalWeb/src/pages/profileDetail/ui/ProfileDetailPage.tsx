@@ -10,11 +10,11 @@ import {
 	ProfileInfoCard,
 	ProfilePaymentCard,
 	ProfileRelativesCard,
+	SettingsSection,
 } from '@/widgets'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SettingsSection } from './SettingsSection'
 
 export function ProfileDetailsPage() {
 	const navigate = useNavigate()

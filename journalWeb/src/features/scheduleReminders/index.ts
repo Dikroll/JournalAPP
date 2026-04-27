@@ -5,3 +5,5 @@ export {
 	REGULAR_LESSON_OFFSET_OPTIONS,
 	useScheduleRemindersStore,
 } from './model/store'
+export { MasterRemindersToggle } from './ui/MasterRemindersToggle'
+export { ScheduleRemindersSection } from './ui/ScheduleRemindersSection'

@@ -5,3 +5,4 @@ export {
 	useExamRemindersStore,
 	type ExamFrequency,
 } from './model/store'
+export { ExamRemindersSection } from './ui/ExamRemindersSection'
