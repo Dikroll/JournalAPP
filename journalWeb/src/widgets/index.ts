@@ -38,6 +38,7 @@ export { ProfileInfoCard } from './Profile/ProfileDetails/ui/ProfileInfoCard'
 export { ProfilePaymentCard } from './Profile/ProfileDetails/ui/ProfilePaymentCard'
 export { ProfileRelativesCard } from './Profile/ProfileDetails/ui/ProfileRelativesCard'
 export { ProfileHeader } from './Profile/ProfileHeader/ui/ProfileHeader'
+export { SettingsSection } from './Profile/SettingsSection/ui/SettingsSection'
 export { ReviewsList } from './ReviewList/ui/ReviewList'
 
 //Payment

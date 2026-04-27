@@ -16,6 +16,14 @@ export { PhotoViewerModal } from './PhotoViewerModal/PhotoViewerModal'
 export { RefreshButton } from './RefreshButton/RefreshButton'
 export { SegmentedControl } from './SegmentedControl/SegmentedControl'
 export type { Segment } from './SegmentedControl/SegmentedControl'
+export {
+	OptionPills,
+	OptionsRow,
+	SectionCard,
+	SettingRow,
+	SettingsDivider,
+	type PillOption,
+} from './SettingsCard'
 export { SheetButton } from './SheetButton/SheetButton'
 export { ShowMoreBtn } from './ShowMoreBtn/ShowMoreBtn'
 export { SkeletonList } from './SkeletonList/SkeletonList'
