@@ -1,4 +1,10 @@
 import {
+	EXAM_NOTIFY_HOUR_OPTIONS,
+	EXAM_START_DAYS_OPTIONS,
+	useExamRemindersStore,
+	type ExamFrequency,
+} from '@/features/examReminders'
+import {
 	FIRST_LESSON_OFFSET_OPTIONS,
 	POST_LUNCH_OFFSET_OPTIONS,
 	REGULAR_LESSON_OFFSET_OPTIONS,
@@ -6,7 +12,16 @@ import {
 } from '@/features/scheduleReminders'
 import { useSwipeBack } from '@/shared/hooks'
 import { IconButton, PageHeader } from '@/shared/ui'
-import { ArrowLeft, BellRing, Coffee, GraduationCap, Sunrise } from 'lucide-react'
+import {
+	ArrowLeft,
+	BellRing,
+	CalendarCheck,
+	CalendarDays,
+	Clock,
+	Coffee,
+	GraduationCap,
+	Sunrise,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,6 +34,9 @@ interface SettingRowProps {
 	options?: readonly number[]
 	selectedOption?: number
 	onSelectOption?: (value: number) => void
+	optionPrefix?: string
+	formatOption?: (option: number) => string
+	children?: React.ReactNode
 }
 
 function SettingRow({
@@ -30,6 +48,9 @@ function SettingRow({
 	options,
 	selectedOption,
 	onSelectOption,
+	optionPrefix = 'За',
+	formatOption = option => `${option} мин`,
+	children,
 }: SettingRowProps) {
 	return (
 		<div className='px-4 py-3.5 space-y-3'>
@@ -79,7 +100,11 @@ function SettingRow({
 			</div>
 			{enabled && options && onSelectOption !== undefined && (
 				<div className='flex items-center gap-2'>
-					<span className='text-[11px] text-app-faint flex-shrink-0'>За</span>
+					{optionPrefix && (
+						<span className='text-[11px] text-app-faint flex-shrink-0'>
+							{optionPrefix}
+						</span>
+					)}
 					<div className='flex flex-1 gap-1.5'>
 						{options.map(option => {
 							const active = option === selectedOption
@@ -100,13 +125,128 @@ function SettingRow({
 										WebkitTapHighlightColor: 'transparent',
 									}}
 								>
-									{option} мин
+									{formatOption(option)}
 								</button>
 							)
 						})}
 					</div>
 				</div>
 			)}
+			{enabled && children}
+		</div>
+	)
+}
+
+interface SegmentedProps<T extends string | number> {
+	label?: string
+	options: readonly { value: T; label: string }[]
+	selected: T
+	onSelect: (value: T) => void
+}
+
+function Segmented<T extends string | number>({
+	label,
+	options,
+	selected,
+	onSelect,
+}: SegmentedProps<T>) {
+	return (
+		<div className='flex items-center gap-2'>
+			{label && (
+				<span className='text-[11px] text-app-faint flex-shrink-0'>{label}</span>
+			)}
+			<div className='flex flex-1 gap-1.5'>
+				{options.map(opt => {
+					const active = opt.value === selected
+					return (
+						<button
+							key={String(opt.value)}
+							type='button'
+							onClick={() => onSelect(opt.value)}
+							className='flex-1 py-2 rounded-xl text-xs font-medium transition-colors min-h-[36px]'
+							style={{
+								background: active
+									? 'var(--color-brand)'
+									: 'var(--color-surface-strong)',
+								color: active ? '#fff' : 'var(--color-text-muted)',
+								border: active
+									? '1px solid var(--color-brand-border)'
+									: '1px solid var(--color-border)',
+								WebkitTapHighlightColor: 'transparent',
+							}}
+						>
+							{opt.label}
+						</button>
+					)
+				})}
+			</div>
+		</div>
+	)
+}
+
+interface OptionsRowProps<T extends string | number> {
+	icon: LucideIcon
+	title: string
+	description?: string
+	options: readonly T[]
+	selectedOption: T
+	onSelectOption: (value: T) => void
+	formatOption: (option: T) => string
+}
+
+function OptionsRow<T extends string | number>({
+	icon: Icon,
+	title,
+	description,
+	options,
+	selectedOption,
+	onSelectOption,
+	formatOption,
+}: OptionsRowProps<T>) {
+	return (
+		<div className='px-4 py-3.5 space-y-3'>
+			<div className='flex items-center gap-3'>
+				<div
+					className='w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0'
+					style={{
+						background: 'var(--color-brand-subtle)',
+						border: '1px solid var(--color-brand-border)',
+					}}
+				>
+					<Icon size={15} className='text-brand' />
+				</div>
+				<div className='flex-1 min-w-0'>
+					<p className='text-sm font-medium text-app-text'>{title}</p>
+					{description && (
+						<p className='text-[11px] text-app-faint mt-0.5'>{description}</p>
+					)}
+				</div>
+			</div>
+			<div className='flex flex-1 gap-1.5'>
+				{options.map(option => {
+					const active = option === selectedOption
+					return (
+						<button
+							key={String(option)}
+							type='button'
+							onClick={() => onSelectOption(option)}
+							className='flex-1 py-2 rounded-xl text-xs font-medium transition-colors min-h-[36px]'
+							style={{
+								background: active
+									? 'var(--color-brand)'
+									: 'var(--color-surface-strong)',
+								color: active ? '#fff' : 'var(--color-text-muted)',
+								border: active
+									? '1px solid var(--color-brand-border)'
+									: '1px solid var(--color-border)',
+								WebkitTapHighlightColor: 'transparent',
+							}}
+						>
+							{formatOption(option)}
+						</button>
+					)
+				})}
+			</div>
 		</div>
 	)
 }
@@ -149,6 +289,19 @@ export function NotificationSettingsPage() {
 
 	const enabled = useScheduleRemindersStore(s => s.enabled)
 	const setEnabled = useScheduleRemindersStore(s => s.setEnabled)
+
+	const examEnabled = useExamRemindersStore(s => s.enabled)
+	const setExamEnabled = useExamRemindersStore(s => s.setEnabled)
+	const dayBeforeEnabled = useExamRemindersStore(s => s.dayBeforeEnabled)
+	const setDayBeforeEnabled = useExamRemindersStore(s => s.setDayBeforeEnabled)
+	const dailyEnabled = useExamRemindersStore(s => s.dailyEnabled)
+	const setDailyEnabled = useExamRemindersStore(s => s.setDailyEnabled)
+	const startDays = useExamRemindersStore(s => s.startDays)
+	const setStartDays = useExamRemindersStore(s => s.setStartDays)
+	const frequency = useExamRemindersStore(s => s.frequency)
+	const setFrequency = useExamRemindersStore(s => s.setFrequency)
+	const notifyHour = useExamRemindersStore(s => s.notifyHour)
+	const setNotifyHour = useExamRemindersStore(s => s.setNotifyHour)
 	const firstLessonEnabled = useScheduleRemindersStore(s => s.firstLessonEnabled)
 	const setFirstLessonEnabled = useScheduleRemindersStore(
 		s => s.setFirstLessonEnabled,
@@ -250,6 +403,62 @@ export function NotificationSettingsPage() {
 							selectedOption={postLunchOffset}
 							onSelectOption={setPostLunchOffset}
 						/>
+					</SectionCard>
+				)}
+
+				{enabled && (
+					<SectionCard title='Экзамены'>
+						<SettingRow
+							icon={GraduationCap}
+							title='Уведомления об экзаменах'
+							description='Чтобы заранее начать готовиться'
+							enabled={examEnabled}
+							onToggle={setExamEnabled}
+						/>
+						{examEnabled && (
+							<>
+								<Divider />
+								<SettingRow
+									icon={CalendarCheck}
+									title='За день до экзамена'
+									description='«Завтра экзамен — удачи!»'
+									enabled={dayBeforeEnabled}
+									onToggle={setDayBeforeEnabled}
+								/>
+								<Divider />
+								<SettingRow
+									icon={CalendarDays}
+									title='Ежедневные напоминания'
+									description='«Скоро экзамен — пора готовиться»'
+									enabled={dailyEnabled}
+									onToggle={setDailyEnabled}
+									options={EXAM_START_DAYS_OPTIONS}
+									selectedOption={startDays}
+									onSelectOption={setStartDays}
+									optionPrefix='За'
+									formatOption={n => `${n} дн.`}
+								>
+									<Segmented<ExamFrequency>
+										options={[
+											{ value: 'daily', label: 'Каждый день' },
+											{ value: 'alternate', label: 'Через день' },
+										]}
+										selected={frequency}
+										onSelect={setFrequency}
+									/>
+								</SettingRow>
+								<Divider />
+								<OptionsRow<number>
+									icon={Clock}
+									title='Время уведомления'
+									description='Когда присылать ежедневные напоминания'
+									options={EXAM_NOTIFY_HOUR_OPTIONS}
+									selectedOption={notifyHour}
+									onSelectOption={setNotifyHour}
+									formatOption={h => `${h}:00`}
+								/>
+							</>
+						)}
 					</SectionCard>
 				)}
 			</div>

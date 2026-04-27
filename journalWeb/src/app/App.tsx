@@ -1,5 +1,6 @@
 import { useFeedback } from '@/entities/feedback'
 import { AppUpdateSheet, useInitAppUpdate } from '@/features/appUpdate'
+import { useInitExamReminders } from '@/features/examReminders'
 import { useInitGoalsWidget } from '@/features/goalsWidget'
 import { useInitScheduleReminders } from '@/features/scheduleReminders'
 import { useInitUser } from '@/features/initUser/hooks/useInitUser'
@@ -11,6 +12,7 @@ export function App() {
 	useInitUser()
 	useInitAppUpdate()
 	useInitScheduleReminders()
+	useInitExamReminders()
 	useInitGoalsWidget()
 	useNetworkInit()
 	useQueueProcessor()
