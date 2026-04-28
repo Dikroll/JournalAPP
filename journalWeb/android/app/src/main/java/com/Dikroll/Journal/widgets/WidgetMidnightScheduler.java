@@ -16,6 +16,9 @@ public class WidgetMidnightScheduler extends BroadcastReceiver {
     private static final String ACTION_REFRESH = "com.Dikroll.Journal.widgets.MIDNIGHT_REFRESH";
     private static final int REQUEST_CODE = 4242;
 
+    private static final long ONE_MINUTE_MS = 60_000L;
+    private static final long FIVE_MINUTES_MS = 5 * ONE_MINUTE_MS;
+
     public static void schedule(Context context) {
         Context appContext = context.getApplicationContext();
         AlarmManager alarmManager = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
@@ -32,12 +35,28 @@ public class WidgetMidnightScheduler extends BroadcastReceiver {
         );
 
         long triggerAt = computeNextTriggerAt(appContext);
+        scheduleExactOrFallback(alarmManager, triggerAt, pending);
+    }
+
+    private static void scheduleExactOrFallback(
+        AlarmManager alarmManager, long triggerAt, PendingIntent pending
+    ) {
+        boolean canExact = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            canExact = alarmManager.canScheduleExactAlarms();
+        }
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pending);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pending);
+            if (canExact && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, triggerAt, pending);
+                return;
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, triggerAt, pending);
+                return;
+            }
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pending);
         } catch (SecurityException ignored) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pending);
         }
@@ -46,16 +65,36 @@ public class WidgetMidnightScheduler extends BroadcastReceiver {
     private static long computeNextTriggerAt(Context context) {
         long now = System.currentTimeMillis();
         String payload = ScheduleWidgetProvider.readPayload(context);
+        long midnight = WidgetSnapshotHelper.nextMidnightMs(now);
         if (payload == null || payload.isEmpty()) {
-            return WidgetSnapshotHelper.nextMidnightMs(now);
+            return Math.min(midnight, now + 30 * ONE_MINUTE_MS);
         }
 
         try {
             JSONObject root = new JSONObject(payload);
-            long next = WidgetSnapshotHelper.nextRefreshMs(root, now);
-            return next > now ? next : WidgetSnapshotHelper.nextMidnightMs(now);
+            long boundary = WidgetSnapshotHelper.nextRefreshMs(root, now);
+            long candidate = boundary > now ? boundary : midnight;
+
+            // While inside an active school window, keep a minute-level
+            // backstop so the widget never drifts past a lesson boundary
+            // even when AlarmManager is throttled.
+            WidgetSnapshotHelper.TodaySnapshot snap =
+                WidgetSnapshotHelper.build(root, now);
+            if (snap.currentLesson != null) {
+                candidate = Math.min(candidate, now + ONE_MINUTE_MS);
+            } else if (snap.nextLesson != null) {
+                long startMs = WidgetSnapshotHelper.lessonEpochMs(
+                    snap.nextLesson, "startedAt");
+                long delta = startMs - now;
+                if (delta <= FIVE_MINUTES_MS) {
+                    candidate = Math.min(candidate, now + ONE_MINUTE_MS);
+                } else if (delta <= 30 * ONE_MINUTE_MS) {
+                    candidate = Math.min(candidate, now + 5 * ONE_MINUTE_MS);
+                }
+            }
+            return candidate;
         } catch (Exception ignored) {
-            return WidgetSnapshotHelper.nextMidnightMs(now);
+            return midnight;
         }
     }
 
@@ -66,6 +105,7 @@ public class WidgetMidnightScheduler extends BroadcastReceiver {
 
         ScheduleWidgetProvider.requestWidgetUpdate(appContext);
         ScheduleSummaryWidgetProvider.requestWidgetUpdate(appContext);
+        GoalsSummaryWidgetProvider.requestWidgetUpdate(appContext);
 
         schedule(appContext);
     }

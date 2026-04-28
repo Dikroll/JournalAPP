@@ -37,32 +37,28 @@ struct ScheduleSummaryProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<ScheduleSummaryEntry>) -> Void) {
         let state = ScheduleWidgetStore.loadState()
         let now = Date()
-        let snap = ScheduleWidgetSnapshotBuilder.build(payload: state.payload, now: now)
-        let nextStart = ScheduleWidgetStore.lessonStartDate(for: snap.nextLesson)
-        let currentEnd = ScheduleWidgetStore.lessonEndDate(for: snap.currentLesson)
-        let entry = ScheduleSummaryEntry(
-            date: now,
-            state: state,
-            snapshot: snap,
-            nextLessonStartDate: nextStart,
-            currentLessonEndDate: currentEnd
-        )
 
-        // Refresh when the next state-flip is due: end of current lesson, start
-        // of next lesson, in 30 min, or at midnight — whichever is sooner.
-        var candidates: [Date] = [
-            now.addingTimeInterval(30 * 60),
-            ScheduleWidgetSnapshotBuilder.nextMidnight(after: now),
-        ]
-        if let nextStart = nextStart, nextStart > now {
-            candidates.append(nextStart.addingTimeInterval(60))
-        }
-        if let currentEnd = currentEnd, currentEnd > now {
-            candidates.append(currentEnd.addingTimeInterval(60))
-        }
-        let refresh = candidates.min() ?? now.addingTimeInterval(1800)
+        var dates: [Date] = [now]
+        dates.append(contentsOf: ScheduleTimelineHelpers.boundaryDates(
+            payload: state.payload, now: now))
 
-        completion(Timeline(entries: [entry], policy: .after(refresh)))
+        let entries: [ScheduleSummaryEntry] = dates.map { entryDate in
+            let snap = ScheduleWidgetSnapshotBuilder.build(
+                payload: state.payload, now: entryDate)
+            return ScheduleSummaryEntry(
+                date: entryDate,
+                state: state,
+                snapshot: snap,
+                nextLessonStartDate: ScheduleWidgetStore.lessonStartDate(
+                    for: snap.nextLesson),
+                currentLessonEndDate: ScheduleWidgetStore.lessonEndDate(
+                    for: snap.currentLesson)
+            )
+        }
+
+        let refresh = entries.last?.date.addingTimeInterval(60)
+            ?? now.addingTimeInterval(1800)
+        completion(Timeline(entries: entries, policy: .after(refresh)))
     }
 }
 
@@ -114,13 +110,13 @@ struct ScheduleSummaryWidgetView: View {
             Spacer(minLength: 0)
 
             if let endDate = entry.currentLessonEndDate, endDate > Date() {
-                Text(endDate, style: .timer)
+                Text(timerInterval: Date()...endDate, countsDown: true)
                     .font(.system(size: 26, weight: .heavy, design: .rounded))
                     .foregroundColor(theme.primaryText)
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
             } else {
-                Text(current.finishedAt)
+                Text("Идёт")
                     .font(.system(size: 26, weight: .heavy, design: .rounded))
                     .foregroundColor(theme.primaryText)
             }
@@ -183,7 +179,7 @@ struct ScheduleSummaryWidgetView: View {
             Spacer(minLength: 0)
 
             if let nextStart = entry.nextLessonStartDate, nextStart > Date() {
-                Text(nextStart, style: .timer)
+                Text(timerInterval: Date()...nextStart, countsDown: true)
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(theme.brandSoft)
                     .lineLimit(1)
@@ -298,22 +294,23 @@ struct ScheduleSummaryWidgetView: View {
                 .tracking(0.6)
                 .foregroundColor(accent ? theme.brandSoft : theme.secondaryText)
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .layoutPriority(1)
-            Spacer(minLength: 0)
+                .fixedSize(horizontal: true, vertical: false)
+                .layoutPriority(2)
             if let badgeText = badgeText {
                 Text(badgeText)
                     .font(.system(size: 11, weight: .bold))
                     .foregroundColor(theme.primaryText)
+                    .lineLimit(1)
                     .padding(.horizontal, 7)
                     .padding(.vertical, 2)
                     .background(
                         Capsule().fill(theme.primaryText.opacity(0.12))
                     )
-                    .lineLimit(1)
+                    .fixedSize()
             }
+            Spacer(minLength: 0)
         }
-        .padding(.trailing, 38) // keep badge clear of the edge-to-edge corner mark
+        .padding(.trailing, 40)
     }
 }
 

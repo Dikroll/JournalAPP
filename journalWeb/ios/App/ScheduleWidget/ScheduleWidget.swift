@@ -227,6 +227,34 @@ enum ScheduleWidgetStore {
     }
 }
 
+enum ScheduleTimelineHelpers {
+    /// Boundary moments today (and the next school day's start) where the
+    /// snapshot meaningfully flips. Used to seed multiple Timeline entries so
+    /// iOS swaps the rendered view at the right minute without waiting for
+    /// the next refresh window.
+    static func boundaryDates(payload: SchedulePayload?, now: Date) -> [Date] {
+        var dates: [Date] = []
+        let snap = ScheduleWidgetSnapshotBuilder.build(payload: payload, now: now)
+        for lesson in snap.lessons {
+            if let start = ScheduleWidgetStore.lessonStartDate(for: lesson),
+               start > now {
+                dates.append(start)
+            }
+            if let end = ScheduleWidgetStore.lessonEndDate(for: lesson),
+               end > now {
+                dates.append(end.addingTimeInterval(1))
+            }
+        }
+        if let tomorrow = snap.tomorrowFirstLesson,
+           let start = ScheduleWidgetStore.lessonStartDate(for: tomorrow),
+           start > now {
+            dates.append(start)
+        }
+        dates.append(ScheduleWidgetSnapshotBuilder.nextMidnight(after: now))
+        return Array(Set(dates)).sorted()
+    }
+}
+
 struct ScheduleListProvider: TimelineProvider {
     func placeholder(in context: Context) -> ScheduleListEntry {
         ScheduleListEntry(date: Date(), state: ScheduleLoadState(payload: nil))
@@ -238,12 +266,16 @@ struct ScheduleListProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ScheduleListEntry>) -> Void) {
         let now = Date()
-        let entry = ScheduleListEntry(date: now, state: ScheduleWidgetStore.loadState())
-        let nextRefresh = min(
-            now.addingTimeInterval(30 * 60),
-            ScheduleWidgetSnapshotBuilder.nextMidnight(after: now)
-        )
-        completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
+        let state = ScheduleWidgetStore.loadState()
+        var entries: [ScheduleListEntry] = [
+            ScheduleListEntry(date: now, state: state)
+        ]
+        for boundary in ScheduleTimelineHelpers.boundaryDates(payload: state.payload, now: now) {
+            entries.append(ScheduleListEntry(date: boundary, state: state))
+        }
+        let nextRefresh = entries.last?.date.addingTimeInterval(60)
+            ?? now.addingTimeInterval(30 * 60)
+        completion(Timeline(entries: entries, policy: .after(nextRefresh)))
     }
 }
 
@@ -494,7 +526,7 @@ struct ScheduleListWidgetView: View {
 
     private var payload: SchedulePayload? { entry.state.payload }
     private var snapshot: TodaySnapshot {
-        ScheduleWidgetSnapshotBuilder.build(payload: payload)
+        ScheduleWidgetSnapshotBuilder.build(payload: payload, now: entry.date)
     }
 
     private var maxLessons: Int {
@@ -513,9 +545,8 @@ struct ScheduleListWidgetView: View {
         }
         return lessons.filter { lesson in
             guard let endMin = ScheduleWidgetSnapshotBuilder.minutes(from: lesson.finishedAt) else { return true }
-            let now = Date()
             let cal = Calendar.current
-            let nowMin = cal.component(.hour, from: now) * 60 + cal.component(.minute, from: now)
+            let nowMin = cal.component(.hour, from: entry.date) * 60 + cal.component(.minute, from: entry.date)
             return endMin > nowMin
         }
     }
@@ -570,22 +601,22 @@ struct ScheduleListWidgetView: View {
     }
 
     private func headerView(snap: TodaySnapshot) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        HStack(alignment: .center, spacing: 6) {
             Text(headerTitle(snap: snap))
                 .font(.system(size: 10, weight: .bold))
                 .tracking(0.6)
                 .foregroundColor(themedColor(.secondary))
-            Spacer()
             if let badgeText = badgeText(snap: snap) {
                 Text(badgeText)
                     .font(.system(size: 10, weight: .bold))
                     .foregroundColor(themedColor(.primary))
                     .padding(.horizontal, 7)
-                    .padding(.vertical, 2)
+                    .padding(.vertical, 1)
                     .background(
                         Capsule().fill(themedColor(.primary).opacity(colorScheme == .dark ? 0.12 : 0.06))
                     )
             }
+            Spacer(minLength: 0)
         }
         .padding(.trailing, 54) // keep header clear of the corner mark
     }

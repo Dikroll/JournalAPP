@@ -15,45 +15,46 @@
         android:importantForAccessibility="no"
         android:src="@drawable/widget_logo_corner" />
 
-    <TextView
-        android:id="@+id/widget_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="9dp"
-        android:text=""
-        android:textColor="@color/widget_text_primary"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:paddingHorizontal="7dp"
-        android:paddingVertical="2dp"
-        android:background="@drawable/schedule_widget_card_bg"
-        android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Header: title + progress badge (kept clear of the corner mark) -->
+        <!-- Header: title + inline progress badge (kept clear of the corner mark) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingEnd="10dp">
+            android:paddingEnd="50dp">
 
             <TextView
                 android:id="@+id/widget_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="СЕГОДНЯ"
                 android:textColor="@color/widget_text_secondary"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.06" />
+
+            <TextView
+                android:id="@+id/widget_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:singleLine="true"
+                android:includeFontPadding="false"
+                android:text=""
+                android:textColor="@color/widget_text_primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="1dp"
+                android:background="@drawable/schedule_widget_card_bg"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Lesson rows (variant B: uniform 1-line) -->

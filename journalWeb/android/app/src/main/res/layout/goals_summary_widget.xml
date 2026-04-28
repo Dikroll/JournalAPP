@@ -21,24 +21,13 @@
         android:orientation="vertical"
         android:gravity="top"
         android:paddingStart="6dp"
-        android:paddingTop="8dp"
+        android:paddingTop="6dp"
         android:paddingEnd="6dp"
-        android:paddingBottom="8dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="44dp"
-            android:text="СВОДКА ОЦЕНОК"
-            android:textColor="@color/widget_text_secondary"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.08" />
+        android:paddingBottom="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:orientation="horizontal"
@@ -117,8 +106,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="6dp"
             android:background="@drawable/schedule_widget_card_bg"
             android:clipToOutline="true">
 
@@ -136,9 +125,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -148,35 +138,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="4dp"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="6dp"
+                android:gravity="center_horizontal|top"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/goal_tile_5">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5"
                     android:textColor="@color/widget_grade_5"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_5_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="2dp"
                     android:text="0"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="11sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_5_pct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:text="0%"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -185,35 +177,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="4dp"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="6dp"
+                android:gravity="center_horizontal|top"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/goal_tile_4">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4"
                     android:textColor="@color/widget_grade_4"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_4_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="2dp"
                     android:text="0"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="11sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_4_pct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:text="0%"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -222,35 +216,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="4dp"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="6dp"
+                android:gravity="center_horizontal|top"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/goal_tile_3">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3"
                     android:textColor="@color/widget_grade_3"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_3_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="2dp"
                     android:text="0"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="11sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_3_pct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:text="0%"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -259,35 +255,37 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="4dp"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="6dp"
+                android:gravity="center_horizontal|top"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/goal_tile_2">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2"
                     android:textColor="@color/widget_grade_2"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_2_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="2dp"
                     android:text="0"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="11sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_2_pct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:text="0%"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -297,51 +295,38 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="5dp"
-                android:paddingVertical="6dp"
+                android:gravity="center_horizontal|top"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/goal_tile_1">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:textColor="@color/widget_grade_1"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_1_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="2dp"
                     android:text="0"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="11sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/goals_tile_1_pct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
                     android:text="0%"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/goals_risk_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="4dp"
-            android:text="● цели в норме"
-            android:textColor="@color/widget_grade_5"
-            android:textSize="9sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="7dp"
-            android:paddingVertical="2dp"
-            android:background="@drawable/goal_pill_safe"
-            android:visibility="gone" />
 
     </LinearLayout>
 
