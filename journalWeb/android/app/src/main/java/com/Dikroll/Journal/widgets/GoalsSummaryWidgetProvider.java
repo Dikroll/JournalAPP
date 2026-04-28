@@ -103,10 +103,17 @@ public class GoalsSummaryWidgetProvider extends AppWidgetProvider {
         }
         long sumDist = counts[0] + counts[1] + counts[2] + counts[3] + counts[4];
 
+        long pctBase = sumDist > 0 ? sumDist : total;
         for (int i = 0; i < 5; i++) {
             long c = counts[i];
             views.setTextViewText(TILE_COUNT_IDS[i], String.valueOf(c));
-            views.setViewVisibility(TILE_PCT_IDS[i], View.GONE);
+            if (pctBase > 0) {
+                long pct = Math.round((c * 100.0) / pctBase);
+                views.setTextViewText(TILE_PCT_IDS[i], pct + "%");
+                views.setViewVisibility(TILE_PCT_IDS[i], View.VISIBLE);
+            } else {
+                views.setViewVisibility(TILE_PCT_IDS[i], View.GONE);
+            }
         }
 
         if (total > 0) {
@@ -119,17 +126,6 @@ public class GoalsSummaryWidgetProvider extends AppWidgetProvider {
             views.setViewVisibility(R.id.goals_distribution_bar, View.GONE);
         }
 
-        JSONObject summary = root.optJSONObject("summary");
-        int totalSubjects = summary != null ? summary.optInt("totalSubjectsWithGoals", 0) : 0;
-        if (totalSubjects > 0) {
-            String risk = summary.optString("risk", "no_goal");
-            int atRisk = summary.optInt("atRiskCount", 0);
-            views.setTextViewText(R.id.goals_risk_badge, "● " + pickBadgeLabel(risk, atRisk, totalSubjects));
-            applyRiskStyle(views, risk);
-            views.setViewVisibility(R.id.goals_risk_badge, View.VISIBLE);
-        } else {
-            views.setViewVisibility(R.id.goals_risk_badge, View.GONE);
-        }
     }
 
     private static void renderEmpty(RemoteViews views) {
@@ -141,36 +137,6 @@ public class GoalsSummaryWidgetProvider extends AppWidgetProvider {
             views.setViewVisibility(TILE_PCT_IDS[i], View.GONE);
         }
         views.setViewVisibility(R.id.goals_distribution_bar, View.GONE);
-        views.setViewVisibility(R.id.goals_risk_badge, View.GONE);
-    }
-
-    private static String pickBadgeLabel(String risk, int atRiskCount, int totalSubjects) {
-        if (totalSubjects == 0) return "поставь цели";
-        if ("danger".equals(risk) || "watch".equals(risk)) return atRiskCount + " в риске";
-        return "цели в норме";
-    }
-
-    private static void applyRiskStyle(RemoteViews views, String risk) {
-        int bgRes;
-        if ("safe".equals(risk)) {
-            bgRes = R.drawable.goal_pill_safe;
-        } else if ("watch".equals(risk)) {
-            bgRes = R.drawable.goal_pill_watch;
-        } else if ("danger".equals(risk)) {
-            bgRes = R.drawable.goal_pill_danger;
-        } else {
-            bgRes = R.drawable.goal_pill_neutral;
-        }
-        views.setInt(R.id.goals_risk_badge, "setBackgroundResource", bgRes);
-        views.setTextColor(R.id.goals_risk_badge,
-            android.graphics.Color.parseColor(colorHexFor(risk)));
-    }
-
-    private static String colorHexFor(String risk) {
-        if ("safe".equals(risk)) return "#10B981";
-        if ("watch".equals(risk)) return "#F59E0B";
-        if ("danger".equals(risk)) return "#DC2626";
-        return "#8A94A6";
     }
 
     private static Bitmap createDistributionBar(Context context, long[] counts, long total) {
