@@ -38,9 +38,9 @@ export function useHomeSchedule() {
 	const yesterdayStr = getDateByOffset(-1)
 	const tomorrowStr = getDateByOffset(1)
 	const { lessons: yesterdayLessons, status: yesterdayStatus } =
-		useScheduleByDate(yesterdayStr)
+		useScheduleByDate(offset === -1 ? yesterdayStr : null)
 	const { lessons: tomorrowLessons, status: tomorrowStatus } =
-		useScheduleByDate(tomorrowStr)
+		useScheduleByDate(offset === 1 ? tomorrowStr : null)
 
 	const otherLessons =
 		offset === -1 ? yesterdayLessons : offset === 1 ? tomorrowLessons : []

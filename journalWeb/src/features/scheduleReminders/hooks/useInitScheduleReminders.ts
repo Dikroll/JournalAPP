@@ -20,9 +20,16 @@ import {
 } from '../lib/mobileReminders'
 import { useScheduleRemindersStore } from '../model/store'
 
-function shouldRefetchToday(todayLoadedAt: number | null, lessonsDate?: string): boolean {
+function shouldRefetchToday(todayLoadedAt: number | null): boolean {
 	if (!todayLoadedAt) return true
-	if (lessonsDate !== getTodayString()) return true
+
+	const loadedDate = new Date(todayLoadedAt)
+	const loadedDateStr = [
+		loadedDate.getFullYear(),
+		String(loadedDate.getMonth() + 1).padStart(2, '0'),
+		String(loadedDate.getDate()).padStart(2, '0'),
+	].join('-')
+	if (loadedDateStr !== getTodayString()) return true
 
 	const ageMs = Date.now() - todayLoadedAt
 	return ageMs > 30 * 60_000
@@ -164,7 +171,7 @@ export function useInitScheduleReminders() {
 
 		async function refreshTodayIfNeeded(force = false) {
 			if (syncInFlightRef.current) return
-			if (!force && !shouldRefetchToday(todayLoadedAt, today[0]?.date)) return
+			if (!force && !shouldRefetchToday(todayLoadedAt)) return
 
 			syncInFlightRef.current = true
 			try {

@@ -3,7 +3,12 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { LessonItem } from './types'
 
+// Версия кэша - обновляется при изменении API
+export const SCHEDULE_CACHE_VERSION = 2
+
 interface ScheduleState {
+	cacheVersion: number
+
 	today: LessonItem[]
 	todayStatus: LoadingState
 	todayLoadedAt: number | null
@@ -23,7 +28,7 @@ interface ScheduleState {
 
 	setToday: (lessons: LessonItem[]) => void
 	setTodayStatus: (s: LoadingState) => void
-	setTodayLoadedAt: (t: number) => void
+	setTodayLoadedAt: (t: number | null) => void
 	setError: (e: string | null) => void
 
 	setDay: (date: string, lessons: LessonItem[]) => void
@@ -39,11 +44,15 @@ interface ScheduleState {
 	setWeekStatus: (date: string, s: LoadingState) => void
 	setWeekLoadedAt: (date: string, t: number) => void
 	clearWeeksCache: () => void
+
+	resetAllCache: () => void
 }
 
 export const useScheduleStore = create<ScheduleState>()(
 	persist(
 		set => ({
+			cacheVersion: SCHEDULE_CACHE_VERSION,
+
 			today: [],
 			todayStatus: 'idle',
 			todayLoadedAt: null,
@@ -97,10 +106,29 @@ export const useScheduleStore = create<ScheduleState>()(
 					weekLoadedAt: { ...state.weekLoadedAt, [date]: t },
 				})),
 			clearWeeksCache: () => set({ weekLoadedAt: {} }),
+
+			resetAllCache: () =>
+				set({
+					cacheVersion: SCHEDULE_CACHE_VERSION,
+					today: [],
+					todayStatus: 'idle',
+					todayLoadedAt: null,
+					error: null,
+					days: {},
+					dayStatus: {},
+					dayLoadedAt: {},
+					months: {},
+					monthStatus: {},
+					monthLoadedAt: {},
+					weeks: {},
+					weekStatus: {},
+					weekLoadedAt: {},
+				}),
 		}),
 		{
 			name: 'schedule-store',
 			partialize: state => ({
+				cacheVersion: state.cacheVersion,
 				today: state.today,
 				todayLoadedAt: state.todayLoadedAt,
 				days: state.days,

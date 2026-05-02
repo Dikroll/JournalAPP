@@ -2,13 +2,14 @@ import { getIsOnline } from '@/shared/model/networkStore'
 import { getTodayString } from '@/shared/utils'
 import { useEffect, useRef } from 'react'
 import { scheduleApi } from '../api'
-import { useScheduleStore } from '../model/store'
+import { SCHEDULE_CACHE_VERSION, useScheduleStore } from '../model/store'
 import type { LessonItem } from '../model/types'
 
 const FETCH_TIMEOUT_MS = 15_000
 
 let inFlightPromise: Promise<LessonItem[]> | null = null
 let sessionInitialized = false
+let lastVisitDate: string | null = null
 
 function isLoadedToday(timestamp: number): boolean {
 	const loadedDate = new Date(timestamp)
@@ -38,11 +39,13 @@ export function useScheduleToday() {
 	const today = useScheduleStore(s => s.today)
 	const todayStatus = useScheduleStore(s => s.todayStatus)
 	const todayLoadedAt = useScheduleStore(s => s.todayLoadedAt)
+	const cacheVersion = useScheduleStore(s => s.cacheVersion)
 	const error = useScheduleStore(s => s.error)
 	const setToday = useScheduleStore(s => s.setToday)
 	const setTodayStatus = useScheduleStore(s => s.setTodayStatus)
 	const setTodayLoadedAt = useScheduleStore(s => s.setTodayLoadedAt)
 	const setError = useScheduleStore(s => s.setError)
+	const resetAllCache = useScheduleStore(s => s.resetAllCache)
 
 	const fetchingRef = useRef(false)
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -50,18 +53,53 @@ export function useScheduleToday() {
 	useEffect(() => {
 		if (fetchingRef.current) return
 
-		const hasCachedToday = todayLoadedAt !== null && isLoadedToday(todayLoadedAt)
+		// Проверяем версию кэша - если версия изменилась, сбрасываем всё
+		if (cacheVersion !== SCHEDULE_CACHE_VERSION) {
+			console.log('[Schedule] Версия кэша устарела:', {
+				cached: cacheVersion,
+				current: SCHEDULE_CACHE_VERSION,
+			})
+			resetAllCache()
+			sessionInitialized = false
+			return
+		}
+
+		if (fetchingRef.current) return
+
+		// Сбрасываем сессию при переходе на новый день
+		const todayStr = getTodayString()
+		if (lastVisitDate !== todayStr) {
+			console.log('[Schedule] День изменился, сбрасываем кэш:', {
+				lastVisitDate,
+				todayStr,
+			})
+			lastVisitDate = todayStr
+			sessionInitialized = false
+		}
+
+		const hasCachedToday =
+			todayLoadedAt !== null && isLoadedToday(todayLoadedAt)
+
+		console.log('[Schedule] Проверка кэша:', {
+			todayLoadedAt,
+			hasCachedToday,
+			todayStatus,
+			sessionInitialized,
+			'today.length': today.length,
+		})
 
 		if (todayLoadedAt !== null && !hasCachedToday) {
+			console.log('[Schedule] Кэш устарел, очищаем')
 			sessionInitialized = false
 			setToday([])
-			setTodayLoadedAt(0)
+			setTodayLoadedAt(null)
 			setTodayStatus('idle')
 			setError(null)
 			return
 		}
 
 		if (hasCachedToday) {
+			console.log('[Schedule] Используем кэшированные данные')
 			if (todayStatus === 'idle') setTodayStatus('success')
 			return
 		}
@@ -77,7 +115,11 @@ export function useScheduleToday() {
 		}
 
 		// Only fetch if we haven't initialized in this session
-		if (sessionInitialized) return
+		if (sessionInitialized) {
+			console.log('[Schedule] Уже инициализирована сессия, пропускаем')
+			return
+		}
+		console.log('[Schedule] Начинаем fetch')
 		sessionInitialized = true
 
 		fetchingRef.current = true
@@ -95,11 +137,16 @@ export function useScheduleToday() {
 
 		fetchTodayDeduped()
 			.then(data => {
+				console.log(
+					'[Schedule] Данные загружены, получено элементов:',
+					data.length,
+				)
 				setToday(data)
 				setTodayLoadedAt(Date.now())
 				setTodayStatus('success')
 			})
 			.catch(err => {
+				console.error('[Schedule] Ошибка загрузки:', err)
 				const msg =
 					(err as { response?: { data?: { detail?: string } } })?.response?.data
 						?.detail ?? 'Ошибка загрузки расписания'
@@ -113,14 +160,7 @@ export function useScheduleToday() {
 					timeoutRef.current = null
 				}
 			})
-	}, [
-		todayLoadedAt,
-		today.length,
-		setToday,
-		setTodayStatus,
-		setTodayLoadedAt,
-		setError,
-	])
+	}, [cacheVersion, todayLoadedAt])
 
 	useEffect(() => {
 		return () => {
