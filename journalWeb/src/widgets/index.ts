@@ -46,6 +46,13 @@ export { PaymentHistoryCard } from './Payment/ui/PaymentHistoryCard'
 export { PaymentRequisitesCard } from './Payment/ui/PaymentRequisitesCard'
 export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
 
+// Market
+export { CartItemCard } from './Market/ui/CartItemCard'
+export { OrderCard } from './Market/ui/OrderCard'
+export { OrderItemsList } from './Market/ui/OrderItemsList'
+export { PriceDisplay } from './Market/ui/PriceDisplay'
+export { ProductCard } from './Market/ui/ProductCard'
+
 // Features re-exports (widget-level access)
 export { EvaluateLessonList } from '@/features/evaluateLesson'
 export { AccountSwitcher } from '@/features/changeUser'

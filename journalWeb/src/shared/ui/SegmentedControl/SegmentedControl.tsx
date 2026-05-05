@@ -27,25 +27,21 @@ export function SegmentedControl<T extends string>({
 						key={key}
 						type='button'
 						onClick={() => onChange(key)}
-						className='relative flex-1 h-10 rounded-2xl text-xs font-medium transition-all flex items-center justify-center gap-1.5'
+						className='relative flex-1 h-10 rounded-xl text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1.5'
 						style={{
 							WebkitTapHighlightColor: 'transparent',
-							background: isActive
-								? 'var(--color-surface-strong)'
-								: 'var(--color-surface)',
+							background: isActive ? 'var(--color-surface)' : 'transparent',
 							border: isActive
-								? '1.5px solid var(--color-border-strong)'
+								? '1px solid var(--color-border)'
 								: '1px solid var(--color-border)',
-							color: isActive
-								? 'var(--color-text)'
-								: 'var(--color-text-muted)',
-							boxShadow: isActive ? 'var(--shadow-card)' : 'none',
+							color: isActive ? 'var(--color-text)' : 'var(--color-text-muted)',
+							boxShadow: 'none',
 						}}
 					>
 						{icon}
 						{label}
 						{badge != null && badge > 0 && (
-							<span className='absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand text-white text-[9px] font-bold flex items-center justify-center'>
+							<span className='absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center'>
 								{badge}
 							</span>
 						)}

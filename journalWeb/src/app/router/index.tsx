@@ -8,6 +8,7 @@ import {
 	HomeworkPage,
 	LibraryPage,
 	LoginPage,
+	MarketPage,
 	NotificationSettingsPage,
 	NotificationsPage,
 	PaymentPage,
@@ -98,6 +99,7 @@ export function AppRouter() {
 						path='profile/notification-settings'
 						element={<NotificationSettingsPage />}
 					/>
+					<Route path='market' element={<MarketPage />} />
 					<Route path='payment' element={<PaymentPage />} />
 					<Route path='notifications' element={<NotificationsPage />} />
 				</Route>

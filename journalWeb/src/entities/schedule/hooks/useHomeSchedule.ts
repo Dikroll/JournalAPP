@@ -35,12 +35,23 @@ export function useHomeSchedule() {
 	const dateStr = getDateByOffset(offset)
 	const title = getTitle(offset)
 
+	const sortedToday = [...today].sort((a, b) => a.lesson - b.lesson)
+	const todayTimeInfo =
+		todayStatus === 'success'
+			? getScheduleTimeInfo(sortedToday, nowMinutes)
+			: null
+	const shouldAutoShowTomorrow =
+		todayStatus === 'success' &&
+		(today.length === 0 || todayTimeInfo?.type === 'after-lessons')
+
 	const yesterdayStr = getDateByOffset(-1)
 	const tomorrowStr = getDateByOffset(1)
 	const { lessons: yesterdayLessons, status: yesterdayStatus } =
 		useScheduleByDate(offset === -1 ? yesterdayStr : null)
 	const { lessons: tomorrowLessons, status: tomorrowStatus } =
-		useScheduleByDate(offset === 1 ? tomorrowStr : null)
+		useScheduleByDate(
+			offset === 1 || shouldAutoShowTomorrow ? tomorrowStr : null,
+		)
 
 	const otherLessons =
 		offset === -1 ? yesterdayLessons : offset === 1 ? tomorrowLessons : []
@@ -49,17 +60,11 @@ export function useHomeSchedule() {
 
 	useEffect(() => {
 		if (autoShiftedRef.current) return
-		if (todayStatus !== 'success') return
-		if (today.length === 0) return
+		if (!shouldAutoShowTomorrow) return
 
-		const sorted = [...today].sort((a, b) => a.lesson - b.lesson)
-		const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
-
-		if (timeInfo.type === 'after-lessons') {
-			setOffset(1)
-			autoShiftedRef.current = true
-		}
-	}, [todayStatus, today, nowMinutes])
+		setOffset(1)
+		autoShiftedRef.current = true
+	}, [shouldAutoShowTomorrow])
 
 	const goPrev = useCallback(
 		() => setOffset(o => Math.max(o - 1, -1) as HomeScheduleOffset),

@@ -15,6 +15,7 @@ export function LessonList({ lessons, forDate }: Props) {
 	const nowMinutes = useCurrentMinutes()
 	const todayStr = getTodayString()
 	const isToday = !forDate || forDate === todayStr
+	const emptyText = isToday ? 'Пар сегодня нет' : 'Пар на этот день нет'
 
 	if (lessons.length === 0)
 		return (
@@ -25,7 +26,7 @@ export function LessonList({ lessons, forDate }: Props) {
 					width={300}
 					height={300}
 				/>
-				<p className='text-app-muted text-sm text-center'>Пар сегодня нет</p>
+				<p className='text-app-muted text-sm text-center'>{emptyText}</p>
 			</div>
 		)
 

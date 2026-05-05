@@ -6,6 +6,7 @@ import { useGradesStore } from '@/entities/grades/model/store'
 import { useHomeworkStore } from '@/entities/homework/model/store'
 import { useLeaderboardStore } from '@/entities/leaderboard/model/store'
 import { useLibraryStore } from '@/entities/library/model/store'
+import { useMarketStore } from '@/entities/market/model/store'
 import { usePaymentStore } from '@/entities/payment/model/store'
 import { useProfileDetailsStore } from '@/entities/profile/model/store'
 import { useReviewStore } from '@/entities/review/model/store'
@@ -61,6 +62,11 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	useHomeworkStore.getState().reset()
 
 	useLibraryStore.getState().reset()
+
+	try {
+		useMarketStore.persist.clearStorage?.()
+	} catch {}
+	useMarketStore.getState().reset()
 
 	try {
 		usePaymentStore.persist.clearStorage?.()

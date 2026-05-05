@@ -53,12 +53,7 @@ export function useScheduleToday() {
 	useEffect(() => {
 		if (fetchingRef.current) return
 
-		// Проверяем версию кэша - если версия изменилась, сбрасываем всё
 		if (cacheVersion !== SCHEDULE_CACHE_VERSION) {
-			console.log('[Schedule] Версия кэша устарела:', {
-				cached: cacheVersion,
-				current: SCHEDULE_CACHE_VERSION,
-			})
 			resetAllCache()
 			sessionInitialized = false
 			return
@@ -66,13 +61,8 @@ export function useScheduleToday() {
 
 		if (fetchingRef.current) return
 
-		// Сбрасываем сессию при переходе на новый день
 		const todayStr = getTodayString()
 		if (lastVisitDate !== todayStr) {
-			console.log('[Schedule] День изменился, сбрасываем кэш:', {
-				lastVisitDate,
-				todayStr,
-			})
 			lastVisitDate = todayStr
 			sessionInitialized = false
 		}
@@ -80,16 +70,7 @@ export function useScheduleToday() {
 		const hasCachedToday =
 			todayLoadedAt !== null && isLoadedToday(todayLoadedAt)
 
-		console.log('[Schedule] Проверка кэша:', {
-			todayLoadedAt,
-			hasCachedToday,
-			todayStatus,
-			sessionInitialized,
-			'today.length': today.length,
-		})
-
 		if (todayLoadedAt !== null && !hasCachedToday) {
-			console.log('[Schedule] Кэш устарел, очищаем')
 			sessionInitialized = false
 			setToday([])
 			setTodayLoadedAt(null)
@@ -99,7 +80,6 @@ export function useScheduleToday() {
 		}
 
 		if (hasCachedToday) {
-			console.log('[Schedule] Используем кэшированные данные')
 			if (todayStatus === 'idle') setTodayStatus('success')
 			return
 		}
@@ -116,10 +96,8 @@ export function useScheduleToday() {
 
 		// Only fetch if we haven't initialized in this session
 		if (sessionInitialized) {
-			console.log('[Schedule] Уже инициализирована сессия, пропускаем')
 			return
 		}
-		console.log('[Schedule] Начинаем fetch')
 		sessionInitialized = true
 
 		fetchingRef.current = true
@@ -137,16 +115,11 @@ export function useScheduleToday() {
 
 		fetchTodayDeduped()
 			.then(data => {
-				console.log(
-					'[Schedule] Данные загружены, получено элементов:',
-					data.length,
-				)
 				setToday(data)
 				setTodayLoadedAt(Date.now())
 				setTodayStatus('success')
 			})
 			.catch(err => {
-				console.error('[Schedule] Ошибка загрузки:', err)
 				const msg =
 					(err as { response?: { data?: { detail?: string } } })?.response?.data
 						?.detail ?? 'Ошибка загрузки расписания'
