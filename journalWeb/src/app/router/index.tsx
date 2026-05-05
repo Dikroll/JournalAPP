@@ -20,7 +20,14 @@ import { pageConfig } from '@/shared/config'
 import { ScrollToTop } from '@/shared/lib'
 import { FullscreenLoader } from '@/widgets/Loading/ui/Loader'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { AppLayout } from '../layouts'
+import { AppLayout as MobileLayout } from '../layouts'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
+import { WebLayout } from '@/app/layouts/ui/WebLayout'
+
+function RootLayout() {
+	const isDesktop = useIsDesktop()
+	return isDesktop ? <WebLayout /> : <MobileLayout />
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -80,7 +87,7 @@ export function AppRouter() {
 					path='/'
 					element={
 						<ProtectedRoute>
-							<AppLayout />
+							<RootLayout />
 						</ProtectedRoute>
 					}
 				>

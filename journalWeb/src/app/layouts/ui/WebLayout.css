@@ -1,0 +1,60 @@
+/* ─────────────────────────────────────────────────────────────
+   WebLayout — обёртка для десктопной версии
+   Файл: app/layouts/WebLayout.css
+   ───────────────────────────────────────────────────────────── */
+
+.web-layout {
+  display: flex;
+  height: 100dvh;
+  width: 100%;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.web-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* важно для flex overflow */
+  overflow: hidden;
+}
+
+.web-layout__content {
+  flex: 1;
+  overflow-y: auto;
+  /* Добавляем небольшой отступ чтобы контент не прилипал к краям */
+  /* Страницы сами управляют своим padding, поэтому здесь минимум */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.web-layout__content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.web-layout__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.web-layout__content::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
+}
+
+/* Скрываем мобильные элементы внутри web-layout */
+.web-layout [class*="top-bar"],
+.web-layout [class*="TopBar"],
+.web-layout [class*="bottom-bar"],
+.web-layout [class*="BottomBar"] {
+  display: none !important;
+}
+
+/* Убираем мобильные отступы под BottomBar */
+.web-layout .min-h-screen {
+  padding-bottom: 0 !important;
+  min-height: unset;
+}
+
+.web-layout .pb-28 {
+  padding-bottom: 0 !important;
+}

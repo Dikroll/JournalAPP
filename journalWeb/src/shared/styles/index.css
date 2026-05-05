@@ -108,3 +108,9 @@ svg:focus-visible,
 	color: var(--color-grade-2-badge);
 	border-color: var(--color-grade-2-border);
 }
+/* Скрываем мобильный BottomBar на десктопе */
+@media (min-width: 768px) {
+  .bottom-bar {
+    display: none !important;
+  }
+}
