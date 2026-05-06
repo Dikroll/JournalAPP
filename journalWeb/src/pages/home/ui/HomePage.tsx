@@ -1,5 +1,12 @@
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { DashboardCharts, FutureExams, HomeScheduleSection } from '@/widgets'
+import { WebHomePage } from './WebHomePage'
+
 export function HomePage() {
+	const isDesktop = useIsDesktop()
+
+	if (isDesktop) return <WebHomePage />
+
 	return (
 		<div className='min-h-screen pb-28'>
 			<div className='px-4 pt-2 pb-4'>

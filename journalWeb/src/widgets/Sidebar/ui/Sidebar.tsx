@@ -8,11 +8,11 @@ import {
   Library,
   Star,
   User,
-  Bell,
   CreditCard,
   Moon,
   Sun,
   WifiOff,
+  Newspaper,
 } from 'lucide-react'
 import { useTopBarViewModel } from '@/app/hooks/useTopBarViewModel'
 import { useThemeStore } from '@/shared/lib/themeStore'
@@ -31,14 +31,13 @@ interface NavItem {
 // ─── Маппинг пути → заголовок страницы ───────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
-  [pageConfig.home]:          'Главная',
-  [pageConfig.grades]:        'Оценки',
-  [pageConfig.schedule]:      'Расписание',
-  [pageConfig.homework]:      'Домашние задания',
-  [pageConfig.library]:       'Библиотека',
-  [pageConfig.profile]:       'Профиль',
-  [pageConfig.notifications]: 'Уведомления',
-  [pageConfig.payment]:       'Платежи',
+  [pageConfig.home]:     'Главная',
+  [pageConfig.grades]:   'Оценки',
+  [pageConfig.schedule]: 'Расписание',
+  [pageConfig.homework]: 'Домашние задания',
+  [pageConfig.library]:  'Библиотека',
+  [pageConfig.profile]:  'Профиль',
+  [pageConfig.payment]:  'Платежи',
 }
 
 // ─── Форматирование даты ──────────────────────────────────────────────────────
@@ -91,8 +90,6 @@ export const Sidebar = memo(() => {
   const location = useLocation()
 
   const hwBadge = vm?.hasBadge ? 1 : undefined
-
-  // Заголовок текущей страницы
   const pageTitle = PAGE_TITLES[location.pathname] ?? 'Журнал'
 
   const mainNav: NavItem[] = [
@@ -108,15 +105,14 @@ export const Sidebar = memo(() => {
   ]
 
   const otherNav: NavItem[] = [
-    { to: pageConfig.profile,       label: 'Профиль',     icon: <User       size={16} /> },
-    { to: pageConfig.notifications, label: 'Уведомления', icon: <Bell       size={16} /> },
-    { to: pageConfig.payment,       label: 'Платежи',     icon: <CreditCard size={16} /> },
+    { to: pageConfig.profile, label: 'Профиль', icon: <User       size={16} /> },
+    { to: pageConfig.payment, label: 'Платежи', icon: <CreditCard size={16} /> },
   ]
 
   return (
     <aside className="sidebar-web">
 
-      {/* ── Шапка: лого + юзер + дата + уведомления ── */}
+      {/* ── Шапка: лого + юзер ── */}
       <div className="sidebar-web__header">
 
         {/* Лого */}
@@ -132,7 +128,7 @@ export const Sidebar = memo(() => {
           <span className="sidebar-web__brand-college"> COLLEGE</span>
         </div>
 
-        {/* Юзер + кнопка уведомлений */}
+        {/* Юзер */}
         {vm && (
           <div className="sidebar-web__user">
             <Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
@@ -141,30 +137,41 @@ export const Sidebar = memo(() => {
               <div className="sidebar-web__group">{vm.groupName}</div>
               <div className="sidebar-web__date">{formatDate()}</div>
             </div>
-            {/* Кнопка уведомлений справа от имени */}
-            <button
-              className="sidebar-web__notif-btn"
-              onClick={() => navigate(pageConfig.notifications)}
-              type="button"
-              aria-label="Уведомления"
-            >
-              <Bell size={15} />
-              {vm.hasBadge && <span className="sidebar-web__notif-dot" />}
-            </button>
           </div>
         )}
+
+
       </div>
 
-      {/* ── Заголовок текущей страницы ── */}
-      <div className="sidebar-web__page-title">
-        {pageTitle}
-      </div>
+      {/* ── Заголовок страницы ── */}
+      <div className="sidebar-web__page-title">{pageTitle}</div>
 
       {/* ── Навигация ── */}
       <nav className="sidebar-web__nav">
         <NavSection label="Главное" items={mainNav} />
         <NavSection label="Учёба"   items={studyNav} />
         <NavSection label="Прочее"  items={otherNav} />
+
+        {/* Быстрый переход на вкладки страницы уведомлений */}
+        <div className="sidebar-web__section">
+          <div className="sidebar-web__section-label">Быстрый переход</div>
+          <button
+            className={`sidebar-web__item sidebar-web__item--btn`}
+            onClick={() => navigate(pageConfig.evaluateLesson)}
+            type="button"
+          >
+            <span className="sidebar-web__item-icon"><Star size={16} /></span>
+            <span className="sidebar-web__item-label">Оценка занятий</span>
+          </button>
+          <button
+            className={`sidebar-web__item sidebar-web__item--btn`}
+            onClick={() => navigate(pageConfig.news)}
+            type="button"
+          >
+            <span className="sidebar-web__item-icon"><Newspaper size={16} /></span>
+            <span className="sidebar-web__item-label">Новости</span>
+          </button>
+        </div>
       </nav>
 
       {/* ── Подвал ── */}

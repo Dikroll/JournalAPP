@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/features/auth'
 import { useHydrationStore } from '@/features/auth/model/store'
 import {
+	EvaluateLessonPage,
 	GoalDetailPage,
 	GoalsPage,
 	GradesPage,
@@ -8,6 +9,7 @@ import {
 	HomeworkPage,
 	LibraryPage,
 	LoginPage,
+	NewsPage,
 	NotificationSettingsPage,
 	NotificationsPage,
 	PaymentPage,
@@ -22,7 +24,7 @@ import { FullscreenLoader } from '@/widgets/Loading/ui/Loader'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout as MobileLayout } from '../layouts'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
-import { WebLayout } from '@/app/layouts/ui/WebLayout'
+import { WebLayout } from '../layouts/ui/WebLayout'
 
 function RootLayout() {
 	const isDesktop = useIsDesktop()
@@ -107,6 +109,8 @@ export function AppRouter() {
 					/>
 					<Route path='payment' element={<PaymentPage />} />
 					<Route path='notifications' element={<NotificationsPage />} />
+					<Route path='evaluate-lesson' element={<EvaluateLessonPage />} />
+					<Route path='news' element={<NewsPage />} />
 				</Route>
 
 				<Route path='*' element={<Navigate to='/' replace />} />

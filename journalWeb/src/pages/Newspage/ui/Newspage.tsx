@@ -12,45 +12,25 @@ import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import {
-	ChangelogTab,
-	ComingSoonTab,
-	EvaluateLessonList,
-} from '@/widgets'
-import {
-	ArrowLeft,
-	ClipboardCheck,
-	Megaphone,
-	Sparkles,
-} from 'lucide-react'
+import { ChangelogTab, ComingSoonTab } from '@/widgets'
+import { ArrowLeft, Megaphone, Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-type Tab = 'changelog' | 'feedback' | 'news'
+type Tab = 'changelog' | 'news'
 
 const TABS: Segment<Tab>[] = [
 	{ key: 'changelog', label: 'Обновления', icon: <Sparkles size={13} /> },
-	{ key: 'feedback', label: 'Оценки', icon: <ClipboardCheck size={13} /> },
-	{ key: 'news', label: 'Новости', icon: <Megaphone size={13} /> },
+	{ key: 'news',      label: 'Новости',    icon: <Megaphone size={13} /> },
 ]
 
-export function NotificationsPage() {
+export function NewsPage() {
 	const navigate = useNavigate()
-	const location = useLocation()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
-	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
-	const markPendingSeen = useNotificationsStore(s => s.markPendingSeen)
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
-	const pending = useFeedbackStore(s => s.pending)
 
 	useSwipeBack()
-
-	// Открываем нужную вкладку если пришли с сайдбара
-	useEffect(() => {
-		const tab = (location.state as { tab?: Tab } | null)?.tab
-		if (tab) setActiveTab(tab)
-	}, [])
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
@@ -63,19 +43,6 @@ export function NotificationsPage() {
 		}
 	}, [latestRelease, entries, setLastRead])
 
-	const pendingKeys = useMemo(() => pending.map(p => p.key), [pending])
-
-	const newPendingCount = useMemo(
-		() => getNewPendingCount(seenPendingKeys, pendingKeys),
-		[seenPendingKeys, pendingKeys],
-	)
-
-	useEffect(() => {
-		if (activeTab !== 'feedback') return
-		if (newPendingCount === 0) return
-		markPendingSeen(pendingKeys)
-	}, [activeTab, newPendingCount, pendingKeys, markPendingSeen])
-
 	const unread = getUnreadCount(lastReadChangelogId, entries)
 
 	const tabsWithBadge = useMemo<Segment<Tab>[]>(
@@ -84,12 +51,9 @@ export function NotificationsPage() {
 				if (tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null) {
 					return { ...tab, badge: unread }
 				}
-				if (tab.key === 'feedback' && newPendingCount > 0) {
-					return { ...tab, badge: newPendingCount }
-				}
 				return tab
 			}),
-		[unread, lastReadChangelogId, newPendingCount],
+		[unread, lastReadChangelogId],
 	)
 
 	return (
@@ -105,10 +69,9 @@ export function NotificationsPage() {
 						style={{ boxShadow: 'var(--shadow-card)' }}
 						aria-label='Назад'
 					/>
-
 					<div className='flex-1'>
 						<PageHeader
-							title='Уведомления'
+							title='Новости'
 							actions={<RefreshNotificationsButton />}
 						/>
 					</div>
@@ -128,7 +91,6 @@ export function NotificationsPage() {
 						<ChangelogTab entries={entries} />
 					</>
 				)}
-				{activeTab === 'feedback' && <EvaluateLessonList />}
 				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
 			</div>
 		</div>
