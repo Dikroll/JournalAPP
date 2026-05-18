@@ -122,3 +122,31 @@ export function formatDateFull(date: string | Date): string {
 	const d = typeof date === 'string' ? new Date(date) : date
 	return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
 }
+
+/** Получает строку даты понедельника для заданной даты */
+export function getStartOfWeek(dateStr: string): string {
+	const d = new Date(`${dateStr}T00:00:00`)
+	const day = d.getDay()
+	const diff = d.getDate() - day + (day === 0 ? -6 : 1)
+	const monday = new Date(d.setDate(diff))
+	return toDateString(monday.getFullYear(), monday.getMonth(), monday.getDate())
+}
+
+/** Форматирует диапазон недели, например "18 - 24 мая" */
+export function formatWeekLabel(mondayStr: string): string {
+	const start = new Date(`${mondayStr}T00:00:00`)
+	const end = new Date(start)
+	end.setDate(end.getDate() + 6)
+	
+	const startMonth = start.getMonth()
+	const endMonth = end.getMonth()
+	
+	if (startMonth === endMonth) {
+		const monthName = end.toLocaleDateString('ru-RU', { month: 'long' })
+		return `${start.getDate()} - ${end.getDate()} ${monthName}`
+	}
+	
+	const startMonthName = start.toLocaleDateString('ru-RU', { month: 'short' }).replace('.', '')
+	const endMonthName = end.toLocaleDateString('ru-RU', { month: 'long' })
+	return `${start.getDate()} ${startMonthName} - ${end.getDate()} ${endMonthName}`
+}

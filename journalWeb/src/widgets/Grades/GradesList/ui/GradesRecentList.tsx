@@ -1,6 +1,10 @@
 import type { GradeEntryExpanded } from '@/entities/grades'
 import { useLazyItems } from '@/shared/hooks'
-import { formatDateRelative } from '@/shared/utils'
+import {
+	formatDateRelative,
+	formatWeekLabel,
+	getStartOfWeek,
+} from '@/shared/utils'
 import { useEffect, useRef, useState } from 'react'
 import { GradeEntryRow } from './GradeEntryRow'
 
@@ -37,7 +41,7 @@ function DateCard({
 	const estimatedHeight = 56 + items.length * 68
 
 	return (
-		<div className='space-y-2'>
+		<div className='space-y-2 break-inside-avoid mb-4'>
 			<div className='text-sm font-medium text-app-muted px-1'>
 				{formatDateRelative(date)}
 			</div>
@@ -72,14 +76,39 @@ export function GradesRecentList({ byDate }: Props) {
 		)
 	}
 
+	const visibleDays = byDate.slice(0, visibleCount)
+	const weeksMap = new Map<
+		string,
+		Array<{ date: string; items: GradeEntryExpanded[] }>
+	>()
+
+	visibleDays.forEach(day => {
+		const weekStart = getStartOfWeek(day.date)
+		if (!weeksMap.has(weekStart)) {
+			weeksMap.set(weekStart, [])
+		}
+		weeksMap.get(weekStart)!.push(day)
+	})
+
+	const weeks = Array.from(weeksMap.entries())
+
 	return (
-		<div className='space-y-4'>
-			{byDate.slice(0, visibleCount).map(({ date, items }) => (
-				<DateCard key={date} date={date} items={items} />
+		<div className='space-y-8'>
+			{weeks.map(([weekStart, days]) => (
+				<div key={weekStart} className='space-y-4'>
+					<h3 className='text-base font-bold text-app-text px-1'>
+						{formatWeekLabel(weekStart)}
+					</h3>
+					<div className='columns-1 md:columns-2 gap-4 space-y-4 md:space-y-0'>
+						{days.map(({ date, items }) => (
+							<DateCard key={date} date={date} items={items} />
+						))}
+					</div>
+				</div>
 			))}
 
 			{visibleCount < byDate.length && (
-				<div ref={sentinelRef} className='space-y-3 pt-1'>
+				<div ref={sentinelRef} className='space-y-3 pt-1 break-inside-avoid'>
 					{[0, 1].map(i => (
 						<div
 							key={i}

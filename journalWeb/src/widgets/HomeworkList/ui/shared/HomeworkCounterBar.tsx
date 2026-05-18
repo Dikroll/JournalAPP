@@ -57,8 +57,8 @@ export function HomeworkCountersBar({
 	onFilter,
 }: Props) {
 	return (
-		<div className='-mx-4 overflow-x-auto scrollbar-none'>
-			<div className='flex gap-2 px-4 py-2 w-max'>
+		<div className='-mx-4 overflow-x-auto scrollbar-none homework-counters-bar'>
+			<div className='flex gap-2 px-4 py-2 w-max homework-counters-bar__inner'>
 				{ITEMS.map(({ key, label, color, ring, status }) => {
 					const isActive = activeFilter === status
 					return (
@@ -67,7 +67,7 @@ export function HomeworkCountersBar({
 							type='button'
 							onClick={() => onFilter(isActive ? null : status)}
 							className={[
-								'flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 active:scale-95',
+								'flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 active:scale-95 homework-counters-bar__btn',
 								isActive
 									? `bg-app-surface-active ring-2 ${ring}`
 									: 'bg-app-surface border border-app-border hover:bg-app-surface-hover',

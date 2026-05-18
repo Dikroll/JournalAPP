@@ -114,3 +114,51 @@ svg:focus-visible,
     display: none !important;
   }
 }
+
+/* ── Homework counters full-width (desktop) ── */
+@media (min-width: 768px) {
+  .homework-counters-full .homework-counters-bar {
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: visible;
+  }
+  .homework-counters-full .homework-counters-bar__inner {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 0;
+  }
+  .homework-counters-full .homework-counters-bar__btn {
+    min-width: 0;
+    flex-shrink: unset;
+    width: 100%;
+  }
+}
+
+/* ── Schedule Calendar — адаптивный лэйаут ── */
+.schedule-calendar-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-calendar-layout__lessons {
+  padding-top: 4px;
+}
+
+@media (min-width: 768px) {
+  .schedule-calendar-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .schedule-calendar-layout__lessons {
+    padding-top: 0;
+    border-left: 1px solid var(--color-border);
+    padding-left: 24px;
+    min-height: 320px;
+  }
+}

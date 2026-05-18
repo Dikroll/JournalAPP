@@ -187,7 +187,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 			)}
 
 			{!isLoading && !error && materials.length > 0 && (
-				<div className='space-y-3'>
+				<div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
 					{materials.map(material => (
 						<LibraryMaterialCard
 							key={material.material_id}

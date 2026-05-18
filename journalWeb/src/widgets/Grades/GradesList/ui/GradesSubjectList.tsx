@@ -29,12 +29,13 @@ export function GradesSubjectList({ bySubject }: Props) {
 		<div className='space-y-3'>
 			<SortSubjectsControl />
 
-			{sorted.slice(0, visibleCount).map(subj => (
-				<div
-					key={subj.spec_id}
-					className='bg-app-surface rounded-[24px] p-4 border border-app-border'
-					style={{ boxShadow: 'var(--shadow-card)' }}
-				>
+			<div className='columns-1 md:columns-2 gap-4 space-y-3 md:space-y-0'>
+				{sorted.slice(0, visibleCount).map(subj => (
+					<div
+						key={subj.spec_id}
+						className='bg-app-surface rounded-[24px] p-4 border border-app-border break-inside-avoid mb-4'
+						style={{ boxShadow: 'var(--shadow-card)' }}
+					>
 					<div className='flex items-start justify-between gap-3 mb-4'>
 						<h3 className='text-sm font-semibold text-app-text leading-snug'>
 							{subj.spec_name}
@@ -88,7 +89,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 			))}
 
 			{visibleCount < sorted.length && (
-				<div ref={sentinelRef} className='space-y-3 pt-1'>
+				<div ref={sentinelRef} className='space-y-3 pt-1 break-inside-avoid'>
 					{[0, 1].map(i => (
 						<div
 							key={i}
@@ -97,6 +98,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 					))}
 				</div>
 			)}
+			</div>
 		</div>
 	)
 }

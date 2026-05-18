@@ -21,57 +21,61 @@ export function ScheduleCalendar() {
 	const selectedLessons = lessons.filter(l => l.date === selectedDate)
 
 	return (
-		<div className='flex flex-col gap-4'>
-			<MonthGrid
-				year={year}
-				month={month}
-				onPrevMonth={prevMonth}
-				onNextMonth={nextMonth}
-				renderDay={({ dateStr, day, isToday }) => {
-					const dow = getDayOfWeek(dateStr)
-					const isWeekend = dow === 0 || dow === 6
-					const hasLesson = daysWithLessons.has(dateStr)
-					const isSelected = dateStr === selectedDate
-					const isActive = hasLesson && !isWeekend
+		<div className='schedule-calendar-layout'>
+			{/* Левая часть: сетка календаря */}
+			<div className='schedule-calendar-layout__grid'>
+				<MonthGrid
+					year={year}
+					month={month}
+					onPrevMonth={prevMonth}
+					onNextMonth={nextMonth}
+					renderDay={({ dateStr, day, isToday }) => {
+						const dow = getDayOfWeek(dateStr)
+						const isWeekend = dow === 0 || dow === 6
+						const hasLesson = daysWithLessons.has(dateStr)
+						const isSelected = dateStr === selectedDate
+						const isActive = hasLesson && !isWeekend
 
-					return (
-						<button
-							type='button'
-							disabled={!isActive}
-							onClick={e => {
-								e.preventDefault()
-								setSelectedDate(dateStr)
-							}}
-							className={`
-								relative flex items-center justify-center
-								rounded-full text-xs font-semibold
-								disabled:cursor-default
-								${isSelected ? 'bg-brand text-white' : ''}
-								${
-									!isSelected && isActive
-										? 'text-app-text hover:bg-app-surface-hover cursor-pointer'
-										: ''
-								}
-								${!isSelected && !isActive ? 'text-app-faint' : ''}
-							`}
-							style={{ width: 36, height: 36 }}
-						>
-							{day}
+						return (
+							<button
+								type='button'
+								disabled={!isActive}
+								onClick={e => {
+									e.preventDefault()
+									setSelectedDate(dateStr)
+								}}
+								className={`
+									relative flex items-center justify-center
+									rounded-full text-xs font-semibold
+									disabled:cursor-default
+									${isSelected ? 'bg-brand text-white' : ''}
+									${
+										!isSelected && isActive
+											? 'text-app-text hover:bg-app-surface-hover cursor-pointer'
+											: ''
+									}
+									${!isSelected && !isActive ? 'text-app-faint' : ''}
+								`}
+								style={{ width: 36, height: 36 }}
+							>
+								{day}
 
-							{isToday && !isSelected && (
-								<span
-									className='absolute inset-0 rounded-full pointer-events-none'
-									style={{ boxShadow: '0 0 0 1.5px var(--color-brand)' }}
-								/>
-							)}
-						</button>
-					)
-				}}
-			/>
+								{isToday && !isSelected && (
+									<span
+										className='absolute inset-0 rounded-full pointer-events-none'
+										style={{ boxShadow: '0 0 0 1.5px var(--color-brand)' }}
+									/>
+								)}
+							</button>
+						)
+					}}
+				/>
+			</div>
 
+			{/* Правая часть: список пар выбранного дня */}
 			{selectedDate && (
-				<div>
-					<p className='text-xs text-app-muted mb-2 px-1 capitalize'>
+				<div className='schedule-calendar-layout__lessons'>
+					<p className='text-xs text-app-muted mb-3 px-1 capitalize font-medium'>
 						{formatDateLong(selectedDate)}
 					</p>
 					<LessonList lessons={selectedLessons} forDate={selectedDate} />

@@ -7,16 +7,18 @@ import {
   BookOpen,
   Library,
   Star,
-  User,
   CreditCard,
   Moon,
   Sun,
   WifiOff,
   Newspaper,
+  Gem,
+  Coins,
 } from 'lucide-react'
 import { useTopBarViewModel } from '@/app/hooks/useTopBarViewModel'
 import { useThemeStore } from '@/shared/lib/themeStore'
 import { pageConfig } from '@/shared/config'
+import { useUserStore } from '@/entities/user'
 import './Sidebar.css'
 
 // ─── Типы ─────────────────────────────────────────────────────────────────────
@@ -42,12 +44,14 @@ const PAGE_TITLES: Record<string, string> = {
 
 // ─── Форматирование даты ──────────────────────────────────────────────────────
 
-function formatDate(): string {
-  return new Date().toLocaleDateString('ru-RU', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  })
+function formatDateParts(): { weekday: string; dayMonth: string } {
+  const now = new Date()
+  const weekday = now.toLocaleDateString('ru-RU', { weekday: 'long' })
+  const dayMonth = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
+  return {
+    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+    dayMonth,
+  }
 }
 
 // ─── Аватар ───────────────────────────────────────────────────────────────────
@@ -84,6 +88,7 @@ Avatar.displayName = 'Avatar'
 
 export const Sidebar = memo(() => {
   const vm = useTopBarViewModel()
+  const user = useUserStore(state => state.user)
   const isOffline = !navigator.onLine
   const { theme, toggleTheme } = useThemeStore()
   const navigate = useNavigate()
@@ -91,6 +96,11 @@ export const Sidebar = memo(() => {
 
   const hwBadge = vm?.hasBadge ? 1 : undefined
   const pageTitle = PAGE_TITLES[location.pathname] ?? 'Журнал'
+
+  const coins = user?.points?.coins?.balance ?? null
+  const diamonds = user?.points?.diamonds?.balance ?? null
+
+  const { weekday, dayMonth } = formatDateParts()
 
   const mainNav: NavItem[] = [
     { to: pageConfig.home,     label: 'Главная',         icon: <LayoutDashboard size={16} /> },
@@ -105,7 +115,6 @@ export const Sidebar = memo(() => {
   ]
 
   const otherNav: NavItem[] = [
-    { to: pageConfig.profile, label: 'Профиль', icon: <User       size={16} /> },
     { to: pageConfig.payment, label: 'Платежи', icon: <CreditCard size={16} /> },
   ]
 
@@ -128,16 +137,45 @@ export const Sidebar = memo(() => {
           <span className="sidebar-web__brand-college"> COLLEGE</span>
         </div>
 
-        {/* Юзер */}
+        {/* Юзер — клик на аватар/имя → профиль */}
         {vm && (
-          <div className="sidebar-web__user">
+          <button
+            type="button"
+            className="sidebar-web__user sidebar-web__user--clickable"
+            onClick={() => navigate(pageConfig.profile)}
+            title="Перейти в профиль"
+          >
             <Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
             <div className="sidebar-web__user-info">
-              <div className="sidebar-web__name">{vm.fullName}</div>
+              <div className="sidebar-web__name">{vm.shortName}</div>
               <div className="sidebar-web__group">{vm.groupName}</div>
-              <div className="sidebar-web__date">{formatDate()}</div>
+
+              {/* Дата */}
+              <div className="sidebar-web__date-block">
+                <span className="sidebar-web__date-weekday">{weekday}</span>
+                <span className="sidebar-web__date-dot">·</span>
+                <span className="sidebar-web__date-day">{dayMonth}</span>
+              </div>
+
+              {/* Счётчики монет и кристаллов */}
+              {(coins !== null || diamonds !== null) && (
+                <div className="sidebar-web__counters">
+                  {coins !== null && (
+                    <span className="sidebar-web__counter sidebar-web__counter--coins">
+                      <Coins size={11} />
+                      <span>{coins}</span>
+                    </span>
+                  )}
+                  {diamonds !== null && (
+                    <span className="sidebar-web__counter sidebar-web__counter--gems">
+                      <Gem size={11} />
+                      <span>{diamonds}</span>
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
+          </button>
         )}
 
 

@@ -103,97 +103,194 @@ export function ScheduleWeekView() {
 				/>
 			</div>
 
-			{weekDays.map((dateStr, idx) => {
-				const dayLessons = byDate[dateStr] ?? []
-				const isToday = dateStr === today
-				const todayTimeInfo = isToday
-					? getScheduleTimeInfo(dayLessons, nowMinutes)
-					: null
-				const isPast = dateStr < today
-				const isWeekend = idx >= 5
-				const isEmpty = dayLessons.length === 0
+			<div className='flex flex-col md:flex-row gap-5 md:gap-8'>
+				<div className='flex-1 flex flex-col gap-5'>
+					{weekDays.slice(0, 3).map((dateStr, idx) => {
+						const actualIdx = idx;
+						const dayLessons = byDate[dateStr] ?? []
+						const isToday = dateStr === today
+						const todayTimeInfo = isToday
+							? getScheduleTimeInfo(dayLessons, nowMinutes)
+							: null
+						const isPast = dateStr < today
+						const isWeekend = actualIdx >= 5
+						const isEmpty = dayLessons.length === 0
 
-				// Выходной без пар — минимальная разделительная строка
-				if (isWeekend && isEmpty) {
-					return (
-						<div
-							key={dateStr}
-							className='flex items-center gap-3 px-1 opacity-40'
-						>
-							<span className='text-xs font-semibold text-app-muted w-6 shrink-0'>
-								{RU_DAYS_SHORT[idx]}
-							</span>
-							<span className='text-xs text-app-muted'>
-								{formatDateCompact(dateStr)}
-							</span>
-							<div className='flex-1 h-px bg-app-border' />
-							<Coffee size={11} className='text-app-faint shrink-0' />
-						</div>
-					)
-				}
-
-				return (
-					<section
-						key={dateStr}
-						className={isPast && !isToday ? 'opacity-60' : ''}
-					>
-						{/* Section header */}
-						<div className='flex items-center justify-between mb-2.5 px-1'>
-							<div className='flex items-center gap-2'>
-								<span
-									className='text-xs font-bold w-6 shrink-0'
-									style={{
-										color: isToday
-											? 'var(--color-brand)'
-											: 'var(--color-text-muted)',
-									}}
+						if (isWeekend && isEmpty) {
+							return (
+								<div
+									key={dateStr}
+									className='flex items-center gap-3 px-1 opacity-40'
 								>
-									{RU_DAYS_SHORT[idx]}
-								</span>
-								<span className='text-sm font-semibold text-app-text'>
-									{formatDateCompact(dateStr)}
-								</span>
-								{isToday && (
-									<Badge variant='brand' size='xs'>Сегодня</Badge>
-								)}
-							</div>
-							{!isEmpty ? (
-								<span className='text-xs text-app-muted'>
-									{pluralizeLessons(dayLessons.length)}
-								</span>
-							) : (
-								<span className='text-xs text-app-faint'>Нет пар</span>
-							)}
-						</div>
+									<span className='text-xs font-semibold text-app-muted w-6 shrink-0'>
+										{RU_DAYS_SHORT[actualIdx]}
+									</span>
+									<span className='text-xs text-app-muted'>
+										{formatDateCompact(dateStr)}
+									</span>
+									<div className='flex-1 h-px bg-app-border' />
+									<Coffee size={11} className='text-app-faint shrink-0' />
+								</div>
+							)
+						}
 
-						{/* Lessons — flat list */}
-						{!isEmpty ? (
-							<ul className='flex flex-col gap-3'>
-								{dayLessons.map((lesson, i) => (
-									<li key={`${lesson.started_at}-${lesson.room}`} className='flex flex-col'>
-										{i > 0 && (
-											<GapIndicator
-												gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
-											/>
+						return (
+							<section
+								key={dateStr}
+								className={isPast && !isToday ? 'opacity-60' : ''}
+							>
+								{/* Section header */}
+								<div className='flex items-center justify-between mb-2.5 px-1'>
+									<div className='flex items-center gap-2'>
+										<span
+											className='text-xs font-bold w-6 shrink-0'
+											style={{
+												color: isToday
+													? 'var(--color-brand)'
+													: 'var(--color-text-muted)',
+											}}
+										>
+											{RU_DAYS_SHORT[actualIdx]}
+										</span>
+										<span className='text-sm font-semibold text-app-text'>
+											{formatDateCompact(dateStr)}
+										</span>
+										{isToday && (
+											<Badge variant='brand' size='xs'>Сегодня</Badge>
 										)}
-										<LessonCard
-											lesson={lesson}
-											isCurrent={
-												isToday &&
-												nowMinutes >= toMinutes(lesson.started_at) &&
-												nowMinutes <= toMinutes(lesson.finished_at)
-											}
-											timeLabel={getLessonTimeLabel(todayTimeInfo, lesson)}
-										/>
-									</li>
-								))}
-							</ul>
-						) : (
-							<p className='text-app-muted text-sm px-1'>Пар нет</p>
-						)}
-					</section>
-				)
-			})}
+									</div>
+									{!isEmpty ? (
+										<span className='text-xs text-app-muted'>
+											{pluralizeLessons(dayLessons.length)}
+										</span>
+									) : (
+										<span className='text-xs text-app-faint'>Нет пар</span>
+									)}
+								</div>
+
+								{/* Lessons — flat list */}
+								{!isEmpty ? (
+									<ul className='flex flex-col gap-3'>
+										{dayLessons.map((lesson, i) => (
+											<li key={`${lesson.started_at}-${lesson.room}`} className='flex flex-col'>
+												{i > 0 && (
+													<GapIndicator
+														gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
+													/>
+												)}
+												<LessonCard
+													lesson={lesson}
+													isCurrent={
+														isToday &&
+														nowMinutes >= toMinutes(lesson.started_at) &&
+														nowMinutes <= toMinutes(lesson.finished_at)
+													}
+													timeLabel={getLessonTimeLabel(todayTimeInfo, lesson)}
+												/>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className='text-app-muted text-sm px-1'>Пар нет</p>
+								)}
+							</section>
+						)
+					})}
+				</div>
+				<div className='flex-1 flex flex-col gap-5'>
+					{weekDays.slice(3).map((dateStr, idx) => {
+						const actualIdx = idx + 3;
+						const dayLessons = byDate[dateStr] ?? []
+						const isToday = dateStr === today
+						const todayTimeInfo = isToday
+							? getScheduleTimeInfo(dayLessons, nowMinutes)
+							: null
+						const isPast = dateStr < today
+						const isWeekend = actualIdx >= 5
+						const isEmpty = dayLessons.length === 0
+
+						if (isWeekend && isEmpty) {
+							return (
+								<div
+									key={dateStr}
+									className='flex items-center gap-3 px-1 opacity-40'
+								>
+									<span className='text-xs font-semibold text-app-muted w-6 shrink-0'>
+										{RU_DAYS_SHORT[actualIdx]}
+									</span>
+									<span className='text-xs text-app-muted'>
+										{formatDateCompact(dateStr)}
+									</span>
+									<div className='flex-1 h-px bg-app-border' />
+									<Coffee size={11} className='text-app-faint shrink-0' />
+								</div>
+							)
+						}
+
+						return (
+							<section
+								key={dateStr}
+								className={isPast && !isToday ? 'opacity-60' : ''}
+							>
+								{/* Section header */}
+								<div className='flex items-center justify-between mb-2.5 px-1'>
+									<div className='flex items-center gap-2'>
+										<span
+											className='text-xs font-bold w-6 shrink-0'
+											style={{
+												color: isToday
+													? 'var(--color-brand)'
+													: 'var(--color-text-muted)',
+											}}
+										>
+											{RU_DAYS_SHORT[actualIdx]}
+										</span>
+										<span className='text-sm font-semibold text-app-text'>
+											{formatDateCompact(dateStr)}
+										</span>
+										{isToday && (
+											<Badge variant='brand' size='xs'>Сегодня</Badge>
+										)}
+									</div>
+									{!isEmpty ? (
+										<span className='text-xs text-app-muted'>
+											{pluralizeLessons(dayLessons.length)}
+										</span>
+									) : (
+										<span className='text-xs text-app-faint'>Нет пар</span>
+									)}
+								</div>
+
+								{/* Lessons — flat list */}
+								{!isEmpty ? (
+									<ul className='flex flex-col gap-3'>
+										{dayLessons.map((lesson, i) => (
+											<li key={`${lesson.started_at}-${lesson.room}`} className='flex flex-col'>
+												{i > 0 && (
+													<GapIndicator
+														gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
+													/>
+												)}
+												<LessonCard
+													lesson={lesson}
+													isCurrent={
+														isToday &&
+														nowMinutes >= toMinutes(lesson.started_at) &&
+														nowMinutes <= toMinutes(lesson.finished_at)
+													}
+													timeLabel={getLessonTimeLabel(todayTimeInfo, lesson)}
+												/>
+											</li>
+										))}
+									</ul>
+								) : (
+									<p className='text-app-muted text-sm px-1'>Пар нет</p>
+								)}
+							</section>
+						)
+					})}
+				</div>
+			</div>
 		</div>
 	)
 }
