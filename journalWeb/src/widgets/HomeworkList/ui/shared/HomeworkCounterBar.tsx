@@ -4,6 +4,8 @@ interface Props {
 	counters: HomeworkCounters
 	activeFilter: HomeworkStatus | null
 	onFilter: (key: HomeworkStatus | null) => void
+	isVertical?: boolean
+	readonly?: boolean
 }
 
 const ITEMS = [
@@ -55,22 +57,27 @@ export function HomeworkCountersBar({
 	counters,
 	activeFilter,
 	onFilter,
+	isVertical = false,
+	readonly = false,
 }: Props) {
 	return (
-		<div className='-mx-4 overflow-x-auto scrollbar-none homework-counters-bar'>
-			<div className='flex gap-2 px-4 py-2 w-max homework-counters-bar__inner'>
+		<div className={`-mx-4 overflow-x-auto scrollbar-none homework-counters-bar ${isVertical ? 'mx-0' : ''}`}>
+			<div className={`flex gap-2 ${isVertical ? 'flex-col px-0 w-full' : 'px-4 w-max'} py-2 homework-counters-bar__inner`}>
 				{ITEMS.map(({ key, label, color, ring, status }) => {
-					const isActive = activeFilter === status
+					const isClickable = !readonly
+					const isActive = isClickable && activeFilter === status
 					return (
 						<button
 							key={key}
 							type='button'
-							onClick={() => onFilter(isActive ? null : status)}
+							disabled={readonly}
+							onClick={isClickable ? () => onFilter(isActive ? null : status) : undefined}
 							className={[
-								'flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 active:scale-95 homework-counters-bar__btn',
+								'flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 homework-counters-bar__btn',
+								isClickable ? 'active:scale-95 cursor-pointer' : 'cursor-default',
 								isActive
 									? `bg-app-surface-active ring-2 ${ring}`
-									: 'bg-app-surface border border-app-border hover:bg-app-surface-hover',
+									: `bg-app-surface border border-app-border ${isClickable ? 'hover:bg-app-surface-hover' : ''}`,
 							].join(' ')}
 						>
 							<div className={`text-lg font-bold ${color}`}>

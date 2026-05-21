@@ -96,12 +96,7 @@ export const ProfileHeader = memo(
 								</p>
 							</div>
 
-							<Link
-								to={pageConfig.profileDetails}
-								className='shrink-0 px-3 py-1.5 rounded-xl bg-white/20 border border-white/30 text-white text-xs font-medium'
-							>
-								Подробнее
-							</Link>
+							{/* Button removed */}
 						</div>
 
 						<div className='relative grid grid-cols-3 gap-2'>

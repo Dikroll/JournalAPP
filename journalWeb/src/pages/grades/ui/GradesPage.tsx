@@ -3,14 +3,17 @@ import {
 	useGradesBySubject,
 	useGradesGroups,
 } from '@/entities/grades'
+import { useDashboardChartsStore } from '@/entities/dashboard'
 import { useSubjects } from '@/entities/subject'
 import { RefreshGradesButton } from '@/features/refreshGrades'
 import { SpecSelector } from '@/features/selectSpec'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import type { Tab } from '@/widgets'
 import {
 	GoalsSummaryCard,
 	GradesCalendar,
+	GradesCharts,
 	GradesExamList,
 	GradesRecentList,
 	GradesSubjectList,
@@ -21,6 +24,10 @@ import { useCallback, useMemo, useState } from 'react'
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>('recent')
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null)
+
+	const isDesktop = useIsDesktop()
+	const progress = useDashboardChartsStore(s => s.progress)
+	const attendance = useDashboardChartsStore(s => s.attendance)
 
 	const { entries, status, error, refresh } = useGrades()
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
@@ -70,7 +77,20 @@ export function GradesPage() {
 			<div className='p-4 space-y-4'>
 				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
-				<GoalsSummaryCard />
+				{isDesktop ? (
+					<div className='grid grid-cols-3 gap-4 items-stretch'>
+						<div className='col-span-1 h-full'>
+							<GoalsSummaryCard className='h-full' />
+						</div>
+						{(progress.length > 0 || attendance.length > 0) && (
+							<div className='col-span-2 h-full'>
+								<GradesCharts progress={progress} attendance={attendance} className='h-full' />
+							</div>
+						)}
+					</div>
+				) : (
+					<GoalsSummaryCard />
+				)}
 
 				<SpecSelector
 					subjects={specList}

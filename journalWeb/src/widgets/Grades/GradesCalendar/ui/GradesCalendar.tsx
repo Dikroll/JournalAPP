@@ -106,47 +106,52 @@ export function GradesCalendar({ byMonth }: Props) {
 	)
 
 	return (
-		<div className='space-y-4'>
-			<MonthGrid
-				year={year}
-				month={month}
-				onPrevMonth={handlePrevMonth}
-				onNextMonth={handleNextMonth}
-				renderDay={renderDay}
-			/>
+		<div className='flex flex-col lg:flex-row gap-6 items-start'>
+			<div className='w-full lg:w-[400px] shrink-0 space-y-4'>
+				<MonthGrid
+					year={year}
+					month={month}
+					onPrevMonth={handlePrevMonth}
+					onNextMonth={handleNextMonth}
+					renderDay={renderDay}
+				/>
+				{Object.keys(datesWithData).length === 0 && (
+					<p className='text-app-muted text-sm text-center py-2'>
+						В этом месяце нет записей
+					</p>
+				)}
+			</div>
 
-			{Object.keys(datesWithData).length === 0 && (
-				<p className='text-app-muted text-sm text-center py-2'>
-					В этом месяце нет записей
-				</p>
-			)}
-
-			{selectedDate && sortedSelectedEntries && sortedSelectedEntries.length > 0 && (
-				<div className='space-y-2'>
-					<div className='text-sm font-medium text-app-muted px-1'>
-						{formatDateWithWeekday(selectedDate)}
+			<div className='flex-1 w-full'>
+				{!selectedDate ? (
+					<div className='flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]'>
+						Выберите день в календаре для просмотра оценок
 					</div>
-					<div
-						className='bg-app-surface backdrop-blur-xl rounded-[24px] p-3 border border-app-border'
-						style={{ boxShadow: 'var(--shadow-card)' }}
-					>
-						{sortedSelectedEntries.map((entry, idx) => (
-							<div key={`${entry.spec_id}-${entry.lesson_number}`}>
-								{idx > 0 && (
-									<div className='border-t border-app-border my-1' />
-								)}
-								<GradeEntryRow entry={entry} />
-							</div>
-						))}
+				) : sortedSelectedEntries && sortedSelectedEntries.length > 0 ? (
+					<div className='space-y-3'>
+						<div className='text-base font-bold text-app-text px-1'>
+							{formatDateWithWeekday(selectedDate)}
+						</div>
+						<div
+							className='bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border space-y-2'
+							style={{ boxShadow: 'var(--shadow-card)' }}
+						>
+							{sortedSelectedEntries.map((entry, idx) => (
+								<div key={`${entry.spec_id}-${entry.lesson_number}`}>
+									{idx > 0 && (
+										<div className='border-t border-app-border my-2' />
+									)}
+									<GradeEntryRow entry={entry} />
+								</div>
+							))}
+						</div>
 					</div>
-				</div>
-			)}
-
-			{selectedDate && (!sortedSelectedEntries || sortedSelectedEntries.length === 0) && (
-				<p className='text-app-muted text-sm text-center py-4'>
-					Нет записей за этот день
-				</p>
-			)}
+				) : (
+					<div className='flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]'>
+						Нет записей за {formatDateWithWeekday(selectedDate)}
+					</div>
+				)}
+			</div>
 		</div>
 	)
 }

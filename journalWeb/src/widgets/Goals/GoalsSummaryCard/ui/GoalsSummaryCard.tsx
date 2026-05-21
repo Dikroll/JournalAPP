@@ -27,7 +27,7 @@ function pickBadgeLabel(
 	return 'цели в норме'
 }
 
-export function GoalsSummaryCard() {
+export function GoalsSummaryCard({ className }: { className?: string }) {
 	const navigate = useNavigate()
 	const progress = useDashboardChartsStore(s => s.progress)
 	const attendance = useDashboardChartsStore(s => s.attendance)
@@ -69,7 +69,7 @@ export function GoalsSummaryCard() {
 		<button
 			type='button'
 			onClick={() => navigate(pageConfig.goals)}
-			className='w-full text-left rounded-[22px] p-5 border border-app-border bg-app-surface active:scale-[0.99] transition-transform'
+			className={`w-full text-left rounded-[22px] p-5 border border-app-border bg-app-surface active:scale-[0.99] transition-transform flex flex-col ${className ?? ''}`}
 			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
 			<div className='flex items-center justify-between mb-4'>
@@ -163,7 +163,7 @@ export function GoalsSummaryCard() {
 				</>
 			)}
 
-			<div className='flex items-center justify-between pt-3 border-t border-app-border'>
+			<div className='mt-auto flex items-center justify-between w-full pt-3 border-t border-app-border'>
 				<span
 					className='inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium'
 					style={{

@@ -51,9 +51,10 @@ export function WebHomePage() {
 				</div>
 
 				{/* ПРАВАЯ КОЛОНКА: Расписание + Домашние задания */}
-				<div className='flex flex-col gap-5'>
+				<div className='flex gap-5'>
+					{/* Расписание */}
 					<div
-						className='rounded-[20px] border border-app-border p-4'
+						className='rounded-[20px] border border-app-border p-4 flex-1'
 						style={{
 							background: 'var(--color-surface)',
 							boxShadow: 'var(--shadow-card)',
@@ -62,26 +63,27 @@ export function WebHomePage() {
 						<HomeScheduleSection />
 					</div>
 
-					{/* Домашние задания — только счётчики */}
+					{/* Домашние задания — вертикальные счётчики */}
 					<div
-						className='rounded-[20px] border border-app-border p-4'
+						className='rounded-[20px] border border-app-border p-4 shrink-0 w-[240px]'
 						style={{
 							background: 'var(--color-surface)',
 							boxShadow: 'var(--shadow-card)',
 						}}
 					>
-						<div className='flex items-center gap-2 mb-4'>
-							<div className='w-[2px] self-stretch bg-app-border rounded-full' />
-							<h2 className='text-base font-bold text-app-text'>
-								Домашние задания
+						<div className='flex flex-col items-center gap-2 mb-4'>
+							<h2 className='text-sm font-bold text-app-text text-center'>
+								Домашка
 							</h2>
 						</div>
 						{counters && (
-							<div className='homework-counters-full'>
+							<div className='flex flex-col gap-2'>
 								<HomeworkCountersBar
 									counters={counters}
 									activeFilter={filterStatus}
 									onFilter={setFilter}
+									isVertical={true}
+									readonly={true}
 								/>
 							</div>
 						)}
