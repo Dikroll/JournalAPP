@@ -2,7 +2,7 @@ import { useHomeSchedule } from '@/entities/schedule'
 import { IconButton } from '@/shared/ui'
 import { formatDateLong } from '@/shared/utils'
 import { LessonList, ScheduleList } from '@/widgets'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export function HomeScheduleSection() {
 	const {
@@ -24,17 +24,18 @@ export function HomeScheduleSection() {
 					type='button'
 					onClick={offset !== 0 ? goToday : undefined}
 					disabled={offset === 0}
-					className='flex items-center flex-1 text-left'
+					className='flex items-center flex-1 text-left min-w-0'
 				>
 					{/* ЛИНИЯ */}
 					<div className='w-[2px] self-stretch bg-app-border mr-3 rounded-full' />
 
 					{/* ТЕКСТ */}
-					<div className='flex flex-col justify-center'>
-						<h1 className='text-lg font-bold leading-tight text-app-text'>
-							{title}
+					<div className='flex flex-col justify-center min-w-0'>
+						<h1 className='text-[16px] font-bold leading-tight text-app-text line-clamp-2 flex items-center gap-2'>
+							<CalendarDays size={16} className='text-app-muted shrink-0' />
+							<span>{title}</span>
 						</h1>
-						<p className='text-xs text-app-muted leading-tight mt-0.5 capitalize'>
+						<p className='text-xs text-app-muted leading-tight mt-0.5 capitalize truncate'>
 							{formatDateLong(dateStr)}
 						</p>
 					</div>
@@ -73,24 +74,30 @@ export function HomeScheduleSection() {
 				</div>
 			</div>
 
-			{offset === 0 ? (
-				<ScheduleList />
-			) : otherStatus === 'loading' && otherLessons.length === 0 ? (
-				<div className='flex flex-col gap-3'>
-					{[0, 1, 2].map(i => (
-						<div
-							key={i}
-							className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
-						/>
-					))}
+			<div className='flex-1 min-h-0 relative min-w-0 pb-2'>
+				<div className='absolute inset-0 overflow-y-auto scrollbar-none'>
+					<div className='min-h-full flex flex-col'>
+						{offset === 0 ? (
+							<ScheduleList />
+						) : otherStatus === 'loading' && otherLessons.length === 0 ? (
+							<div className='flex flex-col gap-3'>
+								{[0, 1, 2].map(i => (
+									<div
+										key={i}
+										className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
+									/>
+								))}
+							</div>
+						) : otherStatus === 'error' && otherLessons.length === 0 ? (
+							<p className='text-status-overdue text-sm text-center py-4'>
+								Ошибка загрузки расписания
+							</p>
+						) : (
+							<LessonList lessons={otherLessons} forDate={dateStr} />
+						)}
+					</div>
 				</div>
-			) : otherStatus === 'error' && otherLessons.length === 0 ? (
-				<p className='text-status-overdue text-sm text-center py-4'>
-					Ошибка загрузки расписания
-				</p>
-			) : (
-				<LessonList lessons={otherLessons} forDate={dateStr} />
-			)}
+			</div>
 		</>
 	)
 }

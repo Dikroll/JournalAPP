@@ -6,9 +6,10 @@ import { Hourglass, UtensilsCrossed } from 'lucide-react'
 
 interface Props {
 	gap: GapInfo
+	compact?: boolean
 }
 
-export function GapIndicator({ gap }: Props) {
+export function GapIndicator({ gap, compact = false }: Props) {
 	if (gap.minutes <= 0 || gap.type === 'break') return null
 
 	const isLunch = gap.type === 'lunch'
@@ -17,7 +18,7 @@ export function GapIndicator({ gap }: Props) {
 	const color = isLunch ? '#F59E0B' : '#8B5CF6'
 
 	return (
-		<div className='flex items-center gap-2 px-4 py-1.5'>
+		<div className={`flex items-center gap-2 px-4 ${compact ? 'py-0.5' : 'py-1.5'}`}>
 			<div className='flex-1 h-px' style={{ background: `${color}30` }} />
 			<div
 				className='flex items-center gap-1.5 rounded-full px-2.5 py-1 border'

@@ -8,47 +8,62 @@ interface Props {
 	readonly?: boolean
 }
 
+import {
+	CheckCircle2,
+	Flame,
+	Hourglass,
+	Inbox,
+	RotateCcw,
+	Sparkles,
+} from 'lucide-react'
+
 const ITEMS = [
 	{
 		key: 'total',
 		label: 'Всего',
 		color: 'text-app-text',
-		ring: 'ring-app-border-strong',
+		icon: Inbox,
+		statusKey: 'total',
 		status: null,
 	},
 	{
 		key: 'new',
 		label: 'Новых',
 		color: 'text-status-new',
-		ring: 'ring-status-new',
+		icon: Sparkles,
+		statusKey: 'new',
 		status: 'new' as HomeworkStatus,
 	},
 	{
 		key: 'pending',
 		label: 'На проверке',
 		color: 'text-status-pending',
-		ring: 'ring-status-pending',
+		icon: Hourglass,
+		statusKey: 'pending',
 		status: 'pending' as HomeworkStatus,
 	},
 	{
 		key: 'checked',
 		label: 'Проверено',
 		color: 'text-status-checked',
-		ring: 'ring-status-checked',
+		icon: CheckCircle2,
+		statusKey: 'checked',
 		status: 'checked' as HomeworkStatus,
 	},
 	{
 		key: 'overdue',
 		label: 'Просрочено',
 		color: 'text-status-overdue',
-		ring: 'ring-status-overdue',
+		icon: Flame,
+		statusKey: 'overdue',
 		status: 'overdue' as HomeworkStatus,
 	},
 	{
 		key: 'returned',
 		label: 'Возвращено',
 		color: 'text-status-returned',
-		ring: 'ring-status-returned',
+		icon: RotateCcw,
+		statusKey: 'returned',
 		status: 'returned' as HomeworkStatus,
 	},
 ] as const
@@ -61,11 +76,46 @@ export function HomeworkCountersBar({
 	readonly = false,
 }: Props) {
 	return (
-		<div className={`-mx-4 overflow-x-auto scrollbar-none homework-counters-bar ${isVertical ? 'mx-0' : ''}`}>
-			<div className={`flex gap-2 ${isVertical ? 'flex-col px-0 w-full' : 'px-4 w-max'} py-2 homework-counters-bar__inner`}>
-				{ITEMS.map(({ key, label, color, ring, status }) => {
-					const isClickable = !readonly
+		<div className={`-mx-4 homework-counters-bar ${isVertical ? 'mx-0 flex-1 min-h-0 relative' : 'overflow-x-auto scrollbar-none'}`}>
+			<div className={`flex gap-2 ${isVertical ? 'absolute inset-0 flex-col px-0 overflow-y-auto scrollbar-none' : 'px-4 w-max py-2'} homework-counters-bar__inner`}>
+				<div className={`flex gap-2 ${isVertical ? 'flex-col w-full min-h-full' : ''}`}>
+				{ITEMS.map(({ key, label, color, icon: Icon, statusKey, status }) => {
+						const isClickable = !readonly
 					const isActive = isClickable && activeFilter === status
+					
+					const ring = statusKey === 'total' ? 'ring-app-border-strong' : `ring-status-${statusKey}`
+					const bgColor = statusKey === 'total' ? 'rgba(255, 255, 255, 0.05)' : `var(--color-${statusKey}-subtle, rgba(255,255,255,0.05))`
+					const borderColor = statusKey === 'total' ? 'var(--color-border)' : `var(--color-${statusKey}-border, rgba(255,255,255,0.1))`
+
+					if (isVertical) {
+						return (
+							<button
+								key={key}
+								type='button'
+								disabled={readonly}
+								onClick={isClickable ? () => onFilter(isActive ? null : status) : undefined}
+								className={[
+									'flex items-center justify-between px-3 py-2 rounded-[18px] transition-all duration-200 w-full flex-1',
+									isClickable ? 'active:scale-95 cursor-pointer' : 'cursor-default',
+									isActive
+										? `bg-app-surface-active ring-2 ${ring}`
+										: `bg-app-surface border border-app-border ${isClickable ? 'hover:bg-app-surface-hover' : ''}`,
+								].join(' ')}
+							>
+								<div className='flex items-center gap-3'>
+									<div 
+										className='w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0'
+										style={{ background: bgColor, border: `1px solid ${borderColor}` }}
+									>
+										<Icon size={16} className={color} />
+									</div>
+									<span className='text-[14px] font-semibold text-app-text'>{label}</span>
+								</div>
+								<span className={`text-[18px] font-bold ${color}`}>{counters[key]}</span>
+							</button>
+						)
+					}
+
 					return (
 						<button
 							key={key}
@@ -87,6 +137,7 @@ export function HomeworkCountersBar({
 						</button>
 					)
 				})}
+				</div>
 			</div>
 		</div>
 	)

@@ -2,18 +2,20 @@ import { resetAllAppState } from '@/app/lib'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useProfileDetails } from '@/entities/profile'
 import { useUser } from '@/entities/user'
+import { usePayment } from '@/entities/payment/hooks/usePayment'
+import { usePaymentIndex } from '@/entities/payment/hooks/usePaymentIndex'
 import { pageConfig } from '@/shared/config'
 import { SkeletonList } from '@/shared/ui'
 import {
 	AccountSwitcher,
 	ClearCacheSheet,
-	Leaderboard,
 	ProfileHeader,
 	ProfileInfoCard,
-	ProfilePaymentCard,
 	ProfileRelativesCard,
-	ReviewsList,
 	SettingsSection,
+	PaymentHistoryCard,
+	PaymentRequisitesCard,
+	PaymentScheduleCard,
 } from '@/widgets'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -21,7 +23,10 @@ import { Link, useNavigate } from 'react-router-dom'
 export function ProfilePage() {
 	const user = useUser()
 	const { myRankGroup } = useLeaderboard()
-	const { details, status } = useProfileDetails()
+	const { details, status: detailsStatus } = useProfileDetails()
+	
+	const { summary, status: paymentStatus } = usePayment()
+	const { index } = usePaymentIndex()
 
 	const [showSwitcher, setShowSwitcher] = useState(false)
 	const [showClearCache, setShowClearCache] = useState(false)
@@ -30,6 +35,19 @@ export function ProfilePage() {
 	const handleAddAccount = () => {
 		navigate(`${pageConfig.login}?addAccount=true`)
 	}
+
+	const requisites = index
+		? [
+				{ label: 'Получатель', value: index.payment.organization_name },
+				{ label: 'Плательщик', value: index.payment.payer_full_name },
+				{ label: 'Банк', value: index.payment.bank_name },
+				{ label: 'Расчётный счёт', value: index.payment.settlement_account },
+				{
+					label: 'Назначение платежа',
+					value: index.payment.purpose_of_payment,
+				},
+		  ]
+		: []
 
 	if (!user) {
 		return (
@@ -42,21 +60,32 @@ export function ProfilePage() {
 
 	return (
 		<div className='pb-24 w-full'>
-			<div className='grid grid-cols-1 lg:grid-cols-3 lg:gap-2 items-start'>
+			<div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-5 items-start'>
 				
-				{/* 1 Колонка: Шапка и детали профиля */}
-				<div className='space-y-2 lg:space-y-4'>
+				{/* Левая колонка: Шапка, Детали, Настройки */}
+				<div className='space-y-4 lg:space-y-5'>
 					<ProfileHeader user={user} rank={myRankGroup?.position} />
 
 					<div className='px-4 space-y-5'>
-						{status === 'loading' && <SkeletonList count={3} height={120} />}
+						{detailsStatus === 'loading' && <SkeletonList count={3} height={120} />}
+						
 						{details && (
-							<>
-								<ProfileInfoCard details={details} />
-								<ProfileRelativesCard relatives={details.relatives} />
-								<ProfilePaymentCard />
-							</>
+							<div
+								className='bg-app-surface rounded-[24px] border border-app-border p-4'
+								style={{ boxShadow: 'var(--shadow-card)' }}
+							>
+								<p className='text-lg font-bold text-app-text mb-2 px-1'>Детали профиля</p>
+								<ProfileInfoCard details={details} flat />
+								
+								{details.relatives.length > 0 && (
+									<>
+										<div className='h-px bg-app-border my-2' />
+										<ProfileRelativesCard relatives={details.relatives} flat />
+									</>
+								)}
+							</div>
 						)}
+
 						<SettingsSection
 							onAccounts={() => setShowSwitcher(true)}
 							onClearCache={() => setShowClearCache(true)}
@@ -64,7 +93,7 @@ export function ProfilePage() {
 					</div>
 				</div>
 
-				{/* 2 Колонка: Лидеры */}
+				{/* Правая колонка: Оплата */}
 				<div className='px-4 space-y-5 lg:pt-4 pt-5'>
 					{user.is_debtor && (
 						<div
@@ -77,23 +106,36 @@ export function ProfilePage() {
 									Есть задолженность
 								</p>
 							</div>
-							<Link
-								to={pageConfig.payment}
-								className='px-4 py-2 rounded-[14px] bg-app-surface border border-app-border text-sm text-app-text font-medium'
-							>
-								История
-							</Link>
 						</div>
 					)}
 
-					<Leaderboard myStudentId={user.student_id} />
-				</div>
+					{paymentStatus === 'loading' && <SkeletonList count={3} height={150} />}
 
-				{/* 3 Колонка: Отзывы */}
-				<div className='px-4 lg:pt-4 pt-5'>
-					<ReviewsList />
+					{summary && (
+						<div
+							className='bg-app-surface rounded-[24px] border border-app-border p-4'
+							style={{ boxShadow: 'var(--shadow-card)' }}
+						>
+							<p className='text-lg font-bold text-app-text mb-4 px-1'>Оплата</p>
+							
+							<PaymentScheduleCard schedule={summary.schedule} flat />
+							
+							{requisites.length > 0 && (
+								<>
+									<div className='h-px bg-app-border my-4' />
+									<PaymentRequisitesCard requisites={requisites} flat />
+								</>
+							)}
+							
+							{summary.history.length > 0 && (
+								<>
+									<div className='h-px bg-app-border my-4' />
+									<PaymentHistoryCard history={summary.history} flat />
+								</>
+							)}
+						</div>
+					)}
 				</div>
-
 			</div>
 
 			{showSwitcher && (

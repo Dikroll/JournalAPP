@@ -9,9 +9,10 @@ import { LessonCard } from './LessonCard'
 interface Props {
 	lessons: LessonItem[]
 	forDate?: string
+	compact?: boolean
 }
 
-export function LessonList({ lessons, forDate }: Props) {
+export function LessonList({ lessons, forDate, compact = false }: Props) {
 	const nowMinutes = useCurrentMinutes()
 	const todayStr = getTodayString()
 	const isToday = !forDate || forDate === todayStr
@@ -32,17 +33,21 @@ export function LessonList({ lessons, forDate }: Props) {
 	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson)
 
 	return (
-		<ul className='flex flex-col gap-3'>
+		<ul className={`flex flex-col ${compact ? 'gap-1.5' : 'gap-3'}`}>
 			{sorted.map((lesson, i) => (
 				<li
 					key={`${lesson.started_at}-${lesson.room}`}
 					className='flex flex-col'
 				>
 					{i > 0 && (
-						<GapIndicator gap={getGapBetweenLessons(sorted[i - 1], lesson)} />
+						<GapIndicator
+							gap={getGapBetweenLessons(sorted[i - 1], lesson)}
+							compact={compact}
+						/>
 					)}
 					<LessonCard
 						lesson={lesson}
+						compact={compact}
 						isCurrent={
 							isToday &&
 							nowMinutes >= toMinutes(lesson.started_at) &&

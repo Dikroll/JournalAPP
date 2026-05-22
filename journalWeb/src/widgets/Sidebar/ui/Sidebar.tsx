@@ -114,9 +114,7 @@ export const Sidebar = memo(() => {
     // { to: pageConfig.goals, label: 'Цели', icon: <Star size={16} /> },
   ]
 
-  const otherNav: NavItem[] = [
-    { to: pageConfig.payment, label: 'Платежи', icon: <CreditCard size={16} /> },
-  ]
+
 
   return (
     <aside className="sidebar-web">
@@ -188,7 +186,6 @@ export const Sidebar = memo(() => {
       <nav className="sidebar-web__nav">
         <NavSection label="Главное" items={mainNav} />
         <NavSection label="Учёба"   items={studyNav} />
-        <NavSection label="Прочее"  items={otherNav} />
 
         {/* Быстрый переход на вкладки страницы уведомлений */}
         <div className="sidebar-web__section">

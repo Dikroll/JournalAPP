@@ -4,17 +4,22 @@ import { formatAmount } from '@/shared/utils/formatUtils'
 
 interface Props {
 	history: PaymentRecord[]
+	flat?: boolean
 }
 
-export function PaymentHistoryCard({ history }: Props) {
+export function PaymentHistoryCard({ history, flat }: Props) {
 	if (!history.length) return null
 
 	return (
 		<div
-			className='bg-app-surface rounded-[24px] border border-app-border p-4'
-			style={{ boxShadow: 'var(--shadow-card)' }}
+			className={
+				flat
+					? ''
+					: 'bg-app-surface rounded-[24px] border border-app-border p-4'
+			}
+			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
-			<p className='text-sm font-semibold text-app-text mb-3'>
+			<p className={`text-sm font-semibold text-app-text mb-3 ${flat ? 'px-1' : ''}`}>
 				История платежей
 			</p>
 			<div className='flex flex-col gap-2'>

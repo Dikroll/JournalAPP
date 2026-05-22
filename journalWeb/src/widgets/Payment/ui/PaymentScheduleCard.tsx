@@ -4,15 +4,20 @@ import { formatAmount } from '@/shared/utils/formatUtils'
 
 interface Props {
 	schedule: ScheduledPayment[]
+	flat?: boolean
 }
 
-export function PaymentScheduleCard({ schedule }: Props) {
+export function PaymentScheduleCard({ schedule, flat }: Props) {
 	return (
 		<div
-			className='bg-app-surface rounded-[24px] border border-app-border p-4'
-			style={{ boxShadow: 'var(--shadow-card)' }}
+			className={
+				flat
+					? ''
+					: 'bg-app-surface rounded-[24px] border border-app-border p-4'
+			}
+			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
-			<p className='text-sm font-semibold text-app-text mb-3'>
+			<p className={`text-sm font-semibold text-app-text mb-3 ${flat ? 'px-1' : ''}`}>
 				График платежей
 			</p>
 			<div className='flex flex-col gap-2'>
