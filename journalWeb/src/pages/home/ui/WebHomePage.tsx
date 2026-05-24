@@ -12,108 +12,103 @@ import { BookOpen } from 'lucide-react'
 
 /**
  * WebHomePage — десктопная версия главной страницы.
- * Используется только внутри WebLayout (ширина >= 768px).
+ * MacBook Air 13" и выше.
  *
- * Макет:
- * ┌───────────────────┬──────────────────┐
- * │ GoalsSummaryCard  │ HomeSchedule     │
- * ├───────────────────┼──────────────────┤
- * │ FutureExams       │ HomeworkCounters │
- * └───────────────────┴──────────────────┘
+ * Макет (3 колонки):
+ * ┌──────────────┬────────────────┬──────────────┐
+ * │ GoalsSummary │ HomeSchedule   │ Домашка      │
+ * ├──────────────┤                └──────────────┘
+ * │ FutureExams  │                               │
+ * ├──────────────┴───────────────────────────────┤
+ * │ Leaderboard          │ Reviews               │
+ * └──────────────────────┴───────────────────────┘
  */
 export function WebHomePage() {
 	const user = useUser()
-	const {
-		counters,
-		filterStatus,
-		setFilter,
-	} = useHomework()
+	const { counters, filterStatus, setFilter } = useHomework()
 
 	return (
-		<div className='p-5 h-full flex flex-col'>
-			<div className='flex flex-col gap-5 flex-1 min-h-0'>
+		<div className='p-5 pb-8 w-full'>
+			{/* ── РЯД 1: Сводка + Расписание + Домашка ── */}
+			<div className='grid gap-4' style={{ gridTemplateColumns: '320px 1fr 220px' }}>
 
-				{/* ВЕРХНИЙ РЯД (Сводка+Экзамены и Расписание+ДЗ) */}
-				<div className='grid grid-cols-2 gap-5 flex-1 min-h-0'>
-					
-					{/* Левая часть верхнего ряда */}
-					<div className='flex flex-col gap-5 min-w-0 h-full'>
-						<GoalsSummaryCard />
+				{/* Колонка 1: Сводка оценок + Будущие экзамены */}
+				<div className='flex flex-col gap-4'>
+					<GoalsSummaryCard />
 
-						{/* Будущие экзамены */}
-						<div
-							className='rounded-[20px] border border-app-border p-4 flex-1 flex flex-col min-h-0'
-							style={{
-								background: 'var(--color-surface)',
-								boxShadow: 'var(--shadow-card)',
-							}}
-						>
-							<div className='flex items-center gap-2 mb-4'>
-								<div className='w-[2px] self-stretch bg-app-border rounded-full' />
-								<h2 className='text-base font-bold text-app-text'>
-									Будущие экзамены
-								</h2>
-							</div>
-							<FutureExams />
+					<div
+						className='rounded-[20px] border border-app-border p-4'
+						style={{
+							background: 'var(--color-surface)',
+							boxShadow: 'var(--shadow-card)',
+						}}
+					>
+						<div className='flex items-center gap-2 mb-3'>
+							<div className='w-[2px] h-5 bg-app-border rounded-full' />
+							<h2 className='text-sm font-bold text-app-text'>Будущие экзамены</h2>
 						</div>
-					</div>
-
-					{/* Правая часть верхнего ряда */}
-					<div className='flex gap-5 items-stretch min-w-0 h-full min-h-0'>
-						{/* Расписание */}
-						<div
-							className='rounded-[20px] border border-app-border p-4 flex-1 flex flex-col min-w-0'
-							style={{
-								background: 'var(--color-surface)',
-								boxShadow: 'var(--shadow-card)',
-							}}
-						>
-							<HomeScheduleSection />
-						</div>
-
-						{/* Домашние задания */}
-						<div
-							className='rounded-[20px] border border-app-border p-4 shrink-0 w-[240px] flex flex-col min-h-0'
-							style={{
-								background: 'var(--color-surface)',
-								boxShadow: 'var(--shadow-card)',
-							}}
-						>
-							<div className='flex items-center justify-center gap-2 mb-4 shrink-0'>
-								<BookOpen size={16} className='text-app-muted shrink-0' />
-								<h2 className='text-sm font-bold text-app-text text-center'>
-									Домашка
-								</h2>
-							</div>
-							{counters && (
-								<div className='flex flex-col flex-1 min-h-0 overflow-y-auto' style={{ scrollbarWidth: 'thin' }}>
-									<HomeworkCountersBar
-										counters={counters}
-										activeFilter={filterStatus}
-										onFilter={setFilter}
-										isVertical={true}
-										readonly={true}
-									/>
-								</div>
-							)}
-						</div>
-					</div>
-
-				</div>
-
-				{/* НИЖНИЙ РЯД (Лидеры и Отзывы) */}
-				<div className='grid grid-cols-2 gap-5 flex-1 min-h-0'>
-					{/* Рейтинг */}
-					<div className='flex flex-col h-full min-h-0 min-w-0'>
-						{user && <Leaderboard myStudentId={user.student_id} />}
-					</div>
-
-					{/* Отзывы */}
-					<div className='flex flex-col h-full min-h-0 min-w-0'>
-						<ReviewsList />
+						<FutureExams />
 					</div>
 				</div>
 
+				{/* Колонка 2: Расписание */}
+				<div
+					className='rounded-[20px] border border-app-border p-4'
+					style={{
+						background: 'var(--color-surface)',
+						boxShadow: 'var(--shadow-card)',
+					}}
+				>
+					<HomeScheduleSection />
+				</div>
+
+				{/* Колонка 3: Домашние задания */}
+				<div
+					className='rounded-[20px] border border-app-border p-4'
+					style={{
+						background: 'var(--color-surface)',
+						boxShadow: 'var(--shadow-card)',
+					}}
+				>
+					<div className='flex items-center gap-2 mb-4'>
+						<BookOpen size={15} className='text-app-muted shrink-0' />
+						<h2 className='text-sm font-bold text-app-text'>Домашка</h2>
+					</div>
+					{counters && (
+						<HomeworkCountersBar
+							counters={counters}
+							activeFilter={filterStatus}
+							onFilter={setFilter}
+							isVertical={true}
+							readonly={true}
+						/>
+					)}
+				</div>
+			</div>
+
+			{/* ── РЯД 2: Лидеры + Отзывы ── */}
+			<div className='grid grid-cols-2 gap-4 mt-4'>
+				{/* Лидеры */}
+				<div
+					className='rounded-[20px] border border-app-border p-4'
+					style={{
+						background: 'var(--color-surface)',
+						boxShadow: 'var(--shadow-card)',
+					}}
+				>
+					{user && <Leaderboard myStudentId={user.student_id} />}
+				</div>
+
+				{/* Отзывы */}
+				<div
+					className='rounded-[20px] border border-app-border p-4'
+					style={{
+						background: 'var(--color-surface)',
+						boxShadow: 'var(--shadow-card)',
+					}}
+				>
+					<ReviewsList />
+				</div>
 			</div>
 		</div>
 	)
