@@ -76,11 +76,7 @@ export function HomeScheduleSection() {
 
 			{offset === 0 ? (
 				<ScheduleList />
-			) : otherStatus === 'error' && otherLessons.length === 0 ? (
-				<p className='text-status-overdue text-sm text-center py-4'>
-					Ошибка загрузки расписания
-				</p>
-			) : otherStatus !== 'success' && otherLessons.length === 0 ? (
+			) : otherStatus === 'loading' && otherLessons.length === 0 ? (
 				<div className='flex flex-col gap-3'>
 					{[0, 1, 2].map(i => (
 						<div
@@ -89,6 +85,10 @@ export function HomeScheduleSection() {
 						/>
 					))}
 				</div>
+			) : otherStatus === 'error' && otherLessons.length === 0 ? (
+				<p className='text-status-overdue text-sm text-center py-4'>
+					Ошибка загрузки расписания
+				</p>
 			) : (
 				<LessonList lessons={otherLessons} forDate={dateStr} />
 			)}
