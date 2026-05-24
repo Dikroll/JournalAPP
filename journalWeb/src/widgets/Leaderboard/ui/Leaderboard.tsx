@@ -12,8 +12,8 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 	const myRank = scope === 'group' ? myRankGroup : myRankStream
 
 	return (
-		<div>
-			<div className='flex items-center justify-between mb-3'>
+		<div className='flex flex-col h-full'>
+			<div className='flex items-center justify-between mb-3 shrink-0'>
 				<h3 className='text-app-text text-base font-semibold flex items-center gap-2'>
 					<TrendingUp size={18} className='text-status-comment' />
 					Лидеры
@@ -36,7 +36,7 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 			</div>
 
 			{myRank && (
-				<div className='flex items-center gap-2'>
+				<div className='flex items-center gap-2 mb-2 shrink-0'>
 					{myRank.week_diff !== 0 && (
 						<span
 							className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
@@ -52,37 +52,41 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 				</div>
 			)}
 
-			{status === 'loading' ? (
-				<div className='space-y-2'>
-					{[1, 2, 3, 4, 5].map(i => (
-						<div
-							key={i}
-							className='bg-app-surface rounded-[18px] h-14 animate-pulse border border-app-border'
-						/>
-					))}
+			<div className='flex-1 min-h-0 relative'>
+				<div className='absolute inset-0 overflow-y-auto pr-1' style={{ scrollbarWidth: 'thin' }}>
+					{status === 'loading' ? (
+						<div className='space-y-2 min-h-max'>
+							{[1, 2, 3, 4, 5].map(i => (
+								<div
+									key={i}
+									className='bg-app-surface rounded-[18px] h-14 animate-pulse border border-app-border'
+								/>
+							))}
+						</div>
+					) : (
+						<>
+							<div className={`space-y-2 min-h-max ${scope === 'group' ? '' : 'hidden'}`}>
+								{groupStudents.map(s => (
+									<LeaderboardRow
+										key={s.student_id}
+										student={s}
+										isMe={s.student_id === myStudentId}
+									/>
+								))}
+							</div>
+							<div className={`space-y-2 min-h-max ${scope === 'stream' ? '' : 'hidden'}`}>
+								{streamStudents.map(s => (
+									<LeaderboardRow
+										key={s.student_id}
+										student={s}
+										isMe={s.student_id === myStudentId}
+									/>
+								))}
+							</div>
+						</>
+					)}
 				</div>
-			) : (
-				<>
-					<div className={`space-y-2 ${scope === 'group' ? '' : 'hidden'}`}>
-						{groupStudents.map(s => (
-							<LeaderboardRow
-								key={s.student_id}
-								student={s}
-								isMe={s.student_id === myStudentId}
-							/>
-						))}
-					</div>
-					<div className={`space-y-2 ${scope === 'stream' ? '' : 'hidden'}`}>
-						{streamStudents.map(s => (
-							<LeaderboardRow
-								key={s.student_id}
-								student={s}
-								isMe={s.student_id === myStudentId}
-							/>
-						))}
-					</div>
-				</>
-			)}
+			</div>
 		</div>
 	)
 }

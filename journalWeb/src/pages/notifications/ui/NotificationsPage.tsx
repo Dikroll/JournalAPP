@@ -24,7 +24,7 @@ import {
 	Sparkles,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 type Tab = 'changelog' | 'feedback' | 'news'
 
@@ -36,6 +36,7 @@ const TABS: Segment<Tab>[] = [
 
 export function NotificationsPage() {
 	const navigate = useNavigate()
+	const location = useLocation()
 	const [activeTab, setActiveTab] = useState<Tab>('changelog')
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
@@ -44,6 +45,12 @@ export function NotificationsPage() {
 	const pending = useFeedbackStore(s => s.pending)
 
 	useSwipeBack()
+
+	// Открываем нужную вкладку если пришли с сайдбара
+	useEffect(() => {
+		const tab = (location.state as { tab?: Tab } | null)?.tab
+		if (tab) setActiveTab(tab)
+	}, [])
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),

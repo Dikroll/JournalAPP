@@ -12,6 +12,7 @@ const ATTENDANCE_COLOR = '#F0A020'
 interface Props {
 	progress: ChartPoint[]
 	attendance: ChartPoint[]
+	className?: string
 }
 
 const TrendBadge = memo(function TrendBadge({
@@ -149,15 +150,16 @@ const AttendanceChart = memo(function AttendanceChart({
 export const GradesCharts = memo(function GradesCharts({
 	progress,
 	attendance,
+	className,
 }: Props) {
 	const { progressData, attendanceData, progressTrend, attendanceTrend } =
 		useGradesCharts(progress, attendance)
 
 	return (
-		<div className='space-y-3'>
+		<div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${className ?? ''}`}>
 			{progressData.length > 0 && (
 				<div
-					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border'
+					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full'
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
@@ -166,12 +168,14 @@ export const GradesCharts = memo(function GradesCharts({
 						</h3>
 						{progressTrend != null && <TrendBadge trend={progressTrend} />}
 					</div>
-					<ProgressChart data={progressData} />
+					<div className='flex-1 flex flex-col'>
+						<ProgressChart data={progressData} />
+					</div>
 				</div>
 			)}
 			{attendanceData.length > 0 && (
 				<div
-					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border'
+					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full'
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					<div className='flex items-center justify-between mb-4'>
@@ -182,7 +186,9 @@ export const GradesCharts = memo(function GradesCharts({
 							<TrendBadge trend={attendanceTrend} suffix='%' />
 						)}
 					</div>
-					<AttendanceChart data={attendanceData} />
+					<div className='flex-1 flex flex-col'>
+						<AttendanceChart data={attendanceData} />
+					</div>
 				</div>
 			)}
 		</div>

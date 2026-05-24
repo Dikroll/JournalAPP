@@ -3,6 +3,7 @@ import { useSubjects } from '@/entities/subject'
 import { useGoalsOverview, useOverallSummary } from '@/features/goalForecast'
 import { SpecSelector } from '@/features/selectSpec'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { PageHeader } from '@/shared/ui'
 import {
 	EmptyGoalsState,
@@ -24,6 +25,7 @@ export function GoalsPage() {
 	const [showCompleted, setShowCompleted] = useState(false)
 	const [filterId, setFilterId] = useState<number | null>(null)
 	useSwipeBack()
+	const isDesktop = useIsDesktop()
 
 	const subjectsInOverview = useMemo(() => {
 		const ids = new Set(overview.map(o => o.specId))
@@ -76,7 +78,7 @@ export function GoalsPage() {
 					/>
 				)}
 
-				{hasCharts && (
+				{hasCharts && !isDesktop && (
 					<GradesCharts progress={progress} attendance={attendance} />
 				)}
 

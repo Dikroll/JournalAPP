@@ -9,7 +9,7 @@ import { InlineImage } from '@/shared/ui'
 import { GapIndicator } from './GapIndicator'
 import { LessonCard } from './LessonCard'
 
-export function ScheduleList() {
+export function ScheduleList({ compact = false }: { compact?: boolean }) {
 	const { today, status, error } = useScheduleToday()
 	const nowMinutes = useCurrentMinutes()
 
@@ -56,17 +56,21 @@ export function ScheduleList() {
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
 
 	return (
-		<ul className='flex flex-col gap-3 mb-4'>
+		<ul className={`flex flex-col flex-1 ${compact ? 'gap-1.5' : 'gap-3'}`}>
 			{sorted.map((lesson, i) => (
 				<li
 					key={`${lesson.started_at}-${lesson.room}`}
-					className='flex flex-col'
+					className='flex flex-col flex-1'
 				>
 					{i > 0 && (
-						<GapIndicator gap={getGapBetweenLessons(sorted[i - 1], lesson)} />
+						<GapIndicator
+							gap={getGapBetweenLessons(sorted[i - 1], lesson)}
+							compact={compact}
+						/>
 					)}
 					<LessonCard
 						lesson={lesson}
+						compact={compact}
 						isCurrent={
 							nowMinutes >= toMinutes(lesson.started_at) &&
 							nowMinutes <= toMinutes(lesson.finished_at)

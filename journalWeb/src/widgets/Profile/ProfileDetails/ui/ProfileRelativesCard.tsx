@@ -101,17 +101,22 @@ function RelativeItem({
 
 interface Props {
 	relatives: ProfileRelative[]
+	flat?: boolean
 }
 
-export function ProfileRelativesCard({ relatives }: Props) {
+export function ProfileRelativesCard({ relatives, flat }: Props) {
 	if (!relatives.length) return null
 
 	return (
 		<div
-			className='bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
-			style={{ boxShadow: 'var(--shadow-card)' }}
+			className={
+				flat
+					? 'overflow-hidden'
+					: 'bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
+			}
+			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
-			<div className='flex items-center gap-2 px-5 pt-5 pb-3'>
+			<div className={`flex items-center gap-2 ${flat ? 'px-1' : 'px-5'} pt-5 pb-3`}>
 				<Users size={16} className='text-app-muted' />
 				<p className='text-[11px] font-semibold text-app-muted uppercase tracking-wider'>
 					Родственники
@@ -120,7 +125,7 @@ export function ProfileRelativesCard({ relatives }: Props) {
 					{relatives.length}
 				</span>
 			</div>
-			<div className='px-4 pb-4 space-y-2'>
+			<div className={`${flat ? 'px-0' : 'px-4'} pb-4 space-y-2`}>
 				{relatives.map((r, i) => (
 					<RelativeItem key={r.full_name} relative={r} index={i} />
 				))}

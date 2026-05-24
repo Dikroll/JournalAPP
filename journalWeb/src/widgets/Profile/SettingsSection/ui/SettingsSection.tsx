@@ -1,6 +1,7 @@
 import { useScheduleRemindersStore } from '@/features/scheduleReminders'
 import { pageConfig } from '@/shared/config'
 import { useThemeStore } from '@/shared/lib/themeStore'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { BellRing, ChevronRight, Moon, Sun, Trash2, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +14,7 @@ export function SettingsSection({ onAccounts, onClearCache }: Props) {
 	const navigate = useNavigate()
 	const { theme, toggleTheme } = useThemeStore()
 	const remindersEnabled = useScheduleRemindersStore(s => s.enabled)
+	const isDesktop = useIsDesktop()
 
 	return (
 		<div className='space-y-2'>
@@ -53,44 +55,48 @@ export function SettingsSection({ onAccounts, onClearCache }: Props) {
 				<div className='mx-4 h-px' style={{ background: 'var(--color-border)' }} />
 
 				{/* Тема */}
-				<button
-					type='button'
-					onClick={toggleTheme}
-					className='w-full flex items-center gap-3 px-4 py-3.5 active:bg-app-surface-hover transition-colors'
-					style={{ WebkitTapHighlightColor: 'transparent' }}
-				>
-					<div
-						className='w-8 h-8 rounded-xl flex items-center justify-center'
-						style={{
-							background: 'var(--color-surface-strong)',
-							border: '1px solid var(--color-border)',
-						}}
-					>
-						{theme === 'dark' ? (
-							<Moon size={15} className='text-app-muted' />
-						) : (
-							<Sun size={15} className='text-app-muted' />
-						)}
-					</div>
-					<span className='flex-1 text-sm font-medium text-app-text text-left'>
-						Тема
-					</span>
-					<div
-						className='relative w-11 h-[26px] rounded-full transition-colors duration-300'
-						style={{
-							background: theme === 'light' ? 'var(--color-brand)' : 'var(--color-border-strong)',
-						}}
-					>
-						<div
-							className='absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300'
-							style={{
-								transform: theme === 'light' ? 'translateX(22px)' : 'translateX(3px)',
-							}}
-						/>
-					</div>
-				</button>
+				{!isDesktop && (
+					<>
+						<button
+							type='button'
+							onClick={toggleTheme}
+							className='w-full flex items-center gap-3 px-4 py-3.5 active:bg-app-surface-hover transition-colors'
+							style={{ WebkitTapHighlightColor: 'transparent' }}
+						>
+							<div
+								className='w-8 h-8 rounded-xl flex items-center justify-center'
+								style={{
+									background: 'var(--color-surface-strong)',
+									border: '1px solid var(--color-border)',
+								}}
+							>
+								{theme === 'dark' ? (
+									<Moon size={15} className='text-app-muted' />
+								) : (
+									<Sun size={15} className='text-app-muted' />
+								)}
+							</div>
+							<span className='flex-1 text-sm font-medium text-app-text text-left'>
+								Тема
+							</span>
+							<div
+								className='relative w-11 h-[26px] rounded-full transition-colors duration-300'
+								style={{
+									background: theme === 'light' ? 'var(--color-brand)' : 'var(--color-border-strong)',
+								}}
+							>
+								<div
+									className='absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300'
+									style={{
+										transform: theme === 'light' ? 'translateX(22px)' : 'translateX(3px)',
+									}}
+								/>
+							</div>
+						</button>
 
-				<div className='mx-4 h-px' style={{ background: 'var(--color-border)' }} />
+						<div className='mx-4 h-px' style={{ background: 'var(--color-border)' }} />
+					</>
+				)}
 
 				<button
 					type='button'

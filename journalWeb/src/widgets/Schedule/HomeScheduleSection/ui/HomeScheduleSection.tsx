@@ -2,7 +2,7 @@ import { useHomeSchedule } from '@/entities/schedule'
 import { IconButton } from '@/shared/ui'
 import { formatDateLong } from '@/shared/utils'
 import { LessonList, ScheduleList } from '@/widgets'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export function HomeScheduleSection() {
 	const {
@@ -24,17 +24,18 @@ export function HomeScheduleSection() {
 					type='button'
 					onClick={offset !== 0 ? goToday : undefined}
 					disabled={offset === 0}
-					className='flex items-center flex-1 text-left'
+					className='flex items-center flex-1 text-left min-w-0'
 				>
 					{/* ЛИНИЯ */}
 					<div className='w-[2px] self-stretch bg-app-border mr-3 rounded-full' />
 
 					{/* ТЕКСТ */}
-					<div className='flex flex-col justify-center'>
-						<h1 className='text-lg font-bold leading-tight text-app-text'>
-							{title}
+					<div className='flex flex-col justify-center min-w-0'>
+						<h1 className='text-[16px] font-bold leading-tight text-app-text line-clamp-2 flex items-center gap-2'>
+							<CalendarDays size={16} className='text-app-muted shrink-0' />
+							<span>{title}</span>
 						</h1>
-						<p className='text-xs text-app-muted leading-tight mt-0.5 capitalize'>
+						<p className='text-xs text-app-muted leading-tight mt-0.5 capitalize truncate'>
 							{formatDateLong(dateStr)}
 						</p>
 					</div>

@@ -27,7 +27,7 @@ function pickBadgeLabel(
 	return 'цели в норме'
 }
 
-export function GoalsSummaryCard() {
+export function GoalsSummaryCard({ className }: { className?: string }) {
 	const navigate = useNavigate()
 	const progress = useDashboardChartsStore(s => s.progress)
 	const attendance = useDashboardChartsStore(s => s.attendance)
@@ -69,10 +69,10 @@ export function GoalsSummaryCard() {
 		<button
 			type='button'
 			onClick={() => navigate(pageConfig.goals)}
-			className='w-full text-left rounded-[22px] p-5 border border-app-border bg-app-surface active:scale-[0.99] transition-transform'
+			className={`w-full text-left rounded-[22px] p-4 border border-app-border bg-app-surface active:scale-[0.99] transition-transform flex flex-col ${className ?? ''}`}
 			style={{ boxShadow: 'var(--shadow-card)' }}
 		>
-			<div className='flex items-center justify-between mb-4'>
+			<div className='flex items-center justify-between mb-3'>
 				<div className='flex items-center gap-2'>
 					<Target size={16} className='text-app-muted' />
 					<span className='text-[13px] uppercase tracking-wider text-app-muted'>
@@ -82,7 +82,7 @@ export function GoalsSummaryCard() {
 				<ChevronRight size={18} className='text-app-muted' />
 			</div>
 
-			<div className='grid grid-cols-3 gap-3 mb-4'>
+			<div className='grid grid-cols-3 gap-3 mb-3'>
 				<div>
 					<div className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
 						{avg != null ? avg.toFixed(1) : '—'}
@@ -127,7 +127,7 @@ export function GoalsSummaryCard() {
 						})}
 					</div>
 
-					<div className='grid grid-cols-5 gap-1.5 mb-4'>
+					<div className='grid grid-cols-5 gap-1.5 mb-3'>
 						{([5, 4, 3, 2, 1] as const).map(v => {
 							const count = distribution[v]
 							const pct =
@@ -137,23 +137,23 @@ export function GoalsSummaryCard() {
 							return (
 								<div
 									key={v}
-									className='rounded-[14px] py-2 flex flex-col items-center justify-center'
+									className='rounded-[14px] py-1 flex flex-col items-center justify-center'
 									style={{
 										background: GRADE_BG[v],
 										opacity: count === 0 ? 0.45 : 1,
-										minHeight: 72,
+										minHeight: 56,
 									}}
 								>
 									<span
-										className='text-[26px] font-bold leading-none tabular-nums'
+										className='text-[20px] font-bold leading-none tabular-nums'
 										style={{ color: GRADE_COLOR[v] }}
 									>
 										{v}
 									</span>
-									<span className='text-[13px] font-semibold text-app-text tabular-nums mt-1.5 leading-none'>
+									<span className='text-[12px] font-semibold text-app-text tabular-nums mt-1 leading-none'>
 										{count}
 									</span>
-									<span className='text-[11px] text-app-muted tabular-nums mt-1 leading-none'>
+									<span className='text-[10px] text-app-muted tabular-nums mt-0.5 leading-none'>
 										{pct}%
 									</span>
 								</div>
@@ -163,7 +163,7 @@ export function GoalsSummaryCard() {
 				</>
 			)}
 
-			<div className='flex items-center justify-between pt-3 border-t border-app-border'>
+			<div className='mt-auto flex items-center justify-between w-full pt-3 border-t border-app-border'>
 				<span
 					className='inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium'
 					style={{

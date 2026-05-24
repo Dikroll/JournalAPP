@@ -29,18 +29,27 @@ function VerifiedBadge({ ok }: { ok: boolean }) {
 
 interface Props {
 	details: ProfileDetails
+	flat?: boolean
 }
 
-export function ProfileInfoCard({ details }: Props) {
+export function ProfileInfoCard({ details, flat }: Props) {
 	return (
 		<div
-			className='bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
-			style={{ boxShadow: 'var(--shadow-card)' }}
+			className={
+				flat
+					? 'overflow-hidden'
+					: 'bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
+			}
+			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
-			<p className='text-[11px] font-semibold text-app-muted uppercase tracking-wider px-5 pt-5 pb-2'>
+			<p
+				className={`text-[11px] font-semibold text-app-muted uppercase tracking-wider ${
+					flat ? 'px-1' : 'px-5'
+				} pt-5 pb-2`}
+			>
 				Личные данные
 			</p>
-			<div className='px-5 pb-1'>
+			<div className={`${flat ? 'px-0' : 'px-5'} pb-1`}>
 				<InfoRow
 					icon={<Calendar size={15} />}
 					label='Дата рождения'
