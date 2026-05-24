@@ -68,6 +68,7 @@ export { LibraryView } from './Library/LibraryView/ui/LibraryView'
 // Notifications
 export { ChangelogTab } from './Notifications/ChangelogTab/ui/ChangelogTab'
 export { ComingSoonTab } from './Notifications/ComingSoonTab/ui/ComingSoonTab'
+export { NewsTab } from './Notifications/NewsTab/ui/NewsTab'
 
 // Goals
 export { EmptyGoalsState } from './Goals/EmptyGoalsState/ui/EmptyGoalsState'

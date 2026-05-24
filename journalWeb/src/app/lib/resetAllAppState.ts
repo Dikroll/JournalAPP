@@ -17,6 +17,7 @@ import {
 } from '@/entities/schedule/model/notesStore'
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
+import { useNewsStore } from '@/entities/news'
 import { useUserStore } from '@/entities/user/model/store'
 import { clearGoalsWidget } from '@/features/goalsWidget'
 import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
@@ -69,6 +70,7 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	clearPersistedStoreData('goals-store')
 	clearPersistedStoreData('profile-details-store')
 	clearPersistedStoreData('user-store')
+	clearPersistedStoreData('news-store')
 	if (resetOnboarding) {
 		clearPersistedStoreData('onboarding-store')
 	}
@@ -79,6 +81,7 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	useLibraryStore.getState().reset?.()
 	useMarketStore.getState().reset?.()
 	usePaymentStore.getState().reset?.()
+	useNewsStore.getState().reset?.()
 	useExamStore.setState({
 		exams: [],
 		status: 'idle',

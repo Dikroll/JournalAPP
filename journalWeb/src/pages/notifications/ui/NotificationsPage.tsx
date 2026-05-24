@@ -14,8 +14,8 @@ import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
 import {
 	ChangelogTab,
-	ComingSoonTab,
 	EvaluateLessonList,
+	NewsTab,
 } from '@/widgets'
 import {
 	ArrowLeft,
@@ -122,7 +122,7 @@ export function NotificationsPage() {
 					</>
 				)}
 				{activeTab === 'feedback' && <EvaluateLessonList />}
-				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
+				{activeTab === 'news' && <NewsTab />}
 			</div>
 		</div>
 	)

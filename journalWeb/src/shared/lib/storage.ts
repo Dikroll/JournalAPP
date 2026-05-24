@@ -64,6 +64,7 @@ export const CACHE_KEYS = {
 	HOMEWORK: (status: number, groupId: number) =>
 		`cache:hw:${status}:${groupId}`,
 	NEWS: 'cache:news:latest',
+	NEWS_DETAIL: (id: number) => `cache:news:detail:${id}`,
 	LIBRARY_COUNTERS: (specId?: number) =>
 		`cache:library:counters:${specId ?? 'all'}`,
 	MARKET_PRODUCTS: 'cache:market:products',

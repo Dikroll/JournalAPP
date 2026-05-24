@@ -9,6 +9,7 @@ import {
 	LibraryPage,
 	LoginPage,
 	MarketPage,
+	NewsDetailPage,
 	NotificationSettingsPage,
 	NotificationsPage,
 	PaymentPage,
@@ -102,6 +103,7 @@ export function AppRouter() {
 					<Route path='market' element={<MarketPage />} />
 					<Route path='payment' element={<PaymentPage />} />
 					<Route path='notifications' element={<NotificationsPage />} />
+					<Route path='notifications/news/:id' element={<NewsDetailPage />} />
 				</Route>
 
 				<Route path='*' element={<Navigate to='/' replace />} />
