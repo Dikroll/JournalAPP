@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { ReviewItem } from './types'
 
 interface ReviewState {
@@ -13,7 +13,7 @@ interface ReviewState {
 }
 
 export const useReviewStore = create<ReviewState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			reviews: [],
 			status: 'idle',

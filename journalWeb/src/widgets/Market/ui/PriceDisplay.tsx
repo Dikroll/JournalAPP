@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function PriceDisplay({ price, className = '' }: Props) {
-	const parts = []
+	const parts: React.ReactNode[] = []
 
 	if (price.diamonds) {
 		parts.push(

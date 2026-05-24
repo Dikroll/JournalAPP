@@ -10,24 +10,25 @@ import { useMarketStore } from '@/entities/market/model/store'
 import { usePaymentStore } from '@/entities/payment/model/store'
 import { useProfileDetailsStore } from '@/entities/profile/model/store'
 import { useReviewStore } from '@/entities/review/model/store'
+import { resetScheduleTodayFetch } from '@/entities/schedule/hooks/useScheduleToday'
 import {
 	DEFAULT_STATUSES,
 	useLessonNotesStore,
 } from '@/entities/schedule/model/notesStore'
-import { resetScheduleTodayFetch } from '@/entities/schedule/hooks/useScheduleToday'
 import { useScheduleStore } from '@/entities/schedule/model/store'
 import { useSubjectStore } from '@/entities/subject/model/store'
 import { useUserStore } from '@/entities/user/model/store'
+import { clearGoalsWidget } from '@/features/goalsWidget'
 import { resetInitUserFetch } from '@/features/initUser/hooks/useInitUser'
 import {
 	clearAllQueueFiles,
 	useOfflineQueueStore,
 } from '@/features/offlineQueue'
-import { clearGoalsWidget } from '@/features/goalsWidget'
 import { clearScheduleReminders } from '@/features/scheduleReminders/lib/mobileReminders'
 import { clearScheduleWidgets } from '@/features/scheduleWidgets'
-import { storage } from '@/shared/lib/storage'
+import { storage } from '@/shared/lib/encryptedStorage'
 import { useThemeStore } from '@/shared/lib/themeStore'
+import { clearPersistedStoreData } from '@/shared/lib/zustandEncryptedPersist'
 import { useAuthStore } from '@/shared/model/authStore'
 import { useOnboardingStore } from '@/shared/model/onboardingStore'
 
@@ -51,31 +52,33 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	clearScheduleWidgets().catch(() => {})
 	clearGoalsWidget().catch(() => {})
 
-	try {
-		useGradesStore.persist.clearStorage?.()
-	} catch {}
-	useGradesStore.getState().reset()
+	// Clear persisted store data
+	clearPersistedStoreData('grades-store')
+	clearPersistedStoreData('homework-store')
+	clearPersistedStoreData('market-store')
+	clearPersistedStoreData('payment-store')
+	clearPersistedStoreData('exam-store')
+	clearPersistedStoreData('subject-store')
+	clearPersistedStoreData('dashboard-store')
+	clearPersistedStoreData('leaderboard-store')
+	clearPersistedStoreData('review-store')
+	clearPersistedStoreData('schedule-store')
+	clearPersistedStoreData('offline-queue-store')
+	clearPersistedStoreData('feedback-store')
+	clearPersistedStoreData('notes-store')
+	clearPersistedStoreData('goals-store')
+	clearPersistedStoreData('profile-details-store')
+	clearPersistedStoreData('user-store')
+	if (resetOnboarding) {
+		clearPersistedStoreData('onboarding-store')
+	}
 
-	try {
-		useHomeworkStore.persist.clearStorage?.()
-	} catch {}
-	useHomeworkStore.getState().reset()
-
-	useLibraryStore.getState().reset()
-
-	try {
-		useMarketStore.persist.clearStorage?.()
-	} catch {}
-	useMarketStore.getState().reset()
-
-	try {
-		usePaymentStore.persist.clearStorage?.()
-	} catch {}
-	usePaymentStore.getState().reset()
-
-	try {
-		useExamStore.persist.clearStorage?.()
-	} catch {}
+	// Reset state
+	useGradesStore.getState().reset?.()
+	useHomeworkStore.getState().reset?.()
+	useLibraryStore.getState().reset?.()
+	useMarketStore.getState().reset?.()
+	usePaymentStore.getState().reset?.()
 	useExamStore.setState({
 		exams: [],
 		status: 'idle',
@@ -85,18 +88,12 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		resultsLoadedAt: null,
 	})
 
-	try {
-		useSubjectStore.persist.clearStorage?.()
-	} catch {}
 	useSubjectStore.setState({
 		subjects: [],
 		status: 'idle',
 		loadedAt: null,
 	})
 
-	try {
-		useDashboardChartsStore.persist.clearStorage?.()
-	} catch {}
 	useDashboardChartsStore.setState({
 		progress: [],
 		attendance: [],
@@ -107,27 +104,18 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		activityLoadedAt: null,
 	})
 
-	try {
-		useLeaderboardStore.persist.clearStorage?.()
-	} catch {}
 	useLeaderboardStore.setState({
 		data: null,
 		status: 'idle',
 		loadedAt: null,
 	})
 
-	try {
-		useReviewStore.persist.clearStorage?.()
-	} catch {}
 	useReviewStore.setState({
 		reviews: [],
 		status: 'idle',
 		loadedAt: null,
 	})
 
-	try {
-		useScheduleStore.persist.clearStorage?.()
-	} catch {}
 	useScheduleStore.setState({
 		days: {},
 		dayStatus: {},
@@ -144,15 +132,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		error: null,
 	})
 
-	try {
-		useOfflineQueueStore.persist.clearStorage?.()
-	} catch {}
 	useOfflineQueueStore.setState({ items: [] })
 	clearAllQueueFiles().catch(() => {})
 
-	try {
-		useFeedbackStore.persist.clearStorage?.()
-	} catch {}
 	useFeedbackStore.setState({
 		pending: [],
 		pendingStatus: 'idle',
@@ -163,64 +145,43 @@ export function resetAllAppState(options: ResetOptions = {}) {
 		error: null,
 	})
 
-	try {
-		useLessonNotesStore.persist.clearStorage?.()
-	} catch {}
 	useLessonNotesStore.setState({
 		notes: {},
 		statuses: DEFAULT_STATUSES,
 	})
 
-	try {
-		useGoalsStore.persist.clearStorage?.()
-	} catch {}
-	useGoalsStore.setState({ targets: {} })
+	useGoalsStore.getState().reset?.()
 
-	try {
-		useProfileDetailsStore.persist.clearStorage?.()
-	} catch {}
 	useProfileDetailsStore.setState({
 		details: null,
 		status: 'idle',
 	})
 
-	try {
-		useUserStore.persist.clearStorage?.()
-	} catch {}
 	useUserStore.setState({
 		user: null,
 	})
 
-	if (resetOnboarding) {
-		try {
-			useOnboardingStore.persist.clearStorage?.()
-		} catch {}
-		useOnboardingStore.setState({
-			isDone: false,
-		})
-	}
-
 	if (resetTheme) {
-		try {
-			useThemeStore.persist.clearStorage?.()
-		} catch {}
-		useThemeStore.setState(state => ({
+		useThemeStore.setState((state: any) => ({
 			...state,
 			theme: 'dark',
 		}))
 	}
 
 	if (resetAuth) {
-		try {
-			useAuthStore.persist.clearStorage?.()
-		} catch {}
-		useAuthStore.setState(state => ({
+		useAuthStore.setState((state: any) => ({
 			token: null,
 			isAuthenticated: false,
 			activeUsername: null,
 			accounts: state.accounts.filter(
-				account => account.username !== state.activeUsername,
+				(account: any) => account.username !== state.activeUsername,
 			),
 		}))
+	}
+
+	if (resetOnboarding) {
+		useOnboardingStore.setState({
+			isDone: false,
+		})
 	}
 }

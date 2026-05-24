@@ -1,24 +1,9 @@
-import {
-	type MarketOrderDetails,
-	type MarketPrice,
-	useMarket,
-} from '@/entities/market'
+import { type MarketPrice, useMarket } from '@/entities/market'
+import { RefreshMarketButton } from '@/features/refreshMarket'
 import { useSwipeBack } from '@/shared/hooks'
 import type { Segment } from '@/shared/ui'
-import {
-	Badge,
-	PageHeader,
-	RefreshButton,
-	SegmentedControl,
-	SkeletonList,
-} from '@/shared/ui'
-import {
-	CartItemCard,
-	OrderCard,
-	OrderItemsList,
-	PriceDisplay,
-	ProductCard,
-} from '@/widgets'
+import { PageHeader, SegmentedControl } from '@/shared/ui'
+import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
 import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
@@ -35,10 +20,6 @@ function getMarketTabs(cartItemsCount: number): Segment<MarketTab>[] {
 		},
 		{ key: 'orders', label: 'Заказы', icon: <Archive size={13} /> },
 	]
-}
-
-function getOrderItems(details?: MarketOrderDetails) {
-	return details?.products ?? details?.items ?? []
 }
 
 function canAfford(price: MarketPrice, userBalance: MarketPrice): boolean {
@@ -108,7 +89,7 @@ export function MarketPage() {
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
 					<PageHeader title='Маркет' />
-					<RefreshButton
+					<RefreshMarketButton
 						isRefreshing={
 							productsStatus === 'loading' || ordersStatus === 'loading'
 						}
@@ -124,39 +105,15 @@ export function MarketPage() {
 
 			<div className='px-4 space-y-4'>
 				{tab === 'products' && (
-					<>
-						{products.length > 0 && (
-							<div className='flex items-center gap-2'>
-								<Badge variant='neutral' size='xs'>
-									Товары: {products.length}
-								</Badge>
-							</div>
-						)}
-						{productsStatus === 'loading' && products.length === 0 ? (
-							<SkeletonList count={4} height={260} />
-						) : productsStatus === 'error' && products.length === 0 ? (
-							<div className='py-16 text-center text-app-muted'>
-								{productsError ?? 'Не удалось загрузить товары'}
-							</div>
-						) : products.length === 0 ? (
-							<div className='py-16 text-center text-app-muted'>
-								Товары скоро появятся
-							</div>
-						) : (
-							<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-								{products.map(product => (
-									<ProductCard
-										key={product.id}
-										product={product}
-										inCart={cartByProduct.get(product.id) ?? 0}
-										canAddToCart={canAfford(product.price, userBalance)}
-										onAdd={() => handleAddToCart(product.id)}
-										onRemove={() => handleRemoveFromCart(product.id)}
-									/>
-								))}
-							</div>
-						)}
-					</>
+					<ProductsTab
+						products={products}
+						cartByProduct={cartByProduct}
+						productsStatus={productsStatus}
+						productsError={productsError}
+						userBalance={userBalance}
+						onAddProduct={handleAddToCart}
+						onRemoveProduct={handleRemoveFromCart}
+					/>
 				)}
 
 				{tab === 'cart' && (
@@ -215,39 +172,21 @@ export function MarketPage() {
 				)}
 
 				{tab === 'orders' && (
-					<div className='space-y-3'>
-						{ordersStatus === 'loading' && orders.length === 0 ? (
-							<SkeletonList count={4} height={96} />
-						) : ordersStatus === 'error' && orders.length === 0 ? (
-							<div className='py-16 text-center text-app-muted'>
-								{ordersError ?? 'Не удалось загрузить заказы'}
-							</div>
-						) : orders.length === 0 ? (
-							<div className='py-16 text-center text-app-muted'>
-								Заказов пока нет
-							</div>
-						) : (
-							orders.map(order => {
-								const isExpanded = expandedOrderId === order.id
-								const details = orderDetails[order.id]
-								const items = getOrderItems(details)
-
-								return (
-									<OrderCard
-										key={order.id}
-										order={order}
-										isExpanded={isExpanded}
-										onToggle={() => handleToggleOrder(order.id)}
-										isLoading={orderDetailsStatus[order.id] === 'loading'}
-										isError={orderDetailsStatus[order.id] === 'error'}
-										totalPrice={details?.total}
-									>
-										<OrderItemsList items={items} />
-									</OrderCard>
-								)
-							})
-						)}
-					</div>
+					<OrdersTab
+						ordersStatus={ordersStatus}
+						ordersError={ordersError}
+						orders={orders}
+						expandedOrderId={expandedOrderId}
+						orderDetails={orderDetails}
+						orderDetailsStatus={orderDetailsStatus}
+						onOrderToggle={handleToggleOrder}
+						cartItems={[]}
+						cartTotal={cartTotal}
+						userBalance={userBalance}
+						onCartIncrement={incrementCartItem}
+						onCartDecrement={decrementCartItem}
+						onCartRemove={removeFromCart}
+					/>
 				)}
 			</div>
 		</div>

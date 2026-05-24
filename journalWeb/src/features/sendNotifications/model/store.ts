@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { ChangelogFeedEntry } from '@/shared/lib/appRelease'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
+import { create } from 'zustand'
 
 export type ChangelogEntry = ChangelogFeedEntry
 
@@ -10,10 +10,22 @@ export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 		version: '1.3.0',
 		date: '2026-04-09',
 		items: [
-			{ label: 'add', text: 'Оценка занятий — оценивайте пары и преподавателей прямо из уведомлений' },
-			{ label: 'change', text: 'Расписание на неделю — обновлённый дизайн, плоский список вместо вложенных карточек' },
-			{ label: 'improve', text: 'Библиотека — улучшены заглушки для материалов без обложки' },
-			{ label: 'add', text: 'Уведомления — индикатор на иконке при наличии непрочитанного' },
+			{
+				label: 'add',
+				text: 'Оценка занятий — оценивайте пары и преподавателей прямо из уведомлений',
+			},
+			{
+				label: 'change',
+				text: 'Расписание на неделю — обновлённый дизайн, плоский список вместо вложенных карточек',
+			},
+			{
+				label: 'improve',
+				text: 'Библиотека — улучшены заглушки для материалов без обложки',
+			},
+			{
+				label: 'add',
+				text: 'Уведомления — индикатор на иконке при наличии непрочитанного',
+			},
 		],
 	},
 	{
@@ -32,21 +44,21 @@ interface NotificationsState {
 }
 
 export const useNotificationsStore = create<NotificationsState>()(
-	persist(
-		set => ({
+	persistEncrypted(
+		(set: any) => ({
 			lastReadChangelogId: null,
-			setLastRead: id => set({ lastReadChangelogId: id }),
+			setLastRead: (id: any) => set({ lastReadChangelogId: id }),
 			seenPendingKeys: [],
-			markPendingSeen: keys => set({ seenPendingKeys: keys }),
+			markPendingSeen: (keys: any) => set({ seenPendingKeys: keys }),
 		}),
 		{
 			name: 'notifications-store',
-			partialize: state => ({
+			partialize: (state: any) => ({
 				lastReadChangelogId: state.lastReadChangelogId,
 				seenPendingKeys: state.seenPendingKeys,
 			}),
 		},
-	),
+	) as any,
 )
 
 export function getUnreadCount(

@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { ChartPoint, DashboardActivityEntry } from './types'
 
 interface DashboardChartsState {
@@ -21,7 +21,7 @@ interface DashboardChartsState {
 }
 
 export const useDashboardChartsStore = create<DashboardChartsState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			progress: [],
 			attendance: [],

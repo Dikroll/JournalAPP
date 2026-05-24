@@ -1,6 +1,6 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { HomeworkCounters, HomeworkItem, HomeworkStatus } from './types'
 
 export const PREVIEW_SIZE = 6
@@ -81,7 +81,7 @@ function filterItems(
 }
 
 export const useHomeworkStore = create<HomeworkState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			items: {},
 			pages: {},
@@ -91,6 +91,29 @@ export const useHomeworkStore = create<HomeworkState>()(
 			error: null,
 			filterStatus: null,
 			loadedAt: null,
+
+		knownSpecs: [],
+		subjects: {},
+
+		setKnownSpecs: knownSpecs => set({ knownSpecs }),
+		setSubjectData: (specId, specName, counters, items) =>
+			set(state => ({
+				subjects: {
+					...state.subjects,
+					[specId]: {
+						specId,
+						specName,
+						counters,
+						items,
+						pages: Object.fromEntries(
+							Object.keys(items).map(k => [k, 1]),
+						),
+						expandedStatuses: new Set(),
+						status: 'success' as const,
+						loadedAt: Date.now(),
+					},
+				},
+			})),
 
 			setItems: (statusKey, items) =>
 				set(state => {
@@ -129,40 +152,17 @@ export const useHomeworkStore = create<HomeworkState>()(
 				set(state => ({
 					items: filterItems(state.items, homeworkId),
 					subjects: Object.fromEntries(
-						Object.entries(state.subjects).map(([specId, subjectData]) => [
-							specId,
-							{
-								...subjectData,
-								items: filterItems(subjectData.items, homeworkId),
-							},
-						]),
+						Object.entries(state.subjects as Record<string, SubjectData>).map(
+							([specId, subjectData]) => [
+								specId,
+								{
+									...subjectData,
+									items: filterItems(subjectData.items, homeworkId),
+								},
+							],
+						),
 					),
 				})),
-
-			knownSpecs: [],
-			subjects: {},
-
-			setKnownSpecs: specs => set({ knownSpecs: specs }),
-
-			setSubjectData: (specId, specName, counters, items) =>
-				set(state => ({
-					subjects: {
-						...state.subjects,
-						[specId]: {
-							specId,
-							specName,
-							counters,
-							items,
-							pages: Object.fromEntries(
-								Object.keys(items).map(k => [k, 1]),
-							),
-							expandedStatuses: new Set(),
-							status: 'success' as LoadingState,
-							loadedAt: Date.now(),
-						},
-					},
-				})),
-
 			appendSubjectItems: (specId, statusKey, newItems, page) =>
 				set(state => {
 					const existing = state.subjects[specId]
@@ -236,7 +236,7 @@ export const useHomeworkStore = create<HomeworkState>()(
 				loadedAt: state.loadedAt,
 				knownSpecs: state.knownSpecs,
 				subjects: Object.fromEntries(
-					Object.entries(state.subjects).map(([k, v]) => [
+					Object.entries(state.subjects as Record<string, SubjectData>).map(([k, v]) => [
 						k,
 						{
 							...v,
@@ -247,13 +247,13 @@ export const useHomeworkStore = create<HomeworkState>()(
 				),
 				expandedStatuses: Array.from(state.expandedStatuses),
 			}),
-			onRehydrateStorage: () => state => {
+			onRehydrateStorage: () => (state: HomeworkState | undefined) => {
 				if (!state) return
 				state.expandedStatuses = new Set(
 					state.expandedStatuses as unknown as number[],
 				)
 				state.status = 'idle'
-				for (const sub of Object.values(state.subjects)) {
+				for (const sub of Object.values(state.subjects as Record<number, SubjectData>)) {
 					sub.expandedStatuses = new Set(
 						sub.expandedStatuses as unknown as number[],
 					)

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { migrateToEncrypted, persistEncrypted } from '../lib/zustandEncryptedPersist'
 
 export interface SavedAccount {
 	username: string
@@ -30,8 +30,11 @@ interface AuthState {
 	removeAccount: (username: string) => void
 }
 
+// Migrate plain-text auth-store to encrypted storage (one-time, safe to call repeatedly)
+migrateToEncrypted('auth-store')
+
 export const useAuthStore = create<AuthState>()(
-	persist(
+	persistEncrypted(
 		(set, get) => ({
 			token: null,
 			isAuthenticated: false,
@@ -118,3 +121,4 @@ export const useAuthStore = create<AuthState>()(
 		},
 	),
 )
+

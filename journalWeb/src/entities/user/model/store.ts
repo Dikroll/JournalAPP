@@ -1,5 +1,5 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { UserInfo } from './types'
 
 interface UserState {
@@ -9,7 +9,7 @@ interface UserState {
 }
 
 export const useUserStore = create<UserState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			user: null,
 			setUser: user => set({ user }),

@@ -1,6 +1,6 @@
 import { ttl } from '@/shared/config'
 import { CACHE_KEYS } from '@/shared/lib'
-import { storage } from '@/shared/lib/storage'
+import { storage } from '@/shared/lib/encryptedStorage'
 import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useRef } from 'react'
 import { gradesApi } from '../api'

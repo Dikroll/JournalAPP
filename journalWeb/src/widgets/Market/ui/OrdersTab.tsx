@@ -1,14 +1,15 @@
-import type { MarketOrderDetails, MarketPrice } from '@/entities/market'
+import type {
+	MarketOrder,
+	MarketOrderDetails,
+	MarketPrice,
+} from '@/entities/market'
 import { SkeletonList } from '@/shared/ui'
-import { OrderCard, OrderItemsList } from './index'
+import { OrderCard } from './OrderCard'
+import { OrderItemsList } from './OrderItemsList'
 
 interface CartItem {
 	product: { id: number; title: string; image_url?: string; price: MarketPrice }
 	quantity: number
-}
-
-interface Order {
-	id: number
 }
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
 	userBalance: MarketPrice
 	ordersStatus: 'idle' | 'loading' | 'error' | 'success'
 	ordersError: string | null
-	orders: Order[]
+	orders: MarketOrder[]
 	expandedOrderId: number | null
 	orderDetails: Record<number, MarketOrderDetails | undefined>
 	orderDetailsStatus: Record<string, 'idle' | 'loading' | 'error' | 'success'>

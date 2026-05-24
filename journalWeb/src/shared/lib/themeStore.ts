@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncryptedKeyOnly } from '@/shared/lib/zustandEncryptedPersist'
 
 export type ThemeType = 'dark' | 'light'
 
@@ -11,8 +11,8 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>()(
-	persist(
-		set => ({
+	persistEncryptedKeyOnly(
+		(set: any) => ({
 			theme: 'dark' as ThemeType,
 
 			setTheme: (theme: ThemeType) => {

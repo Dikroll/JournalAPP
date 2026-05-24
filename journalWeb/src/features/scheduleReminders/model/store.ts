@@ -1,5 +1,5 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 export const FIRST_LESSON_OFFSET_OPTIONS = [15, 30, 45, 60] as const
 export const REGULAR_LESSON_OFFSET_OPTIONS = [5, 10, 15, 20] as const
@@ -25,8 +25,8 @@ interface ScheduleRemindersState {
 }
 
 export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
-	persist(
-		set => ({
+	persistEncrypted(
+		(set: any) => ({
 			enabled: true,
 			firstLessonEnabled: true,
 			firstLessonOffset: 30,
@@ -35,20 +35,23 @@ export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
 			lunchBreakEnabled: true,
 			postLunchEnabled: true,
 			postLunchOffset: 10,
-			setEnabled: enabled => set({ enabled }),
-			setFirstLessonEnabled: firstLessonEnabled => set({ firstLessonEnabled }),
-			setFirstLessonOffset: firstLessonOffset => set({ firstLessonOffset }),
-			setRegularLessonEnabled: regularLessonEnabled =>
+			setEnabled: (enabled: any) => set({ enabled }),
+			setFirstLessonEnabled: (firstLessonEnabled: any) =>
+				set({ firstLessonEnabled }),
+			setFirstLessonOffset: (firstLessonOffset: any) =>
+				set({ firstLessonOffset }),
+			setRegularLessonEnabled: (regularLessonEnabled: any) =>
 				set({ regularLessonEnabled }),
-			setRegularLessonOffset: regularLessonOffset =>
+			setRegularLessonOffset: (regularLessonOffset: any) =>
 				set({ regularLessonOffset }),
-			setLunchBreakEnabled: lunchBreakEnabled => set({ lunchBreakEnabled }),
-			setPostLunchEnabled: postLunchEnabled => set({ postLunchEnabled }),
-			setPostLunchOffset: postLunchOffset => set({ postLunchOffset }),
+			setLunchBreakEnabled: (lunchBreakEnabled: any) =>
+				set({ lunchBreakEnabled }),
+			setPostLunchEnabled: (postLunchEnabled: any) => set({ postLunchEnabled }),
+			setPostLunchOffset: (postLunchOffset: any) => set({ postLunchOffset }),
 		}),
 		{
 			name: 'schedule-reminders-store',
-			partialize: state => ({
+			partialize: (state: any) => ({
 				enabled: state.enabled,
 				firstLessonEnabled: state.firstLessonEnabled,
 				firstLessonOffset: state.firstLessonOffset,

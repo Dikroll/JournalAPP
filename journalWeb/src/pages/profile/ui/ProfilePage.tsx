@@ -1,9 +1,6 @@
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useUser } from '@/entities/user'
-import { pageConfig } from '@/shared/config'
-import { Leaderboard, ProfileHeader, ReviewsList } from '@/widgets'
-import { ShoppingBag } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Leaderboard, MarketLink, ProfileHeader, ReviewsList } from '@/widgets'
 
 export function ProfilePage() {
 	const user = useUser()
@@ -23,46 +20,8 @@ export function ProfilePage() {
 			<ProfileHeader user={user} rank={myRankGroup?.position} />
 
 			<div className='px-4 space-y-5'>
-				<Link
-					to={pageConfig.market}
-					className='bg-app-surface rounded-[20px] p-4 border border-app-border flex items-center justify-between active:scale-[0.99] transition-transform'
-					style={{ boxShadow: 'var(--shadow-card)' }}
-				>
-					<div className='flex items-center gap-3'>
-						<div className='w-11 h-11 rounded-[16px] bg-brand/10 flex items-center justify-center text-brand'>
-							<ShoppingBag size={21} />
-						</div>
-						<div>
-							<p className='text-sm font-semibold text-app-text'>Маркет</p>
-							<p className='text-xs text-app-muted mt-0.5'>
-								Товары за топмани и топгемы
-							</p>
-						</div>
-					</div>
-					<span className='text-sm text-brand font-medium'>Открыть</span>
-				</Link>
-
-				{user.is_debtor && (
-					<div
-						className='bg-[#EF4444]/10 rounded-[20px] p-4 border border-[#EF4444]/20 flex items-center justify-between'
-						style={{ boxShadow: '0 4px 16px 0 rgba(239,68,68,0.1)' }}
-					>
-						<div>
-							<p className='text-xs text-[#9CA3AF] mb-0.5'>Статус оплаты</p>
-							<p className='text-sm font-semibold text-[#EF4444]'>
-								Есть задолженность
-							</p>
-						</div>
-						<Link
-							to={pageConfig.payment}
-							className='px-4 py-2 rounded-[14px] bg-app-surface border border-app-border text-sm text-app-text font-medium'
-						>
-							История
-						</Link>
-					</div>
-				)}
-
 				<Leaderboard myStudentId={user.student_id} />
+				<MarketLink />
 				<ReviewsList />
 			</div>
 		</div>

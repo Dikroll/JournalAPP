@@ -50,13 +50,15 @@ export { PaymentScheduleCard } from './Payment/ui/PaymentScheduleCard'
 export { CartItemCard } from './Market/ui/CartItemCard'
 export { OrderCard } from './Market/ui/OrderCard'
 export { OrderItemsList } from './Market/ui/OrderItemsList'
+export { OrdersTab } from './Market/ui/OrdersTab'
 export { PriceDisplay } from './Market/ui/PriceDisplay'
 export { ProductCard } from './Market/ui/ProductCard'
+export { ProductsTab } from './Market/ui/ProductsTab'
 
 // Features re-exports (widget-level access)
-export { EvaluateLessonList } from '@/features/evaluateLesson'
 export { AccountSwitcher } from '@/features/changeUser'
 export { ClearCacheSheet } from '@/features/clearCache'
+export { EvaluateLessonList } from '@/features/evaluateLesson'
 
 // Library
 export { LibraryMaterialCard } from './Library/LibraryMaterialCard/ui/LibraryMaterialCard'
@@ -78,3 +80,5 @@ export { RecentMarks } from './Goals/RecentMarks/ui/RecentMarks'
 export { SetGoalSheet } from './Goals/SetGoalSheet/ui/SetGoalSheet'
 export { SubjectStats } from './Goals/SubjectStats/ui/SubjectStats'
 export { WhatIfSimulator } from './Goals/WhatIfSimulator/ui/WhatIfSimulator'
+
+export { MarketLink } from './MarketLink/ui/MarketLink'

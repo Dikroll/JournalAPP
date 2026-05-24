@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 
 export interface NoteStatus {
 	label: string
@@ -60,7 +60,7 @@ function getNotesForKey(
 }
 
 export const useLessonNotesStore = create<NotesState>()(
-	persist(
+	persistEncrypted(
 		(set, get) => ({
 			notes: {},
 			statuses: DEFAULT_STATUSES,

@@ -1,5 +1,5 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { ProfileDetails } from './types'
 
 interface ProfileDetailsState {
@@ -10,7 +10,7 @@ interface ProfileDetailsState {
 }
 
 export const useProfileDetailsStore = create<ProfileDetailsState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			details: null,
 			status: 'idle',

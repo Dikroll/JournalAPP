@@ -1,6 +1,6 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type {
 	MarketCartItem,
 	MarketOrder,
@@ -46,7 +46,7 @@ interface MarketState {
 }
 
 export const useMarketStore = create<MarketState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			products: [],
 			productsStatus: 'idle',
@@ -91,7 +91,10 @@ export const useMarketStore = create<MarketState>()(
 						return {
 							cart: state.cart.map(item =>
 								item.productId === productId
-									? { ...item, quantity: Math.min(item.quantity + 1, available) }
+									? {
+											...item,
+											quantity: Math.min(item.quantity + 1, available),
+									  }
 									: item,
 							),
 						}

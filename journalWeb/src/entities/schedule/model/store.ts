@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LessonItem } from './types'
 
 // Версия кэша - обновляется при изменении API
@@ -49,7 +49,7 @@ interface ScheduleState {
 }
 
 export const useScheduleStore = create<ScheduleState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			cacheVersion: SCHEDULE_CACHE_VERSION,
 

@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { AppReleaseInfo } from '@/shared/lib/appRelease'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
+import { create } from 'zustand'
 
 type UpdateStatus = 'idle' | 'checking' | 'available' | 'downloading' | 'error'
 
@@ -21,7 +21,7 @@ interface AppUpdateState {
 }
 
 export const useAppUpdateStore = create<AppUpdateState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			status: 'idle',
 			serverInfo: null,

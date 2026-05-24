@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { Goal, GoalsState } from './types'
 
 function clampTarget(value: number): number {
@@ -8,7 +8,7 @@ function clampTarget(value: number): number {
 }
 
 export const useGoalsStore = create<GoalsState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			targets: {},
 

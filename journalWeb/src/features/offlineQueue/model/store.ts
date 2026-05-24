@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { QueuedHomework } from './types'
 
 interface OfflineQueueState {
@@ -11,7 +11,7 @@ interface OfflineQueueState {
 }
 
 export const useOfflineQueueStore = create<OfflineQueueState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			items: [],
 

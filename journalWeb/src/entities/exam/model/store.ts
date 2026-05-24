@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { ExamResult, FutureExamItem } from './types'
 
 interface ExamState {
@@ -20,7 +20,7 @@ interface ExamState {
 }
 
 export const useExamStore = create<ExamState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			exams: [],
 			status: 'idle' as LoadingState,

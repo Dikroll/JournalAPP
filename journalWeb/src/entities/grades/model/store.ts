@@ -1,6 +1,6 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { GradeEntry } from './types'
 
 interface SubjectData {
@@ -26,7 +26,7 @@ interface GradesState {
 }
 
 export const useGradesStore = create<GradesState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			entries: [],
 			status: 'idle',
@@ -70,10 +70,12 @@ export const useGradesStore = create<GradesState>()(
 				entries: state.entries,
 				loadedAt: state.loadedAt,
 				bySubject: Object.fromEntries(
-					Object.entries(state.bySubject).map(([k, v]) => [
-						k,
-						{ entries: v.entries, status: 'idle', loadedAt: v.loadedAt },
-					]),
+					Object.entries(state.bySubject as Record<string, SubjectData>).map(
+						([k, v]) => [
+							k,
+							{ entries: v.entries, status: 'idle', loadedAt: v.loadedAt },
+						],
+					),
 				),
 			}),
 		},

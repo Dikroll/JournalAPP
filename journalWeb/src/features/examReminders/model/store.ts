@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 
 export const EXAM_START_DAYS_OPTIONS = [3, 5, 7, 14] as const
 export const EXAM_NOTIFY_HOUR_OPTIONS = [15, 16, 17, 18, 19] as const
@@ -22,7 +22,7 @@ interface ExamRemindersState {
 }
 
 export const useExamRemindersStore = create<ExamRemindersState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			enabled: true,
 			dayBeforeEnabled: true,

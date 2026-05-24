@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { FeedbackTag, PendingFeedback } from './types'
 
 interface FeedbackState {
@@ -28,7 +28,7 @@ interface FeedbackState {
 }
 
 export const useFeedbackStore = create<FeedbackState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			pending: [],
 			pendingStatus: 'idle',

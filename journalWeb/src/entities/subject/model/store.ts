@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { Subject } from './types'
 
 interface SubjectState {
@@ -13,7 +13,7 @@ interface SubjectState {
 }
 
 export const useSubjectStore = create<SubjectState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			subjects: [],
 			status: 'idle' as const,

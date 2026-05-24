@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LeaderboardResponse } from './types'
 
 interface LeaderboardState {
@@ -16,7 +16,7 @@ interface LegacyScoped {
 }
 
 export const useLeaderboardStore = create<LeaderboardState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			data: null,
 			status: 'idle',

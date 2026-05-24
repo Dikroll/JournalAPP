@@ -1,27 +1,23 @@
+import { useFeedbackStore } from '@/entities/feedback'
+import { useUserStore } from '@/entities/user'
 import { useAppUpdateStore } from '@/features/appUpdate'
 import {
 	getUnreadCount,
 	useNotificationsStore,
 } from '@/features/sendNotifications'
-import { useFeedbackStore } from '@/entities/feedback'
-import { useUserStore } from '@/entities/user'
-import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { getCachedImageUrl } from '@/shared/lib'
+import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
+import { useHydrationStore } from '@/shared/lib/hydrationStore'
 import { getInitials, getShortName } from '@/shared/utils/nameUtils'
 import { useEffect, useState } from 'react'
 
 function useUserStoreHydrated() {
-	const [hydrated, setHydrated] = useState(() =>
-		useUserStore.persist.hasHydrated(),
-	)
+	const hasHydrated = useHydrationStore(state => state.hasHydrated)
+	const [hydrated, setHydrated] = useState(hasHydrated)
 
 	useEffect(() => {
-		if (hydrated) return
-		const unsubscribe = useUserStore.persist.onFinishHydration(() =>
-			setHydrated(true),
-		)
-		return unsubscribe
-	}, [hydrated])
+		setHydrated(useHydrationStore.getState().hasHydrated)
+	}, [])
 
 	return hydrated
 }
@@ -29,7 +25,9 @@ function useUserStoreHydrated() {
 export function useTopBarViewModel() {
 	const fullName = useUserStore(state => state.user?.full_name)
 	const groupName = useUserStore(state => state.user?.group.name)
-	const photoUrl = getCachedImageUrl(useUserStore(state => state.user?.photo_url))
+	const photoUrl = getCachedImageUrl(
+		useUserStore(state => state.user?.photo_url),
+	)
 	const hydrated = useUserStoreHydrated()
 
 	const { lastReadChangelogId } = useNotificationsStore()

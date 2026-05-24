@@ -1,13 +1,12 @@
+import { useAuthStore } from '@/shared/model/authStore'
+
 /**
- * Читает токен напрямую из localStorage без импорта features/auth.
- * Нужно для shared/api — иначе получается нарушение FSD (shared → features).
+ * Reads the auth token from the encrypted auth store.
+ * Uses the store's getState() to access the decrypted token from memory.
  */
 export function getAuthToken(): string | null {
 	try {
-		const raw = localStorage.getItem('auth-store')
-		if (!raw) return null
-		const parsed = JSON.parse(raw)
-		return parsed?.state?.token ?? null
+		return useAuthStore.getState()?.token ?? null
 	} catch {
 		return null
 	}

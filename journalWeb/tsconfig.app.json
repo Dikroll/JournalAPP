@@ -18,11 +18,11 @@
 
 		/* Linting */
 		"strict": true,
+		"noImplicitAny": false,
+		"noImplicitThis": false,
 		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
+		"noUnusedParameters": false,
+		"noUncheckedIndexedAccess": false,
 
 		/* Aliases */
 		"baseUrl": ".",

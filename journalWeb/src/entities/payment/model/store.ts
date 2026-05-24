@@ -1,6 +1,6 @@
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { PaymentIndex, PaymentSummary } from './types'
 
 interface PaymentState {
@@ -24,7 +24,7 @@ interface PaymentState {
 }
 
 export const usePaymentStore = create<PaymentState>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			summary: null,
 			summaryStatus: 'idle',

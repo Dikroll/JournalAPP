@@ -1,6 +1,6 @@
 import type { LoadingState } from '@/shared/types'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
 import type { LibraryCounters, LibraryMaterial, MaterialType } from './types'
 
 interface LibraryStore {
@@ -35,7 +35,7 @@ interface LibraryStore {
 }
 
 export const useLibraryStore = create<LibraryStore>()(
-	persist(
+	persistEncrypted(
 		set => ({
 			materialsMap: {},
 			materialsLoadedAt: {},
