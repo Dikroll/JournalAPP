@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/features/auth'
 import { useHydrationStore } from '@/features/auth/model/store'
 import {
+	EvaluateLessonPage,
 	GoalDetailPage,
 	GoalsPage,
 	GradesPage,
@@ -10,6 +11,7 @@ import {
 	LoginPage,
 	MarketPage,
 	NewsDetailPage,
+	NewsPage,
 	NotificationSettingsPage,
 	NotificationsPage,
 	PaymentPage,
@@ -111,6 +113,8 @@ export function AppRouter() {
 					<Route path='payment' element={<PaymentPage />} />
 					<Route path='notifications' element={<NotificationsPage />} />
 					<Route path='notifications/news/:id' element={<NewsDetailPage />} />
+					<Route path='evaluate-lesson' element={<EvaluateLessonPage />} />
+					<Route path='news' element={<NewsPage />} />
 				</Route>
 
 				<Route path='*' element={<Navigate to='/' replace />} />
