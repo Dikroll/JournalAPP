@@ -2,7 +2,26 @@ import { resetAllAppState } from '@/app/lib'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useProfileDetails } from '@/entities/profile'
 import { useUser } from '@/entities/user'
-import { Leaderboard, MarketLink, ProfileHeader, ReviewsList } from '@/widgets'
+import { usePayment } from '@/entities/payment/hooks/usePayment'
+import { usePaymentIndex } from '@/entities/payment/hooks/usePaymentIndex'
+import { pageConfig } from '@/shared/config'
+import { SkeletonList } from '@/shared/ui'
+import {
+	AccountSwitcher,
+	ClearCacheSheet,
+	ProfileHeader,
+	ProfileInfoCard,
+	ProfileRelativesCard,
+	SettingsSection,
+	PaymentHistoryCard,
+	PaymentRequisitesCard,
+	PaymentScheduleCard,
+	Leaderboard,
+	MarketLink,
+	ReviewsList,
+} from '@/widgets'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function ProfilePage() {
 	const user = useUser()
@@ -50,10 +69,80 @@ export function ProfilePage() {
 				<div className='space-y-4 lg:space-y-5'>
 					<ProfileHeader user={user} rank={myRankGroup?.position} />
 
-			<div className='px-4 space-y-5'>
-				<Leaderboard myStudentId={user.student_id} />
-				<MarketLink />
-				<ReviewsList />
+					<div className='px-4 space-y-5'>
+						{detailsStatus === 'loading' && <SkeletonList count={3} height={120} />}
+						
+						{details && (
+							<div
+								className='bg-app-surface rounded-[24px] border border-app-border p-4'
+								style={{ boxShadow: 'var(--shadow-card)' }}
+							>
+								<p className='text-lg font-bold text-app-text mb-2 px-1'>Детали профиля</p>
+								<ProfileInfoCard details={details} flat />
+								
+								{details.relatives.length > 0 && (
+									<>
+										<div className='h-px bg-app-border my-2' />
+										<ProfileRelativesCard relatives={details.relatives} flat />
+									</>
+								)}
+							</div>
+						)}
+
+						<SettingsSection
+							onAccounts={() => setShowSwitcher(true)}
+							onClearCache={() => setShowClearCache(true)}
+						/>
+
+						<Leaderboard myStudentId={user.student_id} />
+						<MarketLink />
+						<ReviewsList />
+					</div>
+				</div>
+
+				{/* Правая колонка: Оплата */}
+				<div className='px-4 space-y-5 lg:pt-4 pt-5'>
+					{user.is_debtor && (
+						<div
+							className='bg-[#EF4444]/10 rounded-[20px] p-4 border border-[#EF4444]/20 flex items-center justify-between'
+							style={{ boxShadow: '0 4px 16px 0 rgba(239,68,68,0.1)' }}
+						>
+							<div>
+								<p className='text-xs text-[#9CA3AF] mb-0.5'>Статус оплаты</p>
+								<p className='text-sm font-semibold text-[#EF4444]'>
+									Есть задолженность
+								</p>
+							</div>
+						</div>
+					)}
+
+					{paymentStatus === 'loading' && <SkeletonList count={3} height={150} />}
+
+					{summary && (
+						<div
+							className='bg-app-surface rounded-[24px] border border-app-border p-4'
+							style={{ boxShadow: 'var(--shadow-card)' }}
+						>
+							<p className='text-lg font-bold text-app-text mb-4 px-1'>Оплата</p>
+							
+							<PaymentScheduleCard schedule={summary.schedule} flat />
+							
+							{requisites.length > 0 && (
+								<>
+									<div className='h-px bg-app-border my-4' />
+									<PaymentRequisitesCard requisites={requisites} flat />
+								</>
+							)}
+							
+							{summary.history.length > 0 && (
+								<>
+									<div className='h-px bg-app-border my-4' />
+									<PaymentHistoryCard history={summary.history} flat />
+								</>
+							)}
+						</div>
+					)}
+				</div>
 			</div>
 
 			{showSwitcher && (
