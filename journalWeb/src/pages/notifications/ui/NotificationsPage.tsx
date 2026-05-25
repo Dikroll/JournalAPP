@@ -1,4 +1,6 @@
 import { useFeedbackStore } from '@/entities/feedback'
+import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
+import { RefreshNotificationsButton } from '@/features/refreshNotifications'
 import {
 	FALLBACK_CHANGELOG,
 	getNewPendingCount,
@@ -6,25 +8,14 @@ import {
 	useNotificationsStore,
 } from '@/features/sendNotifications'
 import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
-import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
-import { RefreshNotificationsButton } from '@/features/refreshNotifications'
-import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
+import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import {
-	ChangelogTab,
-	EvaluateLessonList,
-	NewsTab,
-} from '@/widgets'
-import {
-	ArrowLeft,
-	ClipboardCheck,
-	Megaphone,
-	Sparkles,
-} from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { ChangelogTab, EvaluateLessonList, NewsTab } from '@/widgets'
+import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 type Tab = 'changelog' | 'feedback' | 'news'
 
@@ -37,10 +28,10 @@ const TABS: Segment<Tab>[] = [
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const location = useLocation()
-	
+
 	const activeTab = useNotificationsStore(s => s.activeTab)
 	const setActiveTab = useNotificationsStore(s => s.setActiveTab)
-	
+
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
 	const markPendingSeen = useNotificationsStore(s => s.markPendingSeen)
@@ -56,7 +47,10 @@ export function NotificationsPage() {
 	}, [location.state, setActiveTab])
 
 	const entries = useMemo<ChangelogEntry[]>(
-		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
+		() =>
+			latestRelease
+				? [toChangelogFeedEntry(latestRelease)]
+				: FALLBACK_CHANGELOG,
 		[latestRelease],
 	)
 
@@ -84,7 +78,11 @@ export function NotificationsPage() {
 	const tabsWithBadge = useMemo<Segment<Tab>[]>(
 		() =>
 			TABS.map(tab => {
-				if (tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null) {
+				if (
+					tab.key === 'changelog' &&
+					unread > 0 &&
+					lastReadChangelogId !== null
+				) {
 					return { ...tab, badge: unread }
 				}
 				if (tab.key === 'feedback' && newPendingCount > 0) {
