@@ -85,6 +85,29 @@ export function GradesRecentList({ byDate }: Props) {
 	}
 
 	const visibleDays = byDate.slice(0, visibleCount)
+	const isDesktop = useIsDesktop()
+
+	if (!isDesktop) {
+		return (
+			<div className='space-y-4'>
+				{visibleDays.map(({ date, items }) => (
+					<DateCard key={date} date={date} items={items} />
+				))}
+
+				{visibleCount < byDate.length && (
+					<div ref={sentinelRef} className='space-y-3 pt-1 break-inside-avoid'>
+						{[0, 1].map(i => (
+							<div
+								key={i}
+								className='bg-app-surface rounded-[24px] animate-pulse h-20'
+							/>
+						))}
+					</div>
+				)}
+			</div>
+		)
+	}
+
 	const weeksMap = new Map<
 		string,
 		Array<{ date: string; items: GradeEntryExpanded[] }>
@@ -99,7 +122,6 @@ export function GradesRecentList({ byDate }: Props) {
 	})
 
 	const weeks = Array.from(weeksMap.entries())
-	const isDesktop = useIsDesktop()
 
 	return (
 		<div className='space-y-8'>
@@ -108,7 +130,7 @@ export function GradesRecentList({ byDate }: Props) {
 				
 				if (isDesktop) {
 					// Pad to 5 days (Monday to Friday)
-					const paddedDays = []
+					const paddedDays: Array<{ date: string; items: GradeEntryExpanded[] }> = []
 					const start = new Date(`${weekStart}T00:00:00`)
 					for (let i = 0; i < 5; i++) {
 						const d = new Date(start)
@@ -129,7 +151,7 @@ export function GradesRecentList({ byDate }: Props) {
 						<h3 className='text-base font-bold text-app-text px-1'>
 							{formatWeekLabel(weekStart)}
 						</h3>
-						<div className={isDesktop ? 'grid grid-cols-5 gap-4' : 'columns-1 md:columns-2 gap-4 space-y-4 md:space-y-0'}>
+						<div className='grid grid-cols-5 gap-4'>
 							{displayDays.map(({ date, items }) => (
 								<DateCard key={date} date={date} items={items} />
 							))}

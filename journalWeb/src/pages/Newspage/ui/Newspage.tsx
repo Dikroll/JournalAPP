@@ -1,7 +1,6 @@
-import { useFeedbackStore } from '@/entities/feedback'
+
 import {
 	FALLBACK_CHANGELOG,
-	getNewPendingCount,
 	getUnreadCount,
 	useNotificationsStore,
 } from '@/features/sendNotifications'

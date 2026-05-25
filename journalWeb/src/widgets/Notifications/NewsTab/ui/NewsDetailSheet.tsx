@@ -21,7 +21,6 @@ export function NewsDetailSheet({ id, onClose }: NewsDetailSheetProps) {
 						icon={<X size={20} />}
 						onClick={onClose}
 						size='sm'
-						variant='ghost'
 						className='-mt-2 -mr-2 text-app-muted hover:text-app-text'
 						aria-label='Закрыть'
 					/>
@@ -46,7 +45,7 @@ export function NewsDetailSheet({ id, onClose }: NewsDetailSheetProps) {
 								'--tw-prose-body': 'var(--color-text)',
 								'--tw-prose-bold': 'var(--color-text)',
 								'--tw-prose-links': 'var(--color-accent)',
-							}}
+							} as React.CSSProperties}
 						/>
 					)}
 					

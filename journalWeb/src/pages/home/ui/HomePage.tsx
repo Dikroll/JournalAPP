@@ -1,5 +1,6 @@
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { DashboardCharts, FutureExams, HomeScheduleSection } from '@/widgets'
+import { GraduationCap } from 'lucide-react'
 import { WebHomePage } from './WebHomePage'
 
 export function HomePage() {
@@ -16,8 +17,9 @@ export function HomePage() {
 
 				<div className='mt-5 mb-3 flex items-center '>
 					<div className='w-[2px] self-stretch bg-app-border mr-3 rounded-full' />
-					<h1 className='text-lg font-bold leading-tight text-app-text'>
-						Будущие экзамены
+					<h1 className='text-[16px] font-bold leading-tight text-app-text flex items-center gap-2'>
+						<GraduationCap size={16} className='text-app-muted shrink-0' />
+						<span>Будущие экзамены</span>
 					</h1>
 				</div>
 

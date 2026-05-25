@@ -3,8 +3,10 @@ import { useLeaderboard } from '@/entities/leaderboard'
 import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { LeaderboardRow } from './LeaderboardRow'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 
 export function Leaderboard({ myStudentId }: { myStudentId: number }) {
+	const isDesktop = useIsDesktop()
 	const [scope, setScope] = useState<LeaderboardScope>('group')
 	const { groupStudents, streamStudents, myRankGroup, myRankStream, status } =
 		useLeaderboard()
@@ -12,8 +14,8 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 	const myRank = scope === 'group' ? myRankGroup : myRankStream
 
 	return (
-		<div className='flex flex-col h-full'>
-			<div className='flex items-center justify-between mb-3 shrink-0'>
+		<div className={isDesktop ? 'flex flex-col h-full' : ''}>
+			<div className={`flex items-center justify-between mb-3 ${isDesktop ? 'shrink-0' : ''}`}>
 				<h3 className='text-app-text text-base font-semibold flex items-center gap-2'>
 					<TrendingUp size={18} className='text-status-comment' />
 					Лидеры
@@ -36,7 +38,7 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 			</div>
 
 			{myRank && (
-				<div className='flex items-center gap-2 mb-2 shrink-0'>
+				<div className={`flex items-center gap-2 mb-2 ${isDesktop ? 'shrink-0' : ''}`}>
 					{myRank.week_diff !== 0 && (
 						<span
 							className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
@@ -52,8 +54,8 @@ export function Leaderboard({ myStudentId }: { myStudentId: number }) {
 				</div>
 			)}
 
-			<div className='flex-1 min-h-0 relative'>
-				<div className='absolute inset-0 overflow-y-auto pr-1' style={{ scrollbarWidth: 'thin' }}>
+			<div className={isDesktop ? 'flex-1 min-h-0 relative' : ''}>
+				<div className={isDesktop ? 'absolute inset-0 overflow-y-auto pr-1' : 'pr-1'} style={{ scrollbarWidth: 'thin' }}>
 					{status === 'loading' ? (
 						<div className='space-y-2 min-h-max'>
 							{[1, 2, 3, 4, 5].map(i => (

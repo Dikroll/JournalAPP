@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config'
-import { CACHE_KEYS, storage } from '@/shared/lib'
+import { CACHE_KEYS } from '@/shared/lib'
+import { storage } from '@/shared/lib/encryptedStorage'
 import { isCacheValid } from '@/shared/lib/isCacheValid'
 import { getIsOnline } from '@/shared/model/networkStore'
 import { useEffect, useEffectEvent, useRef } from 'react'

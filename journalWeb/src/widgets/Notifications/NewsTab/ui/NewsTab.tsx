@@ -22,8 +22,7 @@ export function NewsTab() {
 			{status === 'success' && latest.length === 0 && (
 				<EmptyState
 					icon={<Megaphone size={32} />}
-					title='Нет новостей'
-					description='Свежих новостей пока нет. Загляните позже.'
+					message='Свежих новостей пока нет. Загляните позже.'
 				/>
 			)}
 

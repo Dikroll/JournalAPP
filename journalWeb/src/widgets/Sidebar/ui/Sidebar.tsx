@@ -7,7 +7,6 @@ import {
   BookOpen,
   Library,
   Star,
-  CreditCard,
   Moon,
   Sun,
   WifiOff,

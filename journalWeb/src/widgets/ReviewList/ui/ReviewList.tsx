@@ -27,14 +27,14 @@ export function ReviewsList() {
 	if (status === 'error' || reviews.length === 0) return null
 
 	return (
-		<div className='flex flex-col h-full'>
-			<h3 className='text-app-text text-base font-semibold mb-3 flex items-center gap-2 shrink-0'>
+		<div className={isDesktop ? 'flex flex-col h-full' : ''}>
+			<h3 className={`text-app-text text-base font-semibold mb-3 flex items-center gap-2 ${isDesktop ? 'shrink-0' : ''}`}>
 				<MessageSquare size={18} className='text-status-comment' />
 				Отзывы преподавателей
 			</h3>
 
-			<div className='flex-1 min-h-0 relative'>
-				<div className='absolute inset-0 overflow-y-auto pr-1' style={{ scrollbarWidth: 'thin' }}>
+			<div className={isDesktop ? 'flex-1 min-h-0 relative' : ''}>
+				<div className={isDesktop ? 'absolute inset-0 overflow-y-auto pr-1' : 'pr-1'} style={{ scrollbarWidth: 'thin' }}>
 					<div className='flex flex-col gap-3 min-h-max'>
 						{visible.map(review => (
 							<ReviewCard

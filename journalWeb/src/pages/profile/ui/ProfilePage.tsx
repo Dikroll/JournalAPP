@@ -22,6 +22,7 @@ import {
 } from '@/widgets'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 
 export function ProfilePage() {
 	const user = useUser()
@@ -57,6 +58,22 @@ export function ProfilePage() {
 			<div className='px-4 pt-4 space-y-3 max-w-4xl mx-auto w-full'>
 				<div className='bg-app-surface rounded-[28px] h-48 animate-pulse border border-app-border' />
 				<div className='bg-app-surface rounded-[24px] h-24 animate-pulse border border-app-border' />
+			</div>
+		)
+	}
+
+	const isDesktop = useIsDesktop()
+
+	if (!isDesktop) {
+		return (
+			<div className='pb-24 w-full'>
+				<ProfileHeader user={user} rank={myRankGroup?.position} />
+
+				<div className='px-4 space-y-5 mt-4'>
+					<Leaderboard myStudentId={user.student_id} />
+					<MarketLink />
+					<ReviewsList />
+				</div>
 			</div>
 		)
 	}

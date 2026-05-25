@@ -5,6 +5,7 @@ import { getCachedImageUrl } from '@/shared/lib'
 import { Coins, Diamond, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 
 interface Props {
 	user: UserInfo
@@ -15,6 +16,7 @@ export const ProfileHeader = memo(
 	function ProfileHeader({ user, rank }: Props) {
 		const photoViewer = usePhotoViewer()
 		const photoUrl = getCachedImageUrl(user.photo_url)
+		const isDesktop = useIsDesktop()
 
 		const initials = user.full_name
 			.split(' ')
@@ -96,7 +98,14 @@ export const ProfileHeader = memo(
 								</p>
 							</div>
 
-							{/* Button removed */}
+							{!isDesktop && (
+								<Link
+									to={pageConfig.profileDetails}
+									className='shrink-0 px-3 py-1.5 rounded-xl bg-white/20 border border-white/30 text-white text-xs font-medium'
+								>
+									Подробнее
+								</Link>
+							)}
 						</div>
 
 						<div className='relative grid grid-cols-3 gap-2'>

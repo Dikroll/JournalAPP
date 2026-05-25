@@ -1,5 +1,6 @@
 import { ttl } from '@/shared/config'
-import { CACHE_KEYS, isCacheValid, storage } from '@/shared/lib'
+import { CACHE_KEYS, isCacheValid } from '@/shared/lib'
+import { storage } from '@/shared/lib/encryptedStorage'
 import { useEffect, useRef } from 'react'
 import { paymentApi } from '../api'
 import { usePaymentStore } from '../model/store'
