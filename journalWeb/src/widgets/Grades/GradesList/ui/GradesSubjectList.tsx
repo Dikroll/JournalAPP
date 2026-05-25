@@ -10,6 +10,7 @@ import {
 	useSortSubjectsStore,
 } from "@/features/sortSubjects";
 import { useLazyItems } from "@/shared/hooks";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { formatDayMonth } from "@/shared/utils/dateUtils";
 
 interface Props {
@@ -23,6 +24,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 		[bySubject, sortKey],
 	);
 	const { visibleCount, sentinelRef } = useLazyItems(sorted.length);
+	const isDesktop = useIsDesktop();
 
 	if (bySubject.length === 0) {
 		return (
@@ -34,11 +36,11 @@ export function GradesSubjectList({ bySubject }: Props) {
 		<div className="space-y-3">
 			<SortSubjectsControl />
 
-			<div className="columns-1 md:columns-2 gap-4 space-y-3 md:space-y-0">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{sorted.slice(0, visibleCount).map((subj) => (
 					<div
 						key={subj.spec_id}
-						className="bg-app-surface rounded-[24px] p-4 border border-app-border break-inside-avoid mb-4"
+						className="bg-app-surface rounded-[24px] p-4 border border-app-border flex flex-col"
 						style={{ boxShadow: "var(--shadow-card)" }}
 					>
 						<div className="flex items-start justify-between gap-3 mb-4">
@@ -61,8 +63,11 @@ export function GradesSubjectList({ bySubject }: Props) {
 							</div>
 						</div>
 
-						<div className="-mx-4 overflow-x-auto scrollbar-none">
-							<div className="flex gap-3 px-4 pb-2 w-max">
+						<div
+							className={`-mx-4 overflow-x-auto mt-auto ${isDesktop ? "" : "scrollbar-none"}`}
+							style={{ scrollbarWidth: isDesktop ? "thin" : "none" }}
+						>
+							<div className={`flex gap-3 px-4 w-max ${isDesktop ? "pb-4" : "pb-2"}`}>
 								{subj.entries.flatMap((entry, entryIdx) =>
 									entry.flatMarks.map(({ type, value }, markIdx) => (
 										<div

@@ -103,7 +103,10 @@ export function ScheduleWeekView() {
 				/>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5 items-start">
+			<div
+				className="flex flex-col md:flex-row md:overflow-x-auto gap-4 md:items-start pb-4 md:snap-x md:snap-mandatory scroll-smooth md:-mx-4 md:px-4 lg:mx-0 lg:px-0"
+				style={{ scrollbarWidth: "none" }}
+			>
 				{weekDays.map((dateStr, actualIdx) => {
 					const dayLessons = byDate[dateStr] ?? [];
 					const isToday = dateStr === today;
@@ -116,26 +119,39 @@ export function ScheduleWeekView() {
 
 					if (isWeekend && isEmpty) {
 						return (
-							<div
-								key={dateStr}
-								className="flex items-center gap-3 px-1 opacity-40"
-							>
-								<span className="text-xs font-semibold text-app-muted w-6 shrink-0">
-									{RU_DAYS_SHORT[actualIdx]}
-								</span>
-								<span className="text-xs text-app-muted">
-									{formatDateCompact(dateStr)}
-								</span>
-								<div className="flex-1 h-px bg-app-border" />
-								<Coffee size={11} className="text-app-faint shrink-0" />
-							</div>
+							<>
+								<div
+									key={`${dateStr}-mob`}
+									className="flex md:hidden items-center gap-3 px-1 opacity-40"
+								>
+									<span className="text-xs font-semibold text-app-muted w-6 shrink-0">
+										{RU_DAYS_SHORT[actualIdx]}
+									</span>
+									<span className="text-xs text-app-muted">
+										{formatDateCompact(dateStr)}
+									</span>
+									<div className="flex-1 h-px bg-app-border" />
+									<Coffee size={11} className="text-app-faint shrink-0" />
+								</div>
+								
+								<div
+									key={`${dateStr}-desk`}
+									className="hidden md:flex shrink-0 w-[30px] flex-col items-center gap-3 opacity-40 snap-start pt-3"
+								>
+									<span className="text-[10px] font-bold text-app-muted uppercase">
+										{RU_DAYS_SHORT[actualIdx]}
+									</span>
+									<div className="w-[2px] h-[120px] bg-app-border rounded-full" />
+									<Coffee size={12} className="text-app-faint" />
+								</div>
+							</>
 						);
 					}
 
 					return (
 						<section
 							key={dateStr}
-							className={`bg-app-surface rounded-[24px] p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
+							className={`w-full shrink-0 md:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] xl:w-[calc(25%-12px)] 2xl:w-[calc(20%-13px)] md:snap-start bg-app-surface rounded-[24px] p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
 							style={{ boxShadow: "var(--shadow-card)" }}
 						>
 							{/* Section header */}

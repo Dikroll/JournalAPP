@@ -43,7 +43,7 @@ function DateCard({
 	const estimatedHeight = 56 + items.length * 68;
 
 	return (
-		<div className="space-y-2 break-inside-avoid mb-4">
+		<div className="space-y-2 break-inside-avoid">
 			<div className="text-sm font-medium text-app-muted px-1">
 				{formatDateRelative(date)}
 			</div>
@@ -158,9 +158,17 @@ export function GradesRecentList({ byDate }: Props) {
 						<h3 className="text-base font-bold text-app-text px-1">
 							{formatWeekLabel(weekStart)}
 						</h3>
-						<div className="grid grid-cols-5 gap-4">
+						<div
+							className="flex overflow-x-auto gap-4 items-start pb-4 snap-x snap-mandatory scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
+							style={{ scrollbarWidth: "none" }}
+						>
 							{displayDays.map(({ date, items }) => (
-								<DateCard key={date} date={date} items={items} />
+								<div
+									key={date}
+									className="shrink-0 w-[85vw] md:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] xl:w-[calc(25%-12px)] 2xl:w-[calc(20%-13px)] snap-start"
+								>
+									<DateCard date={date} items={items} />
+								</div>
 							))}
 						</div>
 					</div>

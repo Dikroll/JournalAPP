@@ -124,6 +124,26 @@ export function GradesCalendar({ byMonth }: Props) {
 					onNextMonth={handleNextMonth}
 					renderDay={renderDay}
 				/>
+				
+				<div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-2">
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-checked)" }} />
+						<span className="text-[11px] text-app-muted">5</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-new)" }} />
+						<span className="text-[11px] text-app-muted">4 / Посетил</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-pending)" }} />
+						<span className="text-[11px] text-app-muted">3</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-overdue)" }} />
+						<span className="text-[11px] text-app-muted">2 / Пропуск</span>
+					</div>
+				</div>
+
 				{Object.keys(datesWithData).length === 0 && (
 					<p className="text-app-muted text-sm text-center py-2">
 						В этом месяце нет записей

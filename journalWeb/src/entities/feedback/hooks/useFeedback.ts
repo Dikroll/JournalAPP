@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ttl } from "@/shared/config/cacheConfig";
 import { isCacheValid } from "@/shared/lib/isCacheValid";
 import { getIsOnline } from "@/shared/model/networkStore";
@@ -62,7 +62,8 @@ export function useFeedback() {
 		feedbackApi
 			.getPending()
 			.then((data) => {
-				setPending(data);
+				const items = Array.isArray(data) ? data : ((data as any).items || (data as any).pending || (data as any).data || []);
+				setPending(items);
 				setPendingLoadedAt(Date.now());
 				setPendingStatus("success");
 			})
@@ -151,5 +152,12 @@ export function useFeedback() {
 		};
 	}, []);
 
-	return { pending, pendingStatus, tags, tagsStatus, error };
+	const refreshPending = useCallback(() => {
+		setPendingLoadedAt(null);
+		if (pendingStatus !== "loading") {
+			setPendingStatus("idle");
+		}
+	}, [setPendingLoadedAt, pendingStatus, setPendingStatus]);
+
+	return { pending, pendingStatus, tags, tagsStatus, error, refreshPending };
 }

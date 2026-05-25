@@ -27,17 +27,17 @@ export function WebHomePage() {
 	const { counters, filterStatus, setFilter } = useHomework();
 
 	return (
-		<div className="p-5 pb-8 flex flex-col gap-4 h-[calc(100vh-64px)]">
+		<div className="p-5 pb-8 flex flex-col gap-4">
 			{/* ── РЯД 1: Сводка + Расписание + Домашка ── */}
 			<div
-				className="grid gap-4 grid-cols-1 xl:grid-cols-2 flex-[13] min-h-0"
+				className="grid gap-4 grid-cols-1 xl:grid-cols-2"
 			>
 				{/* Колонка 1: Сводка оценок + Будущие экзамены */}
-				<div className="flex flex-col gap-4 min-h-0 h-full">
+				<div className="flex flex-col gap-4 h-full">
 					<GoalsSummaryCard />
 
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
+						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
@@ -51,7 +51,7 @@ export function WebHomePage() {
 						</div>
 						{/* FutureExams уже простой div — ок */}
 						<div
-							className="overflow-y-auto flex-1 min-h-0"
+							className="overflow-y-auto flex-1"
 							style={{ scrollbarWidth: "thin" }}
 						>
 							<FutureExams />
@@ -85,7 +85,7 @@ export function WebHomePage() {
 
 				{/* Колонка 2: Расписание */}
 				<div
-					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0 overflow-hidden"
+					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full"
 					style={{
 						background: "var(--color-surface)",
 						boxShadow: "var(--shadow-card)",
@@ -96,7 +96,7 @@ export function WebHomePage() {
 			</div>
 
 			{/* ── РЯД 2: Лидеры + Отзывы ── */}
-			<div className="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-[7] min-h-0">
+			<div className="grid grid-cols-1 xl:grid-cols-2 gap-4 h-[380px] shrink-0">
 				{/* Лидеры */}
 				<div
 					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0 overflow-y-auto scrollbar-none"

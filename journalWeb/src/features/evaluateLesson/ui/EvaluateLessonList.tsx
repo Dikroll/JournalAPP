@@ -7,7 +7,7 @@ import { EvaluateLessonSheet } from "./EvaluateLessonSheet";
 import { PendingFeedbackCard } from "./PendingFeedbackCard";
 
 export function EvaluateLessonList() {
-	const { pending, pendingStatus, tags } = useFeedback();
+	const { pending, pendingStatus, tags, refreshPending } = useFeedback();
 	const [active, setActive] = useState<PendingFeedback | null>(null);
 
 	if (pendingStatus === "loading" && pending.length === 0) {
@@ -40,6 +40,13 @@ export function EvaluateLessonList() {
 				<p className="text-sm text-app-muted text-center px-8">
 					Новые занятия для оценки появятся здесь
 				</p>
+				<button
+					type="button"
+					onClick={refreshPending}
+					className="mt-2 px-4 py-2 bg-app-surface text-brand text-sm font-semibold rounded-xl border border-app-border active:opacity-70 transition-opacity"
+				>
+					Обновить
+				</button>
 			</div>
 		);
 	}

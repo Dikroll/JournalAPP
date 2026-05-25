@@ -13,7 +13,7 @@ class TTL {
 	readonly LIBRARY = 60 * 60 * 24;
 	readonly SESSION = 60 * 60 * 24; // 24 hours - for leaderboard, library materials
 	readonly MARKET = 60 * 60 * 24;
-	readonly FEEDBACK = 60 * 90;
+	readonly FEEDBACK = 60 * 5; // 5 minutes (was 90) so users see new lessons to evaluate quickly
 	readonly QUIZZES = 60 * 60 * 24;
 }
 
