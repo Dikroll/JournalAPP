@@ -1,17 +1,17 @@
-import { getInitials } from '@/shared/utils/nameUtils'
-import type { CSSProperties } from 'react'
+import type { CSSProperties } from "react";
+import { getInitials } from "@/shared/utils/nameUtils";
 
 interface Props {
-	fullName: string
-	size?: number
-	className?: string
-	style?: CSSProperties
+	fullName: string;
+	size?: number;
+	className?: string;
+	style?: CSSProperties;
 }
 
 export function AvatarPlaceholder({
 	fullName,
 	size = 40,
-	className = '',
+	className = "",
 	style,
 }: Props) {
 	return (
@@ -21,12 +21,13 @@ export function AvatarPlaceholder({
 				width: size,
 				height: size,
 				fontSize: size * 0.3,
-				background: 'linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)',
+				background:
+					"linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)",
 				flexShrink: 0,
 				...style,
 			}}
 		>
 			{getInitials(fullName)}
 		</div>
-	)
+	);
 }

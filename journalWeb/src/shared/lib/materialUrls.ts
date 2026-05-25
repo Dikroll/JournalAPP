@@ -6,7 +6,7 @@ const EXTERNAL_LINK_TYPES = new Set([
 	5, // Видео
 	6, // Презентации
 	8, // Статьи
-])
+]);
 
 /**
  * Определяет, какой URL использовать для открытия материала
@@ -18,8 +18,8 @@ export function getOpenUrl(
 	url: string | null,
 	link: string | null,
 ): string | null {
-	const hasExternalLink = EXTERNAL_LINK_TYPES.has(materialType)
-	return hasExternalLink ? url || link : link
+	const hasExternalLink = EXTERNAL_LINK_TYPES.has(materialType);
+	return hasExternalLink ? url || link : link;
 }
 
 /**
@@ -30,5 +30,5 @@ export function canOpenMaterial(
 	url: string | null,
 	link: string | null,
 ): boolean {
-	return !!getOpenUrl(materialType, url, link)
+	return !!getOpenUrl(materialType, url, link);
 }

@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/shared/model/authStore'
+import { useAuthStore } from "@/shared/model/authStore";
 
 /**
  * Reads the auth token from the encrypted auth store.
@@ -6,8 +6,8 @@ import { useAuthStore } from '@/shared/model/authStore'
  */
 export function getAuthToken(): string | null {
 	try {
-		return useAuthStore.getState()?.token ?? null
+		return useAuthStore.getState()?.token ?? null;
 	} catch {
-		return null
+		return null;
 	}
 }

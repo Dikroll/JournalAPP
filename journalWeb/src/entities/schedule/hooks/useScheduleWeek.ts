@@ -1,59 +1,67 @@
-import { ttl } from '@/shared/config'
-import { isCacheValid } from '@/shared/lib'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef } from 'react'
-import { scheduleApi } from '../api'
-import { useScheduleStore } from '../model/store'
-import type { LessonItem } from '../model/types'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { isCacheValid } from "@/shared/lib";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { scheduleApi } from "../api";
+import { useScheduleStore } from "../model/store";
+import type { LessonItem } from "../model/types";
 
-const CACHE_TTL_MS = ttl.SCHEDULE * 1000
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000;
 
-const EMPTY_LESSONS: LessonItem[] = []
+const EMPTY_LESSONS: LessonItem[] = [];
 
 export function useScheduleWeek(date: string) {
-	const lessons = useScheduleStore(s => s.weeks[date] ?? EMPTY_LESSONS)
-	const status = useScheduleStore(s => s.weekStatus[date] ?? 'idle')
-	const weekLoadedAt = useScheduleStore(s => s.weekLoadedAt[date] ?? null)
-	const setWeek = useScheduleStore(s => s.setWeek)
-	const setWeekStatus = useScheduleStore(s => s.setWeekStatus)
-	const setWeekLoadedAt = useScheduleStore(s => s.setWeekLoadedAt)
+	const lessons = useScheduleStore((s) => s.weeks[date] ?? EMPTY_LESSONS);
+	const status = useScheduleStore((s) => s.weekStatus[date] ?? "idle");
+	const weekLoadedAt = useScheduleStore((s) => s.weekLoadedAt[date] ?? null);
+	const setWeek = useScheduleStore((s) => s.setWeek);
+	const setWeekStatus = useScheduleStore((s) => s.setWeekStatus);
+	const setWeekLoadedAt = useScheduleStore((s) => s.setWeekLoadedAt);
 
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (!date) return
-		if (fetchingRef.current) return
+		if (!date) return;
+		if (fetchingRef.current) return;
 		if (isCacheValid(weekLoadedAt, CACHE_TTL_MS)) {
-			if (status === 'idle') setWeekStatus(date, 'success')
-			return
+			if (status === "idle") setWeekStatus(date, "success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (weekLoadedAt !== null) {
-				if (status === 'idle') setWeekStatus(date, 'success')
-				return
+				if (status === "idle") setWeekStatus(date, "success");
+				return;
 			}
-			setWeekStatus(date, 'error')
-			return
+			setWeekStatus(date, "error");
+			return;
 		}
 
-		fetchingRef.current = true
-		setWeekStatus(date, 'loading')
+		fetchingRef.current = true;
+		setWeekStatus(date, "loading");
 
 		scheduleApi
 			.getWeek(date)
-			.then(data => {
-				setWeek(date, data)
-				setWeekLoadedAt(date, Date.now())
-				setWeekStatus(date, 'success')
+			.then((data) => {
+				setWeek(date, data);
+				setWeekLoadedAt(date, Date.now());
+				setWeekStatus(date, "success");
 			})
 			.catch(() => {
-				if (lessons.length === 0) setWeekStatus(date, 'error')
+				if (lessons.length === 0) setWeekStatus(date, "error");
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [date, weekLoadedAt])
+				fetchingRef.current = false;
+			});
+	}, [
+		date,
+		weekLoadedAt,
+		lessons.length,
+		setWeek,
+		setWeekLoadedAt,
+		setWeekStatus,
+		status,
+	]);
 
-	return { lessons, status }
+	return { lessons, status };
 }

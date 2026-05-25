@@ -1,24 +1,24 @@
-import { useEffect, useRef } from 'react'
-import { isCacheValid } from '../lib/isCacheValid'
-import { getIsOnline } from '../model/networkStore'
+import { useEffect, useRef } from "react";
+import { isCacheValid } from "../lib/isCacheValid";
+import { getIsOnline } from "../model/networkStore";
 
 interface UseEntityFetchOptions<T> {
 	/** Уже загруженные данные — если есть и кеш валиден, запрос не делается */
-	loadedAt: number | null
+	loadedAt: number | null;
 	/** TTL в миллисекундах */
-	ttlMs: number
+	ttlMs: number;
 	/** Статус загрузки — пропускаем если уже идёт */
-	status: string
+	status: string;
 	/** Функция загрузки — должна вернуть Promise */
-	fetchFn: () => Promise<T>
+	fetchFn: () => Promise<T>;
 	/** Коллбек при успехе */
-	onSuccess: (data: T) => void
+	onSuccess: (data: T) => void;
 	/** Коллбек при ошибке — опционально */
-	onError?: (err: unknown) => void
+	onError?: (err: unknown) => void;
 	/** Вызывается при начале загрузки */
-	onStart?: () => void
+	onStart?: () => void;
 	/** Вызывается когда данные есть из кеша/persist и fetch не нужен (нормализация статуса) */
-	onCacheHit?: () => void
+	onCacheHit?: () => void;
 }
 
 /**
@@ -39,37 +39,46 @@ export function useEntityFetch<T>({
 	onStart,
 	onCacheHit,
 }: UseEntityFetchOptions<T>) {
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
-		if (status === 'loading') return
+		if (fetchingRef.current) return;
+		if (status === "loading") return;
 		if (isCacheValid(loadedAt, ttlMs)) {
-			if (status === 'idle') onCacheHit?.()
-			return
+			if (status === "idle") onCacheHit?.();
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (loadedAt !== null) {
-				if (status === 'idle') onCacheHit?.()
-				return
+				if (status === "idle") onCacheHit?.();
+				return;
 			}
-			onError?.(new Error('Нет подключения к интернету'))
-			return
+			onError?.(new Error("Нет подключения к интернету"));
+			return;
 		}
 
-		fetchingRef.current = true
-		onStart?.()
+		fetchingRef.current = true;
+		onStart?.();
 
 		fetchFn()
-			.then(data => {
-				onSuccess(data)
+			.then((data) => {
+				onSuccess(data);
 			})
-			.catch(err => {
-				onError?.(err)
+			.catch((err) => {
+				onError?.(err);
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [loadedAt]) // eslint-disable-line react-hooks/exhaustive-deps
+				fetchingRef.current = false;
+			});
+	}, [
+		loadedAt,
+		fetchFn,
+		onCacheHit,
+		onError,
+		onStart,
+		onSuccess,
+		status,
+		ttlMs,
+	]); // eslint-disable-line react-hooks/exhaustive-deps
 }

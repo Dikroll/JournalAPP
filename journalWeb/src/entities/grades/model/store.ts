@@ -1,48 +1,48 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
-import type { GradeEntry } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
+import type { GradeEntry } from "./types";
 
 interface SubjectData {
-	entries: GradeEntry[]
-	status: LoadingState
-	loadedAt: number | null
+	entries: GradeEntry[];
+	status: LoadingState;
+	loadedAt: number | null;
 }
 
 interface GradesState {
-	entries: GradeEntry[]
-	status: LoadingState
-	error: string | null
-	loadedAt: number | null
-	bySubject: Record<number, SubjectData>
+	entries: GradeEntry[];
+	status: LoadingState;
+	error: string | null;
+	loadedAt: number | null;
+	bySubject: Record<number, SubjectData>;
 
 	update: (
 		patch: Partial<
-			Pick<GradesState, 'entries' | 'status' | 'error' | 'loadedAt'>
+			Pick<GradesState, "entries" | "status" | "error" | "loadedAt">
 		>,
-	) => void
-	updateSubject: (specId: number, patch: Partial<SubjectData>) => void
-	reset: () => void
+	) => void;
+	updateSubject: (specId: number, patch: Partial<SubjectData>) => void;
+	reset: () => void;
 }
 
 export const useGradesStore = create<GradesState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			entries: [],
-			status: 'idle',
+			status: "idle",
 			error: null,
 			loadedAt: null,
 			bySubject: {},
 
-			update: patch => set(patch),
+			update: (patch) => set(patch),
 
 			updateSubject: (specId, patch) =>
-				set(state => {
+				set((state) => {
 					const current = state.bySubject[specId] ?? {
 						entries: [],
-						status: 'idle',
+						status: "idle",
 						loadedAt: null,
-					}
+					};
 
 					return {
 						bySubject: {
@@ -52,32 +52,32 @@ export const useGradesStore = create<GradesState>()(
 								...patch,
 							},
 						},
-					}
+					};
 				}),
 
 			reset: () =>
 				set({
 					entries: [],
-					status: 'idle',
+					status: "idle",
 					error: null,
 					loadedAt: null,
 					bySubject: {},
 				}),
 		}),
 		{
-			name: 'grades-store',
-			partialize: state => ({
+			name: "grades-store",
+			partialize: (state) => ({
 				entries: state.entries,
 				loadedAt: state.loadedAt,
 				bySubject: Object.fromEntries(
 					Object.entries(state.bySubject as Record<string, SubjectData>).map(
 						([k, v]) => [
 							k,
-							{ entries: v.entries, status: 'idle', loadedAt: v.loadedAt },
+							{ entries: v.entries, status: "idle", loadedAt: v.loadedAt },
 						],
 					),
 				),
 			}),
 		},
 	),
-)
+);

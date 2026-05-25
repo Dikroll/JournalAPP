@@ -1,36 +1,36 @@
-import type { LessonItem } from '@/entities/schedule'
-import { getScheduleTimeInfo } from '@/entities/schedule'
-import { toMinutes } from '@/shared/hooks'
-import { getTodayString } from '@/shared/utils'
+import type { LessonItem } from "@/entities/schedule";
+import { getScheduleTimeInfo } from "@/entities/schedule";
+import { toMinutes } from "@/shared/hooks";
+import { getTodayString } from "@/shared/utils";
 
 export interface ScheduleWidgetLesson {
-	lesson: number
-	subject: string
-	room: string
-	teacher: string
-	startedAt: string
-	finishedAt: string
-	date: string
+	lesson: number;
+	subject: string;
+	room: string;
+	teacher: string;
+	startedAt: string;
+	finishedAt: string;
+	date: string;
 }
 
 export interface ScheduleWidgetStats {
-	averageGrade: number | null
-	attendancePercent: number | null
-	totalMarks: number
+	averageGrade: number | null;
+	attendancePercent: number | null;
+	totalMarks: number;
 }
 
 export interface ScheduleWidgetPayload {
-	date: string
-	savedAt: number
-	summary: string
-	isEmpty: boolean
-	nextLesson: ScheduleWidgetLesson | null
-	lessons: ScheduleWidgetLesson[]
-	tomorrowFirstLesson: ScheduleWidgetLesson | null
-	completedCount: number
-	totalCount: number
-	stats: ScheduleWidgetStats | null
-	weeklyLessons: Record<string, ScheduleWidgetLesson[]>
+	date: string;
+	savedAt: number;
+	summary: string;
+	isEmpty: boolean;
+	nextLesson: ScheduleWidgetLesson | null;
+	lessons: ScheduleWidgetLesson[];
+	tomorrowFirstLesson: ScheduleWidgetLesson | null;
+	completedCount: number;
+	totalCount: number;
+	stats: ScheduleWidgetStats | null;
+	weeklyLessons: Record<string, ScheduleWidgetLesson[]>;
 }
 
 function toWidgetLesson(lesson: LessonItem): ScheduleWidgetLesson {
@@ -42,11 +42,11 @@ function toWidgetLesson(lesson: LessonItem): ScheduleWidgetLesson {
 		startedAt: lesson.started_at,
 		finishedAt: lesson.finished_at,
 		date: lesson.date,
-	}
+	};
 }
 
 function countCompleted(lessons: LessonItem[], nowMinutes: number): number {
-	return lessons.filter(l => toMinutes(l.finished_at) <= nowMinutes).length
+	return lessons.filter((l) => toMinutes(l.finished_at) <= nowMinutes).length;
 }
 
 export function buildScheduleWidgetPayload(
@@ -56,21 +56,23 @@ export function buildScheduleWidgetPayload(
 	stats: ScheduleWidgetStats | null = null,
 	weeklyMap: Record<string, LessonItem[]> = {},
 ): ScheduleWidgetPayload {
-	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson)
-	const nowMinutes = toMinutes(now.toTimeString().slice(0, 5))
-	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
-	const date = sorted[0]?.date ?? getTodayString()
+	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson);
+	const nowMinutes = toMinutes(now.toTimeString().slice(0, 5));
+	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
+	const date = sorted[0]?.date ?? getTodayString();
 
-	const tomorrowSorted = [...tomorrowLessons].sort((a, b) => a.lesson - b.lesson)
+	const tomorrowSorted = [...tomorrowLessons].sort(
+		(a, b) => a.lesson - b.lesson,
+	);
 	const tomorrowFirst = tomorrowSorted[0]
 		? toWidgetLesson(tomorrowSorted[0])
-		: null
+		: null;
 
-	const weeklyLessons: Record<string, ScheduleWidgetLesson[]> = {}
+	const weeklyLessons: Record<string, ScheduleWidgetLesson[]> = {};
 	for (const [dateKey, items] of Object.entries(weeklyMap)) {
 		weeklyLessons[dateKey] = [...items]
 			.sort((a, b) => a.lesson - b.lesson)
-			.map(toWidgetLesson)
+			.map(toWidgetLesson);
 	}
 
 	return {
@@ -89,5 +91,5 @@ export function buildScheduleWidgetPayload(
 		totalCount: sorted.length,
 		stats,
 		weeklyLessons,
-	}
+	};
 }

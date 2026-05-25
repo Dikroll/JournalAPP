@@ -1,65 +1,73 @@
-import { ttl } from '@/shared/config'
-import { isCacheValid } from '@/shared/lib'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef } from 'react'
-import { scheduleApi } from '../api'
-import { useScheduleStore } from '../model/store'
-import type { LessonItem } from '../model/types'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { isCacheValid } from "@/shared/lib";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { scheduleApi } from "../api";
+import { useScheduleStore } from "../model/store";
+import type { LessonItem } from "../model/types";
 
-const CACHE_TTL_MS = ttl.SCHEDULE * 1000
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000;
 
-const EMPTY_LESSONS: LessonItem[] = []
+const EMPTY_LESSONS: LessonItem[] = [];
 
 export function useScheduleByDate(date: string | null) {
-	const lessons = useScheduleStore(s =>
+	const lessons = useScheduleStore((s) =>
 		date ? (s.days[date] ?? EMPTY_LESSONS) : EMPTY_LESSONS,
-	)
-	const status = useScheduleStore(s =>
-		date ? (s.dayStatus[date] ?? 'idle') : 'idle',
-	)
-	const dayLoadedAt = useScheduleStore(s =>
+	);
+	const status = useScheduleStore((s) =>
+		date ? (s.dayStatus[date] ?? "idle") : "idle",
+	);
+	const dayLoadedAt = useScheduleStore((s) =>
 		date ? (s.dayLoadedAt[date] ?? null) : null,
-	)
-	const setDay = useScheduleStore(s => s.setDay)
-	const setDayStatus = useScheduleStore(s => s.setDayStatus)
-	const setDayLoadedAt = useScheduleStore(s => s.setDayLoadedAt)
+	);
+	const setDay = useScheduleStore((s) => s.setDay);
+	const setDayStatus = useScheduleStore((s) => s.setDayStatus);
+	const setDayLoadedAt = useScheduleStore((s) => s.setDayLoadedAt);
 
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (!date) return
-		if (fetchingRef.current) return
+		if (!date) return;
+		if (fetchingRef.current) return;
 		if (isCacheValid(dayLoadedAt, CACHE_TTL_MS)) {
-			if (status === 'idle') setDayStatus(date, 'success')
-			return
+			if (status === "idle") setDayStatus(date, "success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (dayLoadedAt !== null) {
-				if (status === 'idle') setDayStatus(date, 'success')
-				return
+				if (status === "idle") setDayStatus(date, "success");
+				return;
 			}
-			setDayStatus(date, 'error')
-			return
+			setDayStatus(date, "error");
+			return;
 		}
 
-		fetchingRef.current = true
-		setDayStatus(date, 'loading')
+		fetchingRef.current = true;
+		setDayStatus(date, "loading");
 
 		scheduleApi
 			.getByDate(date)
-			.then(data => {
-				setDay(date, data)
-				setDayLoadedAt(date, Date.now())
-				setDayStatus(date, 'success')
+			.then((data) => {
+				setDay(date, data);
+				setDayLoadedAt(date, Date.now());
+				setDayStatus(date, "success");
 			})
 			.catch(() => {
-				if (lessons.length === 0) setDayStatus(date, 'error')
+				if (lessons.length === 0) setDayStatus(date, "error");
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [date, dayLoadedAt])
+				fetchingRef.current = false;
+			});
+	}, [
+		date,
+		dayLoadedAt,
+		lessons.length,
+		setDay,
+		setDayLoadedAt,
+		setDayStatus,
+		status,
+	]);
 
-	return { lessons, status }
+	return { lessons, status };
 }

@@ -3,4 +3,4 @@ export {
 	getNewPendingCount,
 	getUnreadCount,
 	useNotificationsStore,
-} from './model/store'
+} from "./model/store";

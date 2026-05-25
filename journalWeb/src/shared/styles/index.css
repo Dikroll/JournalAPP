@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import 'tailwindcss';
-@import './theme.css';
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@import "./theme.css";
 
 @keyframes spin {
 	from {
@@ -31,8 +31,8 @@ body {
 }
 
 body {
-	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-		sans-serif;
+	font-family:
+		"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 * {
@@ -55,7 +55,7 @@ textarea,
 
 *:focus,
 *:focus-visible {
-	outline: none !important;
+	outline: none;
 }
 
 svg:focus,
@@ -64,13 +64,13 @@ svg:focus-visible,
 .recharts-wrapper:focus-visible,
 .recharts-wrapper *:focus,
 .recharts-wrapper *:focus-visible {
-	outline: none !important;
+	outline: none;
 }
 
 /* ── Light theme dot pattern ── */
 .light .light-dot-pattern,
-[data-theme='light'] .light-dot-pattern {
-	display: block !important;
+[data-theme="light"] .light-dot-pattern {
+	display: block;
 }
 
 /* ── Grade utility classes ── */
@@ -110,55 +110,55 @@ svg:focus-visible,
 }
 /* Скрываем мобильный BottomBar на десктопе */
 @media (min-width: 768px) {
-  .bottom-bar {
-    display: none !important;
-  }
+	.bottom-bar {
+		display: none;
+	}
 }
 
 /* ── Homework counters full-width (desktop) ── */
 @media (min-width: 768px) {
-  .homework-counters-full .homework-counters-bar {
-    margin-left: 0;
-    margin-right: 0;
-    overflow-x: visible;
-  }
-  .homework-counters-full .homework-counters-bar__inner {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-    padding: 0;
-  }
-  .homework-counters-full .homework-counters-bar__btn {
-    min-width: 0;
-    flex-shrink: unset;
-    width: 100%;
-  }
+	.homework-counters-full .homework-counters-bar {
+		margin-left: 0;
+		margin-right: 0;
+		overflow-x: visible;
+	}
+	.homework-counters-full .homework-counters-bar__inner {
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 8px;
+		padding: 0;
+	}
+	.homework-counters-full .homework-counters-bar__btn {
+		min-width: 0;
+		flex-shrink: unset;
+		width: 100%;
+	}
 }
 
 /* ── Schedule Calendar — адаптивный лэйаут ── */
 .schedule-calendar-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
 .schedule-calendar-layout__lessons {
-  padding-top: 4px;
+	padding-top: 4px;
 }
 
 @media (min-width: 768px) {
-  .schedule-calendar-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-  }
+	.schedule-calendar-layout {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+		align-items: start;
+	}
 
-  .schedule-calendar-layout__lessons {
-    padding-top: 0;
-    border-left: 1px solid var(--color-border);
-    padding-left: 24px;
-    min-height: 320px;
-  }
+	.schedule-calendar-layout__lessons {
+		padding-top: 0;
+		border-left: 1px solid var(--color-border);
+		padding-left: 24px;
+		min-height: 320px;
+	}
 }

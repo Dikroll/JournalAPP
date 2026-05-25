@@ -18,31 +18,31 @@
  */
 export const getEncryptionKey = (): string => {
 	// Try to get from environment variable first
-	const envKey = import.meta.env.REACT_APP_ENCRYPTION_KEY
+	const envKey = import.meta.env.REACT_APP_ENCRYPTION_KEY;
 
 	if (envKey) {
-		return envKey
+		return envKey;
 	}
 
 	// Development fallback - use a development-only key
 	if (import.meta.env.DEV) {
 		console.warn(
-			'[encryption] Using development encryption key. Set REACT_APP_ENCRYPTION_KEY for production.',
-		)
-		return 'dev-journal-app-key-2024-replace-in-production'
+			"[encryption] Using development encryption key. Set REACT_APP_ENCRYPTION_KEY for production.",
+		);
+		return "dev-journal-app-key-2024-replace-in-production";
 	}
 
 	// Production should never reach here
-	console.error('[encryption] No encryption key configured for production!')
-	return 'default-journal-app-key-2024'
-}
+	console.error("[encryption] No encryption key configured for production!");
+	return "default-journal-app-key-2024";
+};
 
 /**
  * Encryption settings
  */
 export const encryptionConfig = {
 	// Algorithm: AES with 256-bit key
-	algorithm: 'AES-256',
+	algorithm: "AES-256",
 
 	// Whether to encrypt storage keys (in addition to values)
 	encryptKeys: true,
@@ -52,7 +52,7 @@ export const encryptionConfig = {
 
 	// Encryption key
 	key: getEncryptionKey(),
-}
+};
 
 /**
  * How to generate a strong encryption key:

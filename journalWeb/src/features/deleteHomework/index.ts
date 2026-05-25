@@ -1,1 +1,1 @@
-export { useDeleteHomework } from './hooks/useDeleteHomework'
+export { useDeleteHomework } from "./hooks/useDeleteHomework";

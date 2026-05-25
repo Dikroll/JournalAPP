@@ -1,60 +1,60 @@
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { LessonItem } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
+import type { LessonItem } from "./types";
 
 // Версия кэша - обновляется при изменении API
-export const SCHEDULE_CACHE_VERSION = 2
+export const SCHEDULE_CACHE_VERSION = 2;
 
 interface ScheduleState {
-	cacheVersion: number
+	cacheVersion: number;
 
-	today: LessonItem[]
-	todayStatus: LoadingState
-	todayLoadedAt: number | null
-	error: string | null
+	today: LessonItem[];
+	todayStatus: LoadingState;
+	todayLoadedAt: number | null;
+	error: string | null;
 
-	days: Record<string, LessonItem[]> // 'YYYY-MM-DD'
-	dayStatus: Record<string, LoadingState>
-	dayLoadedAt: Record<string, number>
+	days: Record<string, LessonItem[]>; // 'YYYY-MM-DD'
+	dayStatus: Record<string, LoadingState>;
+	dayLoadedAt: Record<string, number>;
 
-	months: Record<string, LessonItem[]> // 'YYYY-MM'
-	monthStatus: Record<string, LoadingState>
-	monthLoadedAt: Record<string, number>
+	months: Record<string, LessonItem[]>; // 'YYYY-MM'
+	monthStatus: Record<string, LoadingState>;
+	monthLoadedAt: Record<string, number>;
 
-	weeks: Record<string, LessonItem[]> // 'YYYY-MM-DD'
-	weekStatus: Record<string, LoadingState>
-	weekLoadedAt: Record<string, number>
+	weeks: Record<string, LessonItem[]>; // 'YYYY-MM-DD'
+	weekStatus: Record<string, LoadingState>;
+	weekLoadedAt: Record<string, number>;
 
-	setToday: (lessons: LessonItem[]) => void
-	setTodayStatus: (s: LoadingState) => void
-	setTodayLoadedAt: (t: number | null) => void
-	setError: (e: string | null) => void
+	setToday: (lessons: LessonItem[]) => void;
+	setTodayStatus: (s: LoadingState) => void;
+	setTodayLoadedAt: (t: number | null) => void;
+	setError: (e: string | null) => void;
 
-	setDay: (date: string, lessons: LessonItem[]) => void
-	setDayStatus: (date: string, s: LoadingState) => void
-	setDayLoadedAt: (date: string, t: number) => void
+	setDay: (date: string, lessons: LessonItem[]) => void;
+	setDayStatus: (date: string, s: LoadingState) => void;
+	setDayLoadedAt: (date: string, t: number) => void;
 
-	setMonth: (date: string, lessons: LessonItem[]) => void
-	setMonthStatus: (date: string, s: LoadingState) => void
-	setMonthLoadedAt: (date: string, t: number) => void
-	clearMonthsCache: () => void
+	setMonth: (date: string, lessons: LessonItem[]) => void;
+	setMonthStatus: (date: string, s: LoadingState) => void;
+	setMonthLoadedAt: (date: string, t: number) => void;
+	clearMonthsCache: () => void;
 
-	setWeek: (date: string, lessons: LessonItem[]) => void
-	setWeekStatus: (date: string, s: LoadingState) => void
-	setWeekLoadedAt: (date: string, t: number) => void
-	clearWeeksCache: () => void
+	setWeek: (date: string, lessons: LessonItem[]) => void;
+	setWeekStatus: (date: string, s: LoadingState) => void;
+	setWeekLoadedAt: (date: string, t: number) => void;
+	clearWeeksCache: () => void;
 
-	resetAllCache: () => void
+	resetAllCache: () => void;
 }
 
 export const useScheduleStore = create<ScheduleState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			cacheVersion: SCHEDULE_CACHE_VERSION,
 
 			today: [],
-			todayStatus: 'idle',
+			todayStatus: "idle",
 			todayLoadedAt: null,
 			error: null,
 			days: {},
@@ -67,42 +67,42 @@ export const useScheduleStore = create<ScheduleState>()(
 			weekStatus: {},
 			weekLoadedAt: {},
 
-			setToday: today => set({ today }),
-			setTodayStatus: todayStatus => set({ todayStatus }),
-			setTodayLoadedAt: todayLoadedAt => set({ todayLoadedAt }),
-			setError: error => set({ error }),
+			setToday: (today) => set({ today }),
+			setTodayStatus: (todayStatus) => set({ todayStatus }),
+			setTodayLoadedAt: (todayLoadedAt) => set({ todayLoadedAt }),
+			setError: (error) => set({ error }),
 
 			setDay: (date, lessons) =>
-				set(state => ({ days: { ...state.days, [date]: lessons } })),
+				set((state) => ({ days: { ...state.days, [date]: lessons } })),
 			setDayStatus: (date, s) =>
-				set(state => ({
+				set((state) => ({
 					dayStatus: { ...state.dayStatus, [date]: s },
 				})),
 			setDayLoadedAt: (date, t) =>
-				set(state => ({
+				set((state) => ({
 					dayLoadedAt: { ...state.dayLoadedAt, [date]: t },
 				})),
 
 			setMonth: (date, lessons) =>
-				set(state => ({ months: { ...state.months, [date]: lessons } })),
+				set((state) => ({ months: { ...state.months, [date]: lessons } })),
 			setMonthStatus: (date, s) =>
-				set(state => ({
+				set((state) => ({
 					monthStatus: { ...state.monthStatus, [date]: s },
 				})),
 			setMonthLoadedAt: (date, t) =>
-				set(state => ({
+				set((state) => ({
 					monthLoadedAt: { ...state.monthLoadedAt, [date]: t },
 				})),
 			clearMonthsCache: () => set({ monthLoadedAt: {} }),
 
 			setWeek: (date, lessons) =>
-				set(state => ({ weeks: { ...state.weeks, [date]: lessons } })),
+				set((state) => ({ weeks: { ...state.weeks, [date]: lessons } })),
 			setWeekStatus: (date, s) =>
-				set(state => ({
+				set((state) => ({
 					weekStatus: { ...state.weekStatus, [date]: s },
 				})),
 			setWeekLoadedAt: (date, t) =>
-				set(state => ({
+				set((state) => ({
 					weekLoadedAt: { ...state.weekLoadedAt, [date]: t },
 				})),
 			clearWeeksCache: () => set({ weekLoadedAt: {} }),
@@ -111,7 +111,7 @@ export const useScheduleStore = create<ScheduleState>()(
 				set({
 					cacheVersion: SCHEDULE_CACHE_VERSION,
 					today: [],
-					todayStatus: 'idle',
+					todayStatus: "idle",
 					todayLoadedAt: null,
 					error: null,
 					days: {},
@@ -126,8 +126,8 @@ export const useScheduleStore = create<ScheduleState>()(
 				}),
 		}),
 		{
-			name: 'schedule-store',
-			partialize: state => ({
+			name: "schedule-store",
+			partialize: (state) => ({
 				cacheVersion: state.cacheVersion,
 				today: state.today,
 				todayLoadedAt: state.todayLoadedAt,
@@ -140,4 +140,4 @@ export const useScheduleStore = create<ScheduleState>()(
 			}),
 		},
 	),
-)
+);

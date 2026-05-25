@@ -1,34 +1,38 @@
+import { useMemo } from "react";
 import type {
 	GroupData,
 	HomeworkItemWithStatus,
 	HomeworkStatus,
 	SubjectData,
-} from '@/entities/homework'
-import { STATUS_CONFIG, STATUS_KEY_MAP, STATUS_ORDER } from '@/entities/homework'
-import type { Subject } from '@/entities/subject'
-import { useMemo } from 'react'
+} from "@/entities/homework";
+import {
+	STATUS_CONFIG,
+	STATUS_KEY_MAP,
+	STATUS_ORDER,
+} from "@/entities/homework";
+import type { Subject } from "@/entities/subject";
 
 export interface HomeworkSubjectSection {
-	status: HomeworkStatus
-	numKey: number
-	label: string
-	textColor: string
-	icon: (typeof STATUS_CONFIG)[HomeworkStatus]['icon']
-	displayItems: HomeworkItemWithStatus[]
-	total: number
-	hasMore: boolean
-	subjectNotFetched: boolean
+	status: HomeworkStatus;
+	numKey: number;
+	label: string;
+	textColor: string;
+	icon: (typeof STATUS_CONFIG)[HomeworkStatus]["icon"];
+	displayItems: HomeworkItemWithStatus[];
+	total: number;
+	hasMore: boolean;
+	subjectNotFetched: boolean;
 }
 
 export interface HomeworkSubjectViewModel {
-	specName: string
-	specId: number | null
-	isLoadingSubject: boolean
-	sections: HomeworkSubjectSection[]
+	specName: string;
+	specId: number | null;
+	isLoadingSubject: boolean;
+	sections: HomeworkSubjectSection[];
 }
 
 export interface HomeworkSubjectFilteringResult {
-	subjectViews: HomeworkSubjectViewModel[]
+	subjectViews: HomeworkSubjectViewModel[];
 }
 
 /**
@@ -58,42 +62,42 @@ export function useHomeworkSubjectFiltering(
 	return useMemo(() => {
 		const statusesToShow: HomeworkStatus[] = filterStatus
 			? [filterStatus]
-			: STATUS_ORDER
+			: STATUS_ORDER;
 
 		const specNames = selectedSpec
-			? Object.keys(bySubject).filter(n => n === selectedSpec.name)
-			: Object.keys(bySubject).sort((a, b) => a.localeCompare(b, 'ru'))
+			? Object.keys(bySubject).filter((n) => n === selectedSpec.name)
+			: Object.keys(bySubject).sort((a, b) => a.localeCompare(b, "ru"));
 
-		const subjectViews: HomeworkSubjectViewModel[] = []
+		const subjectViews: HomeworkSubjectViewModel[] = [];
 
 		for (const specName of specNames) {
-			const statusGroups = bySubject[specName]
-			const knownSpec = specList.find(s => s.name === specName)
-			const specId = knownSpec?.id ?? null
-			const subjectData = specId != null ? subjects[specId] : null
-			const isLoadingSubject = subjectData?.status === 'loading'
-			const sections: HomeworkSubjectSection[] = []
+			const statusGroups = bySubject[specName];
+			const knownSpec = specList.find((s) => s.name === specName);
+			const specId = knownSpec?.id ?? null;
+			const subjectData = specId != null ? subjects[specId] : null;
+			const isLoadingSubject = subjectData?.status === "loading";
+			const sections: HomeworkSubjectSection[] = [];
 
 			for (const status of statusesToShow) {
-				const numKey = STATUS_KEY_MAP[status]
-				const storeItems = subjectData?.items?.[numKey] ?? []
-				const baseItems = statusGroups[status]?.items ?? []
+				const numKey = STATUS_KEY_MAP[status];
+				const storeItems = subjectData?.items?.[numKey] ?? [];
+				const baseItems = statusGroups[status]?.items ?? [];
 
 				const displayItems: HomeworkItemWithStatus[] =
 					storeItems.length > 0
-						? storeItems.map(hw => ({ ...hw, statusKey: status }))
-						: baseItems
+						? storeItems.map((hw) => ({ ...hw, statusKey: status }))
+						: baseItems;
 
-				if (!displayItems.length) continue
+				if (!displayItems.length) continue;
 
-				const storeTotal = subjectData?.counters?.[status] ?? null
-				const total = storeTotal ?? displayItems.length
-				const isExpanded = subjectData?.expandedStatuses.has(numKey) ?? false
+				const storeTotal = subjectData?.counters?.[status] ?? null;
+				const total = storeTotal ?? displayItems.length;
+				const isExpanded = subjectData?.expandedStatuses.has(numKey) ?? false;
 				const subjectNotFetched =
-					subjectData == null || subjectData.loadedAt == null
+					subjectData == null || subjectData.loadedAt == null;
 				const hasMore =
-					subjectNotFetched || (!isExpanded && displayItems.length < total)
-				const { label, icon, textColor } = STATUS_CONFIG[status]
+					subjectNotFetched || (!isExpanded && displayItems.length < total);
+				const { label, icon, textColor } = STATUS_CONFIG[status];
 
 				sections.push({
 					status,
@@ -105,21 +109,21 @@ export function useHomeworkSubjectFiltering(
 					total,
 					hasMore,
 					subjectNotFetched,
-				})
+				});
 			}
 
-			if (!sections.length) continue
+			if (!sections.length) continue;
 
 			subjectViews.push({
 				specName,
 				specId,
 				isLoadingSubject,
 				sections,
-			})
+			});
 		}
 
 		return {
 			subjectViews,
-		}
-	}, [bySubject, filterStatus, selectedSpec, specList, subjects])
+		};
+	}, [bySubject, filterStatus, selectedSpec, specList, subjects]);
 }

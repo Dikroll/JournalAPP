@@ -1,34 +1,34 @@
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw } from "lucide-react";
 
 interface Props {
-	message?: string
-	onRetry?: () => void
-	className?: string
+	message?: string;
+	onRetry?: () => void;
+	className?: string;
 }
 
 export function ErrorView({
-	message = 'Ошибка загрузки',
+	message = "Ошибка загрузки",
 	onRetry,
-	className = '',
+	className = "",
 }: Props) {
 	return (
 		<div
 			className={`flex flex-col items-center justify-center gap-4 py-12 ${className}`}
 		>
-			<p className='text-status-overdue text-sm text-center'>{message}</p>
+			<p className="text-status-overdue text-sm text-center">{message}</p>
 			{onRetry && (
 				<button
-					type='button'
-					onClick={e => {
-						e.preventDefault()
-						onRetry()
+					type="button"
+					onClick={(e) => {
+						e.preventDefault();
+						onRetry();
 					}}
-					className='flex items-center gap-2 px-4 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-2xl text-app-text text-sm border border-app-border'
+					className="flex items-center gap-2 px-4 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-2xl text-app-text text-sm border border-app-border"
 				>
 					<RefreshCw size={15} />
 					Повторить
 				</button>
 			)}
 		</div>
-	)
+	);
 }

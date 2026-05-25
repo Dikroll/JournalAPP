@@ -3,64 +3,64 @@ import {
 	getLessonTimeLabel,
 	getScheduleTimeInfo,
 	useScheduleToday,
-} from '@/entities/schedule'
-import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
-import { InlineImage } from '@/shared/ui'
-import { GapIndicator } from './GapIndicator'
-import { LessonCard } from './LessonCard'
+} from "@/entities/schedule";
+import { toMinutes, useCurrentMinutes } from "@/shared/hooks";
+import { InlineImage } from "@/shared/ui";
+import { GapIndicator } from "./GapIndicator";
+import { LessonCard } from "./LessonCard";
 
 export function ScheduleList({ compact = false }: { compact?: boolean }) {
-	const { today, status, error } = useScheduleToday()
-	const nowMinutes = useCurrentMinutes()
+	const { today, status, error } = useScheduleToday();
+	const nowMinutes = useCurrentMinutes();
 
-	if (status === 'loading' && today.length === 0) {
+	if (status === "loading" && today.length === 0) {
 		return (
-			<div className='flex flex-col gap-3'>
-				{[0, 1, 2].map(i => (
+			<div className="flex flex-col gap-3">
+				{[0, 1, 2].map((i) => (
 					<div
 						key={i}
-						className='bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border'
+						className="bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border"
 					/>
 				))}
 			</div>
-		)
+		);
 	}
 
-	if (status === 'error' && today.length === 0) {
+	if (status === "error" && today.length === 0) {
 		return (
-			<div className='flex flex-col items-center gap-3 py-4'>
-				<p className='text-status-overdue text-sm text-center'>
-					{error ?? 'Ошибка загрузки расписания'}
+			<div className="flex flex-col items-center gap-3 py-4">
+				<p className="text-status-overdue text-sm text-center">
+					{error ?? "Ошибка загрузки расписания"}
 				</p>
 			</div>
-		)
+		);
 	}
 
-	if (today.length === 0 && status === 'success') {
+	if (today.length === 0 && status === "success") {
 		return (
-			<div className='flex flex-col items-center gap-3 py-4'>
+			<div className="flex flex-col items-center gap-3 py-4">
 				<InlineImage
-					src='/homework.svg'
-					alt='Нет пар'
+					src="/homework.svg"
+					alt="Нет пар"
 					width={300}
 					height={300}
 				/>
-				<p className='text-app-muted text-sm text-center'>Пар сегодня нет</p>
+				<p className="text-app-muted text-sm text-center">Пар сегодня нет</p>
 			</div>
-		)
+		);
 	}
 
-	if (today.length === 0) return null
+	if (today.length === 0) return null;
 
-	const sorted = [...today].sort((a, b) => a.lesson - b.lesson)
-	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes)
+	const sorted = [...today].sort((a, b) => a.lesson - b.lesson);
+	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
 
 	return (
-		<ul className={`flex flex-col flex-1 ${compact ? 'gap-1.5' : 'gap-3'}`}>
+		<ul className={`flex flex-col flex-1 min-h-0 gap-1.5`}>
 			{sorted.map((lesson, i) => (
 				<li
 					key={`${lesson.started_at}-${lesson.room}`}
-					className='flex flex-col flex-1'
+					className="flex flex-col min-h-0"
 				>
 					{i > 0 && (
 						<GapIndicator
@@ -80,5 +80,5 @@ export function ScheduleList({ compact = false }: { compact?: boolean }) {
 				</li>
 			))}
 		</ul>
-	)
+	);
 }

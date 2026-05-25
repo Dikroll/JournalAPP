@@ -1,51 +1,51 @@
-import { ttl } from '@/shared/config'
-import { CACHE_KEYS, isCacheValid } from '@/shared/lib'
-import { storage } from '@/shared/lib/encryptedStorage'
-import { useEffect, useRef } from 'react'
-import { paymentApi } from '../api'
-import { usePaymentStore } from '../model/store'
-import type { PaymentIndex } from '../model/types'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { CACHE_KEYS, isCacheValid } from "@/shared/lib";
+import { storage } from "@/shared/lib/encryptedStorage";
+import { paymentApi } from "../api";
+import { usePaymentStore } from "../model/store";
+import type { PaymentIndex } from "../model/types";
 
-const CACHE_TTL_MS = ttl.PAYMENT * 1000
+const CACHE_TTL_MS = ttl.PAYMENT * 1000;
 
 export function usePaymentIndex() {
-	const index = usePaymentStore(s => s.index)
-	const status = usePaymentStore(s => s.indexStatus)
-	const loadedAt = usePaymentStore(s => s.indexLoadedAt)
-	const setIndex = usePaymentStore(s => s.setIndex)
-	const setStatus = usePaymentStore(s => s.setIndexStatus)
-	const setLoadedAt = usePaymentStore(s => s.setIndexLoadedAt)
+	const index = usePaymentStore((s) => s.index);
+	const status = usePaymentStore((s) => s.indexStatus);
+	const loadedAt = usePaymentStore((s) => s.indexLoadedAt);
+	const setIndex = usePaymentStore((s) => s.setIndex);
+	const setStatus = usePaymentStore((s) => s.setIndexStatus);
+	const setLoadedAt = usePaymentStore((s) => s.setIndexLoadedAt);
 
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
-		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
+		if (fetchingRef.current) return;
+		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return;
 
-		const cached = storage.get<PaymentIndex>(CACHE_KEYS.PAYMENT_INDEX)
+		const cached = storage.get<PaymentIndex>(CACHE_KEYS.PAYMENT_INDEX);
 		if (cached) {
-			setIndex(cached)
-			setLoadedAt(Date.now())
-			setStatus('success')
-			return
+			setIndex(cached);
+			setLoadedAt(Date.now());
+			setStatus("success");
+			return;
 		}
 
-		fetchingRef.current = true
-		setStatus('loading')
+		fetchingRef.current = true;
+		setStatus("loading");
 
 		paymentApi
 			.getIndex()
-			.then(data => {
-				setIndex(data)
-				setLoadedAt(Date.now())
-				setStatus('success')
-				storage.set(CACHE_KEYS.PAYMENT_INDEX, data, ttl.PAYMENT)
+			.then((data) => {
+				setIndex(data);
+				setLoadedAt(Date.now());
+				setStatus("success");
+				storage.set(CACHE_KEYS.PAYMENT_INDEX, data, ttl.PAYMENT);
 			})
-			.catch(() => setStatus('error'))
+			.catch(() => setStatus("error"))
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [loadedAt])
+				fetchingRef.current = false;
+			});
+	}, [loadedAt, setIndex, setLoadedAt, setStatus]);
 
-	return { index, status }
+	return { index, status };
 }

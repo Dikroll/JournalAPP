@@ -14,4 +14,4 @@ export const timing = {
 	SUCCESS_DISMISS_DELAY: 1_500,
 	/** Задержка анимации закрытия sheet/modal */
 	SHEET_CLOSE_ANIMATION: 300,
-} as const
+} as const;

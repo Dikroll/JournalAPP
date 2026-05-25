@@ -1,76 +1,83 @@
-
+import { ArrowLeft, Megaphone, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppUpdateBanner, useAppUpdateStore } from "@/features/appUpdate";
+import { RefreshNotificationsButton } from "@/features/refreshNotifications";
 import {
 	FALLBACK_CHANGELOG,
 	getUnreadCount,
 	useNotificationsStore,
-} from '@/features/sendNotifications'
-import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
-import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
-import { RefreshNotificationsButton } from '@/features/refreshNotifications'
-import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
-import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import type { Segment } from '@/shared/ui'
-import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import { ChangelogTab, ComingSoonTab } from '@/widgets'
-import { ArrowLeft, Megaphone, Sparkles } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from "@/features/sendNotifications";
+import type { ChangelogEntry } from "@/features/sendNotifications/model/store";
+import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
+import type { Segment } from "@/shared/ui";
+import { IconButton, PageHeader, SegmentedControl } from "@/shared/ui";
+import { ChangelogTab } from "@/widgets";
+import { NewsTab } from "@/widgets";
 
-type Tab = 'changelog' | 'news'
+type Tab = "changelog" | "news";
 
 const TABS: Segment<Tab>[] = [
-	{ key: 'changelog', label: 'Обновления', icon: <Sparkles size={13} /> },
-	{ key: 'news',      label: 'Новости',    icon: <Megaphone size={13} /> },
-]
+	{ key: "changelog", label: "Обновления", icon: <Sparkles size={13} /> },
+	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
+];
 
 export function NewsPage() {
-	const navigate = useNavigate()
-	const [activeTab, setActiveTab] = useState<Tab>('changelog')
-	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
-	const latestRelease = useAppUpdateStore(s => s.latestRelease)
+	const navigate = useNavigate();
+	const [activeTab, setActiveTab] = useState<Tab>("changelog");
+	const { lastReadChangelogId, setLastRead } = useNotificationsStore();
+	const latestRelease = useAppUpdateStore((s) => s.latestRelease);
 
-	useSwipeBack()
+	useSwipeBack();
 
 	const entries = useMemo<ChangelogEntry[]>(
-		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
+		() =>
+			latestRelease
+				? [toChangelogFeedEntry(latestRelease)]
+				: FALLBACK_CHANGELOG,
 		[latestRelease],
-	)
+	);
 
 	useEffect(() => {
 		if (latestRelease && entries.length > 0) {
-			setLastRead(entries[0].id)
+			setLastRead(entries[0].id);
 		}
-	}, [latestRelease, entries, setLastRead])
+	}, [latestRelease, entries, setLastRead]);
 
-	const unread = getUnreadCount(lastReadChangelogId, entries)
+	const unread = getUnreadCount(lastReadChangelogId, entries);
 
 	const tabsWithBadge = useMemo<Segment<Tab>[]>(
 		() =>
-			TABS.map(tab => {
-				if (tab.key === 'changelog' && unread > 0 && lastReadChangelogId !== null) {
-					return { ...tab, badge: unread }
+			TABS.map((tab) => {
+				if (
+					tab.key === "changelog" &&
+					unread > 0 &&
+					lastReadChangelogId !== null
+				) {
+					return { ...tab, badge: unread };
 				}
-				return tab
+				return tab;
 			}),
 		[unread, lastReadChangelogId],
-	)
+	);
 
 	return (
-		<div className='min-h-screen text-app-text pb-28'>
-			<div className='p-4 space-y-4'>
-				<div className='flex items-center gap-2'>
+		<div className="min-h-screen text-app-text pb-28">
+			<div className="p-4 space-y-4">
+				<div className="flex items-center gap-2">
 					<IconButton
 						icon={<ArrowLeft size={18} />}
 						onClick={() => navigate(-1)}
-						size='md'
-						shape='square'
-						variant='surface'
-						style={{ boxShadow: 'var(--shadow-card)' }}
-						aria-label='Назад'
+						size="md"
+						shape="square"
+						variant="surface"
+						style={{ boxShadow: "var(--shadow-card)" }}
+						aria-label="Назад"
 					/>
-					<div className='flex-1'>
+					<div className="flex-1">
 						<PageHeader
-							title='Новости'
+							title="Новости"
 							actions={<RefreshNotificationsButton />}
 						/>
 					</div>
@@ -83,15 +90,15 @@ export function NewsPage() {
 				/>
 			</div>
 
-			<div className='px-4'>
-				{activeTab === 'changelog' && (
+			<div className="px-4">
+				{activeTab === "changelog" && (
 					<>
 						<AppUpdateBanner />
 						<ChangelogTab entries={entries} />
 					</>
 				)}
-				{activeTab === 'news' && <ComingSoonTab label='Новости колледжа' />}
+				{activeTab === "news" && <NewsTab />}
 			</div>
 		</div>
-	)
+	);
 }

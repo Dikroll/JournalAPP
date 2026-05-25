@@ -1,12 +1,12 @@
-import { RefreshButton } from '@/shared/ui'
-import { useRefreshHomework } from '../hooks/useRefreshHomework'
+import { RefreshButton } from "@/shared/ui";
+import { useRefreshHomework } from "../hooks/useRefreshHomework";
 
 interface Props {
-	className?: string
+	className?: string;
 }
 
 export function RefreshHomeworkButton({ className }: Props) {
-	const { refresh, isRefreshing } = useRefreshHomework()
+	const { refresh, isRefreshing } = useRefreshHomework();
 	return (
 		<RefreshButton
 			isRefreshing={isRefreshing}
@@ -14,5 +14,5 @@ export function RefreshHomeworkButton({ className }: Props) {
 			className={className}
 			minSpinMs={400}
 		/>
-	)
+	);
 }

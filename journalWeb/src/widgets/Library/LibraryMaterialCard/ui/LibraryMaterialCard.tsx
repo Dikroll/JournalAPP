@@ -1,65 +1,65 @@
-import type { LibraryMaterial } from '@/entities/library'
+import { memo } from "react";
+import type { LibraryMaterial } from "@/entities/library";
 import {
 	getMaterialTypeColor,
 	getMaterialTypeIcon,
-} from '@/shared/config/libraryMaterialTypes'
-import { Badge } from '@/shared/ui'
-import { formatDateCompact } from '@/shared/utils'
-import { memo } from 'react'
-import { MaterialActions } from './MaterialActions'
-import { MaterialCover } from './MaterialCover'
+} from "@/shared/config/libraryMaterialTypes";
+import { Badge } from "@/shared/ui";
+import { formatDateCompact } from "@/shared/utils";
+import { MaterialActions } from "./MaterialActions";
+import { MaterialCover } from "./MaterialCover";
 
 interface Props {
-	material: LibraryMaterial
+	material: LibraryMaterial;
 
-	onClick?: () => void
+	onClick?: () => void;
 }
 
 export const LibraryMaterialCard = memo(
 	function LibraryMaterialCard({ material, onClick }: Props) {
-		const tc = getMaterialTypeColor(material.material_type)
+		const tc = getMaterialTypeColor(material.material_type);
 
 		return (
 			<div
 				onClick={onClick}
-				className='bg-app-surface backdrop-blur-xl rounded-3xl overflow-hidden border-4 border-l-4 border-b-4 border-t-0 border-r-0'
-				style={{ boxShadow: 'var(--shadow-card)', borderColor: tc.border }}
+				className="bg-app-surface backdrop-blur-xl rounded-3xl overflow-hidden border-4 border-l-4 border-b-4 border-t-0 border-r-0"
+				style={{ boxShadow: "var(--shadow-card)", borderColor: tc.border }}
 			>
 				<MaterialCover material={material} typeColor={tc} />
 
-				<div className='p-4'>
-					<div className='flex items-start gap-3 mb-2'>
+				<div className="p-4">
+					<div className="flex items-start gap-3 mb-2">
 						<div
-							className='shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center mt-0.5'
+							className="shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center mt-0.5"
 							style={{ background: tc.bg, color: tc.text }}
 						>
 							{getMaterialTypeIcon(material.material_type)}
 						</div>
 
-						<div className='flex-1 min-w-0'>
-							<div className='flex items-center gap-1.5 mb-1 flex-wrap'>
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center gap-1.5 mb-1 flex-wrap">
 								<span
-									className='text-[11px] font-medium px-2 py-0.5 rounded-full'
+									className="text-[11px] font-medium px-2 py-0.5 rounded-full"
 									style={{ background: tc.bg, color: tc.text }}
 								>
 									{material.type_name}
 								</span>
 								{material.is_new && (
-									<Badge variant='new' size='xs'>
+									<Badge variant="new" size="xs">
 										NEW
 									</Badge>
 								)}
 							</div>
-							<h3 className='text-sm font-semibold text-app-text leading-snug'>
+							<h3 className="text-sm font-semibold text-app-text leading-snug">
 								{material.theme}
 							</h3>
-							<p className='text-xs text-app-muted mt-0.5 truncate'>
+							<p className="text-xs text-app-muted mt-0.5 truncate">
 								{material.spec_name}
 							</p>
 						</div>
 					</div>
 
-					<div className='flex items-center gap-1.5 text-[11px] text-app-faint mb-1 pl-12'>
+					<div className="flex items-center gap-1.5 text-[11px] text-app-faint mb-1 pl-12">
 						<span>Неделя {material.week}</span>
 						{material.date && (
 							<>
@@ -70,7 +70,7 @@ export const LibraryMaterialCard = memo(
 					</div>
 
 					{material.description && (
-						<p className='text-xs text-app-muted line-clamp-2 leading-relaxed mb-1 pl-12'>
+						<p className="text-xs text-app-muted line-clamp-2 leading-relaxed mb-1 pl-12">
 							{material.description}
 						</p>
 					)}
@@ -83,7 +83,7 @@ export const LibraryMaterialCard = memo(
 					/>
 				</div>
 			</div>
-		)
+		);
 	},
 	(prev, next) =>
 		prev.material.material_id === next.material.material_id &&
@@ -91,4 +91,4 @@ export const LibraryMaterialCard = memo(
 		prev.material.cover_image === next.material.cover_image &&
 		prev.material.url === next.material.url &&
 		prev.material.link === next.material.link,
-)
+);

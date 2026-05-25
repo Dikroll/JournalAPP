@@ -6,17 +6,17 @@
 
 export function extractYouTubeId(url: string): string | null {
 	// youtu.be/ID?...
-	if (url.includes('youtu.be/')) {
-		return url.split('youtu.be/')[1]?.split('?')[0] ?? null
+	if (url.includes("youtu.be/")) {
+		return url.split("youtu.be/")[1]?.split("?")[0] ?? null;
 	}
 	// youtube.com/watch?v=ID
-	const match = url.match(/[?&]v=([^&]+)/)
-	if (match) return match[1]
+	const match = url.match(/[?&]v=([^&]+)/);
+	if (match) return match[1];
 	// youtube.com/embed/ID
-	if (url.includes('youtube.com/embed/')) {
-		return url.split('embed/')[1]?.split('?')[0] ?? null
+	if (url.includes("youtube.com/embed/")) {
+		return url.split("embed/")[1]?.split("?")[0] ?? null;
 	}
-	return null
+	return null;
 }
 
 /**
@@ -25,24 +25,24 @@ export function extractYouTubeId(url: string): string | null {
  */
 export function getYouTubeThumbnail(
 	url: string,
-	quality: 'maxres' | 'hq' | 'medium' = 'hq',
+	quality: "maxres" | "hq" | "medium" = "hq",
 ): string | null {
-	const id = extractYouTubeId(url)
-	if (!id) return null
-	return `https://img.youtube.com/vi/${id}/${quality}default.jpg`
+	const id = extractYouTubeId(url);
+	if (!id) return null;
+	return `https://img.youtube.com/vi/${id}/${quality}default.jpg`;
 }
 
 /**
  * Преобразовать URL в embed
  */
 export function toYouTubeEmbed(url: string): string | null {
-	const id = extractYouTubeId(url)
-	return id ? `https://www.youtube.com/embed/${id}` : null
+	const id = extractYouTubeId(url);
+	return id ? `https://www.youtube.com/embed/${id}` : null;
 }
 
 /**
  * Проверить является ли URL YouTube ссылкой
  */
 export function isYouTubeUrl(url: string): boolean {
-	return extractYouTubeId(url) !== null
+	return extractYouTubeId(url) !== null;
 }

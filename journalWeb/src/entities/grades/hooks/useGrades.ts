@@ -1,96 +1,96 @@
-import { ttl } from '@/shared/config'
-import { CACHE_KEYS } from '@/shared/lib'
-import { storage } from '@/shared/lib/encryptedStorage'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef } from 'react'
-import { gradesApi } from '../api'
-import { useGradesStore } from '../model/store'
-import type { GradeEntry } from '../model/types'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { CACHE_KEYS } from "@/shared/lib";
+import { storage } from "@/shared/lib/encryptedStorage";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { gradesApi } from "../api";
+import { useGradesStore } from "../model/store";
+import type { GradeEntry } from "../model/types";
 
 export function resetGradesFetch() {}
 
 export function useGrades() {
-	const { entries, status, error, loadedAt, update } = useGradesStore()
+	const { entries, status, error, loadedAt, update } = useGradesStore();
 
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
+		if (fetchingRef.current) return;
 		if (
 			entries.length > 0 &&
 			loadedAt &&
 			Date.now() - loadedAt < ttl.ACTIVITY * 1000
 		) {
-			if (status === 'idle') update({ status: 'success' })
-			return
+			if (status === "idle") update({ status: "success" });
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (loadedAt !== null) {
-				if (status === 'idle') update({ status: 'success' })
-				return
+				if (status === "idle") update({ status: "success" });
+				return;
 			}
-			update({ status: 'error', error: 'Нет подключения к интернету' })
-			return
+			update({ status: "error", error: "Нет подключения к интернету" });
+			return;
 		}
 
-		const cached = storage.get<GradeEntry[]>(CACHE_KEYS.GRADES_ALL)
+		const cached = storage.get<GradeEntry[]>(CACHE_KEYS.GRADES_ALL);
 		if (cached) {
 			update({
 				entries: cached,
-				status: 'success',
+				status: "success",
 				loadedAt: Date.now(),
 				error: null,
-			})
-			return
+			});
+			return;
 		}
 
-		fetchingRef.current = true
-		update({ status: 'loading', error: null })
+		fetchingRef.current = true;
+		update({ status: "loading", error: null });
 
 		gradesApi
 			.getAll()
-			.then(data => {
+			.then((data) => {
 				update({
 					entries: data,
-					status: 'success',
+					status: "success",
 					loadedAt: Date.now(),
 					error: null,
-				})
-				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY)
+				});
+				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY);
 			})
 			.catch(() => {
 				if (entries.length === 0)
-					update({ status: 'error', error: 'Не удалось загрузить оценки' })
+					update({ status: "error", error: "Не удалось загрузить оценки" });
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [])
+				fetchingRef.current = false;
+			});
+	}, [entries.length, loadedAt, status, update]);
 
 	const refresh = () => {
-		if (fetchingRef.current) return
-		storage.remove(CACHE_KEYS.GRADES_ALL)
-		fetchingRef.current = true
-		update({ status: 'loading', error: null })
+		if (fetchingRef.current) return;
+		storage.remove(CACHE_KEYS.GRADES_ALL);
+		fetchingRef.current = true;
+		update({ status: "loading", error: null });
 		gradesApi
 			.getAll()
-			.then(data => {
+			.then((data) => {
 				update({
 					entries: data,
-					status: 'success',
+					status: "success",
 					loadedAt: Date.now(),
 					error: null,
-				})
-				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY)
+				});
+				storage.set(CACHE_KEYS.GRADES_ALL, data, ttl.ACTIVITY);
 			})
 			.catch(() =>
-				update({ status: 'error', error: 'Не удалось загрузить оценки' }),
+				update({ status: "error", error: "Не удалось загрузить оценки" }),
 			)
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}
+				fetchingRef.current = false;
+			});
+	};
 
-	return { entries, status, error, refresh }
+	return { entries, status, error, refresh };
 }

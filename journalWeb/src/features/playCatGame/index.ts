@@ -1,1 +1,1 @@
-export { CatGame } from './ui/CatGame'
+export { CatGame } from "./ui/CatGame";

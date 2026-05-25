@@ -4,76 +4,76 @@ import {
 	CheckCircle,
 	RotateCcw,
 	Sparkles,
-} from 'lucide-react'
-import type { HomeworkStatus } from '../model/types'
+} from "lucide-react";
+import type { HomeworkStatus } from "../model/types";
 
 export const STATUS_CONFIG: Record<
 	HomeworkStatus,
 	{
-		label: string
-		icon: React.ElementType
-		borderColor: string
-		textColor: string
+		label: string;
+		icon: React.ElementType;
+		borderColor: string;
+		textColor: string;
 	}
 > = {
 	overdue: {
-		label: 'Просроченные',
+		label: "Просроченные",
 		icon: AlertTriangle,
 		borderColor:
-			'border-l-[color:var(--color-overdue)] border-b-[color:var(--color-overdue)]',
-		textColor: 'text-status-overdue',
+			"border-l-[color:var(--color-overdue)] border-b-[color:var(--color-overdue)]",
+		textColor: "text-status-overdue",
 	},
 	new: {
-		label: 'Новые',
+		label: "Новые",
 		icon: Sparkles,
 		borderColor:
-			'border-l-[color:var(--color-new)] border-b-[color:var(--color-new)]',
-		textColor: 'text-status-new',
+			"border-l-[color:var(--color-new)] border-b-[color:var(--color-new)]",
+		textColor: "text-status-new",
 	},
 	pending: {
-		label: 'На проверке',
+		label: "На проверке",
 		icon: BookOpen,
 		borderColor:
-			'border-l-[color:var(--color-pending)] border-b-[color:var(--color-pending)]',
-		textColor: 'text-status-pending',
+			"border-l-[color:var(--color-pending)] border-b-[color:var(--color-pending)]",
+		textColor: "text-status-pending",
 	},
 	checked: {
-		label: 'Проверенные',
+		label: "Проверенные",
 		icon: CheckCircle,
 		borderColor:
-			'border-l-[color:var(--color-checked)] border-b-[color:var(--color-checked)]',
-		textColor: 'text-status-checked',
+			"border-l-[color:var(--color-checked)] border-b-[color:var(--color-checked)]",
+		textColor: "text-status-checked",
 	},
 	returned: {
-		label: 'Возвращённые',
+		label: "Возвращённые",
 		icon: RotateCcw,
 		borderColor:
-			'border-l-[color:var(--color-returned)] border-b-[color:var(--color-returned)]',
-		textColor: 'text-status-returned',
+			"border-l-[color:var(--color-returned)] border-b-[color:var(--color-returned)]",
+		textColor: "text-status-returned",
 	},
-}
+};
 
 export function getGradeStyle(grade: number | null | undefined): {
-	bg: string
-	badge: string
+	bg: string;
+	badge: string;
 } {
 	if (grade == null) {
 		return {
-			bg: 'bg-app-surface',
-			badge: 'bg-app-surface-strong text-app-muted border-app-border-strong',
-		}
+			bg: "bg-app-surface",
+			badge: "bg-app-surface-strong text-app-muted border-app-border-strong",
+		};
 	}
-	const clamped = Math.max(2, Math.min(5, grade))
-	return { bg: 'bg-app-surface', badge: `grade-badge-${clamped}` }
+	const clamped = Math.max(2, Math.min(5, grade));
+	return { bg: "bg-app-surface", badge: `grade-badge-${clamped}` };
 }
 
 export const STATUS_ORDER: HomeworkStatus[] = [
-	'overdue',
-	'new',
-	'pending',
-	'checked',
-	'returned',
-]
+	"overdue",
+	"new",
+	"pending",
+	"checked",
+	"returned",
+];
 
 export const STATUS_KEY_MAP: Record<HomeworkStatus, number> = {
 	overdue: 0,
@@ -81,8 +81,8 @@ export const STATUS_KEY_MAP: Record<HomeworkStatus, number> = {
 	pending: 2,
 	new: 3,
 	returned: 5,
-}
+};
 
 export const STATUS_MAP: Record<number, HomeworkStatus> = Object.fromEntries(
 	Object.entries(STATUS_KEY_MAP).map(([status, key]) => [key, status]),
-) as Record<number, HomeworkStatus>
+) as Record<number, HomeworkStatus>;

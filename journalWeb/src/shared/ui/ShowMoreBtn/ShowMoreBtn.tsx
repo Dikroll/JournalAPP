@@ -1,10 +1,10 @@
-import { ChevronDown, RefreshCw } from 'lucide-react'
+import { ChevronDown, RefreshCw } from "lucide-react";
 
 interface Props {
-	onClick: () => void
-	isLoading?: boolean
-	remaining?: number
-	label?: string
+	onClick: () => void;
+	isLoading?: boolean;
+	remaining?: number;
+	label?: string;
 }
 
 export function ShowMoreBtn({
@@ -15,17 +15,17 @@ export function ShowMoreBtn({
 }: Props) {
 	const text =
 		label ??
-		(remaining != null ? `Показать ещё (${remaining}+)` : 'Показать ещё')
+		(remaining != null ? `Показать ещё (${remaining}+)` : "Показать ещё");
 	return (
 		<button
-			type='button'
+			type="button"
 			onClick={onClick}
 			disabled={isLoading}
-			className='w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text disabled:opacity-50'
+			className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 bg-app-surface hover:bg-app-surface-hover border border-app-border rounded-2xl text-sm text-app-muted hover:text-app-text disabled:opacity-50"
 		>
 			{isLoading ? (
 				<>
-					<RefreshCw size={14} className='animate-spin' />
+					<RefreshCw size={14} className="animate-spin" />
 					Загрузка...
 				</>
 			) : (
@@ -35,5 +35,5 @@ export function ShowMoreBtn({
 				</>
 			)}
 		</button>
-	)
+	);
 }

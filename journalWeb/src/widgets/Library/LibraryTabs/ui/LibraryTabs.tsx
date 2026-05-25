@@ -1,12 +1,4 @@
 import {
-	MATERIAL_TYPE_TO_COUNTER_KEY,
-	type MaterialType,
-	useLibrary,
-} from '@/entities/library'
-import { useScrollableTabs } from '@/shared/hooks'
-import { pluralizeCount } from '@/shared/lib/pluralize'
-import { Badge, ErrorView, SkeletonList } from '@/shared/ui'
-import {
 	BookMarked,
 	BookOpen,
 	FileText,
@@ -14,81 +6,89 @@ import {
 	GraduationCap,
 	Presentation,
 	Video,
-} from 'lucide-react'
-import { memo, useState } from 'react'
-import { LibraryMaterialCard } from '../../LibraryMaterialCard/ui/LibraryMaterialCard'
+} from "lucide-react";
+import { memo, useState } from "react";
+import {
+	MATERIAL_TYPE_TO_COUNTER_KEY,
+	type MaterialType,
+	useLibrary,
+} from "@/entities/library";
+import { useScrollableTabs } from "@/shared/hooks";
+import { pluralizeCount } from "@/shared/lib/pluralize";
+import { Badge, ErrorView, SkeletonList } from "@/shared/ui";
+import { LibraryMaterialCard } from "../../LibraryMaterialCard/ui/LibraryMaterialCard";
 
-type Tab = MaterialType
+type Tab = MaterialType;
 
 // Порядок: Уроки → ДЗ → Практика → Видео → Библиотека → Тесты → Статьи → Презентации
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
-	{ key: 2, label: 'Уроки', icon: <FileText size={13} /> },
-	{ key: 1, label: 'ДЗ', icon: <BookOpen size={13} /> },
-	{ key: 3, label: 'Практика', icon: <FlaskConical size={13} /> },
-	{ key: 5, label: 'Видео', icon: <Video size={13} /> },
-	{ key: 4, label: 'Библиотека', icon: <BookMarked size={13} /> },
-	{ key: 7, label: 'Тесты', icon: <GraduationCap size={13} /> },
-	{ key: 8, label: 'Статьи', icon: <FileText size={13} /> },
-	{ key: 6, label: 'Презентации', icon: <Presentation size={13} /> },
-]
+	{ key: 2, label: "Уроки", icon: <FileText size={13} /> },
+	{ key: 1, label: "ДЗ", icon: <BookOpen size={13} /> },
+	{ key: 3, label: "Практика", icon: <FlaskConical size={13} /> },
+	{ key: 5, label: "Видео", icon: <Video size={13} /> },
+	{ key: 4, label: "Библиотека", icon: <BookMarked size={13} /> },
+	{ key: 7, label: "Тесты", icon: <GraduationCap size={13} /> },
+	{ key: 8, label: "Статьи", icon: <FileText size={13} /> },
+	{ key: 6, label: "Презентации", icon: <Presentation size={13} /> },
+];
 
 interface Props {
-	specId?: number
+	specId?: number;
 }
 
 export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
-	const [active, setActive] = useState<Tab>(2)
+	const [active, setActive] = useState<Tab>(2);
 
-	const activeIndex = TABS.findIndex(t => t.key === active)
-	const { scrollRef, showLeft, showRight } = useScrollableTabs(activeIndex)
+	const activeIndex = TABS.findIndex((t) => t.key === active);
+	const { scrollRef, showLeft, showRight } = useScrollableTabs(activeIndex);
 
 	const { materials, counters, isLoading, error } = useLibrary({
 		specId,
 		materialType: active,
 		autoLoad: true,
-	})
+	});
 
-	const activeCounterKey = MATERIAL_TYPE_TO_COUNTER_KEY[active]
-	const activeCounter = counters?.[activeCounterKey] ?? null
+	const activeCounterKey = MATERIAL_TYPE_TO_COUNTER_KEY[active];
+	const activeCounter = counters?.[activeCounterKey] ?? null;
 
 	return (
-		<div className='space-y-3'>
+		<div className="space-y-3">
 			{/* Строка вкладок */}
-			<div className='relative'>
+			<div className="relative">
 				{showLeft && (
 					<div
-						className='absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none'
+						className="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none"
 						style={{
 							background:
-								'linear-gradient(to right, var(--color-bg) 0%, transparent 100%)',
+								"linear-gradient(to right, var(--color-bg) 0%, transparent 100%)",
 						}}
 					/>
 				)}
 				{showRight && (
 					<div
-						className='absolute right-0 top-0 bottom-0 z-10 pointer-events-none'
+						className="absolute right-0 top-0 bottom-0 z-10 pointer-events-none"
 						style={{ width: 40 }}
 					>
 						<div
-							className='absolute inset-0'
+							className="absolute inset-0"
 							style={{
 								background:
-									'linear-gradient(to left, var(--color-bg) 30%, transparent 100%)',
+									"linear-gradient(to left, var(--color-bg) 30%, transparent 100%)",
 							}}
 						/>
 						<svg
-							className='absolute right-1 top-1/2 -translate-y-1/2'
-							width='12'
-							height='12'
-							viewBox='0 0 12 12'
-							fill='none'
+							className="absolute right-1 top-1/2 -translate-y-1/2"
+							width="12"
+							height="12"
+							viewBox="0 0 12 12"
+							fill="none"
 						>
 							<path
-								d='M4 2l4 4-4 4'
-								stroke='var(--color-text-muted)'
-								strokeWidth='1.5'
-								strokeLinecap='round'
-								strokeLinejoin='round'
+								d="M4 2l4 4-4 4"
+								stroke="var(--color-text-muted)"
+								strokeWidth="1.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
 							/>
 						</svg>
 					</div>
@@ -96,52 +96,52 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 				<div
 					ref={scrollRef}
-					className='flex gap-2'
+					className="flex gap-2"
 					style={{
-						overflowX: 'auto',
-						scrollbarWidth: 'none',
+						overflowX: "auto",
+						scrollbarWidth: "none",
 						WebkitOverflowScrolling:
-							'touch' as React.CSSProperties['WebkitOverflowScrolling'],
+							"touch" as React.CSSProperties["WebkitOverflowScrolling"],
 						paddingRight: showRight ? 32 : 4,
 						paddingBottom: 2,
 					}}
 				>
 					{TABS.map(({ key, label, icon }) => {
-						const isActive = active === key
+						const isActive = active === key;
 
 						return (
 							<button
 								key={key}
-								type='button'
+								type="button"
 								onClick={() => setActive(key)}
-								className='shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap transition-all'
+								className="shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap transition-all"
 								style={{
 									height: 40,
 									paddingLeft: 14,
 									paddingRight: 14,
-									WebkitTapHighlightColor: 'transparent',
+									WebkitTapHighlightColor: "transparent",
 									background: isActive
-										? 'var(--color-surface-strong)'
-										: 'var(--color-surface)',
+										? "var(--color-surface-strong)"
+										: "var(--color-surface)",
 									border: isActive
-										? '1.5px solid var(--color-border-strong)'
-										: '1px solid var(--color-border)',
+										? "1.5px solid var(--color-border-strong)"
+										: "1px solid var(--color-border)",
 									color: isActive
-										? 'var(--color-text)'
-										: 'var(--color-text-muted)',
-									boxShadow: isActive ? 'var(--shadow-card)' : 'none',
+										? "var(--color-text)"
+										: "var(--color-text-muted)",
+									boxShadow: isActive ? "var(--shadow-card)" : "none",
 								}}
 							>
 								{icon}
 								{label}
 							</button>
-						)
+						);
 					})}
 				</div>
 			</div>
 
 			{/* Индикатор */}
-			<div className='flex justify-center items-center gap-1.5'>
+			<div className="flex justify-center items-center gap-1.5">
 				{TABS.map(({ key }) => (
 					<div
 						key={key}
@@ -151,9 +151,9 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 							borderRadius: 2,
 							background:
 								active === key
-									? 'var(--color-brand)'
-									: 'var(--color-border-strong)',
-							transition: 'all 0.25s ease',
+									? "var(--color-brand)"
+									: "var(--color-border-strong)",
+							transition: "all 0.25s ease",
 						}}
 					/>
 				))}
@@ -161,14 +161,14 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 
 			{/* Счётчик под табами */}
 			{!isLoading && !error && activeCounter !== null && (
-				<div className='flex items-center justify-between px-0.5'>
-					<p className='text-xs text-app-faint'>
+				<div className="flex items-center justify-between px-0.5">
+					<p className="text-xs text-app-faint">
 						{activeCounter.total === 0
-							? 'Нет материалов'
+							? "Нет материалов"
 							: `${activeCounter.total} ${pluralizeCount(activeCounter.total)}`}
 					</p>
 					{activeCounter.new > 0 && (
-						<Badge variant='new'>{activeCounter.new} новых</Badge>
+						<Badge variant="new">{activeCounter.new} новых</Badge>
 					)}
 				</div>
 			)}
@@ -177,18 +177,18 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 			{isLoading && <SkeletonList count={3} height={180} />}
 
 			{!isLoading && error && (
-				<ErrorView message='Не удалось загрузить материалы' />
+				<ErrorView message="Не удалось загрузить материалы" />
 			)}
 
 			{!isLoading && !error && materials.length === 0 && (
-				<p className='text-app-muted text-sm text-center py-8'>
+				<p className="text-app-muted text-sm text-center py-8">
 					Материалы не найдены
 				</p>
 			)}
 
 			{!isLoading && !error && materials.length > 0 && (
-				<div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
-					{materials.map(material => (
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+					{materials.map((material) => (
 						<LibraryMaterialCard
 							key={material.material_id}
 							material={material}
@@ -197,5 +197,5 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 				</div>
 			)}
 		</div>
-	)
-})
+	);
+});

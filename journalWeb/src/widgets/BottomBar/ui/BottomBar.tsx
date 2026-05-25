@@ -1,12 +1,12 @@
-import { pageConfig } from '@/shared/config'
 import {
 	BookMarked,
 	BookOpen,
 	Calendar,
 	GraduationCap,
 	Home,
-} from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { pageConfig } from "@/shared/config";
 
 const tabs = [
 	{ to: pageConfig.home, icon: Home, exact: true },
@@ -14,40 +14,40 @@ const tabs = [
 	{ to: pageConfig.schedule, icon: Calendar, exact: false },
 	{ to: pageConfig.homework, icon: BookOpen, exact: false },
 	{ to: pageConfig.library, icon: BookMarked, exact: false },
-]
+];
 
 export function BottomBar() {
-	const navigate = useNavigate()
-	const location = useLocation()
+	const navigate = useNavigate();
+	const location = useLocation();
 
 	return (
-		<nav className='fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50'>
+		<nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50">
 			<div
-				className='bg-app-surface backdrop-blur-xl rounded-[28px] px-6 py-3.5 border border-app-border'
-				style={{ boxShadow: 'var(--shadow-nav)' }}
+				className="bg-app-surface backdrop-blur-xl rounded-[28px] px-6 py-3.5 border border-app-border"
+				style={{ boxShadow: "var(--shadow-nav)" }}
 			>
-				<div className='flex justify-around items-center'>
+				<div className="flex justify-around items-center">
 					{tabs.map(({ to, icon: Icon, exact }) => {
 						const isActive = exact
 							? location.pathname === to
-							: location.pathname.startsWith(to)
+							: location.pathname.startsWith(to);
 
 						return (
 							<button
 								key={to}
-								type='button'
+								type="button"
 								onClick={() => navigate(to)}
-								className='relative flex flex-col items-center justify-center px-4 bg-transparent border-0 outline-none cursor-pointer'
+								className="relative flex flex-col items-center justify-center px-4 bg-transparent border-0 outline-none cursor-pointer"
 								style={{
 									minWidth: 44,
 									minHeight: 44,
-									WebkitTapHighlightColor: 'transparent',
+									WebkitTapHighlightColor: "transparent",
 								}}
 							>
 								{isActive && (
 									<span
-										className='absolute bottom-1 left-1/2 -translate-x-1/2 h-0.75 w-5 rounded-full'
-										style={{ background: 'var(--color-brand)' }}
+										className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.75 w-5 rounded-full"
+										style={{ background: "var(--color-brand)" }}
 									/>
 								)}
 								<Icon
@@ -55,16 +55,16 @@ export function BottomBar() {
 									strokeWidth={isActive ? 2.2 : 1.5}
 									style={{
 										color: isActive
-											? 'var(--color-brand)'
-											: 'var(--color-text-muted)',
-										transition: 'color 0.25s ease',
+											? "var(--color-brand)"
+											: "var(--color-text-muted)",
+										transition: "color 0.25s ease",
 									}}
 								/>
 							</button>
-						)
+						);
 					})}
 				</div>
 			</div>
 		</nav>
-	)
+	);
 }

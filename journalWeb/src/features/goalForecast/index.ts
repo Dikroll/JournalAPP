@@ -1,6 +1,30 @@
-export type { ForecastResult, Risk, Trend } from './lib/forecast'
-export { computeForecast, computeRisk, computeTrend, currentAverage } from './lib/forecast'
-export type { Attendance, ByTypeItem, Distribution, PeriodItem, SubjectStats, Totals } from './lib/subjectStats'
+export type { GoalDetailData } from "./hooks/useGoalDetail";
+export { useGoalDetail } from "./hooks/useGoalDetail";
+export type { GoalCardData } from "./hooks/useGoalsOverview";
+export { useGoalsOverview } from "./hooks/useGoalsOverview";
+export type { OverallSummary } from "./hooks/useOverallSummary";
+export { useOverallSummary } from "./hooks/useOverallSummary";
+export {
+	normalizeSubjectName,
+	useFutureScheduledSubjects,
+} from "./hooks/useScheduledSubjects";
+export type { RowState, WhatIfSimulatorVM } from "./hooks/useWhatIfSimulator";
+export { useWhatIfSimulator } from "./hooks/useWhatIfSimulator";
+export type { ForecastResult, Risk, Trend } from "./lib/forecast";
+export {
+	computeForecast,
+	computeRisk,
+	computeTrend,
+	currentAverage,
+} from "./lib/forecast";
+export type {
+	Attendance,
+	ByTypeItem,
+	Distribution,
+	PeriodItem,
+	SubjectStats,
+	Totals,
+} from "./lib/subjectStats";
 export {
 	computeAttendance,
 	computeByPeriod,
@@ -8,18 +32,6 @@ export {
 	computeDistribution,
 	computeSubjectStats,
 	computeTotals,
-} from './lib/subjectStats'
-export type { WhatIfFutureMark } from './lib/whatIf'
-export { whatIfAverage } from './lib/whatIf'
-export type { GoalCardData } from './hooks/useGoalsOverview'
-export { useGoalsOverview } from './hooks/useGoalsOverview'
-export type { GoalDetailData } from './hooks/useGoalDetail'
-export { useGoalDetail } from './hooks/useGoalDetail'
-export type { OverallSummary } from './hooks/useOverallSummary'
-export { useOverallSummary } from './hooks/useOverallSummary'
-export type { RowState, WhatIfSimulatorVM } from './hooks/useWhatIfSimulator'
-export { useWhatIfSimulator } from './hooks/useWhatIfSimulator'
-export {
-	useFutureScheduledSubjects,
-	normalizeSubjectName,
-} from './hooks/useScheduledSubjects'
+} from "./lib/subjectStats";
+export type { WhatIfFutureMark } from "./lib/whatIf";
+export { whatIfAverage } from "./lib/whatIf";

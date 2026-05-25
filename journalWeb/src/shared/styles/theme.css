@@ -73,8 +73,8 @@
 	   --shadow-tooltip  : тултипы на графиках (CustomTooltip)
 	   ──────────────────────────────────────────────────────── */
 	--shadow-card: 0 2px 16px 0 rgba(0, 0, 0, 0.35);
-	--shadow-nav: 0 8px 32px 0 rgba(0, 0, 0, 0.55),
-		0 2px 12px 0 rgba(0, 0, 0, 0.3);
+	--shadow-nav:
+		0 8px 32px 0 rgba(0, 0, 0, 0.55), 0 2px 12px 0 rgba(0, 0, 0, 0.3);
 	--shadow-modal: 0 4px 24px 0 rgba(0, 0, 0, 0.45);
 	--shadow-dropdown: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 	--shadow-tooltip: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -90,27 +90,27 @@
 
 	--color-glass: rgba(255, 255, 255, 0.05);
 	--color-glass-hover: rgba(255, 255, 255, 0.08);
-	--color-glass-active: rgba(255, 255, 255, 0.10);
+	--color-glass-active: rgba(255, 255, 255, 0.1);
 	--color-glass-border: rgba(255, 255, 255, 0.08);
-	--color-glass-strong: rgba(255, 255, 255, 0.10);
+	--color-glass-strong: rgba(255, 255, 255, 0.1);
 
-	--color-danger: #EF4444;
-	--color-danger-subtle: rgba(239, 68, 68, 0.10);
-	--color-danger-border: rgba(239, 68, 68, 0.20);
+	--color-danger: #ef4444;
+	--color-danger-subtle: rgba(239, 68, 68, 0.1);
+	--color-danger-border: rgba(239, 68, 68, 0.2);
 
-	--color-modal-bg: #1A1C21;
+	--color-modal-bg: #1a1c21;
 	--color-modal-backdrop: rgba(0, 0, 0, 0.6);
 
-	--color-gradient-from: #F20519;
-	--color-gradient-to: #F29F05;
+	--color-gradient-from: #f20519;
+	--color-gradient-to: #f29f05;
 
-	--color-highlight-bg: rgba(245, 158, 11, 0.10);
+	--color-highlight-bg: rgba(245, 158, 11, 0.1);
 	--color-highlight-border: rgba(245, 158, 11, 0.28);
-	--color-highlight-text: #D97706;
+	--color-highlight-text: #d97706;
 	--color-highlight-badge-bg: rgba(245, 158, 11, 0.15);
-	--color-highlight-badge-border: rgba(245, 158, 11, 0.30);
+	--color-highlight-badge-border: rgba(245, 158, 11, 0.3);
 	--color-highlight-shadow: 0 2px 14px 0 rgba(245, 158, 11, 0.14);
-	--color-highlight-coin: #FFD700;
+	--color-highlight-coin: #ffd700;
 
 	--glow-top: radial-gradient(
 		ellipse,
@@ -140,7 +140,7 @@
    LIGHT THEME
 */
 .light,
-[data-theme='light'] {
+[data-theme="light"] {
 	color-scheme: light;
 
 	--color-brand: #2563eb;
@@ -156,7 +156,7 @@
 	--color-glass-border: rgba(15, 23, 42, 0.08);
 	--color-glass-strong: rgba(15, 23, 42, 0.06);
 
-	--color-danger: #DC2626;
+	--color-danger: #dc2626;
 	--color-danger-subtle: rgba(220, 38, 38, 0.08);
 	--color-danger-border: rgba(220, 38, 38, 0.18);
 
@@ -179,7 +179,7 @@
 	--color-overlay-nav: rgba(255, 255, 255, 0.82);
 
 	--color-border: rgba(15, 23, 42, 0.12);
-	--color-border-strong: rgba(15, 23, 42, 0.20);
+	--color-border-strong: rgba(15, 23, 42, 0.2);
 
 	--color-text: #111827;
 	--color-text-muted: #6b7280;
@@ -226,10 +226,10 @@
 	--color-grade-2-border: rgba(190, 24, 93, 0.22);
 	--color-grade-2-badge: #be185d;
 
-	--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04),
-		0 4px 16px 0 rgba(0, 0, 0, 0.06);
-	--shadow-nav: 0 4px 20px 0 rgba(0, 0, 0, 0.08),
-		0 1px 3px 0 rgba(0, 0, 0, 0.04);
+	--shadow-card:
+		0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+	--shadow-nav:
+		0 4px 20px 0 rgba(0, 0, 0, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 	--shadow-modal: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
 	--shadow-dropdown: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
 	--shadow-tooltip: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -263,7 +263,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-	:root:not(.dark):not([data-theme='dark']) {
+	:root:not(.dark):not([data-theme="dark"]) {
 		color-scheme: light;
 
 		--color-brand: #2563eb;
@@ -279,7 +279,7 @@
 		--color-glass-border: rgba(15, 23, 42, 0.08);
 		--color-glass-strong: rgba(15, 23, 42, 0.06);
 
-		--color-danger: #DC2626;
+		--color-danger: #dc2626;
 		--color-danger-subtle: rgba(220, 38, 38, 0.08);
 		--color-danger-border: rgba(220, 38, 38, 0.18);
 
@@ -346,10 +346,10 @@
 		--color-grade-2-border: rgba(190, 24, 93, 0.22);
 		--color-grade-2-badge: #be185d;
 
-		--shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04),
-			0 4px 16px 0 rgba(0, 0, 0, 0.06);
-		--shadow-nav: 0 4px 20px 0 rgba(0, 0, 0, 0.08),
-			0 1px 3px 0 rgba(0, 0, 0, 0.04);
+		--shadow-card:
+			0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+		--shadow-nav:
+			0 4px 20px 0 rgba(0, 0, 0, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 		--shadow-modal: 0 4px 24px 0 rgba(0, 0, 0, 0.12);
 		--shadow-dropdown: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
 		--shadow-tooltip: 0 4px 16px rgba(0, 0, 0, 0.1);

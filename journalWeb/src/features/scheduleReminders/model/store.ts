@@ -1,27 +1,27 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import { create } from 'zustand'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
 
-export const FIRST_LESSON_OFFSET_OPTIONS = [15, 30, 45, 60] as const
-export const REGULAR_LESSON_OFFSET_OPTIONS = [5, 10, 15, 20] as const
-export const POST_LUNCH_OFFSET_OPTIONS = [5, 10, 15] as const
+export const FIRST_LESSON_OFFSET_OPTIONS = [15, 30, 45, 60] as const;
+export const REGULAR_LESSON_OFFSET_OPTIONS = [5, 10, 15, 20] as const;
+export const POST_LUNCH_OFFSET_OPTIONS = [5, 10, 15] as const;
 
 interface ScheduleRemindersState {
-	enabled: boolean
-	firstLessonEnabled: boolean
-	firstLessonOffset: number
-	regularLessonEnabled: boolean
-	regularLessonOffset: number
-	lunchBreakEnabled: boolean
-	postLunchEnabled: boolean
-	postLunchOffset: number
-	setEnabled: (v: boolean) => void
-	setFirstLessonEnabled: (v: boolean) => void
-	setFirstLessonOffset: (v: number) => void
-	setRegularLessonEnabled: (v: boolean) => void
-	setRegularLessonOffset: (v: number) => void
-	setLunchBreakEnabled: (v: boolean) => void
-	setPostLunchEnabled: (v: boolean) => void
-	setPostLunchOffset: (v: number) => void
+	enabled: boolean;
+	firstLessonEnabled: boolean;
+	firstLessonOffset: number;
+	regularLessonEnabled: boolean;
+	regularLessonOffset: number;
+	lunchBreakEnabled: boolean;
+	postLunchEnabled: boolean;
+	postLunchOffset: number;
+	setEnabled: (v: boolean) => void;
+	setFirstLessonEnabled: (v: boolean) => void;
+	setFirstLessonOffset: (v: number) => void;
+	setRegularLessonEnabled: (v: boolean) => void;
+	setRegularLessonOffset: (v: number) => void;
+	setLunchBreakEnabled: (v: boolean) => void;
+	setPostLunchEnabled: (v: boolean) => void;
+	setPostLunchOffset: (v: number) => void;
 }
 
 export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
@@ -50,7 +50,7 @@ export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
 			setPostLunchOffset: (postLunchOffset: any) => set({ postLunchOffset }),
 		}),
 		{
-			name: 'schedule-reminders-store',
+			name: "schedule-reminders-store",
 			partialize: (state: any) => ({
 				enabled: state.enabled,
 				firstLessonEnabled: state.firstLessonEnabled,
@@ -63,4 +63,4 @@ export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
 			}),
 		},
 	),
-)
+);

@@ -1,59 +1,67 @@
-import { ttl } from '@/shared/config'
-import { isCacheValid } from '@/shared/lib'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef } from 'react'
-import { scheduleApi } from '../api'
-import { useScheduleStore } from '../model/store'
-import type { LessonItem } from '../model/types'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { isCacheValid } from "@/shared/lib";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { scheduleApi } from "../api";
+import { useScheduleStore } from "../model/store";
+import type { LessonItem } from "../model/types";
 
-const CACHE_TTL_MS = ttl.SCHEDULE * 1000
+const CACHE_TTL_MS = ttl.SCHEDULE * 1000;
 
-const EMPTY_LESSONS: LessonItem[] = []
+const EMPTY_LESSONS: LessonItem[] = [];
 
 export function useScheduleMonth(date: string) {
-	const lessons = useScheduleStore(s => s.months[date] ?? EMPTY_LESSONS)
-	const status = useScheduleStore(s => s.monthStatus[date] ?? 'idle')
-	const monthLoadedAt = useScheduleStore(s => s.monthLoadedAt[date] ?? null)
-	const setMonth = useScheduleStore(s => s.setMonth)
-	const setMonthStatus = useScheduleStore(s => s.setMonthStatus)
-	const setMonthLoadedAt = useScheduleStore(s => s.setMonthLoadedAt)
+	const lessons = useScheduleStore((s) => s.months[date] ?? EMPTY_LESSONS);
+	const status = useScheduleStore((s) => s.monthStatus[date] ?? "idle");
+	const monthLoadedAt = useScheduleStore((s) => s.monthLoadedAt[date] ?? null);
+	const setMonth = useScheduleStore((s) => s.setMonth);
+	const setMonthStatus = useScheduleStore((s) => s.setMonthStatus);
+	const setMonthLoadedAt = useScheduleStore((s) => s.setMonthLoadedAt);
 
-	const fetchingRef = useRef(false)
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (!date) return
-		if (fetchingRef.current) return
+		if (!date) return;
+		if (fetchingRef.current) return;
 		if (isCacheValid(monthLoadedAt, CACHE_TTL_MS)) {
-			if (status === 'idle') setMonthStatus(date, 'success')
-			return
+			if (status === "idle") setMonthStatus(date, "success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (monthLoadedAt !== null) {
-				if (status === 'idle') setMonthStatus(date, 'success')
-				return
+				if (status === "idle") setMonthStatus(date, "success");
+				return;
 			}
-			setMonthStatus(date, 'error')
-			return
+			setMonthStatus(date, "error");
+			return;
 		}
 
-		fetchingRef.current = true
-		setMonthStatus(date, 'loading')
+		fetchingRef.current = true;
+		setMonthStatus(date, "loading");
 
 		scheduleApi
 			.getMonth(date)
-			.then(data => {
-				setMonth(date, data)
-				setMonthLoadedAt(date, Date.now())
-				setMonthStatus(date, 'success')
+			.then((data) => {
+				setMonth(date, data);
+				setMonthLoadedAt(date, Date.now());
+				setMonthStatus(date, "success");
 			})
 			.catch(() => {
-				if (lessons.length === 0) setMonthStatus(date, 'error')
+				if (lessons.length === 0) setMonthStatus(date, "error");
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [date, monthLoadedAt])
+				fetchingRef.current = false;
+			});
+	}, [
+		date,
+		monthLoadedAt,
+		lessons.length,
+		setMonth,
+		setMonthLoadedAt,
+		setMonthStatus,
+		status,
+	]);
 
-	return { lessons, status }
+	return { lessons, status };
 }

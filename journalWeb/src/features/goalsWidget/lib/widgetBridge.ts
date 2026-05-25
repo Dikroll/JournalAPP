@@ -1,24 +1,24 @@
-import { Capacitor, registerPlugin } from '@capacitor/core'
-import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
-import { widgetConfig } from '@/shared/config/widgetConfig'
+import { Capacitor, registerPlugin } from "@capacitor/core";
+import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import { widgetConfig } from "@/shared/config/widgetConfig";
 import {
-	buildGoalsWidgetPayload,
 	type BuildGoalsPayloadInput,
+	buildGoalsWidgetPayload,
 	type GoalsWidgetPayload,
-} from './payload'
+} from "./payload";
 
-const GOALS_PAYLOAD_FILE = 'widgets/goals-payload.json'
+const GOALS_PAYLOAD_FILE = "widgets/goals-payload.json";
 
 type WidgetBridgePlugin = {
-	saveSchedule: (options: { payload: string }) => Promise<void>
-	clearSchedule: () => Promise<void>
-	saveGoals: (options: { payload: string }) => Promise<void>
-	clearGoals: () => Promise<void>
-}
+	saveSchedule: (options: { payload: string }) => Promise<void>;
+	clearSchedule: () => Promise<void>;
+	saveGoals: (options: { payload: string }) => Promise<void>;
+	clearGoals: () => Promise<void>;
+};
 
 const WidgetBridge = Capacitor.isNativePlatform()
-	? registerPlugin<WidgetBridgePlugin>('WidgetBridge')
-	: null
+	? registerPlugin<WidgetBridgePlugin>("WidgetBridge")
+	: null;
 
 export function getGoalsWidgetPayload(
 	input: BuildGoalsPayloadInput,
@@ -26,7 +26,7 @@ export function getGoalsWidgetPayload(
 	return {
 		...buildGoalsWidgetPayload(input),
 		meta: { deepLinkUrl: widgetConfig.deepLinkGoalsUrl },
-	}
+	};
 }
 
 async function writeGoalsPayloadFile(payload: string) {
@@ -37,7 +37,7 @@ async function writeGoalsPayloadFile(payload: string) {
 			directory: Directory.Data,
 			encoding: Encoding.UTF8,
 			recursive: true,
-		})
+		});
 	} catch {}
 }
 
@@ -46,23 +46,23 @@ async function deleteGoalsPayloadFile() {
 		await Filesystem.deleteFile({
 			path: GOALS_PAYLOAD_FILE,
 			directory: Directory.Data,
-		})
+		});
 	} catch {}
 }
 
 export async function syncGoalsWidget(input: BuildGoalsPayloadInput) {
-	const payload = JSON.stringify(getGoalsWidgetPayload(input))
-	await writeGoalsPayloadFile(payload)
-	if (!WidgetBridge) return
+	const payload = JSON.stringify(getGoalsWidgetPayload(input));
+	await writeGoalsPayloadFile(payload);
+	if (!WidgetBridge) return;
 	try {
-		await WidgetBridge.saveGoals({ payload })
+		await WidgetBridge.saveGoals({ payload });
 	} catch {}
 }
 
 export async function clearGoalsWidget() {
-	await deleteGoalsPayloadFile()
-	if (!WidgetBridge) return
+	await deleteGoalsPayloadFile();
+	if (!WidgetBridge) return;
 	try {
-		await WidgetBridge.clearGoals()
+		await WidgetBridge.clearGoals();
 	} catch {}
 }

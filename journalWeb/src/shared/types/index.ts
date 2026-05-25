@@ -4,4 +4,4 @@ export interface ApiError {
 
 export type LoadingState = "idle" | "loading" | "success" | "error";
 
-export * from './gradeType';
+export * from "./gradeType";

@@ -1,5 +1,5 @@
-export { useAppUpdate } from './hooks/useAppUpdate'
-export { useInitAppUpdate } from './hooks/useInitAppUpdate'
-export { useAppUpdateStore } from './model/store'
-export { AppUpdateBanner } from './ui/AppUpdateBanner'
-export { AppUpdateSheet } from './ui/AppUpdateSheet'
+export { useAppUpdate } from "./hooks/useAppUpdate";
+export { useInitAppUpdate } from "./hooks/useInitAppUpdate";
+export { useAppUpdateStore } from "./model/store";
+export { AppUpdateBanner } from "./ui/AppUpdateBanner";
+export { AppUpdateSheet } from "./ui/AppUpdateSheet";

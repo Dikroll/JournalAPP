@@ -1,63 +1,63 @@
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { FeedbackTag, PendingFeedback } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
+import type { FeedbackTag, PendingFeedback } from "./types";
 
 interface FeedbackState {
-	pending: PendingFeedback[]
-	pendingStatus: LoadingState
-	pendingLoadedAt: number | null
+	pending: PendingFeedback[];
+	pendingStatus: LoadingState;
+	pendingLoadedAt: number | null;
 
-	tags: FeedbackTag[]
-	tagsStatus: LoadingState
-	tagsLoadedAt: number | null
+	tags: FeedbackTag[];
+	tagsStatus: LoadingState;
+	tagsLoadedAt: number | null;
 
-	error: string | null
+	error: string | null;
 
-	setPending: (items: PendingFeedback[]) => void
-	setPendingStatus: (s: LoadingState) => void
-	setPendingLoadedAt: (t: number) => void
+	setPending: (items: PendingFeedback[]) => void;
+	setPendingStatus: (s: LoadingState) => void;
+	setPendingLoadedAt: (t: number) => void;
 
-	setTags: (items: FeedbackTag[]) => void
-	setTagsStatus: (s: LoadingState) => void
-	setTagsLoadedAt: (t: number) => void
+	setTags: (items: FeedbackTag[]) => void;
+	setTagsStatus: (s: LoadingState) => void;
+	setTagsLoadedAt: (t: number) => void;
 
-	setError: (e: string | null) => void
+	setError: (e: string | null) => void;
 
-	removePending: (key: string) => void
+	removePending: (key: string) => void;
 }
 
 export const useFeedbackStore = create<FeedbackState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			pending: [],
-			pendingStatus: 'idle',
+			pendingStatus: "idle",
 			pendingLoadedAt: null,
 
 			tags: [],
-			tagsStatus: 'idle',
+			tagsStatus: "idle",
 			tagsLoadedAt: null,
 
 			error: null,
 
-			setPending: pending => set({ pending }),
-			setPendingStatus: pendingStatus => set({ pendingStatus }),
-			setPendingLoadedAt: pendingLoadedAt => set({ pendingLoadedAt }),
+			setPending: (pending) => set({ pending }),
+			setPendingStatus: (pendingStatus) => set({ pendingStatus }),
+			setPendingLoadedAt: (pendingLoadedAt) => set({ pendingLoadedAt }),
 
-			setTags: tags => set({ tags }),
-			setTagsStatus: tagsStatus => set({ tagsStatus }),
-			setTagsLoadedAt: tagsLoadedAt => set({ tagsLoadedAt }),
+			setTags: (tags) => set({ tags }),
+			setTagsStatus: (tagsStatus) => set({ tagsStatus }),
+			setTagsLoadedAt: (tagsLoadedAt) => set({ tagsLoadedAt }),
 
-			setError: error => set({ error }),
+			setError: (error) => set({ error }),
 
-			removePending: key =>
-				set(state => ({
-					pending: state.pending.filter(p => p.key !== key),
+			removePending: (key) =>
+				set((state) => ({
+					pending: state.pending.filter((p) => p.key !== key),
 				})),
 		}),
 		{
-			name: 'feedback-store',
-			partialize: state => ({
+			name: "feedback-store",
+			partialize: (state) => ({
 				pending: state.pending,
 				pendingLoadedAt: state.pendingLoadedAt,
 				tags: state.tags,
@@ -65,4 +65,4 @@ export const useFeedbackStore = create<FeedbackState>()(
 			}),
 		},
 	),
-)
+);

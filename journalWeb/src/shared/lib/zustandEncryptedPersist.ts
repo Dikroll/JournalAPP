@@ -1,8 +1,11 @@
-import { create as zustandCreate } from 'zustand'
-import { createJSONStorage, persist as zustandPersist } from 'zustand/middleware'
-import type { StateStorage } from 'zustand/middleware'
-import { encryption } from './encryption'
-import { useHydrationStore } from './hydrationStore'
+import { create as zustandCreate } from "zustand";
+import type { StateStorage } from "zustand/middleware";
+import {
+	createJSONStorage,
+	persist as zustandPersist,
+} from "zustand/middleware";
+import { encryption } from "./encryption";
+import { useHydrationStore } from "./hydrationStore";
 
 /**
  * Encrypted StateStorage implementation for Zustand persist middleware.
@@ -12,73 +15,88 @@ import { useHydrationStore } from './hydrationStore'
 const encryptedStateStorage: StateStorage = {
 	getItem: (key: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			const encryptedData = localStorage.getItem(encryptedKey)
+			const encryptedKey = encryption.encryptKey(key);
+			const encryptedData = localStorage.getItem(encryptedKey);
 
-			if (!encryptedData) return null
+			if (!encryptedData) return null;
 
 			// Decrypt the data — returns the JSON string that createJSONStorage will parse
-			return encryption.decryptToString(encryptedData)
+			return encryption.decryptToString(encryptedData);
 		} catch (error) {
-			console.error('[encryptedStorage] getItem failed for key:', key, error)
-			return null
+			console.error("[encryptedStorage] getItem failed for key:", key, error);
+			return null;
 		}
 	},
 
 	setItem: (key: string, value: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			const encryptedData = encryption.encrypt(value)
-			localStorage.setItem(encryptedKey, encryptedData)
+			const encryptedKey = encryption.encryptKey(key);
+			const encryptedData = encryption.encrypt(value);
+			localStorage.setItem(encryptedKey, encryptedData);
 		} catch (error) {
-			console.error('[encryptedStorage] setItem failed for key:', key, error)
+			console.error("[encryptedStorage] setItem failed for key:", key, error);
 		}
 	},
 
 	removeItem: (key: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			localStorage.removeItem(encryptedKey)
+			const encryptedKey = encryption.encryptKey(key);
+			localStorage.removeItem(encryptedKey);
 		} catch (error) {
-			console.error('[encryptedStorage] removeItem failed for key:', key, error)
+			console.error(
+				"[encryptedStorage] removeItem failed for key:",
+				key,
+				error,
+			);
 		}
 	},
-}
-
+};
 
 const encryptedKeyOnlyStateStorage: StateStorage = {
 	getItem: (key: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			const value = localStorage.getItem(encryptedKey)
-			if (value !== null) return value
+			const encryptedKey = encryption.encryptKey(key);
+			const value = localStorage.getItem(encryptedKey);
+			if (value !== null) return value;
 			// Fallback: try reading with unencrypted key (migration support)
-			return localStorage.getItem(key)
+			return localStorage.getItem(key);
 		} catch (error) {
-			console.error('[encryptedKeyOnlyStorage] getItem failed for key:', key, error)
-			return null
+			console.error(
+				"[encryptedKeyOnlyStorage] getItem failed for key:",
+				key,
+				error,
+			);
+			return null;
 		}
 	},
 
 	setItem: (key: string, value: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			localStorage.setItem(encryptedKey, value)
+			const encryptedKey = encryption.encryptKey(key);
+			localStorage.setItem(encryptedKey, value);
 		} catch (error) {
-			console.error('[encryptedKeyOnlyStorage] setItem failed for key:', key, error)
+			console.error(
+				"[encryptedKeyOnlyStorage] setItem failed for key:",
+				key,
+				error,
+			);
 		}
 	},
 
 	removeItem: (key: string) => {
 		try {
-			const encryptedKey = encryption.encryptKey(key)
-			localStorage.removeItem(encryptedKey)
-			localStorage.removeItem(key)
+			const encryptedKey = encryption.encryptKey(key);
+			localStorage.removeItem(encryptedKey);
+			localStorage.removeItem(key);
 		} catch (error) {
-			console.error('[encryptedKeyOnlyStorage] removeItem failed for key:', key, error)
+			console.error(
+				"[encryptedKeyOnlyStorage] removeItem failed for key:",
+				key,
+				error,
+			);
 		}
 	},
-}
+};
 
 /**
  * Migrate a store from unencrypted localStorage to encrypted storage.
@@ -92,46 +110,48 @@ const encryptedKeyOnlyStateStorage: StateStorage = {
  */
 export const migrateToEncrypted = (storeName: string) => {
 	try {
-		const plainData = localStorage.getItem(storeName)
-		if (!plainData) return // Already migrated or no data
+		const plainData = localStorage.getItem(storeName);
+		if (!plainData) return; // Already migrated or no data
 
-		const encryptedKey = encryption.encryptKey(storeName)
+		const encryptedKey = encryption.encryptKey(storeName);
 
 		// Only migrate if encrypted version doesn't already exist
 		if (localStorage.getItem(encryptedKey)) {
 			// Encrypted data exists — just clean up the plain-text leftover
-			localStorage.removeItem(storeName)
-			return
+			localStorage.removeItem(storeName);
+			return;
 		}
 
 		// Encrypt and store under hashed key
-		const encryptedData = encryption.encrypt(plainData)
-		localStorage.setItem(encryptedKey, encryptedData)
+		const encryptedData = encryption.encrypt(plainData);
+		localStorage.setItem(encryptedKey, encryptedData);
 
 		// Remove plain-text entry
-		localStorage.removeItem(storeName)
+		localStorage.removeItem(storeName);
 
-		console.info(`[migrateToEncrypted] Migrated "${storeName}" to encrypted storage`)
+		console.info(
+			`[migrateToEncrypted] Migrated "${storeName}" to encrypted storage`,
+		);
 	} catch (error) {
-		console.error('[migrateToEncrypted] Failed for store:', storeName, error)
+		console.error("[migrateToEncrypted] Failed for store:", storeName, error);
 	}
-}
+};
 
 /**
  * Helper to clear a store's persisted data
  */
 export const clearPersistedStoreData = (storeName: string) => {
 	try {
-		const encryptedKey = encryption.encryptKey(storeName)
-		localStorage.removeItem(encryptedKey)
+		const encryptedKey = encryption.encryptKey(storeName);
+		localStorage.removeItem(encryptedKey);
 	} catch (error) {
 		console.error(
-			'[clearPersistedStoreData] failed for store:',
+			"[clearPersistedStoreData] failed for store:",
 			storeName,
 			error,
-		)
+		);
 	}
-}
+};
 
 /**
  * Enhanced persist middleware with encryption
@@ -152,33 +172,33 @@ export const clearPersistedStoreData = (storeName: string) => {
  * ```
  */
 export const persistEncrypted = (config: any, options: any): any => {
-	const userOnRehydrate = options?.onRehydrateStorage
+	const userOnRehydrate = options?.onRehydrateStorage;
 	return zustandPersist(config, {
 		...options,
 		storage: createJSONStorage(() => encryptedStateStorage),
 		onRehydrateStorage: () => (state: any, error: any) => {
 			// Run the store-specific rehydration callback first (e.g. Set reconstruction)
-			if (typeof userOnRehydrate === 'function') {
-				const cb = userOnRehydrate()
-				if (typeof cb === 'function') {
-					cb(state, error)
+			if (typeof userOnRehydrate === "function") {
+				const cb = userOnRehydrate();
+				if (typeof cb === "function") {
+					cb(state, error);
 				}
 			}
-			useHydrationStore.setState({ hasHydrated: true })
+			useHydrationStore.setState({ hasHydrated: true });
 		},
-	}) as any
-}
+	}) as any;
+};
 
 export const persistEncryptedKeyOnly = (config: any, options: any): any => {
 	const defaultOnRehydrate = () => () => {
-		useHydrationStore.setState({ hasHydrated: true })
-	}
+		useHydrationStore.setState({ hasHydrated: true });
+	};
 	return zustandPersist(config, {
 		...options,
 		storage: createJSONStorage(() => encryptedKeyOnlyStateStorage),
 		onRehydrateStorage: options.onRehydrateStorage || defaultOnRehydrate,
-	}) as any
-}
+	}) as any;
+};
 
 /**
  * Type-safe create helper with encrypted persistence
@@ -187,4 +207,4 @@ export const persistEncryptedKeyOnly = (config: any, options: any): any => {
 export const createEncryptedStore = <T extends object>(
 	config: (set: any) => T,
 	options: any,
-) => zustandCreate<T>(persistEncrypted(config, options) as any)
+) => zustandCreate<T>(persistEncrypted(config, options) as any);

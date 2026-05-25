@@ -1,25 +1,25 @@
-import { type MarketPrice, useMarket } from '@/entities/market'
-import { RefreshMarketButton } from '@/features/refreshMarket'
-import { useSwipeBack } from '@/shared/hooks'
-import type { Segment } from '@/shared/ui'
-import { PageHeader, SegmentedControl } from '@/shared/ui'
-import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
-import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { Archive, ShoppingBag, ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
+import { type MarketPrice, useMarket } from "@/entities/market";
+import { RefreshMarketButton } from "@/features/refreshMarket";
+import { useSwipeBack } from "@/shared/hooks";
+import type { Segment } from "@/shared/ui";
+import { PageHeader, SegmentedControl } from "@/shared/ui";
+import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from "@/widgets";
 
-type MarketTab = 'products' | 'cart' | 'orders'
+type MarketTab = "products" | "cart" | "orders";
 
 function getMarketTabs(cartItemsCount: number): Segment<MarketTab>[] {
 	return [
-		{ key: 'products', label: 'Товары', icon: <ShoppingBag size={13} /> },
+		{ key: "products", label: "Товары", icon: <ShoppingBag size={13} /> },
 		{
-			key: 'cart',
-			label: 'Корзина',
+			key: "cart",
+			label: "Корзина",
 			icon: <ShoppingCart size={13} />,
 			badge: cartItemsCount > 0 ? cartItemsCount : undefined,
 		},
-		{ key: 'orders', label: 'Заказы', icon: <Archive size={13} /> },
-	]
+		{ key: "orders", label: "Заказы", icon: <Archive size={13} /> },
+	];
 }
 
 function canAfford(price: MarketPrice, userBalance: MarketPrice): boolean {
@@ -27,17 +27,17 @@ function canAfford(price: MarketPrice, userBalance: MarketPrice): boolean {
 		price.diamonds &&
 		(!userBalance.diamonds || userBalance.diamonds < price.diamonds)
 	) {
-		return false
+		return false;
 	}
 	if (price.coins && (!userBalance.coins || userBalance.coins < price.coins)) {
-		return false
+		return false;
 	}
-	return true
+	return true;
 }
 
 export function MarketPage() {
-	const [tab, setTab] = useState<MarketTab>('products')
-	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null)
+	const [tab, setTab] = useState<MarketTab>("products");
+	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
 	const {
 		products,
 		productsStatus,
@@ -55,43 +55,43 @@ export function MarketPage() {
 		decrementCartItem,
 		loadOrderDetails,
 		refresh,
-	} = useMarket()
+	} = useMarket();
 
-	const userBalance = { diamonds: 1000, coins: 5000 }
-	useSwipeBack()
+	const userBalance = { diamonds: 1000, coins: 5000 };
+	useSwipeBack();
 	const cartByProduct = useMemo(
-		() => new Map(cartItems.map(item => [item.productId, item.quantity])),
+		() => new Map(cartItems.map((item) => [item.productId, item.quantity])),
 		[cartItems],
-	)
+	);
 
 	const handleToggleOrder = (orderId: number) => {
-		const nextId = expandedOrderId === orderId ? null : orderId
-		setExpandedOrderId(nextId)
-		if (nextId !== null) loadOrderDetails(orderId)
-	}
+		const nextId = expandedOrderId === orderId ? null : orderId;
+		setExpandedOrderId(nextId);
+		if (nextId !== null) loadOrderDetails(orderId);
+	};
 
 	const handleAddToCart = (productId: number) => {
-		const product = products.find(p => p.id === productId)
-		if (!product) return
+		const product = products.find((p) => p.id === productId);
+		if (!product) return;
 
-		const canAffordProduct = canAfford(product.price, userBalance)
+		const canAffordProduct = canAfford(product.price, userBalance);
 		if (canAffordProduct) {
-			addToCart(productId, 1)
+			addToCart(productId, 1);
 		}
-	}
+	};
 
 	const handleRemoveFromCart = (productId: number) => {
-		removeFromCart(productId)
-	}
+		removeFromCart(productId);
+	};
 
 	return (
-		<div className='min-h-screen text-app-text pb-28'>
-			<div className='p-4 space-y-3'>
-				<div className='flex items-center justify-between'>
-					<PageHeader title='Маркет' />
+		<div className="min-h-screen text-app-text pb-28">
+			<div className="p-4 space-y-3">
+				<div className="flex items-center justify-between">
+					<PageHeader title="Маркет" />
 					<RefreshMarketButton
 						isRefreshing={
-							productsStatus === 'loading' || ordersStatus === 'loading'
+							productsStatus === "loading" || ordersStatus === "loading"
 						}
 						onRefresh={refresh}
 					/>
@@ -103,8 +103,8 @@ export function MarketPage() {
 				/>
 			</div>
 
-			<div className='px-4 space-y-4'>
-				{tab === 'products' && (
+			<div className="px-4 space-y-4">
+				{tab === "products" && (
 					<ProductsTab
 						products={products}
 						cartByProduct={cartByProduct}
@@ -116,20 +116,20 @@ export function MarketPage() {
 					/>
 				)}
 
-				{tab === 'cart' && (
-					<div className='space-y-3'>
-						<div className='rounded-[20px] border border-amber-400/30 bg-amber-400/10 p-4'>
-							<p className='text-sm font-semibold text-amber-200'>
+				{tab === "cart" && (
+					<div className="space-y-3">
+						<div className="rounded-[20px] border border-amber-400/30 bg-amber-400/10 p-4">
+							<p className="text-sm font-semibold text-amber-200">
 								Оформление заказа в разработке
 							</p>
-							<p className='text-xs text-app-muted mt-1'>
+							<p className="text-xs text-app-muted mt-1">
 								Корзина сохраняется на устройстве, покупка через API пока не
 								отправляется.
 							</p>
 						</div>
 
 						{cartItems.length === 0 ? (
-							<div className='py-16 text-center text-app-muted'>
+							<div className="py-16 text-center text-app-muted">
 								Корзина пуста
 							</div>
 						) : (
@@ -147,22 +147,22 @@ export function MarketPage() {
 									/>
 								))}
 
-								<div className='bg-app-surface rounded-[20px] border border-app-border p-4 space-y-3'>
-									<div className='flex items-center justify-between'>
-										<span className='text-sm text-app-muted'>Итого</span>
-										<PriceDisplay price={cartTotal} className='text-base' />
+								<div className="bg-app-surface rounded-[20px] border border-app-border p-4 space-y-3">
+									<div className="flex items-center justify-between">
+										<span className="text-sm text-app-muted">Итого</span>
+										<PriceDisplay price={cartTotal} className="text-base" />
 									</div>
 
-									<div className='pt-3 border-t border-app-border'>
-										<p className='text-xs text-app-muted mb-2'>Ваш баланс:</p>
-										<PriceDisplay price={userBalance} className='text-sm' />
+									<div className="pt-3 border-t border-app-border">
+										<p className="text-xs text-app-muted mb-2">Ваш баланс:</p>
+										<PriceDisplay price={userBalance} className="text-sm" />
 									</div>
 								</div>
 
 								<button
-									type='button'
+									type="button"
 									disabled
-									className='w-full h-12 rounded-[18px] bg-brand text-white text-sm font-semibold opacity-50'
+									className="w-full h-12 rounded-[18px] bg-brand text-white text-sm font-semibold opacity-50"
 								>
 									Оформить заказ
 								</button>
@@ -171,7 +171,7 @@ export function MarketPage() {
 					</div>
 				)}
 
-				{tab === 'orders' && (
+				{tab === "orders" && (
 					<OrdersTab
 						ordersStatus={ordersStatus}
 						ordersError={ordersError}
@@ -190,5 +190,5 @@ export function MarketPage() {
 				)}
 			</div>
 		</div>
-	)
+	);
 }

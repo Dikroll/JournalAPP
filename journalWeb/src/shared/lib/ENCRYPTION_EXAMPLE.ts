@@ -7,35 +7,35 @@
  * AFTER: Uses persistEncrypted from zustandEncryptedPersist (encrypted)
  */
 
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
 
 interface ChartPoint {
-	x: number
-	y: number
+	x: number;
+	y: number;
 }
 
 interface DashboardActivityEntry {
-	id: string
-	timestamp: number
+	id: string;
+	timestamp: number;
 }
 
 interface DashboardChartsState {
-	progress: ChartPoint[]
-	attendance: ChartPoint[]
-	status: LoadingState
-	loadedAt: number | null
-	activity: DashboardActivityEntry[]
-	activityStatus: LoadingState
-	activityLoadedAt: number | null
-	setProgress: (data: ChartPoint[]) => void
-	setAttendance: (data: ChartPoint[]) => void
-	setStatus: (s: LoadingState) => void
-	setLoadedAt: (t: number) => void
-	setActivity: (data: DashboardActivityEntry[]) => void
-	setActivityStatus: (s: LoadingState) => void
-	setActivityLoadedAt: (t: number) => void
+	progress: ChartPoint[];
+	attendance: ChartPoint[];
+	status: LoadingState;
+	loadedAt: number | null;
+	activity: DashboardActivityEntry[];
+	activityStatus: LoadingState;
+	activityLoadedAt: number | null;
+	setProgress: (data: ChartPoint[]) => void;
+	setAttendance: (data: ChartPoint[]) => void;
+	setStatus: (s: LoadingState) => void;
+	setLoadedAt: (t: number) => void;
+	setActivity: (data: DashboardActivityEntry[]) => void;
+	setActivityStatus: (s: LoadingState) => void;
+	setActivityLoadedAt: (t: number) => void;
 }
 
 /**
@@ -49,10 +49,10 @@ export const useDashboardChartsStore = create<DashboardChartsState>()(
 		(set: any) => ({
 			progress: [],
 			attendance: [],
-			status: 'idle' as LoadingState,
+			status: "idle" as LoadingState,
 			loadedAt: null,
 			activity: [],
-			activityStatus: 'idle' as LoadingState,
+			activityStatus: "idle" as LoadingState,
 			activityLoadedAt: null,
 			setProgress: (progress: ChartPoint[]) => set({ progress }),
 			setAttendance: (attendance: ChartPoint[]) => set({ attendance }),
@@ -65,7 +65,7 @@ export const useDashboardChartsStore = create<DashboardChartsState>()(
 				set({ activityLoadedAt }),
 		}),
 		{
-			name: 'dashboard-store',
+			name: "dashboard-store",
 			partialize: (state: DashboardChartsState) => ({
 				progress: state.progress,
 				attendance: state.attendance,
@@ -75,4 +75,4 @@ export const useDashboardChartsStore = create<DashboardChartsState>()(
 			}),
 		},
 	) as any,
-)
+);

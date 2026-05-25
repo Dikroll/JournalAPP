@@ -4,9 +4,9 @@
  */
 
 export const illustrations = {
-	noExams: '/exams.svg',
-	noHomework: '/homework.svg',
-	emptyState: '/empty.svg',
-}
+	noExams: "/exams.svg",
+	noHomework: "/homework.svg",
+	emptyState: "/empty.svg",
+};
 
-export type IllustrationKey = keyof typeof illustrations
+export type IllustrationKey = keyof typeof illustrations;

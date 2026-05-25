@@ -1,12 +1,12 @@
-import { X, ZoomIn, ZoomOut } from 'lucide-react'
-import Lightbox from 'yet-another-react-lightbox'
-import Zoom from 'yet-another-react-lightbox/plugins/zoom'
-import 'yet-another-react-lightbox/styles.css'
+import { X, ZoomIn, ZoomOut } from "lucide-react";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
 
 interface Props {
-	src: string
-	alt?: string
-	onClose: () => void
+	src: string;
+	alt?: string;
+	onClose: () => void;
 }
 
 export function PhotoViewerModal({ src, alt, onClose }: Props) {
@@ -14,7 +14,7 @@ export function PhotoViewerModal({ src, alt, onClose }: Props) {
 		<Lightbox
 			open
 			close={onClose}
-			slides={[{ src, alt: alt ?? '' }]}
+			slides={[{ src, alt: alt ?? "" }]}
 			plugins={[Zoom]}
 			zoom={{
 				maxZoomPixelRatio: 5,
@@ -37,20 +37,20 @@ export function PhotoViewerModal({ src, alt, onClose }: Props) {
 			}}
 			styles={{
 				container: {
-					backgroundColor: 'rgba(0, 0, 0, 0.75)',
-					backdropFilter: 'blur(16px)',
-					WebkitBackdropFilter: 'blur(16px)',
+					backgroundColor: "rgba(0, 0, 0, 0.75)",
+					backdropFilter: "blur(16px)",
+					WebkitBackdropFilter: "blur(16px)",
 				},
 				button: {
-					filter: 'none',
-					margin: '40px 4px',
-					color: 'rgba(255,255,255,0.6)',
-					padding: '8px',
-					borderRadius: '12px',
-					backgroundColor: 'rgba(0,0,0,0.35)',
-					backdropFilter: 'blur(8px)',
+					filter: "none",
+					margin: "40px 4px",
+					color: "rgba(255,255,255,0.6)",
+					padding: "8px",
+					borderRadius: "12px",
+					backgroundColor: "rgba(0,0,0,0.35)",
+					backdropFilter: "blur(8px)",
 				},
 			}}
 		/>
-	)
+	);
 }

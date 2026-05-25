@@ -1,1 +1,1 @@
-export { resetAllAppState } from './resetAllAppState'
+export { resetAllAppState } from "./resetAllAppState";

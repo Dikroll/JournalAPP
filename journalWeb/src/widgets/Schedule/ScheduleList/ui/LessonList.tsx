@@ -1,44 +1,44 @@
-import type { LessonItem } from '@/entities/schedule'
-import { getGapBetweenLessons } from '@/entities/schedule/lib/scheduleGaps'
-import { toMinutes, useCurrentMinutes } from '@/shared/hooks'
-import { InlineImage } from '@/shared/ui'
-import { getTodayString } from '@/shared/utils'
-import { GapIndicator } from './GapIndicator'
-import { LessonCard } from './LessonCard'
+import type { LessonItem } from "@/entities/schedule";
+import { getGapBetweenLessons } from "@/entities/schedule/lib/scheduleGaps";
+import { toMinutes, useCurrentMinutes } from "@/shared/hooks";
+import { InlineImage } from "@/shared/ui";
+import { getTodayString } from "@/shared/utils";
+import { GapIndicator } from "./GapIndicator";
+import { LessonCard } from "./LessonCard";
 
 interface Props {
-	lessons: LessonItem[]
-	forDate?: string
-	compact?: boolean
+	lessons: LessonItem[];
+	forDate?: string;
+	compact?: boolean;
 }
 
 export function LessonList({ lessons, forDate, compact = false }: Props) {
-	const nowMinutes = useCurrentMinutes()
-	const todayStr = getTodayString()
-	const isToday = !forDate || forDate === todayStr
-	const emptyText = isToday ? 'Пар сегодня нет' : 'Пар на этот день нет'
+	const nowMinutes = useCurrentMinutes();
+	const todayStr = getTodayString();
+	const isToday = !forDate || forDate === todayStr;
+	const emptyText = isToday ? "Пар сегодня нет" : "Пар на этот день нет";
 
 	if (lessons.length === 0)
 		return (
-			<div className='flex flex-col items-center gap-3 py-4'>
+			<div className="flex flex-col items-center gap-3 py-4">
 				<InlineImage
-					src='/homework.svg'
-					alt='Нет пар'
+					src="/homework.svg"
+					alt="Нет пар"
 					width={300}
 					height={300}
 				/>
-				<p className='text-app-muted text-sm text-center'>{emptyText}</p>
+				<p className="text-app-muted text-sm text-center">{emptyText}</p>
 			</div>
-		)
+		);
 
-	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson)
+	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson);
 
 	return (
-		<ul className={`flex flex-col ${compact ? 'gap-1.5' : 'gap-3'}`}>
+		<ul className={`flex flex-col ${compact ? "gap-1.5" : "gap-3"}`}>
 			{sorted.map((lesson, i) => (
 				<li
 					key={`${lesson.started_at}-${lesson.room}`}
-					className='flex flex-col'
+					className="flex flex-col"
 				>
 					{i > 0 && (
 						<GapIndicator
@@ -58,5 +58,5 @@ export function LessonList({ lessons, forDate, compact = false }: Props) {
 				</li>
 			))}
 		</ul>
-	)
+	);
 }

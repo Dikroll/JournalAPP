@@ -1,140 +1,155 @@
-import { ttl } from '@/shared/config/cacheConfig'
-import { isCacheValid } from '@/shared/lib/isCacheValid'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef } from 'react'
-import { feedbackApi } from '../api'
-import { useFeedbackStore } from '../model/store'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config/cacheConfig";
+import { isCacheValid } from "@/shared/lib/isCacheValid";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { feedbackApi } from "../api";
+import { useFeedbackStore } from "../model/store";
 
-const CACHE_TTL_MS = ttl.FEEDBACK * 1000
-const FETCH_TIMEOUT_MS = 15_000
+const CACHE_TTL_MS = ttl.FEEDBACK * 1000;
+const FETCH_TIMEOUT_MS = 15_000;
 
 export function useFeedback() {
-	const pending = useFeedbackStore(s => s.pending)
-	const pendingStatus = useFeedbackStore(s => s.pendingStatus)
-	const pendingLoadedAt = useFeedbackStore(s => s.pendingLoadedAt)
-	const tags = useFeedbackStore(s => s.tags)
-	const tagsStatus = useFeedbackStore(s => s.tagsStatus)
-	const tagsLoadedAt = useFeedbackStore(s => s.tagsLoadedAt)
-	const error = useFeedbackStore(s => s.error)
+	const pending = useFeedbackStore((s) => s.pending);
+	const pendingStatus = useFeedbackStore((s) => s.pendingStatus);
+	const pendingLoadedAt = useFeedbackStore((s) => s.pendingLoadedAt);
+	const tags = useFeedbackStore((s) => s.tags);
+	const tagsStatus = useFeedbackStore((s) => s.tagsStatus);
+	const tagsLoadedAt = useFeedbackStore((s) => s.tagsLoadedAt);
+	const error = useFeedbackStore((s) => s.error);
 
-	const setPending = useFeedbackStore(s => s.setPending)
-	const setPendingStatus = useFeedbackStore(s => s.setPendingStatus)
-	const setPendingLoadedAt = useFeedbackStore(s => s.setPendingLoadedAt)
-	const setTags = useFeedbackStore(s => s.setTags)
-	const setTagsStatus = useFeedbackStore(s => s.setTagsStatus)
-	const setTagsLoadedAt = useFeedbackStore(s => s.setTagsLoadedAt)
-	const setError = useFeedbackStore(s => s.setError)
+	const setPending = useFeedbackStore((s) => s.setPending);
+	const setPendingStatus = useFeedbackStore((s) => s.setPendingStatus);
+	const setPendingLoadedAt = useFeedbackStore((s) => s.setPendingLoadedAt);
+	const setTags = useFeedbackStore((s) => s.setTags);
+	const setTagsStatus = useFeedbackStore((s) => s.setTagsStatus);
+	const setTagsLoadedAt = useFeedbackStore((s) => s.setTagsLoadedAt);
+	const setError = useFeedbackStore((s) => s.setError);
 
-	const fetchingPendingRef = useRef(false)
-	const fetchingTagsRef = useRef(false)
-	const timeoutPendingRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-	const timeoutTagsRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const fetchingPendingRef = useRef(false);
+	const fetchingTagsRef = useRef(false);
+	const timeoutPendingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const timeoutTagsRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	// Fetch pending
 	useEffect(() => {
-		if (fetchingPendingRef.current) return
+		if (fetchingPendingRef.current) return;
 		if (isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) {
-			if (pendingStatus === 'idle') setPendingStatus('success')
-			return
+			if (pendingStatus === "idle") setPendingStatus("success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (pendingLoadedAt !== null) {
-				if (pendingStatus === 'idle') setPendingStatus('success')
-				return
+				if (pendingStatus === "idle") setPendingStatus("success");
+				return;
 			}
-			setPendingStatus('error')
-			setError('Нет подключения к интернету')
-			return
+			setPendingStatus("error");
+			setError("Нет подключения к интернету");
+			return;
 		}
 
-		fetchingPendingRef.current = true
-		setPendingStatus('loading')
+		fetchingPendingRef.current = true;
+		setPendingStatus("loading");
 
 		timeoutPendingRef.current = setTimeout(() => {
 			if (fetchingPendingRef.current) {
-				fetchingPendingRef.current = false
-				setPendingStatus('error')
-				setError('Превышено время ожидания')
+				fetchingPendingRef.current = false;
+				setPendingStatus("error");
+				setError("Превышено время ожидания");
 			}
-		}, FETCH_TIMEOUT_MS)
+		}, FETCH_TIMEOUT_MS);
 
 		feedbackApi
 			.getPending()
-			.then(data => {
-				setPending(data)
-				setPendingLoadedAt(Date.now())
-				setPendingStatus('success')
+			.then((data) => {
+				setPending(data);
+				setPendingLoadedAt(Date.now());
+				setPendingStatus("success");
 			})
-			.catch(err => {
+			.catch((err) => {
 				const msg =
-					(err as { response?: { data?: { detail?: string } } })?.response
-						?.data?.detail ?? 'Ошибка загрузки оценок занятий'
-				setError(msg)
-				if (pending.length === 0) setPendingStatus('error')
+					(err as { response?: { data?: { detail?: string } } })?.response?.data
+						?.detail ?? "Ошибка загрузки оценок занятий";
+				setError(msg);
+				if (pending.length === 0) setPendingStatus("error");
 			})
 			.finally(() => {
-				fetchingPendingRef.current = false
+				fetchingPendingRef.current = false;
 				if (timeoutPendingRef.current) {
-					clearTimeout(timeoutPendingRef.current)
-					timeoutPendingRef.current = null
+					clearTimeout(timeoutPendingRef.current);
+					timeoutPendingRef.current = null;
 				}
-			})
-	}, [pendingLoadedAt])
+			});
+	}, [
+		pendingLoadedAt,
+		pending.length,
+		pendingStatus,
+		setError,
+		setPending,
+		setPendingLoadedAt,
+		setPendingStatus,
+	]);
 
 	// Fetch tags
 	useEffect(() => {
-		if (fetchingTagsRef.current) return
+		if (fetchingTagsRef.current) return;
 		if (isCacheValid(tagsLoadedAt, CACHE_TTL_MS)) {
-			if (tagsStatus === 'idle') setTagsStatus('success')
-			return
+			if (tagsStatus === "idle") setTagsStatus("success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (tagsLoadedAt !== null) {
-				if (tagsStatus === 'idle') setTagsStatus('success')
-				return
+				if (tagsStatus === "idle") setTagsStatus("success");
+				return;
 			}
-			setTagsStatus('error')
-			return
+			setTagsStatus("error");
+			return;
 		}
 
-		fetchingTagsRef.current = true
-		setTagsStatus('loading')
+		fetchingTagsRef.current = true;
+		setTagsStatus("loading");
 
 		timeoutTagsRef.current = setTimeout(() => {
 			if (fetchingTagsRef.current) {
-				fetchingTagsRef.current = false
-				setTagsStatus('error')
+				fetchingTagsRef.current = false;
+				setTagsStatus("error");
 			}
-		}, FETCH_TIMEOUT_MS)
+		}, FETCH_TIMEOUT_MS);
 
 		feedbackApi
 			.getTags()
-			.then(data => {
-				setTags(data)
-				setTagsLoadedAt(Date.now())
-				setTagsStatus('success')
+			.then((data) => {
+				setTags(data);
+				setTagsLoadedAt(Date.now());
+				setTagsStatus("success");
 			})
 			.catch(() => {
-				if (tags.length === 0) setTagsStatus('error')
+				if (tags.length === 0) setTagsStatus("error");
 			})
 			.finally(() => {
-				fetchingTagsRef.current = false
+				fetchingTagsRef.current = false;
 				if (timeoutTagsRef.current) {
-					clearTimeout(timeoutTagsRef.current)
-					timeoutTagsRef.current = null
+					clearTimeout(timeoutTagsRef.current);
+					timeoutTagsRef.current = null;
 				}
-			})
-	}, [tagsLoadedAt])
+			});
+	}, [
+		tagsLoadedAt,
+		setTags,
+		setTagsLoadedAt,
+		setTagsStatus,
+		tags.length,
+		tagsStatus,
+	]);
 
 	// Cleanup timeouts
 	useEffect(() => {
 		return () => {
-			if (timeoutPendingRef.current) clearTimeout(timeoutPendingRef.current)
-			if (timeoutTagsRef.current) clearTimeout(timeoutTagsRef.current)
-		}
-	}, [])
+			if (timeoutPendingRef.current) clearTimeout(timeoutPendingRef.current);
+			if (timeoutTagsRef.current) clearTimeout(timeoutTagsRef.current);
+		};
+	}, []);
 
-	return { pending, pendingStatus, tags, tagsStatus, error }
+	return { pending, pendingStatus, tags, tagsStatus, error };
 }

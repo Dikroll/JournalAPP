@@ -1,7 +1,7 @@
 interface CacheEntry<T> {
-	data: T
-	cachedAt: number
-	ttl: number
+	data: T;
+	cachedAt: number;
+	ttl: number;
 }
 
 export const storage = {
@@ -10,69 +10,69 @@ export const storage = {
 			data,
 			cachedAt: Date.now(),
 			ttl: ttlSeconds,
-		}
+		};
 		try {
-			localStorage.setItem(key, JSON.stringify(entry))
+			localStorage.setItem(key, JSON.stringify(entry));
 		} catch (err) {
-			console.warn('[storage] write failed for key:', key, err)
+			console.warn("[storage] write failed for key:", key, err);
 		}
 	},
 
 	getCachedAt(key: string): number | null {
 		try {
-			const raw = localStorage.getItem(key)
-			if (!raw) return null
-			const entry = JSON.parse(raw)
-			return entry.cachedAt ?? null
+			const raw = localStorage.getItem(key);
+			if (!raw) return null;
+			const entry = JSON.parse(raw);
+			return entry.cachedAt ?? null;
 		} catch {
-			return null
+			return null;
 		}
 	},
 
 	get<T>(key: string): T | null {
 		try {
-			const raw = localStorage.getItem(key)
-			if (!raw) return null
-			const entry: CacheEntry<T> = JSON.parse(raw)
-			const age = (Date.now() - entry.cachedAt) / 1000
-			if (age > entry.ttl) return null
-			return entry.data
+			const raw = localStorage.getItem(key);
+			if (!raw) return null;
+			const entry: CacheEntry<T> = JSON.parse(raw);
+			const age = (Date.now() - entry.cachedAt) / 1000;
+			if (age > entry.ttl) return null;
+			return entry.data;
 		} catch {
-			return null
+			return null;
 		}
 	},
 
 	remove(key: string): void {
-		localStorage.removeItem(key)
+		localStorage.removeItem(key);
 	},
 
 	clear(prefix?: string): void {
 		if (!prefix) {
-			localStorage.clear()
-			return
+			localStorage.clear();
+			return;
 		}
 		Object.keys(localStorage)
-			.filter(k => k.startsWith(prefix))
-			.forEach(k => localStorage.removeItem(k))
+			.filter((k) => k.startsWith(prefix))
+			.forEach((k) => localStorage.removeItem(k));
 	},
-}
+};
 
 export const CACHE_KEYS = {
-	SCHEDULE_TODAY: 'cache:schedule:today',
+	SCHEDULE_TODAY: "cache:schedule:today",
 	SCHEDULE_MONTH: (month: string) => `cache:schedule:month:${month}`,
-	USER_ME: 'cache:user:me',
+	USER_ME: "cache:user:me",
 	HOMEWORK: (status: number, groupId: number) =>
 		`cache:hw:${status}:${groupId}`,
-	NEWS: 'cache:news:latest',
+	NEWS: "cache:news:latest",
 	NEWS_DETAIL: (id: number) => `cache:news:detail:${id}`,
 	LIBRARY_COUNTERS: (specId?: number) =>
-		`cache:library:counters:${specId ?? 'all'}`,
-	MARKET_PRODUCTS: 'cache:market:products',
-	LEADERBOARD_GROUP: 'cache:leaderboard:group',
-	LEADERBOARD_STREAM: 'cache:leaderboard:stream',
-	REVIEWS: 'cache:reviews',
-	GRADES_ALL: 'cache:grades:all',
-	PAYMENT_SUMMARY: 'cache:payment:summary',
-	PAYMENT_INDEX: 'cache:payment:index',
-	DASHBOARD_ACTIVITY: 'cache:dashboard:activity',
-}
+		`cache:library:counters:${specId ?? "all"}`,
+	MARKET_PRODUCTS: "cache:market:products",
+	LEADERBOARD_GROUP: "cache:leaderboard:group",
+	LEADERBOARD_STREAM: "cache:leaderboard:stream",
+	REVIEWS: "cache:reviews",
+	GRADES_ALL: "cache:grades:all",
+	PAYMENT_SUMMARY: "cache:payment:summary",
+	PAYMENT_INDEX: "cache:payment:index",
+	DASHBOARD_ACTIVITY: "cache:dashboard:activity",
+};

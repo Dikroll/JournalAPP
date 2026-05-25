@@ -3,7 +3,7 @@
  * Этот файл оставлен только для обратной совместимости.
  */
 export {
+	type SavedAccount,
 	useAuthStore,
 	useHydrationStore,
-	type SavedAccount,
-} from '@/shared/model/authStore'
+} from "@/shared/model/authStore";

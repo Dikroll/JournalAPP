@@ -1,8 +1,11 @@
-import { resetAllAppState } from '@/app/lib'
-import { useProfileDetails } from '@/entities/profile'
-import { pageConfig } from '@/shared/config'
-import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'
+import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { resetAllAppState } from "@/app/lib";
+import { useProfileDetails } from "@/entities/profile";
+import { pageConfig } from "@/shared/config";
+import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { ErrorView, IconButton, PageHeader, SkeletonList } from "@/shared/ui";
 import {
 	AccountSwitcher,
 	ClearCacheSheet,
@@ -11,45 +14,42 @@ import {
 	ProfilePaymentCard,
 	ProfileRelativesCard,
 	SettingsSection,
-} from '@/widgets'
-import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from "@/widgets";
 
 export function ProfileDetailsPage() {
-	const navigate = useNavigate()
-	const { details, status } = useProfileDetails()
-	const [showSwitcher, setShowSwitcher] = useState(false)
-	const [showClearCache, setShowClearCache] = useState(false)
+	const navigate = useNavigate();
+	const { details, status } = useProfileDetails();
+	const [showSwitcher, setShowSwitcher] = useState(false);
+	const [showClearCache, setShowClearCache] = useState(false);
 
-	useSwipeBack()
+	useSwipeBack();
 
 	const handleAddAccount = () => {
-		navigate(`${pageConfig.login}?addAccount=true`)
-	}
+		navigate(`${pageConfig.login}?addAccount=true`);
+	};
 
 	return (
-		<div className='pb-6 max-w-4xl mx-auto w-full'>
-			<div className='flex items-center gap-2 px-4 pt-4 pb-4'>
+		<div className="pb-6 max-w-4xl mx-auto w-full">
+			<div className="flex items-center gap-2 px-4 pt-4 pb-4">
 				<IconButton
 					icon={<ArrowLeft size={18} />}
 					onClick={() => navigate(-1)}
-					size='md'
-					shape='square'
-					variant='surface'
-					style={{ boxShadow: 'var(--shadow-card)' }}
-					aria-label='Назад'
+					size="md"
+					shape="square"
+					variant="surface"
+					style={{ boxShadow: "var(--shadow-card)" }}
+					aria-label="Назад"
 				/>
 
-				<div className='flex-1'>
-					<PageHeader title='Детали профиля' />
+				<div className="flex-1">
+					<PageHeader title="Детали профиля" />
 				</div>
 			</div>
 
-			<div className='px-4 space-y-3'>
-				{status === 'loading' && <SkeletonList count={3} height={120} />}
-				{status === 'error' && !details && (
-					<ErrorView message='Не удалось загрузить данные' />
+			<div className="px-4 space-y-3">
+				{status === "loading" && <SkeletonList count={3} height={120} />}
+				{status === "error" && !details && (
+					<ErrorView message="Не удалось загрузить данные" />
 				)}
 				{details && (
 					<>
@@ -84,5 +84,5 @@ export function ProfileDetailsPage() {
 				<ClearCacheSheet onClose={() => setShowClearCache(false)} />
 			)}
 		</div>
-	)
+	);
 }

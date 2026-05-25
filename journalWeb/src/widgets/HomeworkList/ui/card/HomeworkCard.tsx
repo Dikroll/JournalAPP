@@ -1,24 +1,24 @@
-import type { HomeworkItemWithStatus } from '@/entities/homework'
-import { deriveHomeworkCardState } from '@/entities/homework'
-import { getCachedImageUrl } from '@/shared/lib'
-import { PhotoViewerModal } from '@/shared/ui'
-import { ChevronDown, MessageSquare } from 'lucide-react'
-import { memo, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { HomeworkCardActions } from './HomeworkCardActions'
-import { HomeworkCardDates } from './HomeworkCardDates'
-import { HomeworkCardHeader } from './HomeworkCardHeader'
+import { ChevronDown, MessageSquare } from "lucide-react";
+import { memo, useState } from "react";
+import { createPortal } from "react-dom";
+import type { HomeworkItemWithStatus } from "@/entities/homework";
+import { deriveHomeworkCardState } from "@/entities/homework";
+import { getCachedImageUrl } from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
+import { HomeworkCardActions } from "./HomeworkCardActions";
+import { HomeworkCardDates } from "./HomeworkCardDates";
+import { HomeworkCardHeader } from "./HomeworkCardHeader";
 
 interface Props {
-	hw: HomeworkItemWithStatus
+	hw: HomeworkItemWithStatus;
 }
 
 export const HomeworkCard = memo(
 	function HomeworkCard({ hw }: Props) {
-		const [commentOpen, setCommentOpen] = useState(false)
-		const [viewerOpen, setViewerOpen] = useState(false)
+		const [commentOpen, setCommentOpen] = useState(false);
+		const [viewerOpen, setViewerOpen] = useState(false);
 
-		const photoUrl = getCachedImageUrl(hw.photo_url)
+		const photoUrl = getCachedImageUrl(hw.photo_url);
 		const {
 			config,
 			isOverdue,
@@ -28,52 +28,52 @@ export const HomeworkCard = memo(
 			cardBg,
 			hasComment,
 			commentAlwaysVisible,
-		} = deriveHomeworkCardState(hw)
+		} = deriveHomeworkCardState(hw);
 
 		return (
 			<>
 				<div
 					className={`${cardBg} backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden`}
-					style={{ boxShadow: 'var(--shadow-card)' }}
+					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					{photoUrl && (
 						<button
-							type='button'
+							type="button"
 							onClick={() => setViewerOpen(true)}
-							className='w-full aspect-video bg-app-surface-strong block overflow-hidden focus:outline-none'
+							className="w-full aspect-video bg-app-surface-strong block overflow-hidden focus:outline-none"
 						>
 							<img
 								src={photoUrl}
 								alt={hw.theme ?? hw.spec_name}
-								className='w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]'
+								className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
 							/>
 						</button>
 					)}
 
-					<div className={photoUrl ? 'p-4 space-y-3' : 'p-5'}>
+					<div className={photoUrl ? "p-4 space-y-3" : "p-5"}>
 						<HomeworkCardHeader hw={hw} gradeStyle={gradeStyle} grade={grade} />
 
 						<HomeworkCardDates
 							issuedDate={hw.issued_date}
 							deadline={hw.deadline}
 							isOverdue={isOverdue}
-							isNew={hw.statusKey === 'new'}
+							isNew={hw.statusKey === "new"}
 						/>
 
 						{hasComment && (
-							<div className='mb-4'>
+							<div className="mb-4">
 								{!commentAlwaysVisible && (
 									<button
-										type='button'
-										onClick={() => setCommentOpen(v => !v)}
-										className='flex items-center gap-1.5 text-xs text-status-comment hover:opacity-80 transition-opacity mb-2'
+										type="button"
+										onClick={() => setCommentOpen((v) => !v)}
+										className="flex items-center gap-1.5 text-xs text-status-comment hover:opacity-80 transition-opacity mb-2"
 									>
 										<MessageSquare size={13} />
 										<span>Комментарий преподавателя</span>
 										<ChevronDown
 											size={13}
 											className={`transition-transform duration-200 ${
-												commentOpen ? 'rotate-180' : ''
+												commentOpen ? "rotate-180" : ""
 											}`}
 										/>
 									</button>
@@ -82,11 +82,11 @@ export const HomeworkCard = memo(
 									<div
 										className={`p-3 rounded-2xl border ${
 											isReturned
-												? 'bg-returned-subtle border-returned-border'
-												: 'bg-comment-subtle border-comment-border'
+												? "bg-returned-subtle border-returned-border"
+												: "bg-comment-subtle border-comment-border"
 										}`}
 									>
-										<p className='text-sm text-app-text'>{hw.comment}</p>
+										<p className="text-sm text-app-text">{hw.comment}</p>
 									</div>
 								)}
 							</div>
@@ -115,7 +115,7 @@ export const HomeworkCard = memo(
 						document.body,
 					)}
 			</>
-		)
+		);
 	},
 	(prev, next) =>
 		prev.hw.id === next.hw.id &&
@@ -125,4 +125,4 @@ export const HomeworkCard = memo(
 		prev.hw.photo_url === next.hw.photo_url &&
 		prev.hw.stud_answer === next.hw.stud_answer &&
 		prev.hw.stud_file_url === next.hw.stud_file_url,
-)
+);

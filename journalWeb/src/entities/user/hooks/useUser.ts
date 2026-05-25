@@ -1,32 +1,32 @@
-import { useEffect } from 'react'
-import { userApi } from '../api'
-import { useUserStore } from '../model/store'
+import { useEffect } from "react";
+import { userApi } from "../api";
+import { useUserStore } from "../model/store";
 
 export function useUser() {
-	const user = useUserStore(s => s.user)
-	const setUser = useUserStore(s => s.setUser)
+	const user = useUserStore((s) => s.user);
+	const setUser = useUserStore((s) => s.setUser);
 
 	useEffect(() => {
-		if (user) return
+		if (user) return;
 
-		let cancelled = false
+		let cancelled = false;
 
 		userApi
 			.getMe()
-			.then(data => {
-				if (!cancelled) setUser(data)
+			.then((data) => {
+				if (!cancelled) setUser(data);
 			})
-			.catch(err => {
-				const status = err?.response?.status
+			.catch((err) => {
+				const status = err?.response?.status;
 				if (status && status !== 401) {
-					console.warn('[useUser] failed to fetch user:', status)
+					console.warn("[useUser] failed to fetch user:", status);
 				}
-			})
+			});
 
 		return () => {
-			cancelled = true
-		}
-	}, [])
+			cancelled = true;
+		};
+	}, [setUser, user]);
 
-	return user
+	return user;
 }
