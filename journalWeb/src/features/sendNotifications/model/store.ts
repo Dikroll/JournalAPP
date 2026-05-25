@@ -41,6 +41,8 @@ interface NotificationsState {
 	setLastRead: (id: string) => void
 	seenPendingKeys: string[]
 	markPendingSeen: (keys: string[]) => void
+	activeTab: 'changelog' | 'feedback' | 'news'
+	setActiveTab: (tab: 'changelog' | 'feedback' | 'news') => void
 }
 
 export const useNotificationsStore = create<NotificationsState>()(
@@ -50,12 +52,15 @@ export const useNotificationsStore = create<NotificationsState>()(
 			setLastRead: (id: any) => set({ lastReadChangelogId: id }),
 			seenPendingKeys: [],
 			markPendingSeen: (keys: any) => set({ seenPendingKeys: keys }),
+			activeTab: 'changelog',
+			setActiveTab: (tab: any) => set({ activeTab: tab }),
 		}),
 		{
 			name: 'notifications-store',
 			partialize: (state: any) => ({
 				lastReadChangelogId: state.lastReadChangelogId,
 				seenPendingKeys: state.seenPendingKeys,
+				activeTab: state.activeTab,
 			}),
 		},
 	) as any,

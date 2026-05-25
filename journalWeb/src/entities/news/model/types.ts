@@ -12,6 +12,7 @@ export interface NewsDetail extends NewsItem {
 export interface NewsState {
 	latest: NewsItem[]
 	details: Record<number, NewsDetail>
+	readIds: number[]
 	status: 'idle' | 'loading' | 'success' | 'error'
 	error: string | null
 	loadedAt: number | null

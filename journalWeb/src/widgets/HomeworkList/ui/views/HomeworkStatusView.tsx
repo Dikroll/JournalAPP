@@ -11,7 +11,7 @@ import {
 } from '@/entities/homework'
 import type { Subject } from '@/entities/subject'
 import { illustrations } from '@/shared/config/illustrationsConfig'
-import { EmptyState, ShowMoreBtn } from '@/shared/ui'
+import { EmptyState, InlineImage, ShowMoreBtn } from '@/shared/ui'
 import { HomeworkCard } from '../card/HomeworkCard'
 
 interface Props {
@@ -39,7 +39,14 @@ export function HomeworkStatusView({
 			return (
 				<EmptyState
 					message='Нет домашних заданий'
-					illustration={illustrations.noHomework}
+					illustration={
+						<InlineImage
+							src={illustrations.noHomework}
+							alt='Нет домашних заданий'
+							width={300}
+							height={300}
+						/>
+					}
 				/>
 			)
 		}

@@ -21,9 +21,7 @@ export function useNewsDetail(id: number) {
 	useEffect(() => {
 		if (fetchingRef.current) return
 		if (detail) {
-			if (!detail.is_read) {
-				markAsRead(id)
-			}
+			markAsRead(id)
 			return
 		}
 
@@ -38,7 +36,7 @@ export function useNewsDetail(id: number) {
 		if (cached) {
 			setDetail(id, cached)
 			setStatus('success')
-			if (!cached.is_read) markAsRead(id)
+			markAsRead(id)
 			return
 		}
 
@@ -51,8 +49,8 @@ export function useNewsDetail(id: number) {
 				setDetail(id, data)
 				setStatus('success')
 				setError(null)
-				storage.set(cacheKey, data, ttl.ACTIVITY * 2) // Cache detail longer
-				if (!data.is_read) markAsRead(id)
+				storage.set(cacheKey, data, ttl.ACTIVITY * 2)
+				markAsRead(id)
 			})
 			.catch(() => {
 				setStatus('error')

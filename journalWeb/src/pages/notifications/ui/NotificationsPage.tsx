@@ -37,7 +37,10 @@ const TABS: Segment<Tab>[] = [
 export function NotificationsPage() {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const [activeTab, setActiveTab] = useState<Tab>('changelog')
+	
+	const activeTab = useNotificationsStore(s => s.activeTab)
+	const setActiveTab = useNotificationsStore(s => s.setActiveTab)
+	
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
 	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
 	const markPendingSeen = useNotificationsStore(s => s.markPendingSeen)
@@ -50,7 +53,7 @@ export function NotificationsPage() {
 	useEffect(() => {
 		const tab = (location.state as { tab?: Tab } | null)?.tab
 		if (tab) setActiveTab(tab)
-	}, [])
+	}, [location.state, setActiveTab])
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() => (latestRelease ? [toChangelogFeedEntry(latestRelease)] : FALLBACK_CHANGELOG),
