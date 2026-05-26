@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  journal-web:
+    image: oven/bun:1-alpine
+    container_name: journal-web
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    # Устанавливаем зависимости, собираем проект и запускаем сервер
+    command: sh -c "bun install --frozen-lockfile && bun run build && bunx serve -s dist -l tcp://0.0.0.0:3000"
