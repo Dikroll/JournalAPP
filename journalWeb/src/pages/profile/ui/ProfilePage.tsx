@@ -72,9 +72,9 @@ export function ProfilePage() {
 				<ProfileHeader user={user} rank={myRankGroup?.position} />
 
 				<div className='px-4 space-y-5 mt-4'>
-					{!isWeb && <Leaderboard myStudentId={user.student_id} />}
+					<Leaderboard myStudentId={user.student_id} />
 					<MarketLink />
-					{!isWeb && <ReviewsList />}
+					<ReviewsList />
 				</div>
 			</div>
 		)
@@ -113,7 +113,6 @@ export function ProfilePage() {
 							onClearCache={() => setShowClearCache(true)}
 						/>
 
-						{!isWeb && <Leaderboard myStudentId={user.student_id} />}
 						<MarketLink />
 						{!isWeb && <ReviewsList />}
 					</div>

@@ -4,8 +4,10 @@ import { useSwipeBack } from '@/shared/hooks'
 import type { Segment } from '@/shared/ui'
 import { PageHeader, SegmentedControl } from '@/shared/ui'
 import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
-import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
+import { Archive, ShoppingBag, ShoppingCart, ChevronLeft } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 
 type MarketTab = 'products' | 'cart' | 'orders'
 
@@ -38,6 +40,8 @@ function canAfford(price: MarketPrice, userBalance: MarketPrice): boolean {
 export function MarketPage() {
 	const [tab, setTab] = useState<MarketTab>('products')
 	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null)
+	const isDesktop = useIsDesktop()
+	const navigate = useNavigate()
 	const {
 		products,
 		productsStatus,
@@ -88,7 +92,14 @@ export function MarketPage() {
 		<div className='min-h-screen text-app-text pb-28'>
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
-					<PageHeader title='Маркет' />
+					<div className='flex items-center gap-2'>
+						{!isDesktop && (
+							<button onClick={() => navigate(-1)} className='p-2 -ml-2 text-app-text'>
+								<ChevronLeft size={24} />
+							</button>
+						)}
+						<PageHeader title='Маркет' />
+					</div>
 					<RefreshMarketButton
 						isRefreshing={
 							productsStatus === 'loading' || ordersStatus === 'loading'
