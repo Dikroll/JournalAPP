@@ -36,4 +36,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.claude/worktrees/thirsty-swanson-b5e489
+.claude/
+.antigravitycli/
+.gemini/

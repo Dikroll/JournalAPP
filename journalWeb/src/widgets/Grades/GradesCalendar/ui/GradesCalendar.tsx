@@ -120,6 +120,25 @@ export function GradesCalendar({ byMonth }: Props) {
 						В этом месяце нет записей
 					</p>
 				)}
+
+				<div className='flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-4 text-xs text-app-muted'>
+					<div className='flex items-center gap-1.5'>
+						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-checked)' }} />
+						<span>Отлично (5)</span>
+					</div>
+					<div className='flex items-center gap-1.5'>
+						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-new)' }} />
+						<span>Хорошо (4) или без оценок</span>
+					</div>
+					<div className='flex items-center gap-1.5'>
+						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-pending)' }} />
+						<span>Удовлетворительно (3)</span>
+					</div>
+					<div className='flex items-center gap-1.5'>
+						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-overdue)' }} />
+						<span>Долг / Пропуск</span>
+					</div>
+				</div>
 			</div>
 
 			<div className='flex-1 w-full'>

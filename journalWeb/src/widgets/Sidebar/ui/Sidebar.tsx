@@ -134,6 +134,12 @@ export const Sidebar = memo(() => {
           <span className="sidebar-web__brand-college"> COLLEGE</span>
         </div>
 
+        {/* Дата под лого */}
+        <div className="sidebar-web__date-block-top">
+          <span className="sidebar-web__date-weekday-top">{weekday}</span>
+          <span className="sidebar-web__date-day-top">{dayMonth}</span>
+        </div>
+
         {/* Юзер — клик на аватар/имя → профиль */}
         {vm && (
           <button
@@ -146,13 +152,6 @@ export const Sidebar = memo(() => {
             <div className="sidebar-web__user-info">
               <div className="sidebar-web__name">{vm.shortName}</div>
               <div className="sidebar-web__group">{vm.groupName}</div>
-
-              {/* Дата */}
-              <div className="sidebar-web__date-block">
-                <span className="sidebar-web__date-weekday">{weekday}</span>
-                <span className="sidebar-web__date-dot">·</span>
-                <span className="sidebar-web__date-day">{dayMonth}</span>
-              </div>
 
               {/* Счётчики монет и кристаллов */}
               {(coins !== null || diamonds !== null) && (
