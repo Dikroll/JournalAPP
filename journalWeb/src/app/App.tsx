@@ -1,27 +1,28 @@
-import { useFeedback } from '@/entities/feedback'
-import { AppUpdateSheet, useInitAppUpdate } from '@/features/appUpdate'
-import { useInitExamReminders } from '@/features/examReminders'
-import { useInitGoalsWidget } from '@/features/goalsWidget'
-import { useInitScheduleReminders } from '@/features/scheduleReminders'
-import { useInitUser } from '@/features/initUser/hooks/useInitUser'
-import { useQueueProcessor } from '@/features/offlineQueue'
-import { useNetworkInit } from '@/shared/hooks/useNetworkInit'
-import { AppRouter } from './router'
+import { Suspense, lazy } from "react";
+import { useFeedback } from "@/entities/feedback";
+import { useInitUser } from "@/features/initUser/hooks/useInitUser";
+import { useQueueProcessor } from "@/features/offlineQueue";
+import { isNativePlatform } from "@/shared/lib/platform";
+import { AppRouter } from "./router";
+
+// Мобильные фичи загружаются лениво и только на нативной платформе.
+// При сборке с VITE_PLATFORM=web условие false → Vite вырезает
+// весь import("./MobileFeatures") из бандла (dead code elimination).
+const MobileFeatures = isNativePlatform
+	? lazy(() => import("./MobileFeatures"))
+	: () => null;
 
 export function App() {
-	useInitUser()
-	useInitAppUpdate()
-	useInitScheduleReminders()
-	useInitExamReminders()
-	useInitGoalsWidget()
-	useNetworkInit()
-	useQueueProcessor()
-	useFeedback()
+	useInitUser();
+	useQueueProcessor();
+	useFeedback();
 
 	return (
 		<>
 			<AppRouter />
-			<AppUpdateSheet />
+			<Suspense>
+				<MobileFeatures />
+			</Suspense>
 		</>
-	)
+	);
 }

@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.github
+android
+ios
+docs
+.antigravitycli
+.claude
+.vscode
+.DS_Store
+icons
