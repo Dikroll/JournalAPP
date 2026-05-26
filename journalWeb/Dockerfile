@@ -14,26 +14,15 @@ COPY . .
 # Собираем приложение для production
 RUN bun run build
 
-# Этап раздачи статики
-FROM nginx:alpine
+# Рабочий этап для запуска приложения
+FROM oven/bun:1-alpine
+WORKDIR /app
 
-# Конфигурируем Nginx для поддержки React Router (перенаправление всех запросов на index.html)
-RUN rm -rf /etc/nginx/conf.d/*
-RUN echo $'server {\\n\\
-    listen 80;\\n\\
-    server_name localhost;\\n\\
-    root /usr/share/nginx/html;\\n\\
-    index index.html;\\n\\
-    location / {\\n\\
-        try_files $uri $uri/ /index.html;\\n\\
-    }\\n\\
-}' > /etc/nginx/conf.d/default.conf
+# Копируем собранные файлы
+COPY --from=builder /app/dist ./dist
 
-# Копируем собранные файлы (dist) из этапа сборки в директорию Nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Указываем порт (dockploy будет проксировать запросы на него)
+EXPOSE 3000
 
-# Указываем порт, который слушает контейнер
-EXPOSE 80
-
-# Запускаем Nginx на переднем плане
-CMD ["nginx", "-g", "daemon off;"]
+# Используем bunx и serve для раздачи статики (флаг -s для React Router/SPA)
+CMD ["bunx", "serve", "-s", "dist", "-l", "tcp://0.0.0.0:3000"]
