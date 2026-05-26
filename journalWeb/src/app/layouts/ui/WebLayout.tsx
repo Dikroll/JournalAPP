@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@/widgets/Sidebar'
 import './WebLayout.css'
@@ -17,9 +17,31 @@ import './WebLayout.css'
  * никаких изменений в pages/* не нужно.
  */
 export const WebLayout = memo(() => {
+  const [zoom, setZoom] = useState(1)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      if (width > 1920) {
+        // Увеличиваем масштаб интерфейса пропорционально ширине экрана,
+        // чтобы на ультрашироких 2K/4K экранах интерфейс не казался мелким.
+        setZoom(width / 1920)
+      } else {
+        setZoom(1)
+      }
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
     <div className="web-layout-wrapper">
-      <div className="web-layout container mx-auto 2xl:max-w-[1536px]">
+      <div 
+        className="web-layout w-full"
+        style={{ zoom }}
+      >
         <div className="web-layout__sidebar-wrapper">
           <div className="web-layout__sidebar-inner">
             <Sidebar />

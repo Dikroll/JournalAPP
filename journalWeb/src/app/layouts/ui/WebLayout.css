@@ -18,17 +18,17 @@
 }
 
 .web-layout__sidebar-wrapper {
-  padding: 24px 0 8px 8px;
+  padding: 1.5rem 0 0.5rem 0.5rem;
   align-self: flex-start;
   flex-shrink: 0;
 }
 
 .web-layout__sidebar-inner {
-  border-radius: 16px;
+  border-radius: 1rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
   border: 1px solid var(--color-border);
 }
 
@@ -38,14 +38,14 @@
   flex-direction: column;
   min-width: 0;
   height: 100%;
-  padding: 24px 8px 8px 8px;
+  padding: 1.5rem 0.5rem 0.5rem 0.5rem;
 }
 
 .web-layout__content {
   flex: 1;
   overflow-y: auto;
   background: var(--color-bg);
-  border-radius: 24px;
+  border-radius: 1.5rem;
   border: 1px solid var(--color-border);
   position: relative;
   scrollbar-width: thin;
@@ -53,7 +53,7 @@
 }
 
 .web-layout__content::-webkit-scrollbar {
-  width: 5px;
+  width: 0.3125rem;
 }
 
 .web-layout__content::-webkit-scrollbar-track {

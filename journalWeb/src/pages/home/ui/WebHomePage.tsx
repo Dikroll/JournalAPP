@@ -27,7 +27,7 @@ export function WebHomePage() {
 	const { counters, filterStatus, setFilter } = useHomework()
 
 	return (
-		<div className='p-5 pb-8 flex flex-col gap-4'>
+		<div className='p-5 pb-8 flex flex-col gap-4 w-full'>
 			<div
 				className='grid gap-4'
 				style={{ gridTemplateColumns: '5fr 6fr', alignItems: 'stretch' }}
@@ -43,7 +43,7 @@ export function WebHomePage() {
 						style={{
 							background: 'var(--color-surface)',
 							boxShadow: 'var(--shadow-card)',
-							minHeight: '260px',
+							minHeight: '16.25rem',
 						}}
 					>
 						<div className='flex items-center gap-2 mb-3 shrink-0'>
@@ -106,7 +106,7 @@ export function WebHomePage() {
 					style={{
 						background: 'var(--color-surface)',
 						boxShadow: 'var(--shadow-card)',
-						height: '380px',
+						height: '23.75rem',
 					}}
 				>
 					<div
@@ -123,7 +123,7 @@ export function WebHomePage() {
 					style={{
 						background: 'var(--color-surface)',
 						boxShadow: 'var(--shadow-card)',
-						height: '380px',
+						height: '23.75rem',
 					}}
 				>
 					<div
