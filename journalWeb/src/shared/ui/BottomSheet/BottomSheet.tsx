@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 interface BottomSheetProps {
@@ -17,6 +18,7 @@ export function BottomSheet({
 	const [dragging, setDragging] = useState(false)
 	const dragStart = useRef(0)
 	const sheetRef = useRef<HTMLDivElement>(null)
+	const isWeb = Capacitor.getPlatform() === 'web'
 
 	useEffect(() => {
 		const scrollY = window.scrollY
@@ -41,6 +43,7 @@ export function BottomSheet({
 	}, [onBackdropClick])
 
 	const onTouchStart = useCallback((e: React.TouchEvent) => {
+		if (isWeb) return
 		const sheet = sheetRef.current
 		if (!sheet) return
 		const rect = sheet.getBoundingClientRect()
@@ -67,7 +70,7 @@ export function BottomSheet({
 
 	return (
 		<div
-			className='fixed inset-0 flex items-end justify-center'
+			className={`fixed inset-0 flex justify-center ${isWeb ? 'items-center p-4' : 'items-end'}`}
 			style={{
 				background: 'var(--color-modal-backdrop)',
 				backdropFilter: 'blur(4px)',
@@ -77,18 +80,19 @@ export function BottomSheet({
 		>
 			<div
 				ref={sheetRef}
-				className={`w-full ${maxWidth ?? ''} rounded-t-[28px] p-5 border-t border-x border-app-border`}
+				className={`w-full ${maxWidth ?? 'max-w-md'} ${isWeb ? 'rounded-[28px] border max-h-[90vh] overflow-y-auto' : 'rounded-t-[28px] border-t border-x'} p-5 border-app-border`}
 				style={{
 					background: 'var(--color-modal-bg)',
 					transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
 					transition: dragging ? 'none' : 'transform 0.2s ease-out',
+					boxShadow: isWeb ? '0 10px 40px rgba(0,0,0,0.1)' : undefined,
 				}}
 				onClick={e => e.stopPropagation()}
 				onTouchStart={onTouchStart}
 				onTouchMove={onTouchMove}
 				onTouchEnd={onTouchEnd}
 			>
-				<div className='w-10 h-1 bg-glass-strong rounded-full mx-auto mb-4 cursor-grab' />
+				{!isWeb && <div className='w-10 h-1 bg-glass-strong rounded-full mx-auto mb-4 cursor-grab' />}
 				{children}
 			</div>
 		</div>

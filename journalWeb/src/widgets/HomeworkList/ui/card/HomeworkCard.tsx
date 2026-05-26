@@ -1,5 +1,6 @@
-import type { HomeworkItemWithStatus } from '@/entities/homework'
+import { Capacitor } from '@capacitor/core'
 import { deriveHomeworkCardState } from '@/entities/homework'
+import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { getCachedImageUrl } from '@/shared/lib'
 import { PhotoViewerModal } from '@/shared/ui'
 import { ChevronDown, MessageSquare } from 'lucide-react'
@@ -17,6 +18,7 @@ export const HomeworkCard = memo(
 	function HomeworkCard({ hw }: Props) {
 		const [commentOpen, setCommentOpen] = useState(false)
 		const [viewerOpen, setViewerOpen] = useState(false)
+		const isWeb = Capacitor.getPlatform() === 'web'
 
 		const photoUrl = getCachedImageUrl(hw.photo_url)
 		const {
@@ -33,7 +35,7 @@ export const HomeworkCard = memo(
 		return (
 			<>
 				<div
-					className={`${cardBg} backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden`}
+					className={`${cardBg} backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden ${isWeb ? 'h-full flex flex-col' : ''}`}
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
 					{photoUrl && (
@@ -50,7 +52,7 @@ export const HomeworkCard = memo(
 						</button>
 					)}
 
-					<div className={photoUrl ? 'p-4 space-y-3' : 'p-5'}>
+					<div className={photoUrl ? `p-4 space-y-3 ${isWeb ? 'flex flex-col flex-1' : ''}` : `p-5 ${isWeb ? 'flex flex-col flex-1' : ''}`}>
 						<HomeworkCardHeader hw={hw} gradeStyle={gradeStyle} grade={grade} />
 
 						<HomeworkCardDates
@@ -92,15 +94,17 @@ export const HomeworkCard = memo(
 							</div>
 						)}
 
-						<HomeworkCardActions
-							homeworkId={hw.id}
-							homeworkTheme={hw.theme ?? hw.spec_name}
-							statusKey={hw.statusKey}
-							fileUrl={hw.file_url}
-							studAnswer={hw.stud_answer}
-							studFileUrl={hw.stud_file_url ?? null}
-							studId={hw.stud_id ?? null}
-						/>
+						<div className={isWeb ? 'mt-auto pt-4' : ''}>
+							<HomeworkCardActions
+								homeworkId={hw.id}
+								homeworkTheme={hw.theme ?? hw.spec_name}
+								statusKey={hw.statusKey}
+								fileUrl={hw.file_url}
+								studAnswer={hw.stud_answer}
+								studFileUrl={hw.stud_file_url ?? null}
+								studId={hw.stud_id ?? null}
+							/>
+						</div>
 					</div>
 				</div>
 

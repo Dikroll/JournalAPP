@@ -1,5 +1,7 @@
+import { Capacitor } from '@capacitor/core'
 import type { ExamResult } from '@/entities/exam'
 import { useExamResults } from '@/entities/exam'
+import { useLazyItems } from '@/shared/hooks'
 import { ErrorView, SkeletonList } from '@/shared/ui'
 import { formatDate } from '@/shared/utils'
 import { CheckCircle, Clock, GraduationCap } from 'lucide-react'
@@ -75,6 +77,7 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 
 export function GradesExamList() {
 	const { exams, status } = useExamResults()
+	const isWeb = Capacitor.getPlatform() === 'web'
 
 	if (status === 'loading') return <SkeletonList count={3} height={72} />
 
@@ -98,20 +101,27 @@ export function GradesExamList() {
 		title: string
 		items: ExamResult[]
 	}) => {
+		const { visibleCount, sentinelRef } = useLazyItems(
+			items.length,
+			5,
+			5,
+		)
+
 		if (!items.length) return null
 		return (
 			<div className='space-y-2'>
 				<p className='text-sm font-medium text-app-muted px-1'>{title}</p>
 				<div
-					className='bg-app-surface rounded-[24px] p-3 border border-app-border'
+					className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-3 border border-app-border`}
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
-					{items.map((exam, idx) => (
+					{items.slice(0, visibleCount).map((exam, idx) => (
 						<div key={exam.exam_id}>
 							{idx > 0 && <div className='border-t border-app-border my-1' />}
 							<ExamRow exam={exam} />
 						</div>
 					))}
+					<div ref={sentinelRef} />
 				</div>
 			</div>
 		)

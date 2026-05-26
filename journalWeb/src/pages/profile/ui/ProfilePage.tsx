@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import { resetAllAppState } from '@/app/lib'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useProfileDetails } from '@/entities/profile'
@@ -63,6 +64,7 @@ export function ProfilePage() {
 	}
 
 	const isDesktop = useIsDesktop()
+	const isWeb = Capacitor.getPlatform() === 'web'
 
 	if (!isDesktop) {
 		return (
@@ -70,9 +72,9 @@ export function ProfilePage() {
 				<ProfileHeader user={user} rank={myRankGroup?.position} />
 
 				<div className='px-4 space-y-5 mt-4'>
-					<Leaderboard myStudentId={user.student_id} />
+					{!isWeb && <Leaderboard myStudentId={user.student_id} />}
 					<MarketLink />
-					<ReviewsList />
+					{!isWeb && <ReviewsList />}
 				</div>
 			</div>
 		)
@@ -111,9 +113,9 @@ export function ProfilePage() {
 							onClearCache={() => setShowClearCache(true)}
 						/>
 
-						<Leaderboard myStudentId={user.student_id} />
+						{!isWeb && <Leaderboard myStudentId={user.student_id} />}
 						<MarketLink />
-						<ReviewsList />
+						{!isWeb && <ReviewsList />}
 					</div>
 				</div>
 

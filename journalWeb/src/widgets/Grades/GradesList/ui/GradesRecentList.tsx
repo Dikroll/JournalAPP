@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import type { GradeEntryExpanded } from '@/entities/grades'
 import { useLazyItems } from '@/shared/hooks'
 import {
@@ -40,6 +41,8 @@ function DateCard({
 		return () => observer.disconnect()
 	}, [])
 
+	const isWeb = Capacitor.getPlatform() === 'web'
+
 	const estimatedHeight = 56 + items.length * 68
 
 	return (
@@ -49,7 +52,7 @@ function DateCard({
 			</div>
 			<div
 				ref={cardRef}
-				className='bg-app-surface rounded-[24px] p-3 border border-app-border'
+				className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-3 border border-app-border`}
 				style={{
 					boxShadow: 'var(--shadow-card)',
 					minHeight: visible && items.length > 0 ? undefined : estimatedHeight,

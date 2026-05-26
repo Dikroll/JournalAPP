@@ -9,6 +9,7 @@ import {
 	useSortSubjectsStore,
 } from '@/features/sortSubjects'
 import { useLazyItems } from '@/shared/hooks'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { formatDayMonth } from '@/shared/utils/dateUtils'
 import { useMemo } from 'react'
 
@@ -25,15 +26,18 @@ export function GradesSubjectList({ bySubject }: Props) {
 		return <p className='text-app-muted text-sm text-center py-8'>Нет данных</p>
 	}
 
+	const isWeb = Capacitor.getPlatform() === 'web'
+	const isDesktop = useIsDesktop()
+
 	return (
 		<div className='space-y-3'>
 			<SortSubjectsControl />
 
-			<div className='columns-1 md:columns-2 gap-4 space-y-3 md:space-y-0'>
+			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 				{sorted.slice(0, visibleCount).map(subj => (
 					<div
 						key={subj.spec_id}
-						className='bg-app-surface rounded-[24px] p-4 border border-app-border break-inside-avoid mb-4'
+						className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-4 border border-app-border flex flex-col h-full`}
 						style={{ boxShadow: 'var(--shadow-card)' }}
 					>
 					<div className='flex items-start justify-between gap-3 mb-4'>
@@ -56,7 +60,10 @@ export function GradesSubjectList({ bySubject }: Props) {
 						</div>
 					</div>
 
-					<div className='-mx-4 overflow-x-auto scrollbar-none'>
+					<div
+						className={`-mx-4 overflow-x-auto ${!isDesktop ? 'scrollbar-none' : ''}`}
+						style={isDesktop ? { scrollbarWidth: 'thin', paddingBottom: '8px' } : undefined}
+					>
 						<div className='flex gap-3 px-4 pb-2 w-max'>
 							{subj.entries.flatMap((entry, entryIdx) =>
 								entry.flatMarks.map(({ type, value }, markIdx) => (
@@ -89,16 +96,17 @@ export function GradesSubjectList({ bySubject }: Props) {
 			))}
 
 			{visibleCount < sorted.length && (
-				<div ref={sentinelRef} className='space-y-3 pt-1 break-inside-avoid'>
+				<>
 					{[0, 1].map(i => (
 						<div
-							key={i}
+							key={`skeleton-${i}`}
 							className='bg-app-surface rounded-[24px] animate-pulse h-24'
 						/>
 					))}
-				</div>
+				</>
 			)}
 			</div>
+			{visibleCount < sorted.length && <div ref={sentinelRef} />}
 		</div>
 	)
 }

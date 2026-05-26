@@ -1,18 +1,22 @@
+import { Capacitor } from '@capacitor/core'
 import {
 	useGrades,
 	useGradesBySubject,
 	useGradesGroups,
 } from '@/entities/grades'
+import { useDashboardCharts } from '@/entities/dashboard'
 
 import { useSubjects } from '@/entities/subject'
 import { RefreshGradesButton } from '@/features/refreshGrades'
 import { SpecSelector } from '@/features/selectSpec'
 
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import type { Tab } from '@/widgets'
 import {
 	GoalsSummaryCard,
 	GradesCalendar,
+	GradesCharts,
 
 	GradesExamList,
 	GradesRecentList,
@@ -30,6 +34,9 @@ export function GradesPage() {
 	const { entries, status, error, refresh } = useGrades()
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
+	const { progress, attendance, status: chartsStatus } = useDashboardCharts()
+	const isWeb = Capacitor.getPlatform() === 'web'
+	const isDesktop = useIsDesktop()
 
 	const handleSpecChange = useCallback(
 		(spec: { id: number } | null) => {
@@ -75,7 +82,18 @@ export function GradesPage() {
 			<div className='p-4 space-y-4'>
 				<PageHeader title='Оценки' actions={<RefreshGradesButton />} />
 
-				<GoalsSummaryCard />
+				{isDesktop && isWeb && progress?.length > 0 && attendance?.length > 0 ? (
+					<div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+						<GoalsSummaryCard className='h-full' />
+						<GradesCharts
+							progress={progress}
+							attendance={attendance}
+							className='col-span-2'
+						/>
+					</div>
+				) : (
+					<GoalsSummaryCard />
+				)}
 
 				<SpecSelector
 					subjects={specList}
