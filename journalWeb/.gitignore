@@ -27,3 +27,9 @@ dist-ssr
 # Environment variables
 .env
 .env.*
+
+# AI Assistants
+.gemini/
+.cline/
+.claude/
+.antigravity/
