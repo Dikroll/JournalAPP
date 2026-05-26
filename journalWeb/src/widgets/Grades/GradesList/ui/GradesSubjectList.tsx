@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import type { SubjectStats } from '@/entities/grades'
 import {
 	GRADE_TYPE_CONFIG,

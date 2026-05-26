@@ -34,7 +34,7 @@ export function GradesPage() {
 	const { entries, status, error, refresh } = useGrades()
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
-	const { progress, attendance, status: chartsStatus } = useDashboardCharts()
+	const { progress, attendance } = useDashboardCharts()
 	const isWeb = Capacitor.getPlatform() === 'web'
 	const isDesktop = useIsDesktop()
 
