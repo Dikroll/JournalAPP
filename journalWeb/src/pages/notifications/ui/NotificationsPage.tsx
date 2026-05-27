@@ -13,6 +13,7 @@ import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
 import { ChangelogTab, EvaluateLessonList, NewsTab } from '@/widgets'
+import { isWebPlatform } from '@/shared/lib/platform'
 import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -20,10 +21,13 @@ import { useLocation, useNavigate } from 'react-router-dom'
 type Tab = "changelog" | "feedback" | "news";
 
 const TABS: Segment<Tab>[] = [
-	{ key: "changelog", label: "Обновления", icon: <Sparkles size={13} /> },
 	{ key: "feedback", label: "Оценки", icon: <ClipboardCheck size={13} /> },
 	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
 ];
+
+if (!isWebPlatform) {
+	TABS.unshift({ key: "changelog", label: "Обновления", icon: <Sparkles size={13} /> })
+}
 
 export function NotificationsPage() {
 	const navigate = useNavigate()

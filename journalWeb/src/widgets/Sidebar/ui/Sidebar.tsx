@@ -130,18 +130,18 @@ export const Sidebar = memo(() => {
 							{/* Счётчики монет и кристаллов */}
 							{(coins !== null || diamonds !== null) && (
 								<div className="sidebar-web__counters">
-									{coins !== null && (
-										<span className="sidebar-web__counter sidebar-web__counter--coins">
-											<Coins size={11} />
-											<span>{coins}</span>
-										</span>
-									)}
 									{diamonds !== null && (
-										<span className="sidebar-web__counter sidebar-web__counter--gems">
-											<Gem size={11} />
-											<span>{diamonds}</span>
-										</span>
-									)}
+                    <span className="sidebar-web__counter sidebar-web__counter--coins">
+                      <Coins size={11} className="text-[#FFD700]" />
+                      <span>{diamonds}</span>
+                    </span>
+                  )}
+                  {coins !== null && (
+                    <span className="sidebar-web__counter sidebar-web__counter--gems">
+                      <Gem size={11} className="text-[#00D9FF]" />
+                      <span>{coins}</span>
+                    </span>
+                  )}
 								</div>
 							)}
 						</div>

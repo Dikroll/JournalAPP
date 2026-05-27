@@ -52,7 +52,7 @@ export const useNotificationsStore = create<NotificationsState>()(
 			setLastRead: id => set({ lastReadChangelogId: id }),
 			seenPendingKeys: [],
 			markPendingSeen: keys => set({ seenPendingKeys: keys }),
-			activeTab: 'changelog',
+			activeTab: 'news',
 			setActiveTab: tab => set({ activeTab: tab }),
 		}),
 		{
