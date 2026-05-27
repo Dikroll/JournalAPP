@@ -1,3 +1,4 @@
+import { useState, useCallback, useMemo } from 'react'
 
 import {
 	useGrades,
@@ -28,9 +29,6 @@ import {
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>("recent");
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null);
-
-	const progress = useDashboardChartsStore((s) => s.progress);
-	const attendance = useDashboardChartsStore((s) => s.attendance);
 
 
 	const { entries, status, error, refresh } = useGrades()

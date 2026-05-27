@@ -153,7 +153,7 @@ export function useFeedback() {
 	}, []);
 
 	const refreshPending = useCallback(() => {
-		setPendingLoadedAt(null);
+		setPendingLoadedAt(0);
 		if (pendingStatus !== "loading") {
 			setPendingStatus("idle");
 		}

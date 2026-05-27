@@ -26,12 +26,15 @@ export function DashboardCharts() {
 
 	if (status === "error") return null;
 
+	const lastAtt = lastValue(attendance);
+	const lastProg = lastValue(progress);
+
 	return (
 		<div className="grid grid-cols-2 gap-3">
 			<StatsCard
 				title="Посещаемость"
 				value={
-					lastValue(attendance) != null ? `${lastValue(attendance)}%` : "—"
+					lastAtt != null ? `${lastAtt}%` : "—"
 				}
 				trend={calcTrend(attendance)}
 				trendSuffix="%"
@@ -43,7 +46,7 @@ export function DashboardCharts() {
 			<StatsCard
 				title="Средний балл"
 				value={
-					lastValue(progress) != null ? lastValue(progress)?.toFixed(1) : "—"
+					lastProg != null ? lastProg.toFixed(1) : "—"
 				}
 				trend={calcTrend(progress)}
 				trendLabel="за месяц"

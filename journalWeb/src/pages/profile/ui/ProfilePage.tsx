@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useProfileDetails } from '@/entities/profile'

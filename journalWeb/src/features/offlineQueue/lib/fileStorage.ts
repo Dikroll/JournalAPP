@@ -60,9 +60,9 @@ export async function readFileFromQueue(
 ): Promise<File> {
 	if (Capacitor.isNativePlatform()) {
 		await ensureFs();
-		const result = await Filesystem?.readFile({
+		const result = await Filesystem!.readFile({
 			path,
-			directory: Directory?.Data,
+			directory: Directory!.Data,
 		});
 		const blob = base64ToBlob(result.data as string, mimeType);
 		return new File([blob], fileName, { type: mimeType });

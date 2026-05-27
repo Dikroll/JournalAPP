@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
 import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { useProfileDetails } from '@/entities/profile'
 import { pageConfig } from '@/shared/config'

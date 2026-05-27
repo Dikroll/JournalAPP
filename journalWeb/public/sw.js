@@ -62,8 +62,8 @@ self.addEventListener("fetch", (event) => {
 		caches.match(request).then((cached) => {
 			if (cached) return cached;
 			return fetch(request).then((response) => {
-				// Кэшируем только успешные ответы
-				if (response.ok) {
+				// Кэшируем только успешные ответы и только http/https (чтобы избежать ошибки chrome-extension)
+				if (response.ok && request.url.startsWith('http')) {
 					const clone = response.clone();
 					caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
 				}

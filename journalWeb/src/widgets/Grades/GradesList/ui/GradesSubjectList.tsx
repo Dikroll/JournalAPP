@@ -13,7 +13,6 @@ import { useLazyItems } from '@/shared/hooks'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { formatDayMonth } from '@/shared/utils/dateUtils'
 import { isWebPlatform } from '@/shared/lib/platform'
-import { useMemo } from 'react'
 
 interface Props {
 	bySubject: SubjectStats[];
@@ -35,7 +34,6 @@ export function GradesSubjectList({ bySubject }: Props) {
 	}
 
 	const isWeb = isWebPlatform
-	const isDesktop = useIsDesktop()
 
 	return (
 		<div className="space-y-3">

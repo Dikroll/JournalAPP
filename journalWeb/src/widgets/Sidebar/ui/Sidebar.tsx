@@ -1,3 +1,5 @@
+import { memo } from 'react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   Moon,
   Sun,
@@ -9,7 +11,7 @@ import { useTopBarViewModel } from '@/features/navigation/hooks/useTopBarViewMod
 import { useThemeStore } from '@/shared/lib/themeStore'
 import { useNetworkStore } from '@/shared/model/networkStore'
 import { pageConfig, mainNavItems, studyNavItems, quickLinksNavItems } from '@/shared/config'
-import { Avatar, BrandLogo, Badge } from '@/shared/ui'
+import { Avatar, Badge } from '@/shared/ui'
 import { useUserStore } from '@/entities/user'
 import './Sidebar.css'
 
@@ -146,68 +148,6 @@ export const Sidebar = memo(() => {
 					</button>
 				)}
 			</div>
-
-        {/* Лого */}
-        <BrandLogo size="sm" className="mb-[0.875rem]" />
-
-        {/* Дата под лого */}
-        <div className="sidebar-web__date-block-top">
-          <span className="sidebar-web__date-weekday-top">{weekday}</span>
-          <span className="sidebar-web__date-day-top">{dayMonth}</span>
-        </div>
-
-        {/* Юзер — клик на аватар/имя → профиль */}
-        {vm && (
-          <button
-            type="button"
-            className="sidebar-web__user sidebar-web__user--clickable"
-            onClick={() => navigate(pageConfig.profile)}
-            title="Перейти в профиль"
-          >
-            <Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} size="2.25rem" />
-            <div className="sidebar-web__user-info">
-              <div className="sidebar-web__name">{vm.shortName}</div>
-              <div className="sidebar-web__group">{vm.groupName}</div>
-
-              {/* Счётчики монет и кристаллов */}
-              {(coins !== null || diamonds !== null) && (
-                <div className="sidebar-web__counters">
-                  {diamonds !== null && (
-                    <span className="sidebar-web__counter sidebar-web__counter--coins">
-                      <Coins size={11} className="text-[#FFD700]" />
-                      <span>{diamonds}</span>
-                    </span>
-                  )}
-                  {coins !== null && (
-                    <span className="sidebar-web__counter sidebar-web__counter--gems">
-                      <Gem size={11} className="text-[#00D9FF]" />
-                      <span>{coins}</span>
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </button>
-        )}
-
-				<button
-					className="sidebar-web__theme-btn"
-					onClick={toggleTheme}
-					type="button"
-					aria-label="Переключить тему"
-				>
-					{theme === "dark" ? <Moon size={14} /> : <Sun size={14} />}
-					<span>{theme === "dark" ? "Тёмная тема" : "Светлая тема"}</span>
-					<div
-						className={`sidebar-web__toggle ${theme === "dark" ? "sidebar-web__toggle--on" : ""}`}
-					/>
-				</button>
-			</div>
-		</aside>
-	);
-});
-
-      </div>
 
       {/* ── Заголовок страницы ── */}
       <div className="sidebar-web__page-title">{pageTitle}</div>
