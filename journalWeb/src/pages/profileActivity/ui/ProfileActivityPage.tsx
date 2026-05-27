@@ -5,7 +5,8 @@ import { useDashboardActivityViewModel } from "@/entities/dashboard";
 import { useSwipeBack } from "@/shared/hooks";
 import type { Segment } from "@/shared/ui";
 import { PageHeader, SegmentedControl } from "@/shared/ui";
-import { ActivityIntroCard, ActivityList } from "@/widgets";
+import { ActivityIntroCard } from "@/widgets/Profile/Activity/ui/ActivityIntroCard";
+import { ActivityList } from "@/widgets/Profile/Activity/ui/ActivityList";
 
 const FILTERS: Segment<ActivityFilter>[] = [
 	{

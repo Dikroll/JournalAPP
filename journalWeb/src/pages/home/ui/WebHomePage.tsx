@@ -1,14 +1,12 @@
-import {
-	GoalsSummaryCard,
-	FutureExams,
-	HomeScheduleSection,
-	HomeworkCountersBar,
-	Leaderboard,
-	ReviewsList,
-} from "@/widgets";
 import { useHomework } from "@/entities/homework";
 import { useUser } from "@/entities/user";
 import { BookOpen } from "lucide-react";
+import { FutureExams } from "@/widgets/FutureExams/ui/FutureExams";
+import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
+import { HomeworkCountersBar } from "@/widgets/HomeworkList/ui/shared/HomeworkCounterBar";
+import { Leaderboard } from "@/widgets/Leaderboard/ui/Leaderboard";
+import { ReviewsList } from "@/widgets/ReviewList/ui/ReviewList";
+import { HomeScheduleSection } from "@/widgets/Schedule/HomeScheduleSection/ui/HomeScheduleSection";
 
 /**
  * WebHomePage — десктопная версия главной страницы.

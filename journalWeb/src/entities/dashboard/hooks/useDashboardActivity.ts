@@ -9,7 +9,6 @@ import { useDashboardChartsStore } from "../model/store";
 import type { DashboardActivityEntry } from "../model/types";
 
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
-const BACKGROUND_REFRESH_MS = 5 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 25_000;
 
 function sortByDateDesc(
@@ -28,6 +27,20 @@ export function useDashboardActivity() {
 
 	const fetchingRef = useRef(false);
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const hydrateFromStorage = useCallback(() => {
+		const cached = storage.get<DashboardActivityEntry[]>(
+			CACHE_KEYS.DASHBOARD_ACTIVITY,
+		);
+		if (!cached?.length) return false;
+
+		setActivity(sortByDateDesc(cached));
+		setLoadedAt(
+			storage.getCachedAt(CACHE_KEYS.DASHBOARD_ACTIVITY) ?? Date.now(),
+		);
+		setStatus("success");
+		return true;
+	}, [setActivity, setLoadedAt, setStatus]);
 
 	const refreshActivityRef = useRef(async () => {});
 	refreshActivityRef.current = async () => {
@@ -75,20 +88,14 @@ export function useDashboardActivity() {
 
 	useEffect(() => {
 		if (activity.length > 0 || loadedAt !== null) return;
-
-		const cached = storage.get<DashboardActivityEntry[]>(
-			CACHE_KEYS.DASHBOARD_ACTIVITY,
-		);
-		if (!cached?.length) return;
-
-		setActivity(sortByDateDesc(cached));
-		setLoadedAt(
-			storage.getCachedAt(CACHE_KEYS.DASHBOARD_ACTIVITY) ?? Date.now(),
-		);
-		setStatus("success");
-	}, [activity.length, loadedAt, setActivity, setLoadedAt, setStatus]);
+		hydrateFromStorage();
+	}, [activity.length, hydrateFromStorage, loadedAt]);
 
 	useEffect(() => {
+		if (activity.length === 0 && loadedAt === null && hydrateFromStorage()) {
+			return;
+		}
+
 		const shouldFetchInitially =
 			loadedAt === null || !isCacheValid(loadedAt, CACHE_TTL_MS);
 
@@ -96,18 +103,13 @@ export function useDashboardActivity() {
 			void refreshActivity();
 		}
 
-		const intervalId = window.setInterval(() => {
-			void refreshActivity();
-		}, BACKGROUND_REFRESH_MS);
-
 		return () => {
-			window.clearInterval(intervalId);
 			if (timeoutRef.current) {
 				clearTimeout(timeoutRef.current);
 				timeoutRef.current = null;
 			}
 		};
-	}, [loadedAt]);
+	}, [activity.length, hydrateFromStorage, loadedAt, refreshActivity]);
 
 	return {
 		activity,

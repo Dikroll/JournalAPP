@@ -4,8 +4,6 @@ import { gradesApi } from "../api";
 import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { useGradesStore } from "../model/store";
 
-export function resetGradesFetch() {}
-
 export function useGrades() {
 	const { entries, status, error, loadedAt, update } = useGradesStore();
 

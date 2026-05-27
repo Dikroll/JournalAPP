@@ -2,7 +2,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useMidnightRefresh } from "@/app/hooks/useMidnightRefresh";
 import { pageConfig } from "@/shared/config";
 import { GlowBackground, OfflineBanner } from "@/shared/ui";
-import { BottomBar, TopBar } from "@/widgets";
+import { BottomBar } from "@/widgets/BottomBar/ui/BottomBar";
+import { TopBar } from "@/widgets/TopBar/ui/TopBar";
 
 export function AppLayout() {
 	const location = useLocation();

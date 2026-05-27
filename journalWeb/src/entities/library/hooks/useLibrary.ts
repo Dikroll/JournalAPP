@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { ttl } from "@/shared/config";
 import { isCacheValid } from "@/shared/lib";
 import { libraryApi } from "../api";
@@ -7,6 +7,8 @@ import { useLibraryStore } from "../model/store";
 
 const MATERIALS_TTL_MS = ttl.SESSION * 1000; // 24h
 const COUNTERS_TTL_MS = ttl.SESSION * 1000; // 24h
+const fetchingMaterials = new Set<string>();
+const fetchingCounters = new Set<string>();
 
 interface UseLibraryOptions {
 	specId?: number;
@@ -42,9 +44,6 @@ export function useLibrary({
 	/** Ключ для счётчиков — только предмет, один на все вкладки */
 	const countersKey = `${specId ?? "all"}`;
 
-	const fetchingMaterialsRef = useRef(false);
-	const fetchingCountersRef = useRef(false);
-
 	const materials = materialsMap[materialsKey] ?? [];
 	const counters = countersMap[countersKey] ?? null;
 	const isLoading = loadingKeys.has(materialsKey);
@@ -53,12 +52,12 @@ export function useLibrary({
 	/** Загрузка материалов для конкретной вкладки */
 	const loadMaterials = useCallback(
 		async (force = false) => {
-			if (fetchingMaterialsRef.current) return;
+			if (fetchingMaterials.has(materialsKey)) return;
 			const loadedAt =
 				useLibraryStore.getState().materialsLoadedAt[materialsKey] ?? null;
 			if (!force && isCacheValid(loadedAt, MATERIALS_TTL_MS)) return;
 
-			fetchingMaterialsRef.current = true;
+			fetchingMaterials.add(materialsKey);
 			setLoading(materialsKey, true);
 			setStatus("loading");
 			setError(materialsKey, null);
@@ -98,7 +97,7 @@ export function useLibrary({
 				setGlobalError(msg);
 				setStatus("error");
 			} finally {
-				fetchingMaterialsRef.current = false;
+				fetchingMaterials.delete(materialsKey);
 				setLoading(materialsKey, false);
 			}
 		},
@@ -121,12 +120,12 @@ export function useLibrary({
 	/** Загрузка счётчиков — один раз на предмет, независимо от активной вкладки */
 	const loadCounters = useCallback(
 		async (force = false) => {
-			if (fetchingCountersRef.current) return;
+			if (fetchingCounters.has(countersKey)) return;
 			const loadedAt =
 				useLibraryStore.getState().countersLoadedAt[countersKey] ?? null;
 			if (!force && isCacheValid(loadedAt, COUNTERS_TTL_MS)) return;
 
-			fetchingCountersRef.current = true;
+			fetchingCounters.add(countersKey);
 			try {
 				const cts = await libraryApi.getCounters(specId);
 				setCounters(countersKey, cts);
@@ -134,7 +133,7 @@ export function useLibrary({
 			} catch {
 				// счётчики некритичны — молча игнорируем ошибку
 			} finally {
-				fetchingCountersRef.current = false;
+				fetchingCounters.delete(countersKey);
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,8 +152,7 @@ export function useLibrary({
 
 	const load = useCallback(
 		(force = false) => {
-			loadMaterials(force);
-			loadCounters(force);
+			void Promise.all([loadMaterials(force), loadCounters(force)]);
 		},
 		[loadMaterials, loadCounters],
 	);

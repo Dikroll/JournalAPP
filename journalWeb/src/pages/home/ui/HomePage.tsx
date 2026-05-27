@@ -1,6 +1,8 @@
 import { GraduationCap } from "lucide-react";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
-import { DashboardCharts, FutureExams, HomeScheduleSection } from "@/widgets";
+import { DashboardCharts } from "@/widgets/DashboardCharts/ui/DashboardCharts";
+import { FutureExams } from "@/widgets/FutureExams/ui/FutureExams";
+import { HomeScheduleSection } from "@/widgets/Schedule/HomeScheduleSection/ui/HomeScheduleSection";
 import { WebHomePage } from "./WebHomePage";
 
 export function HomePage() {

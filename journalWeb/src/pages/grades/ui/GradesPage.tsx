@@ -1,38 +1,43 @@
-import { useState, useCallback, useMemo } from 'react'
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 
 import {
 	useGrades,
 	useGradesBySubject,
 	useGradesGroups,
-} from '@/entities/grades'
-import { useDashboardCharts } from '@/entities/dashboard'
+} from "@/entities/grades";
+import { useDashboardCharts } from "@/entities/dashboard/hooks/useDashboardCharts";
 
-import { useSubjects } from '@/entities/subject'
-import { RefreshGradesButton } from '@/features/refreshGrades'
-import { SpecSelector } from '@/features/selectSpec'
+import { useSubjects } from "@/entities/subject";
+import { RefreshGradesButton } from "@/features/refreshGrades";
+import { SpecSelector } from "@/features/selectSpec";
 
-import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
-import type { Tab } from '@/widgets'
-import {
-	GoalsSummaryCard,
-	GradesCalendar,
-	GradesCharts,
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { ErrorView, PageHeader, SkeletonList } from "@/shared/ui";
+import type { Tab } from "@/widgets/Grades/GradesTabs/ui/GradesTabs";
+import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
+import { GradesCalendar } from "@/widgets/Grades/GradesCalendar/ui/GradesCalendar";
+import { GradesExamList } from "@/widgets/Grades/GradesList/ui/GradesExamList";
+import { GradesRecentList } from "@/widgets/Grades/GradesList/ui/GradesRecentList";
+import { GradesSubjectList } from "@/widgets/Grades/GradesList/ui/GradesSubjectList";
+import { GradesTabs } from "@/widgets/Grades/GradesTabs/ui/GradesTabs";
 
-	GradesExamList,
-	GradesRecentList,
-	GradesSubjectList,
-	GradesTabs,
-} from "@/widgets";
+const GradesCharts = lazy(() =>
+	import("@/widgets/Grades/GradesCharts/ui/GradesCharts").then((m) => ({
+		default: m.GradesCharts,
+	})),
+);
 
 export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>("recent");
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null);
+	const isDesktop = useIsDesktop();
 
-
-	const { entries, status, error, refresh } = useGrades()
-	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
-	const { subjects: specList, status: specsStatus } = useSubjects()
-	const { progress, attendance } = useDashboardCharts()
+	const { entries, status, error, refresh } = useGrades();
+	const { bySubject: subjectCache, loadSubject } = useGradesBySubject();
+	const { subjects: specList, status: specsStatus } = useSubjects();
+	const { progress, attendance } = useDashboardCharts({
+		enabled: status === "success",
+	});
 	const handleSpecChange = useCallback(
 		(spec: { id: number } | null) => {
 			const id = spec?.id ?? null;
@@ -79,12 +84,14 @@ export function GradesPage() {
 
 				<div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
 					<GoalsSummaryCard className="h-full" />
-					{progress && progress.length > 0 && attendance && attendance.length > 0 && (
-						<GradesCharts
-							progress={progress}
-							attendance={attendance}
-							className="hidden xl:grid xl:col-span-2 h-full"
-						/>
+					{isDesktop && progress.length > 0 && attendance.length > 0 && (
+						<Suspense fallback={null}>
+							<GradesCharts
+								progress={progress}
+								attendance={attendance}
+								className="hidden xl:grid xl:col-span-2 h-full"
+							/>
+						</Suspense>
 					)}
 				</div>
 

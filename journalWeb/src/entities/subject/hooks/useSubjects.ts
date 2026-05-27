@@ -5,8 +5,6 @@ import { useSubjectStore } from "../model/store";
 
 const CACHE_TTL_MS = ttl.LEADERBOARD * 1000;
 
-export function resetSubjectsFetch() {}
-
 export function useSubjects() {
 	const subjects = useSubjectStore((s) => s.subjects);
 	const status = useSubjectStore((s) => s.status);

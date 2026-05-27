@@ -9,8 +9,8 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import type { ChartPoint } from "@/entities/dashboard";
-import { useGradesCharts } from "@/entities/dashboard";
+import { useGradesCharts } from "@/entities/dashboard/hooks/useGradesCharts";
+import type { ChartPoint } from "@/entities/dashboard/model/types";
 import { useElementSize } from "@/shared/hooks";
 import { CustomTooltip } from "@/shared/ui/";
 

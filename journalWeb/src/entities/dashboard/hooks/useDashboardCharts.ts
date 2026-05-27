@@ -9,12 +9,13 @@ export { calcTrend, lastValue, toChartData } from "../utils/chartUtils";
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
 const FETCH_TIMEOUT_MS = 15_000;
 
-export let fetchStarted = false;
-export function resetFetchStarted() {
-	fetchStarted = false;
+interface UseDashboardChartsOptions {
+	enabled?: boolean;
 }
 
-export function useDashboardCharts() {
+export function useDashboardCharts({
+	enabled = true,
+}: UseDashboardChartsOptions = {}) {
 	const {
 		progress,
 		attendance,
@@ -30,6 +31,7 @@ export function useDashboardCharts() {
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
+		if (!enabled) return;
 		if (fetchingRef.current) return;
 		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return;
 
@@ -63,7 +65,7 @@ export function useDashboardCharts() {
 					timeoutRef.current = null;
 				}
 			});
-	}, [loadedAt, setAttendance, setLoadedAt, setProgress, setStatus]);
+	}, [enabled, loadedAt, setAttendance, setLoadedAt, setProgress, setStatus]);
 
 	useEffect(() => {
 		return () => {

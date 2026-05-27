@@ -4,7 +4,15 @@ import { useNetworkRefresh } from "@/shared/hooks/useNetworkRefresh";
 
 export function useRefreshLibrary() {
 	const { status } = useLibraryStore();
-	const { load } = useLibrary({ autoLoad: false });
+	const selectedSpecId = useLibraryStore((state) => state.selectedSpecId);
+	const selectedMaterialType = useLibraryStore(
+		(state) => state.selectedMaterialType,
+	);
+	const { load } = useLibrary({
+		specId: selectedSpecId ?? undefined,
+		materialType: selectedMaterialType ?? undefined,
+		autoLoad: false,
+	});
 
 	const refreshAction = useCallback(() => {
 		load(true);

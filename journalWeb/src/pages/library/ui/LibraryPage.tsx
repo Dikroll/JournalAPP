@@ -1,5 +1,10 @@
-import { Suspense } from "react";
-import { LibraryView } from "@/widgets";
+import { lazy, Suspense } from "react";
+
+const LibraryView = lazy(() =>
+	import("@/widgets/Library/LibraryView/ui/LibraryView").then((m) => ({
+		default: m.LibraryView,
+	})),
+);
 
 export function LibraryPage() {
 	return (
