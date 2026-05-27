@@ -54,7 +54,7 @@ export function ProductsTab({
 					Товары скоро появятся
 				</div>
 			) : (
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+				<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,250px),1fr))] items-stretch gap-3.5">
 					{products.map((product) => (
 						<ProductCard
 							key={product.id}

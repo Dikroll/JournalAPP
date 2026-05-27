@@ -24,9 +24,9 @@ export function ProductCard({
 
 	return (
 		<>
-			<article className="bg-app-surface rounded-3xl border border-app-border overflow-hidden">
+			<article className="flex h-full flex-col overflow-hidden rounded-[18px] border border-app-border bg-app-surface">
 				<div
-					className="aspect-video bg-app-surface-hover cursor-pointer"
+					className="h-36 shrink-0 bg-app-surface-hover cursor-pointer sm:h-40 xl:h-44"
 					onClick={() => product.image_url && setPhotoViewerOpen(true)}
 				>
 					{product.image_url ? (
@@ -43,32 +43,32 @@ export function ProductCard({
 					)}
 				</div>
 
-				<div className="p-4 space-y-3">
+				<div className="flex flex-1 flex-col gap-2 p-3.5">
 					<div className="flex items-start justify-between gap-3">
 						<div className="min-w-0">
-							<h2 className="text-base font-semibold text-app-text leading-snug">
+							<h2 className="line-clamp-2 text-[15px] font-semibold leading-snug text-app-text">
 								{product.title}
 							</h2>
-							<p className="text-xs text-app-muted mt-1">
+							<p className="mt-0.5 text-xs text-app-muted">
 								В наличии: {product.quantity}
 							</p>
 						</div>
 					</div>
 
-					<p className="text-sm text-app-muted whitespace-pre-line leading-relaxed">
+					<p className="line-clamp-2 whitespace-pre-line text-[13px] leading-relaxed text-app-muted">
 						{product.description}
 					</p>
 
-					<PriceDisplay price={product.price} className="text-sm" />
+					<div className="mt-auto space-y-2 pt-0.5">
+						<PriceDisplay price={product.price} className="text-sm" />
 
-					<div className="space-y-2 pt-2">
 						{inCart > 0 ? (
 							<button
 								type="button"
 								onClick={onRemove}
-								className="w-full h-9 px-3 rounded-2xl bg-status-error/10 text-status-error text-xs font-semibold border border-status-error/30 transition hover:bg-status-error/20"
+								className="h-9 w-full rounded-2xl border border-status-error/30 bg-status-error/10 px-3 text-xs font-semibold text-status-error transition hover:bg-status-error/20"
 							>
-								<div className="flex items-center justify-center gap-2">
+								<div className="flex items-center justify-center gap-2 whitespace-nowrap">
 									<Trash2 size={14} />
 									Убрать из корзины
 								</div>
@@ -79,7 +79,7 @@ export function ProductCard({
 								onClick={onAdd}
 								disabled={isSoldOut || !canAddToCart}
 								title={!canAddToCart ? "Не хватает средств" : ""}
-								className="w-full h-9 px-3 rounded-2xl bg-brand text-white text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition hover:bg-brand/90"
+								className="h-9 w-full rounded-2xl bg-brand px-3 text-xs font-semibold text-white transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								В корзину
 							</button>
