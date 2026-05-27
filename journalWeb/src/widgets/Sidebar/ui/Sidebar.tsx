@@ -108,10 +108,10 @@ export const Sidebar = memo(() => {
 				</div>
 
 				{/* Дата */}
-				<div className="sidebar-web__date-block sidebar-web__date-block--main">
-					<span className="sidebar-web__date-weekday">{weekday}</span>
-					<span className="sidebar-web__date-dot">·</span>
-					<span className="sidebar-web__date-day">{dayMonth}</span>
+				<div className="sidebar-web__date-block-top">
+					<span className="sidebar-web__date-weekday-top">{weekday}</span>
+					<span className="sidebar-web__date-dot text-app-muted">·</span>
+					<span className="sidebar-web__date-day-top">{dayMonth}</span>
 				</div>
 
 				{/* Юзер — клик на аватар/имя → профиль */}

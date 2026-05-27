@@ -127,7 +127,7 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 						})}
 					</div>
 
-					<div className="grid grid-cols-5 gap-1.5 mb-3">
+					<div className="grid grid-cols-5 gap-1.5 mb-3 w-full">
 						{([5, 4, 3, 2, 1] as const).map((v) => {
 							const count = distribution[v];
 							const pct =
@@ -135,7 +135,7 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 							return (
 								<div
 									key={v}
-									className="rounded-[14px] py-1 flex flex-col items-center justify-center"
+									className="rounded-[14px] py-1 flex flex-col items-center justify-center w-full min-w-0"
 									style={{
 										background: GRADE_BG[v],
 										opacity: count === 0 ? 0.45 : 1,
