@@ -6,6 +6,7 @@ interface Props {
 	onFilter: (key: HomeworkStatus | null) => void;
 	isVertical?: boolean;
 	readonly?: boolean;
+	withIcons?: boolean;
 }
 
 import {
@@ -74,6 +75,7 @@ export function HomeworkCountersBar({
 	onFilter,
 	isVertical = false,
 	readonly = false,
+	withIcons = false,
 }: Props) {
 	return (
 		<div
@@ -155,7 +157,10 @@ export function HomeworkCountersBar({
 										: undefined
 								}
 								className={[
-									"flex-shrink-0 px-3 py-2 rounded-2xl text-center min-w-[72px] transition-all duration-200 homework-counters-bar__btn",
+									"flex-shrink-0 min-w-[72px] rounded-2xl px-3 py-2 transition-all duration-200 homework-counters-bar__btn",
+									withIcons
+										? "flex items-center gap-3 text-left"
+										: "text-center",
 									isClickable
 										? "active:scale-95 cursor-pointer"
 										: "cursor-default",
@@ -164,10 +169,23 @@ export function HomeworkCountersBar({
 										: `bg-app-surface border border-app-border ${isClickable ? "hover:bg-app-surface-hover" : ""}`,
 								].join(" ")}
 							>
-								<div className={`text-lg font-bold ${color}`}>
-									{counters[key]}
+								{withIcons && (
+									<div
+										className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+										style={{
+											background: bgColor,
+											border: `1px solid ${borderColor}`,
+										}}
+									>
+										<Icon size={16} className={color} />
+									</div>
+								)}
+								<div className={withIcons ? "min-w-0" : ""}>
+									<div className={`text-lg font-bold leading-tight ${color}`}>
+										{counters[key]}
+									</div>
+									<div className="truncate text-xs text-app-muted">{label}</div>
 								</div>
-								<div className="text-xs text-app-muted">{label}</div>
 							</button>
 						);
 					})}

@@ -5,10 +5,10 @@ import {
 	HomeworkCountersBar,
 	Leaderboard,
 	ReviewsList,
-} from '@/widgets'
-import { useHomework } from '@/entities/homework'
-import { useUser } from '@/entities/user'
-import { BookOpen } from 'lucide-react'
+} from "@/widgets";
+import { useHomework } from "@/entities/homework";
+import { useUser } from "@/entities/user";
+import { BookOpen } from "lucide-react";
 
 /**
  * WebHomePage — десктопная версия главной страницы.
@@ -23,38 +23,38 @@ import { BookOpen } from 'lucide-react'
  * └──────────────────────┴───────────────────────┘
  */
 export function WebHomePage() {
-	const user = useUser()
-	const { counters, filterStatus, setFilter } = useHomework()
+	const user = useUser();
+	const { counters, filterStatus, setFilter } = useHomework();
 
 	return (
-		<div className='p-5 pb-8 flex flex-col gap-4 w-full'>
+		<div className="p-5 pb-8 flex flex-col gap-4 w-full">
 			<div
-				className='grid gap-4'
-				style={{ gridTemplateColumns: '5fr 6fr', alignItems: 'stretch' }}
+				className="grid gap-4"
+				style={{ gridTemplateColumns: "5fr 6fr", alignItems: "stretch" }}
 			>
 				{/* ── РЯД 1, ЛЕВО (Сводка + Экзамены + Домашка) ── */}
-				<div className='flex flex-col gap-4'>
+				<div className="flex flex-col gap-4">
 					{/* Сводка */}
 					<GoalsSummaryCard />
 
 					{/* Экзамены */}
 					<div
-						className='rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0'
+						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
 						style={{
-							background: 'var(--color-surface)',
-							boxShadow: 'var(--shadow-card)',
-							minHeight: '16.25rem',
+							background: "var(--color-surface)",
+							boxShadow: "var(--shadow-card)",
+							minHeight: "16.25rem",
 						}}
 					>
-						<div className='flex items-center gap-2 mb-3 shrink-0'>
-							<div className='w-[2px] h-5 bg-app-border rounded-full' />
-							<h2 className='text-sm font-bold text-app-text'>
+						<div className="flex items-center gap-2 mb-3 shrink-0">
+							<div className="w-[2px] h-5 bg-app-border rounded-full" />
+							<h2 className="text-sm font-bold text-app-text">
 								Будущие экзамены
 							</h2>
 						</div>
 						<div
-							className='overflow-y-auto flex-1 min-h-0'
-							style={{ scrollbarWidth: 'thin' }}
+							className="overflow-y-auto flex-1 min-h-0"
+							style={{ scrollbarWidth: "thin" }}
 						>
 							<FutureExams />
 						</div>
@@ -62,39 +62,42 @@ export function WebHomePage() {
 
 					{/* Домашка */}
 					<div
-						className='rounded-[20px] border border-app-border p-4 flex flex-col shrink-0'
+						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
 						style={{
-							background: 'var(--color-surface)',
-							boxShadow: 'var(--shadow-card)',
+							background: "var(--color-surface)",
+							boxShadow: "var(--shadow-card)",
 						}}
 					>
-						<div className='flex items-center gap-2 mb-4 shrink-0'>
-							<BookOpen size={15} className='text-app-muted shrink-0' />
-							<h2 className='text-sm font-bold text-app-text'>Домашка</h2>
+						<div className="flex items-center gap-2 mb-4 shrink-0">
+							<BookOpen size={15} className="text-app-muted shrink-0" />
+							<h2 className="text-sm font-bold text-app-text">Домашка</h2>
 						</div>
-						{counters && (
-							<HomeworkCountersBar
-								counters={counters}
-								activeFilter={filterStatus}
-								onFilter={setFilter}
-								isVertical={false}
-								readonly={true}
-							/>
-						)}
+						<div className="homework-counters-full">
+							{counters && (
+								<HomeworkCountersBar
+									counters={counters}
+									activeFilter={filterStatus}
+									onFilter={setFilter}
+									isVertical={false}
+									readonly={true}
+									withIcons
+								/>
+							)}
+						</div>
 					</div>
 				</div>
 
 				{/* ── РЯД 1, ПРАВО (Расписание) ── */}
 				<div
-					className='rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0'
+					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
 					style={{
-						background: 'var(--color-surface)',
-						boxShadow: 'var(--shadow-card)',
+						background: "var(--color-surface)",
+						boxShadow: "var(--shadow-card)",
 					}}
 				>
 					<div
-						className='overflow-y-auto flex-1 min-h-0 -mr-2 pr-2'
-						style={{ scrollbarWidth: 'thin' }}
+						className="overflow-y-auto flex-1 min-h-0 -mr-2 pr-2"
+						style={{ scrollbarWidth: "thin" }}
 					>
 						<HomeScheduleSection />
 					</div>
@@ -102,16 +105,16 @@ export function WebHomePage() {
 
 				{/* ── РЯД 2, ЛЕВО (Лидеры) ── */}
 				<div
-					className='rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0'
+					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
 					style={{
-						background: 'var(--color-surface)',
-						boxShadow: 'var(--shadow-card)',
-						height: '23.75rem',
+						background: "var(--color-surface)",
+						boxShadow: "var(--shadow-card)",
+						height: "23.75rem",
 					}}
 				>
 					<div
-						className='overflow-y-auto flex-1 min-h-0'
-						style={{ scrollbarWidth: 'thin' }}
+						className="overflow-y-auto flex-1 min-h-0"
+						style={{ scrollbarWidth: "thin" }}
 					>
 						{user && <Leaderboard myStudentId={user.student_id} />}
 					</div>
@@ -119,21 +122,21 @@ export function WebHomePage() {
 
 				{/* ── РЯД 2, ПРАВО (Отзывы) ── */}
 				<div
-					className='rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0'
+					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
 					style={{
-						background: 'var(--color-surface)',
-						boxShadow: 'var(--shadow-card)',
-						height: '23.75rem',
+						background: "var(--color-surface)",
+						boxShadow: "var(--shadow-card)",
+						height: "23.75rem",
 					}}
 				>
 					<div
-						className='overflow-y-auto flex-1 min-h-0'
-						style={{ scrollbarWidth: 'thin' }}
+						className="overflow-y-auto flex-1 min-h-0"
+						style={{ scrollbarWidth: "thin" }}
 					>
 						<ReviewsList />
 					</div>
 				</div>
 			</div>
 		</div>
-	)
+	);
 }
