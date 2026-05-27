@@ -15,6 +15,10 @@ export type {
 	GradeEntryExpanded,
 	SubjectStats,
 } from "./model/types";
-export { getGradeDotColor } from "./utils/gradeDotColor";
+export {
+	GRADE_DOT_LEGEND,
+	getGradeDotColor,
+	getGradeDotInfo,
+} from "./utils/gradeDotColor";
 export type { SortKey } from "./utils/sortSubjects";
 export { sortSubjects } from "./utils/sortSubjects";

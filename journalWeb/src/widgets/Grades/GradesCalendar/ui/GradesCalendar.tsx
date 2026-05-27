@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { GradeEntryExpanded } from "@/entities/grades";
-import { getGradeDotColor } from "@/entities/grades";
+import { GRADE_DOT_LEGEND, getGradeDotInfo } from "@/entities/grades";
 import { useMonthNav } from "@/shared/hooks";
 import { MonthGrid } from "@/shared/ui";
 import {
@@ -66,13 +66,18 @@ export function GradesCalendar({ byMonth }: Props) {
 			const entries = datesWithData[dateStr] ?? [];
 			const hasData = entries.length > 0;
 			const isSelected = selectedDate === dateStr;
-			const dotColor = hasData ? getGradeDotColor(entries) : null;
+			const dotInfo = hasData ? getGradeDotInfo(entries) : null;
+			const tooltip = dotInfo
+				? `${formatDateWithWeekday(dateStr)}. ${dotInfo.label}: ${dotInfo.description}`
+				: undefined;
 
 			return (
 				<button
 					type="button"
 					disabled={!hasData}
 					onClick={() => handleDayClick(dateStr, hasData)}
+					title={tooltip}
+					aria-label={tooltip}
 					className="relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default"
 					style={{
 						width: 36,
@@ -95,7 +100,7 @@ export function GradesCalendar({ byMonth }: Props) {
 						/>
 					)}
 
-					{dotColor && !isSelected && (
+					{dotInfo && !isSelected && (
 						<span
 							className="absolute rounded-full pointer-events-none"
 							style={{
@@ -104,7 +109,7 @@ export function GradesCalendar({ byMonth }: Props) {
 								bottom: 3,
 								left: "50%",
 								transform: "translateX(-50%)",
-								backgroundColor: dotColor,
+								backgroundColor: dotInfo.color,
 							}}
 						/>
 					)}
@@ -124,25 +129,6 @@ export function GradesCalendar({ byMonth }: Props) {
 					onNextMonth={handleNextMonth}
 					renderDay={renderDay}
 				/>
-				
-				<div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-2">
-					<div className="flex items-center gap-1.5">
-						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-checked)" }} />
-						<span className="text-[11px] text-app-muted">5</span>
-					</div>
-					<div className="flex items-center gap-1.5">
-						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-new)" }} />
-						<span className="text-[11px] text-app-muted">4 / Посетил</span>
-					</div>
-					<div className="flex items-center gap-1.5">
-						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-pending)" }} />
-						<span className="text-[11px] text-app-muted">3</span>
-					</div>
-					<div className="flex items-center gap-1.5">
-						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-overdue)" }} />
-						<span className="text-[11px] text-app-muted">2 / Пропуск</span>
-					</div>
-				</div>
 
 				{Object.keys(datesWithData).length === 0 && (
 					<p className="text-app-muted text-sm text-center py-2">
@@ -150,23 +136,20 @@ export function GradesCalendar({ byMonth }: Props) {
 					</p>
 				)}
 
-				<div className='flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-4 text-xs text-app-muted'>
-					<div className='flex items-center gap-1.5'>
-						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-checked)' }} />
-						<span>Отлично (5)</span>
-					</div>
-					<div className='flex items-center gap-1.5'>
-						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-new)' }} />
-						<span>Хорошо (4) или без оценок</span>
-					</div>
-					<div className='flex items-center gap-1.5'>
-						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-pending)' }} />
-						<span>Удовлетворительно (3)</span>
-					</div>
-					<div className='flex items-center gap-1.5'>
-						<div className='w-1.5 h-1.5 rounded-full' style={{ backgroundColor: 'var(--color-overdue)' }} />
-						<span>Долг / Пропуск</span>
-					</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-4 text-xs">
+					{GRADE_DOT_LEGEND.map((item) => (
+						<div
+							key={item.label}
+							className="flex items-center gap-1.5"
+							title={`${item.label}: ${item.description}`}
+						>
+							<div
+								className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+								style={{ backgroundColor: item.color }}
+							/>
+							<span className="text-app-text leading-snug">{item.label}</span>
+						</div>
+					))}
 				</div>
 			</div>
 
