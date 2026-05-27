@@ -2,6 +2,7 @@ import { paymentApi } from '@/entities/payment'
 import { usePayment } from '@/entities/payment/hooks/usePayment'
 import { usePaymentIndex } from '@/entities/payment/hooks/usePaymentIndex'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
+import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import {
 	PaymentHistoryCard,
@@ -15,6 +16,7 @@ export function PaymentPage() {
 	const { summary, status } = usePayment()
 	const { index } = usePaymentIndex()
 	const [isDownloading, setIsDownloading] = useState(false)
+	const isDesktop = useIsDesktop()
 
 	useSwipeBack()
 
@@ -47,7 +49,7 @@ export function PaymentPage() {
 			<div className='px-4 pt-4 pb-4'>
 				<PageHeader 
 					title='Оплата' 
-					showBack 
+					showBack={!isDesktop}
 					actions={
 						<button
 							onClick={handleDownload}

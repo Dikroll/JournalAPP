@@ -93,12 +93,7 @@ export function MarketPage() {
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-2'>
-						{!isDesktop && (
-							<button onClick={() => navigate(-1)} className='p-2 -ml-2 text-app-text'>
-								<ChevronLeft size={24} />
-							</button>
-						)}
-						<PageHeader title='Маркет' />
+						<PageHeader title='Маркет' showBack={!isDesktop} />
 					</div>
 					<RefreshMarketButton
 						isRefreshing={

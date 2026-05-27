@@ -43,7 +43,7 @@ export function NewsDetailSheet({ id, onClose }: NewsDetailSheetProps) {
 					{detail?.content_html && (
 						<div
 							className="prose prose-invert max-w-none text-app-text text-sm"
-							dangerouslySetInnerHTML={{ __html: detail.content_html }}
+							dangerouslySetInnerHTML={{ __html: detail.content_html.replace(/src="\/([^"]+)"/g, 'src="https://journal.top-academy.ru/$1"') }}
 							style={
 								{
 									"--tw-prose-body": "var(--color-text)",

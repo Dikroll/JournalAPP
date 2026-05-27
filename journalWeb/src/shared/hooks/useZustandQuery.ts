@@ -25,63 +25,68 @@ export function useZustandQuery<T>({
 	errorMessage = "Ошибка загрузки",
 }: ZustandQueryOptions<T>) {
 	const fetchingRef = useRef(false);
+	const fetchFnRef = useRef(fetchFn);
+	const updateStoreRef = useRef(updateStore);
+
+	fetchFnRef.current = fetchFn;
+	updateStoreRef.current = updateStore;
 
 	useEffect(() => {
 		if (fetchingRef.current) return;
 		if (status === "loading") return;
 
 		if (hasData && isCacheValid(loadedAt, ttlMs)) {
-			if (status === "idle") updateStore({ status: "success" });
+			if (status === "idle") updateStoreRef.current({ status: "success" });
 			return;
 		}
 
 		if (!getIsOnline()) {
 			if (hasData || loadedAt !== null) {
-				if (status === "idle") updateStore({ status: "success" });
+				if (status === "idle") updateStoreRef.current({ status: "success" });
 				return;
 			}
-			updateStore({ status: "error", error: "Нет подключения к интернету" });
+			updateStoreRef.current({ status: "error", error: "Нет подключения к интернету" });
 			return;
 		}
 
 		const cached = storage.get<T>(cacheKey);
 		if (cached) {
-			updateStore({ data: cached, status: "success", loadedAt: Date.now(), error: null });
+			updateStoreRef.current({ data: cached, status: "success", loadedAt: Date.now(), error: null });
 			return;
 		}
 
 		fetchingRef.current = true;
-		updateStore({ status: "loading", error: null });
+		updateStoreRef.current({ status: "loading", error: null });
 
-		fetchFn()
+		fetchFnRef.current()
 			.then((data) => {
-				updateStore({ data, status: "success", loadedAt: Date.now(), error: null });
+				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
 				storage.set(cacheKey, data, ttlMs / 1000);
 			})
 			.catch(() => {
-				if (!hasData) updateStore({ status: "error", error: errorMessage });
+				if (!hasData) updateStoreRef.current({ status: "error", error: errorMessage });
 			})
 			.finally(() => {
 				fetchingRef.current = false;
 			});
-	}, [hasData, loadedAt, status, cacheKey, ttlMs, fetchFn, updateStore, errorMessage]);
+	}, [hasData, loadedAt, status, cacheKey, ttlMs, errorMessage]);
 
 	const refresh = useCallback(async () => {
 		if (fetchingRef.current) return;
 		storage.remove(cacheKey);
 		fetchingRef.current = true;
-		updateStore({ status: "loading", error: null });
+		updateStoreRef.current({ status: "loading", error: null });
 		
 		try {
-			const data = await fetchFn();
-			updateStore({ data, status: "success", loadedAt: Date.now(), error: null });
+			const data = await fetchFnRef.current();
+			updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
 			storage.set(cacheKey, data, ttlMs / 1000);
 		} catch (err) {
-			updateStore({ status: "error", error: errorMessage });
+			updateStoreRef.current({ status: "error", error: errorMessage });
 		} finally {
 			fetchingRef.current = false;
 		}
-	}, [cacheKey, ttlMs, fetchFn, updateStore, errorMessage]);
+	}, [cacheKey, ttlMs, errorMessage]);
 
 	return { refresh };
 }
