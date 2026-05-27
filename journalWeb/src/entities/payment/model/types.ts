@@ -37,6 +37,8 @@ export interface PaymentIndex {
     bank_name: string
     settlement_account: string
     organization_name: string
+    okpo: string
+    mfo: string
     updated_at: string
   }
 }

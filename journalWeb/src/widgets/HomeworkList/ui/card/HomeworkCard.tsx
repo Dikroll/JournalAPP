@@ -1,7 +1,7 @@
-import { Capacitor } from '@capacitor/core'
 import { deriveHomeworkCardState } from '@/entities/homework'
 import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { getCachedImageUrl } from '@/shared/lib'
+import { isWebPlatform } from '@/shared/lib/platform'
 import { PhotoViewerModal } from '@/shared/ui'
 import { ChevronDown, MessageSquare } from 'lucide-react'
 import { memo, useState } from 'react'
@@ -18,7 +18,7 @@ export const HomeworkCard = memo(
 	function HomeworkCard({ hw }: Props) {
 		const [commentOpen, setCommentOpen] = useState(false)
 		const [viewerOpen, setViewerOpen] = useState(false)
-		const isWeb = Capacitor.getPlatform() === 'web'
+		const isWeb = isWebPlatform
 
 		const photoUrl = getCachedImageUrl(hw.photo_url)
 		const {

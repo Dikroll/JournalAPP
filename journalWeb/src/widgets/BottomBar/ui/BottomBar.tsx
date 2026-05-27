@@ -1,21 +1,5 @@
-import { pageConfig } from '@/shared/config'
-import {
-	BookMarked,
-	BookOpen,
-	Calendar,
-	GraduationCap,
-	Home,
-} from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
-
-const tabs = [
-	{ to: pageConfig.home, icon: Home, exact: true },
-	{ to: pageConfig.grades, icon: GraduationCap, exact: false },
-	{ to: pageConfig.schedule, icon: Calendar, exact: false },
-	{ to: pageConfig.homework, icon: BookOpen, exact: false },
-	{ to: pageConfig.library, icon: BookMarked, exact: false },
-]
-
+import { bottomBarNavItems } from '@/shared/config'
 export function BottomBar() {
 	const navigate = useNavigate()
 	const location = useLocation()
@@ -27,7 +11,7 @@ export function BottomBar() {
 				style={{ boxShadow: 'var(--shadow-nav)' }}
 			>
 				<div className='flex justify-around items-center'>
-					{tabs.map(({ to, icon: Icon, exact }) => {
+					{bottomBarNavItems.map(({ to, icon: Icon, exact }) => {
 						const isActive = exact
 							? location.pathname === to
 							: location.pathname.startsWith(to)

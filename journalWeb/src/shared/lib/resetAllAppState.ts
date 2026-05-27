@@ -165,19 +165,19 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	})
 
 	if (resetTheme) {
-		useThemeStore.setState((state: any) => ({
+		useThemeStore.setState(state => ({
 			...state,
 			theme: 'dark',
 		}))
 	}
 
 	if (resetAuth) {
-		useAuthStore.setState((state: any) => ({
+		useAuthStore.setState(state => ({
 			token: null,
 			isAuthenticated: false,
 			activeUsername: null,
 			accounts: state.accounts.filter(
-				(account: any) => account.username !== state.activeUsername,
+				account => account.username !== state.activeUsername,
 			),
 		}))
 	}

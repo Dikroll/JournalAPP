@@ -1,4 +1,5 @@
-export { AvatarPlaceholder } from './AvatarPlaceholder/AvatarPlaceholder'
+export { Avatar } from './Avatar/Avatar'
+export { BrandLogo } from './BrandLogo/BrandLogo'
 export { Badge } from './Badge/Badge'
 export { BottomSheet } from './BottomSheet/BottomSheet'
 export { CustomTooltip } from './CustomTooltip/CustomTooltip'

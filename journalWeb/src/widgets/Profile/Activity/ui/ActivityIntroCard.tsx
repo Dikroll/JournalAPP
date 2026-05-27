@@ -1,4 +1,4 @@
-import { Coins, Diamond } from 'lucide-react'
+import { Coins, Gem } from 'lucide-react'
 
 export function ActivityIntroCard() {
 	return (
@@ -28,7 +28,7 @@ export function ActivityIntroCard() {
 						<Coins size={18} className='text-[#FFD700]' />
 					</div>
 					<div className='w-10 h-10 rounded-2xl bg-[#00D9FF]/10 border border-[#00D9FF]/20 flex items-center justify-center'>
-						<Diamond size={18} className='text-[#00D9FF]' />
+						<Gem size={18} className='text-[#00D9FF]' />
 					</div>
 				</div>
 			</div>

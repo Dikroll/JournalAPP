@@ -1,11 +1,11 @@
 import { userApi, useUserStore } from '@/entities/user'
-import { resetAllAppState } from '@/app/lib'
+import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { pageConfig } from '@/shared/config'
 import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
-import { useAuthStore, useHydrationStore } from '../model/store'
+import { useAuthStore, useHydrationStore } from '@/shared/model/authStore'
 import type { LoginRequest } from '../model/types'
 
 export function useLogin() {

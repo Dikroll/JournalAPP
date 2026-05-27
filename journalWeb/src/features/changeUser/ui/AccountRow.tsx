@@ -1,4 +1,4 @@
-import type { SavedAccount } from '@/features/auth/model/store'
+import type { SavedAccount } from '@/shared/model/authStore'
 import { RefreshCw, Trash2, UserRound } from 'lucide-react'
 
 interface Props {

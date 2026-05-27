@@ -20,10 +20,15 @@ export function usePaymentIndex() {
 
 	useEffect(() => {
 		if (fetchingRef.current) return
-		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
+		if (isCacheValid(loadedAt, CACHE_TTL_MS)) {
+			// Invalidate if old cache is missing the new fields
+			if (index && index.payment?.okpo !== undefined) {
+				return
+			}
+		}
 
 		const cached = storage.get<PaymentIndex>(CACHE_KEYS.PAYMENT_INDEX)
-		if (cached) {
+		if (cached && cached.payment?.okpo !== undefined) {
 			setIndex(cached)
 			setLoadedAt(Date.now())
 			setStatus('success')

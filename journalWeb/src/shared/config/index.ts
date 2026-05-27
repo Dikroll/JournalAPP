@@ -10,3 +10,4 @@ export { widgetConfig } from './widgetConfig'
 export * from './semesterConfig'
 
 export * from './gradeColors'
+export * from './navigation'

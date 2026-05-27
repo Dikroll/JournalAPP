@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/features/auth'
-import { useHydrationStore } from '@/features/auth/model/store'
+import { useHydrationStore } from '@/shared/model/authStore'
 import {
 	EvaluateLessonPage,
 	GoalDetailPage,

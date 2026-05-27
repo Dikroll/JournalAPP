@@ -1,4 +1,3 @@
-import { Capacitor } from '@capacitor/core'
 import type { SubjectStats } from '@/entities/grades'
 import {
 	GRADE_TYPE_CONFIG,
@@ -12,6 +11,7 @@ import {
 import { useLazyItems } from '@/shared/hooks'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 import { formatDayMonth } from '@/shared/utils/dateUtils'
+import { isWebPlatform } from '@/shared/lib/platform'
 import { useMemo } from 'react'
 
 interface Props {
@@ -27,7 +27,7 @@ export function GradesSubjectList({ bySubject }: Props) {
 		return <p className='text-app-muted text-sm text-center py-8'>Нет данных</p>
 	}
 
-	const isWeb = Capacitor.getPlatform() === 'web'
+	const isWeb = isWebPlatform
 	const isDesktop = useIsDesktop()
 
 	return (

@@ -1,5 +1,5 @@
 import { useUserStore } from '@/entities/user'
-import { resetAllAppState } from '@/app/lib'
+import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { pageConfig } from '@/shared/config'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'

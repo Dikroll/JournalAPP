@@ -1,4 +1,4 @@
-import { Capacitor } from '@capacitor/core'
+
 import {
 	useGrades,
 	useGradesBySubject,
@@ -12,6 +12,7 @@ import { SpecSelector } from '@/features/selectSpec'
 
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
+import { isWebPlatform } from '@/shared/lib/platform'
 import type { Tab } from '@/widgets'
 import {
 	GoalsSummaryCard,
@@ -35,7 +36,7 @@ export function GradesPage() {
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
 	const { progress, attendance } = useDashboardCharts()
-	const isWeb = Capacitor.getPlatform() === 'web'
+	const isWeb = isWebPlatform
 	const isDesktop = useIsDesktop()
 
 	const handleSpecChange = useCallback(

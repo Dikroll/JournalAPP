@@ -47,23 +47,23 @@ interface NotificationsState {
 
 export const useNotificationsStore = create<NotificationsState>()(
 	persistEncrypted(
-		(set: any) => ({
+		set => ({
 			lastReadChangelogId: null,
-			setLastRead: (id: any) => set({ lastReadChangelogId: id }),
+			setLastRead: id => set({ lastReadChangelogId: id }),
 			seenPendingKeys: [],
-			markPendingSeen: (keys: any) => set({ seenPendingKeys: keys }),
+			markPendingSeen: keys => set({ seenPendingKeys: keys }),
 			activeTab: 'changelog',
-			setActiveTab: (tab: any) => set({ activeTab: tab }),
+			setActiveTab: tab => set({ activeTab: tab }),
 		}),
 		{
 			name: 'notifications-store',
-			partialize: (state: any) => ({
+			partialize: state => ({
 				lastReadChangelogId: state.lastReadChangelogId,
 				seenPendingKeys: state.seenPendingKeys,
 				activeTab: state.activeTab,
 			}),
 		},
-	) as any,
+	),
 )
 
 export function getUnreadCount(

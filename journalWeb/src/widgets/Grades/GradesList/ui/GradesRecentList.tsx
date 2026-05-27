@@ -1,6 +1,6 @@
-import { Capacitor } from '@capacitor/core'
 import type { GradeEntryExpanded } from '@/entities/grades'
 import { useLazyItems } from '@/shared/hooks'
+import { isWebPlatform } from '@/shared/lib/platform'
 import {
 	formatDateRelative,
 	formatWeekLabel,
@@ -41,7 +41,7 @@ function DateCard({
 		return () => observer.disconnect()
 	}, [])
 
-	const isWeb = Capacitor.getPlatform() === 'web'
+	const isWeb = isWebPlatform
 
 	const estimatedHeight = 56 + items.length * 68
 

@@ -1,6 +1,6 @@
 import { canOpenMaterial, getOpenUrl } from '@/shared/lib/materialUrls'
 import { fixUrl } from '@/shared/lib/imageCache'
-import { Capacitor } from '@capacitor/core'
+import { isWebPlatform } from '@/shared/lib/platform'
 import { Browser } from '@capacitor/browser'
 import { Download, ExternalLink } from 'lucide-react'
 
@@ -14,7 +14,7 @@ interface Props {
 
 async function openExternalUrl(rawUrl: string) {
 	const absolute = fixUrl(rawUrl) ?? rawUrl
-	if (Capacitor.isNativePlatform()) {
+	if (!isWebPlatform) {
 		await Browser.open({ url: absolute })
 	} else {
 		window.open(absolute, '_blank')

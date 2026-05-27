@@ -1,6 +1,8 @@
 import { memo, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@/widgets/Sidebar'
+import { useMidnightRefresh } from '@/app/hooks/useMidnightRefresh'
+import { GlowBackground, OfflineBanner } from '@/shared/ui'
 import './WebLayout.css'
 
 /**
@@ -18,6 +20,7 @@ import './WebLayout.css'
  */
 export const WebLayout = memo(() => {
   const [zoom, setZoom] = useState(1)
+  useMidnightRefresh()
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,10 +40,16 @@ export const WebLayout = memo(() => {
   }, [])
 
   return (
-    <div className="web-layout-wrapper">
+    <div className="web-layout-wrapper relative">
+      <GlowBackground useVariables />
       <div 
-        className="web-layout w-full"
-        style={{ zoom }}
+        className="web-layout w-full relative z-10"
+        style={{ 
+          transform: `scale(${zoom})`, 
+          transformOrigin: 'top left',
+          width: `${100 / zoom}%`,
+          height: `${100 / zoom}%`
+        }}
       >
         <div className="web-layout__sidebar-wrapper">
           <div className="web-layout__sidebar-inner">
@@ -48,6 +57,9 @@ export const WebLayout = memo(() => {
           </div>
         </div>
         <div className="web-layout__main-wrapper">
+          <div className="web-layout__offline-wrapper" style={{ zIndex: 100 }}>
+            <OfflineBanner />
+          </div>
           <main className="web-layout__content">
             <Outlet />
           </main>

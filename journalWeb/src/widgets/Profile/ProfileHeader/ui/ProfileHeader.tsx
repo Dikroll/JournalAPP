@@ -2,7 +2,7 @@ import type { UserInfo } from '@/entities/user'
 import { pageConfig } from '@/shared/config'
 import { usePhotoViewer } from '@/shared/hooks'
 import { getCachedImageUrl } from '@/shared/lib'
-import { Coins, Diamond, TrendingUp } from 'lucide-react'
+import { Coins, Gem, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
@@ -35,11 +35,11 @@ export const ProfileHeader = memo(
 				state: { initialFilter: 'DIAMOND' as const },
 			},
 			{
-				icon: <Diamond size={15} className='text-[#00D9FF]' />,
+				icon: <Gem size={15} className='text-[#00D9FF]' />,
 				label: 'Топгемы',
 				value: coins.toLocaleString(),
 				to: pageConfig.profileActivity,
-				state: { initialFilter: 'COINS' as const },
+				state: { initialFilter: 'COIN' as const },
 			},
 			{
 				icon: <TrendingUp size={15} className='text-status-checked' />,

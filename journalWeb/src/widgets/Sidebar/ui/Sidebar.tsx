@@ -1,22 +1,17 @@
 import { memo } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  GraduationCap,
-  CalendarDays,
-  BookOpen,
-  Library,
-  Star,
   Moon,
   Sun,
   WifiOff,
-  Newspaper,
   Gem,
   Coins,
 } from 'lucide-react'
-import { useTopBarViewModel } from '@/app/hooks/useTopBarViewModel'
+import { useTopBarViewModel } from '@/features/navigation/hooks/useTopBarViewModel'
 import { useThemeStore } from '@/shared/lib/themeStore'
-import { pageConfig } from '@/shared/config'
+import { useNetworkStore } from '@/shared/model/networkStore'
+import { pageConfig, mainNavItems, studyNavItems, quickLinksNavItems } from '@/shared/config'
+import { Avatar, BrandLogo, Badge } from '@/shared/ui'
 import { useUserStore } from '@/entities/user'
 import './Sidebar.css'
 
@@ -53,42 +48,14 @@ function formatDateParts(): { weekday: string; dayMonth: string } {
   }
 }
 
-// ─── Аватар ───────────────────────────────────────────────────────────────────
-
-interface AvatarProps {
-  photoUrl: string | null
-  fullName: string
-}
-
-const Avatar = memo(({ photoUrl, fullName }: AvatarProps) => {
-  const initials = fullName
-    .split(' ')
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
-
-  if (photoUrl) {
-    return (
-      <img
-        src={photoUrl}
-        alt={fullName}
-        className="sidebar-web__avatar sidebar-web__avatar--photo"
-      />
-    )
-  }
-
-  return <div className="sidebar-web__avatar">{initials}</div>
-})
-
-Avatar.displayName = 'Avatar'
+// Removed local Avatar component in favor of shared/ui
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export const Sidebar = memo(() => {
   const vm = useTopBarViewModel()
   const user = useUserStore(state => state.user)
-  const isOffline = !navigator.onLine
+  const isOffline = !useNetworkStore(state => state.isOnline)
   const { theme, toggleTheme } = useThemeStore()
   const navigate = useNavigate()
   const location = useLocation()
@@ -96,22 +63,29 @@ export const Sidebar = memo(() => {
   const hwBadge = vm?.hasBadge ? 1 : undefined
   const pageTitle = PAGE_TITLES[location.pathname] ?? 'Журнал'
 
-  const coins = user?.points?.coins?.balance ?? null
-  const diamonds = user?.points?.diamonds?.balance ?? null
+  const coins = user?.points?.coins?.earned ?? null
+  const diamonds = user?.points?.diamonds?.earned ?? null
 
   const { weekday, dayMonth } = formatDateParts()
 
-  const mainNav: NavItem[] = [
-    { to: pageConfig.home,     label: 'Главная',         icon: <LayoutDashboard size={16} /> },
-    { to: pageConfig.grades,   label: 'Оценки',           icon: <GraduationCap   size={16} /> },
-    { to: pageConfig.schedule, label: 'Расписание',       icon: <CalendarDays    size={16} /> },
-    { to: pageConfig.homework, label: 'Домашние задания', icon: <BookOpen        size={16} />, badge: hwBadge },
-  ]
+  const mainNav: NavItem[] = mainNavItems.map(item => ({
+    to: item.to,
+    label: item.label,
+    icon: <item.icon size={16} />,
+    badge: item.to === pageConfig.homework ? hwBadge : undefined
+  }))
 
-  const studyNav: NavItem[] = [
-    { to: pageConfig.library, label: 'Библиотека', icon: <Library size={16} /> },
-    // { to: pageConfig.goals, label: 'Цели', icon: <Star size={16} /> },
-  ]
+  const studyNav: NavItem[] = studyNavItems.map(item => ({
+    to: item.to,
+    label: item.label,
+    icon: <item.icon size={16} />
+  }))
+
+  const quickLinksNav: NavItem[] = quickLinksNavItems.map(item => ({
+    to: item.to,
+    label: item.label,
+    icon: <item.icon size={16} />
+  }))
 
 
 
@@ -122,17 +96,7 @@ export const Sidebar = memo(() => {
       <div className="sidebar-web__header">
 
         {/* Лого */}
-        <div
-          className="sidebar-web__brand"
-          onClick={() => navigate(pageConfig.home)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && navigate(pageConfig.home)}
-        >
-          <span className="sidebar-web__brand-it">IT</span>
-          <span className="sidebar-web__brand-top"> TOP</span>
-          <span className="sidebar-web__brand-college"> COLLEGE</span>
-        </div>
+        <BrandLogo size="sm" className="mb-[0.875rem]" />
 
         {/* Дата под лого */}
         <div className="sidebar-web__date-block-top">
@@ -148,7 +112,7 @@ export const Sidebar = memo(() => {
             onClick={() => navigate(pageConfig.profile)}
             title="Перейти в профиль"
           >
-            <Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
+            <Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} size="2.25rem" />
             <div className="sidebar-web__user-info">
               <div className="sidebar-web__name">{vm.shortName}</div>
               <div className="sidebar-web__group">{vm.groupName}</div>
@@ -156,16 +120,16 @@ export const Sidebar = memo(() => {
               {/* Счётчики монет и кристаллов */}
               {(coins !== null || diamonds !== null) && (
                 <div className="sidebar-web__counters">
-                  {coins !== null && (
+                  {diamonds !== null && (
                     <span className="sidebar-web__counter sidebar-web__counter--coins">
-                      <Coins size={11} />
-                      <span>{coins}</span>
+                      <Coins size={11} className="text-[#FFD700]" />
+                      <span>{diamonds}</span>
                     </span>
                   )}
-                  {diamonds !== null && (
+                  {coins !== null && (
                     <span className="sidebar-web__counter sidebar-web__counter--gems">
-                      <Gem size={11} />
-                      <span>{diamonds}</span>
+                      <Gem size={11} className="text-[#00D9FF]" />
+                      <span>{coins}</span>
                     </span>
                   )}
                 </div>
@@ -185,26 +149,7 @@ export const Sidebar = memo(() => {
         <NavSection label="Главное" items={mainNav} />
         <NavSection label="Учёба"   items={studyNav} />
 
-        {/* Быстрый переход на вкладки страницы уведомлений */}
-        <div className="sidebar-web__section">
-          <div className="sidebar-web__section-label">Быстрый переход</div>
-          <button
-            className={`sidebar-web__item sidebar-web__item--btn`}
-            onClick={() => navigate(pageConfig.evaluateLesson)}
-            type="button"
-          >
-            <span className="sidebar-web__item-icon"><Star size={16} /></span>
-            <span className="sidebar-web__item-label">Оценка занятий</span>
-          </button>
-          <button
-            className={`sidebar-web__item sidebar-web__item--btn`}
-            onClick={() => navigate(pageConfig.news)}
-            type="button"
-          >
-            <span className="sidebar-web__item-icon"><Newspaper size={16} /></span>
-            <span className="sidebar-web__item-label">Новости</span>
-          </button>
-        </div>
+        <NavSection label="Быстрый переход" items={quickLinksNav} />
       </nav>
 
       {/* ── Подвал ── */}
@@ -254,7 +199,7 @@ const NavSection = memo(({ label, items }: NavSectionProps) => (
         <span className="sidebar-web__item-icon">{item.icon}</span>
         <span className="sidebar-web__item-label">{item.label}</span>
         {item.badge ? (
-          <span className="sidebar-web__badge">{item.badge}</span>
+          <Badge className="sidebar-web__badge !border-none !m-0 !h-auto flex items-center justify-center">{item.badge}</Badge>
         ) : null}
       </NavLink>
     ))}

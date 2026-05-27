@@ -1,8 +1,8 @@
-import { Capacitor } from '@capacitor/core'
 import type { ExamResult } from '@/entities/exam'
 import { useExamResults } from '@/entities/exam'
 import { useLazyItems } from '@/shared/hooks'
 import { ErrorView, SkeletonList } from '@/shared/ui'
+import { isWebPlatform } from '@/shared/lib/platform'
 import { formatDate } from '@/shared/utils'
 import { CheckCircle, Clock, GraduationCap } from 'lucide-react'
 
@@ -77,7 +77,7 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 
 export function GradesExamList() {
 	const { exams, status } = useExamResults()
-	const isWeb = Capacitor.getPlatform() === 'web'
+	const isWeb = isWebPlatform
 
 	if (status === 'loading') return <SkeletonList count={3} height={72} />
 

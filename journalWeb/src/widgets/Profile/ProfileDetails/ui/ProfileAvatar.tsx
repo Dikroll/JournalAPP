@@ -1,7 +1,7 @@
 import type { ProfileDetails } from '@/entities/profile'
 import { usePhotoViewer } from '@/shared/hooks'
 import { getCachedImageUrl } from '@/shared/lib'
-import { AvatarPlaceholder } from '@/shared/ui'
+import { Avatar } from '@/shared/ui'
 
 interface Props {
 	details: ProfileDetails
@@ -34,7 +34,7 @@ export function ProfileAvatar({ details }: Props) {
 						/>
 					</button>
 				) : (
-					<AvatarPlaceholder
+					<Avatar
 						fullName={details.full_name}
 						size={64}
 						className='border-2 border-app-border-strong'

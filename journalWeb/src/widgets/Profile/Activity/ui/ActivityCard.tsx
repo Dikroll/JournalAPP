@@ -1,11 +1,11 @@
 import type { ActivityViewItem } from '@/entities/dashboard'
-import { Coins, Diamond, TrendingUp } from 'lucide-react'
+import { Coins, Gem, TrendingUp } from 'lucide-react'
 import { memo } from 'react'
 
 function getPointTypeIcon(pointType: string) {
 	switch (pointType) {
 		case 'COIN':
-			return <Diamond size={16} className='text-[#00D9FF]' />
+			return <Gem size={16} className='text-[#00D9FF]' />
 		case 'DIAMOND':
 			return <Coins size={16} className='text-[#FFD700]' />
 		default:

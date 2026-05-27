@@ -1,4 +1,4 @@
-import { resetAllAppState } from '@/app/lib'
+import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { useProfileDetails } from '@/entities/profile'
 import { pageConfig } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'

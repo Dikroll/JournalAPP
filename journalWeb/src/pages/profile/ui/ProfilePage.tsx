@@ -1,5 +1,4 @@
-import { Capacitor } from '@capacitor/core'
-import { resetAllAppState } from '@/app/lib'
+import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { useLeaderboard } from '@/entities/leaderboard'
 import { useProfileDetails } from '@/entities/profile'
 import { useUser } from '@/entities/user'
@@ -7,6 +6,7 @@ import { usePayment } from '@/entities/payment/hooks/usePayment'
 import { usePaymentIndex } from '@/entities/payment/hooks/usePaymentIndex'
 import { pageConfig } from '@/shared/config'
 import { SkeletonList } from '@/shared/ui'
+import { isWebPlatform } from '@/shared/lib/platform'
 import {
 	AccountSwitcher,
 	ClearCacheSheet,
@@ -44,12 +44,12 @@ export function ProfilePage() {
 	const requisites = index
 		? [
 				{ label: 'Получатель', value: index.payment.organization_name },
-				{ label: 'Плательщик', value: index.payment.payer_full_name },
-				{ label: 'Банк', value: index.payment.bank_name },
+				{ label: 'ИНН', value: index.payment.okpo },
+				{ label: 'БИК', value: index.payment.mfo },
 				{ label: 'Расчётный счёт', value: index.payment.settlement_account },
 				{
 					label: 'Назначение платежа',
-					value: index.payment.purpose_of_payment,
+					value: `${index.payment.purpose_of_payment} 1C код: ${index.one_c_code}`,
 				},
 		  ]
 		: []
@@ -64,7 +64,7 @@ export function ProfilePage() {
 	}
 
 	const isDesktop = useIsDesktop()
-	const isWeb = Capacitor.getPlatform() === 'web'
+	const isWeb = isWebPlatform
 
 	if (!isDesktop) {
 		return (

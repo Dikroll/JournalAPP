@@ -1,6 +1,6 @@
 import type { LeaderboardStudent } from '@/entities/leaderboard'
 import { getCachedImageUrl } from '@/shared/lib'
-import { AvatarPlaceholder, PhotoViewerModal } from '@/shared/ui'
+import { Avatar, PhotoViewerModal } from '@/shared/ui'
 import { getShortName } from '@/shared/utils/nameUtils'
 import { Coins, Crown, Medal } from 'lucide-react'
 import { memo, useState } from 'react'
@@ -107,7 +107,7 @@ export const LeaderboardRow = memo(function LeaderboardRow({
 							<RankBadge rank={student.position} />
 						</button>
 					) : (
-						<AvatarPlaceholder
+						<Avatar
 							fullName={student.full_name}
 							size={40}
 							style={

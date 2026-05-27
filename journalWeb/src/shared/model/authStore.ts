@@ -9,13 +9,9 @@ export interface SavedAccount {
 	avatarUrl: string | null
 }
 
-interface HydrationState {
-	hasHydrated: boolean
-}
+import { useHydrationStore } from '../lib/hydrationStore'
+export { useHydrationStore }
 
-export const useHydrationStore = create<HydrationState>()(() => ({
-	hasHydrated: false,
-}))
 
 interface AuthState {
 	token: string | null
