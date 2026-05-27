@@ -1,6 +1,6 @@
-import { ArrowLeft, Megaphone } from "lucide-react";
+import { Megaphone } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { useAppUpdateStore } from "@/features/appUpdate";
 import { RefreshNotificationsButton } from "@/features/refreshNotifications";
 import {
@@ -13,7 +13,7 @@ import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
 import type { Segment } from "@/shared/ui";
-import { IconButton, PageHeader, SegmentedControl } from "@/shared/ui";
+import { PageHeader, SegmentedControl } from "@/shared/ui";
 import { NewsTab } from "@/widgets";
 
 type Tab = "changelog" | "news";
@@ -23,7 +23,6 @@ const TABS: Segment<Tab>[] = [
 ];
 
 export function NewsPage() {
-	const navigate = useNavigate();
 	const [activeTab, setActiveTab] = useState<Tab>("news");
 	const { lastReadChangelogId, setLastRead } = useNotificationsStore();
 	const latestRelease = useAppUpdateStore((s) => s.latestRelease);

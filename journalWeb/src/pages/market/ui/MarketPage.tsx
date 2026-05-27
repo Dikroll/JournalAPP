@@ -4,9 +4,9 @@ import { useSwipeBack } from '@/shared/hooks'
 import type { Segment } from '@/shared/ui'
 import { PageHeader, SegmentedControl } from '@/shared/ui'
 import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
-import { Archive, ShoppingBag, ShoppingCart, ChevronLeft } from 'lucide-react'
+import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
 
 type MarketTab = "products" | "cart" | "orders";
@@ -41,7 +41,6 @@ export function MarketPage() {
 	const [tab, setTab] = useState<MarketTab>('products')
 	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null)
 	const isDesktop = useIsDesktop()
-	const navigate = useNavigate()
 	const {
 		products,
 		productsStatus,
