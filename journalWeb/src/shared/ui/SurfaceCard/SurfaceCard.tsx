@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 interface SurfaceCardProps {
   children: ReactNode;
@@ -6,6 +6,7 @@ interface SurfaceCardProps {
   onClick?: () => void;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   paddingClassName?: string;
+  style?: React.CSSProperties;
 }
 
 export const SurfaceCard: React.FC<SurfaceCardProps> = ({ 
@@ -13,7 +14,8 @@ export const SurfaceCard: React.FC<SurfaceCardProps> = ({
   className = '', 
   onClick,
   padding = 'md',
-  paddingClassName
+  paddingClassName,
+  style
 }) => {
   const getPaddingClass = () => {
     if (paddingClassName) return paddingClassName;
@@ -34,6 +36,7 @@ export const SurfaceCard: React.FC<SurfaceCardProps> = ({
     <div 
       className={`${baseClasses} ${paddingClasses} ${interactableClasses} ${className}`.trim()}
       onClick={onClick}
+      style={style}
     >
       {children}
     </div>

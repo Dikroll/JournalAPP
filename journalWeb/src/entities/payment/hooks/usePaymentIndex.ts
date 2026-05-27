@@ -3,7 +3,6 @@ import { CACHE_KEYS } from '@/shared/lib'
 import { paymentApi } from '../api'
 import { useZustandQuery } from '@/shared/hooks/useZustandQuery'
 import { usePaymentStore } from '../model/store'
-import type { PaymentIndex } from '../model/types'
 
 const CACHE_TTL_MS = ttl.PAYMENT * 1000
 

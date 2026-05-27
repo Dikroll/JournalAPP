@@ -3,7 +3,6 @@ import { CACHE_KEYS } from "@/shared/lib";
 import { gradesApi } from "../api";
 import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { useGradesStore } from "../model/store";
-import type { GradeEntry } from "../model/types";
 
 export function resetGradesFetch() {}
 
@@ -19,9 +18,9 @@ export function useGrades() {
 		fetchFn: () => gradesApi.getAll(),
 		updateStore: (state) => {
 			if (state.data !== undefined) {
-				update({ entries: state.data, status: state.status, loadedAt: state.loadedAt, error: state.error });
+				update({ entries: state.data, status: state.status as any, loadedAt: state.loadedAt, error: state.error });
 			} else {
-				update({ status: state.status, error: state.error });
+				update({ status: state.status as any, error: state.error });
 			}
 		},
 		errorMessage: "Не удалось загрузить оценки",

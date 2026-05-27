@@ -4,7 +4,6 @@ import { CACHE_KEYS } from "@/shared/lib";
 import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { newsApi } from "../api";
 import { useNewsStore } from "../model/store";
-import type { NewsDetail } from "../model/types";
 
 export function useNewsDetail(id: number) {
 	const detail = useNewsStore((s) => s.details[id]);

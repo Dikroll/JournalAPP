@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Moon, Sun, WifiOff, Gem, Coins } from "lucide-react";
+import { Moon, Sun, WifiOff } from "lucide-react";
 import { useTopBarViewModel } from "@/features/navigation/hooks/useTopBarViewModel";
 import { useThemeStore } from "@/shared/lib/themeStore";
 import { useNetworkStore } from "@/shared/model/networkStore";
