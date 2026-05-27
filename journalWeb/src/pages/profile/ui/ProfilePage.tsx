@@ -8,7 +8,6 @@ import { useUser } from '@/entities/user'
 
 import { pageConfig } from '@/shared/config'
 import { SkeletonList } from '@/shared/ui'
-import { isWebPlatform } from '@/shared/lib/platform'
 import {
 	AccountSwitcher,
 	ClearCacheSheet,
@@ -44,7 +43,6 @@ export function ProfilePage() {
 	}
 
 	const isDesktop = useIsDesktop()
-	const isWeb = isWebPlatform
 
 	if (!isDesktop) {
 		return (
