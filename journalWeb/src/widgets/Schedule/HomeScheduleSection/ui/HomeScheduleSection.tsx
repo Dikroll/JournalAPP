@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useHomeSchedule } from "@/entities/schedule";
-import { IconButton } from "@/shared/ui";
+import { IconButton, SkeletonCard } from "@/shared/ui";
 import { formatDateLong } from "@/shared/utils";
 import { LessonList, ScheduleList } from "@/widgets";
 
@@ -80,10 +80,7 @@ export function HomeScheduleSection({ compact = false }: { compact?: boolean } =
 				) : otherStatus === "loading" && otherLessons.length === 0 ? (
 					<div className="flex flex-col gap-3">
 						{[0, 1, 2].map((i) => (
-							<div
-								key={i}
-								className="bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border"
-							/>
+							<SkeletonCard key={i} />
 						))}
 					</div>
 				) : otherStatus === "error" && otherLessons.length === 0 ? (

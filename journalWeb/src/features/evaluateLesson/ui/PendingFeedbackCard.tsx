@@ -1,6 +1,7 @@
 import { BookOpen, ChevronRight, User } from "lucide-react";
 import type { PendingFeedback } from "@/entities/feedback";
 import { getCachedImageUrl } from "@/shared/lib";
+import { SurfaceCard } from "@/shared/ui";
 import { formatDateCompact } from "@/shared/utils";
 
 interface Props {
@@ -12,10 +13,9 @@ export function PendingFeedbackCard({ item, onEvaluate }: Props) {
 	const photoUrl = getCachedImageUrl(item.teacher_photo);
 
 	return (
-		<button
-			type="button"
+		<SurfaceCard
 			onClick={onEvaluate}
-			className="w-full bg-app-surface rounded-[24px] p-4 border border-app-border text-left transition-all active:scale-[0.98]"
+			className="w-full text-left transition-all"
 			style={{
 				boxShadow: "var(--shadow-card)",
 				WebkitTapHighlightColor: "transparent",
@@ -57,6 +57,6 @@ export function PendingFeedbackCard({ item, onEvaluate }: Props) {
 
 				<ChevronRight size={16} className="text-app-faint shrink-0" />
 			</div>
-		</button>
+		</SurfaceCard>
 	);
 }

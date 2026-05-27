@@ -7,6 +7,7 @@ interface Props {
 	isVertical?: boolean;
 	readonly?: boolean;
 	withIcons?: boolean;
+	columns?: number;
 }
 
 import {
@@ -76,16 +77,17 @@ export function HomeworkCountersBar({
 	isVertical = false,
 	readonly = false,
 	withIcons = false,
+	columns,
 }: Props) {
 	return (
 		<div
-			className={`-mx-4 homework-counters-bar ${isVertical ? "mx-0 flex-1 min-h-0 relative" : "overflow-x-auto scrollbar-none"}`}
+			className={columns ? "w-full" : `-mx-4 homework-counters-bar ${isVertical ? "mx-0 flex-1 min-h-0 relative" : "overflow-x-auto"}`}
 		>
 			<div
-				className={`flex gap-2 ${isVertical ? "absolute inset-0 flex-col px-0 overflow-y-auto scrollbar-none" : "px-4 w-max py-2"} homework-counters-bar__inner`}
+				className={columns ? "" : `flex gap-2 ${isVertical ? "absolute inset-0 flex-col px-0 overflow-y-auto scrollbar-none" : "px-4 w-max py-2"} homework-counters-bar__inner`}
 			>
 				<div
-					className={`flex gap-2 ${isVertical ? "flex-col w-full min-h-full h-full justify-between" : ""}`}
+					className={columns ? `grid gap-2 w-full ${columns === 2 ? "grid-cols-2" : columns === 3 ? "grid-cols-3" : ""}` : `flex gap-2 ${isVertical ? "flex-col w-full min-h-full h-full justify-between" : ""}`}
 				>
 					{ITEMS.map(({ key, label, color, icon: Icon, statusKey, status }) => {
 						const isClickable = !readonly;
@@ -104,7 +106,7 @@ export function HomeworkCountersBar({
 								? "var(--color-border)"
 								: `var(--color-${statusKey}-border, rgba(255,255,255,0.1))`;
 
-						if (isVertical) {
+						if (isVertical || columns) {
 							return (
 								<button
 									key={key}

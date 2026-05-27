@@ -128,7 +128,7 @@ export const ProfileHeader = memo(
 											key={label}
 											to={to}
 											state={state}
-											className='bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30 active:scale-[0.98] transition-transform'
+											className='bg-white/20 hover:bg-white/30 cursor-pointer backdrop-blur-sm rounded-2xl p-3 border border-white/30 active:scale-[0.98] transition-all'
 										>
 											{content}
 										</Link>

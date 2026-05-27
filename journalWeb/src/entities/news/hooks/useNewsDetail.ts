@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ttl } from "@/shared/config";
 import { CACHE_KEYS } from "@/shared/lib";
-import { storage } from "@/shared/lib/encryptedStorage";
-import { getIsOnline } from "@/shared/model/networkStore";
+import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { newsApi } from "../api";
 import { useNewsStore } from "../model/store";
 import type { NewsDetail } from "../model/types";
@@ -16,50 +15,23 @@ export function useNewsDetail(id: number) {
 		"idle" | "loading" | "success" | "error"
 	>(detail ? "success" : "idle");
 	const [error, setError] = useState<string | null>(null);
-	const fetchingRef = useRef(false);
-
-	useEffect(() => {
-		if (fetchingRef.current) return;
-		if (detail) {
-			markAsRead(id)
-			return
-		}
-
-		if (!getIsOnline()) {
-			setStatus("error");
-			setError("Нет подключения к интернету");
-			return;
-		}
-
-		const cacheKey = CACHE_KEYS.NEWS_DETAIL(id);
-		const cached = storage.get<NewsDetail>(cacheKey);
-		if (cached) {
-			setDetail(id, cached)
-			setStatus('success')
-			markAsRead(id)
-			return
-		}
-
-		fetchingRef.current = true;
-		setStatus("loading");
-
-		newsApi
-			.getDetail(id)
-			.then(data => {
-				setDetail(id, data)
-				setStatus('success')
-				setError(null)
-				storage.set(cacheKey, data, ttl.ACTIVITY * 2)
-				markAsRead(id)
-			})
-			.catch(() => {
-				setStatus("error");
-				setError("Не удалось загрузить новость");
-			})
-			.finally(() => {
-				fetchingRef.current = false;
-			});
-	}, [id, detail, setDetail, markAsRead]);
+	useZustandQuery({
+		cacheKey: CACHE_KEYS.NEWS_DETAIL(id),
+		ttlMs: ttl.ACTIVITY * 2 * 1000,
+		loadedAt: null,
+		status,
+		hasData: !!detail,
+		fetchFn: () => newsApi.getDetail(id),
+		updateStore: (state) => {
+			setStatus(state.status as any);
+			if (state.error !== undefined) setError(state.error);
+			if (state.data) {
+				setDetail(id, state.data);
+				markAsRead(id);
+			}
+		},
+		errorMessage: "Не удалось загрузить новость",
+	});
 
 	return { detail, status, error };
 }

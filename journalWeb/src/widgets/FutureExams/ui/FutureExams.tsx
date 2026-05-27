@@ -1,7 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import { useFutureExams } from "@/entities/exam";
 import { illustrations } from "@/shared/config/illustrationsConfig";
-import { EmptyState } from "@/shared/ui";
+import { EmptyState, SurfaceCard } from "@/shared/ui";
 import { formatDate } from "@/shared/utils";
 
 export function FutureExams() {
@@ -25,10 +25,8 @@ export function FutureExams() {
 		<div>
 			<ul className="flex flex-col gap-2">
 				{exams.map((exam) => (
-					<li
-						key={`${exam.date}-${exam.spec}`}
-						className="bg-app-surface rounded-[14px] backdrop-blur-sm p-2.5 flex items-center gap-2.5"
-					>
+					<li key={`${exam.date}-${exam.spec}`}>
+						<SurfaceCard paddingClassName="p-2.5" className="backdrop-blur-sm flex items-center gap-2.5">
 						<div
 							className="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center"
 							style={
@@ -74,6 +72,7 @@ export function FutureExams() {
 								{formatDate(exam.date)}
 							</div>
 						</div>
+						</SurfaceCard>
 					</li>
 				))}
 			</ul>

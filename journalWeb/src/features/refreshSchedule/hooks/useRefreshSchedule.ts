@@ -1,9 +1,8 @@
 import { useCallback } from "react";
 import { useScheduleStore } from "@/entities/schedule";
-import { useNetworkStore } from "@/shared/model/networkStore";
+import { useNetworkRefresh } from "@/shared/hooks/useNetworkRefresh";
 
 export function useRefreshSchedule() {
-	const isOnline = useNetworkStore((s) => s.isOnline);
 	const clearMonthsCache = useScheduleStore((s) => s.clearMonthsCache);
 	const clearWeeksCache = useScheduleStore((s) => s.clearWeeksCache);
 	const monthStatus = useScheduleStore((s) => s.monthStatus);
@@ -13,11 +12,11 @@ export function useRefreshSchedule() {
 		Object.values(monthStatus).some((s) => s === "loading") ||
 		Object.values(weekStatus).some((s) => s === "loading");
 
-	const refresh = useCallback(() => {
-		if (!isOnline) return;
+	const refreshAction = useCallback(() => {
 		clearMonthsCache();
 		clearWeeksCache();
-	}, [isOnline, clearMonthsCache, clearWeeksCache]);
+	}, [clearMonthsCache, clearWeeksCache]);
 
-	return { refresh, isRefreshing, isOnline };
+	return useNetworkRefresh(refreshAction, isRefreshing);
 }
+

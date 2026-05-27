@@ -30,14 +30,17 @@ export function WebHomePage() {
 		<div className="p-5 pb-8 flex flex-col gap-4 w-full">
 			<div
 				className="grid gap-4"
-				style={{ gridTemplateColumns: "5fr 6fr", alignItems: "stretch" }}
+				style={{
+					gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+					alignItems: "stretch",
+				}}
 			>
-				{/* ── РЯД 1, ЛЕВО (Сводка + Экзамены + Домашка) ── */}
-				<div className="flex flex-col gap-4">
+				{/* ── РЯД 1, ЛЕВО (Сводка + Лидеры) ── */}
+				<div className="flex flex-col gap-4 min-w-0">
 					{/* Сводка */}
 					<GoalsSummaryCard />
 
-					{/* Экзамены */}
+					{/* Лидеры */}
 					<div
 						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
 						style={{
@@ -46,23 +49,36 @@ export function WebHomePage() {
 							minHeight: "16.25rem",
 						}}
 					>
-						<div className="flex items-center gap-2 mb-3 shrink-0">
-							<div className="w-[2px] h-5 bg-app-border rounded-full" />
-							<h2 className="text-sm font-bold text-app-text">
-								Будущие экзамены
-							</h2>
-						</div>
 						<div
 							className="overflow-y-auto flex-1 min-h-0"
 							style={{ scrollbarWidth: "thin" }}
 						>
-							<FutureExams />
+							{user && <Leaderboard myStudentId={user.student_id} />}
+						</div>
+					</div>
+				</div>
+
+				{/* ── РЯД 1, ПРАВО (Расписание + Домашка) ── */}
+				<div className="flex flex-col gap-4 min-w-0">
+					{/* Расписание */}
+					<div
+						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
+						style={{
+							background: "var(--color-surface)",
+							boxShadow: "var(--shadow-card)",
+						}}
+					>
+						<div
+							className="overflow-y-auto flex-1 min-h-0 -mr-2 pr-2"
+							style={{ scrollbarWidth: "thin" }}
+						>
+							<HomeScheduleSection />
 						</div>
 					</div>
 
 					{/* Домашка */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
+						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0 min-w-0 overflow-hidden"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
@@ -78,32 +94,15 @@ export function WebHomePage() {
 									counters={counters}
 									activeFilter={filterStatus}
 									onFilter={setFilter}
-									isVertical={false}
 									readonly={true}
-									withIcons
+									columns={2}
 								/>
 							)}
 						</div>
 					</div>
 				</div>
 
-				{/* ── РЯД 1, ПРАВО (Расписание) ── */}
-				<div
-					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
-					style={{
-						background: "var(--color-surface)",
-						boxShadow: "var(--shadow-card)",
-					}}
-				>
-					<div
-						className="overflow-y-auto flex-1 min-h-0 -mr-2 pr-2"
-						style={{ scrollbarWidth: "thin" }}
-					>
-						<HomeScheduleSection />
-					</div>
-				</div>
-
-				{/* ── РЯД 2, ЛЕВО (Лидеры) ── */}
+				{/* ── РЯД 2, ЛЕВО (Экзамены) ── */}
 				<div
 					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
 					style={{
@@ -112,11 +111,17 @@ export function WebHomePage() {
 						height: "23.75rem",
 					}}
 				>
+					<div className="flex items-center gap-2 mb-3 shrink-0">
+						<div className="w-[2px] h-5 bg-app-border rounded-full" />
+						<h2 className="text-sm font-bold text-app-text">
+							Будущие экзамены
+						</h2>
+					</div>
 					<div
 						className="overflow-y-auto flex-1 min-h-0"
 						style={{ scrollbarWidth: "thin" }}
 					>
-						{user && <Leaderboard myStudentId={user.student_id} />}
+						<FutureExams />
 					</div>
 				</div>
 

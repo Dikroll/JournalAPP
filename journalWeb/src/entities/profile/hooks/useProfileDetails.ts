@@ -25,13 +25,13 @@ export function useProfileDetails() {
 		};
 
 		if (!getIsOnline()) {
-			if (!details) setStatus("error");
+			if (!useProfileDetailsStore.getState().details) setStatus("error");
 			return () => {
 				cancelled = true;
 			};
 		}
 
-		if (details) {
+		if (useProfileDetailsStore.getState().details) {
 			// SWR: показываем кэш мгновенно, в фоне тихо ревалидируем
 			// (нужно в основном чтобы подтянуть свежий photo_url).
 			profileApi
@@ -57,7 +57,7 @@ export function useProfileDetails() {
 		return () => {
 			cancelled = true;
 		};
-	}, [activeUsername, details, setDetails, setStatus]);
+	}, [activeUsername, setDetails, setStatus]);
 
 	return { details, status };
 }

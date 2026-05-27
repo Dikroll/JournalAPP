@@ -8,12 +8,10 @@ import {
 	PaymentRequisitesCard,
 	PaymentScheduleCard,
 } from '@/widgets'
-import { ArrowLeft, Download } from 'lucide-react'
+import { Download } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 export function PaymentPage() {
-	const navigate = useNavigate()
 	const { summary, status } = usePayment()
 	const { index } = usePaymentIndex()
 	const [isDownloading, setIsDownloading] = useState(false)
@@ -46,25 +44,22 @@ export function PaymentPage() {
 
 	return (
 		<div className='pb-6 text-app-text'>
-			<div className='flex items-center justify-between px-4 pt-4 pb-4'>
-				<div className='flex items-center gap-3'>
-					<button
-						onClick={() => navigate(-1)}
-						className='w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform'
-					>
-						<ArrowLeft size={18} />
-					</button>
-					<PageHeader title='Оплата' />
-				</div>
-				<button
-					onClick={handleDownload}
-					disabled={isDownloading}
-					className={`w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted transition-transform ${
-						isDownloading ? 'opacity-50' : 'active:scale-95'
-					}`}
-				>
-					<Download size={18} />
-				</button>
+			<div className='px-4 pt-4 pb-4'>
+				<PageHeader 
+					title='Оплата' 
+					showBack 
+					actions={
+						<button
+							onClick={handleDownload}
+							disabled={isDownloading}
+							className={`w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted transition-transform ${
+								isDownloading ? 'opacity-50' : 'active:scale-95'
+							}`}
+						>
+							<Download size={18} />
+						</button>
+					}
+				/>
 			</div>
 
 			<div className='px-4 space-y-3'>

@@ -1,6 +1,6 @@
 import { useAppUpdate } from '@/features/appUpdate'
 import { feedbackApi, useFeedbackStore } from '@/entities/feedback'
-import { useNetworkStore } from '@/shared/model/networkStore'
+import { useNetworkRefresh } from '@/shared/hooks/useNetworkRefresh'
 import { newsApi, useNewsStore } from '@/entities/news'
 import { CACHE_KEYS } from '@/shared/lib'
 import { storage } from '@/shared/lib/encryptedStorage'
@@ -8,7 +8,6 @@ import { ttl } from '@/shared/config'
 import { useCallback, useState } from 'react'
 
 export function useRefreshNotifications() {
-	const isOnline = useNetworkStore(s => s.isOnline)
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const { checkForUpdate } = useAppUpdate()
 	const setPending = useFeedbackStore(s => s.setPending)
@@ -16,8 +15,7 @@ export function useRefreshNotifications() {
 	const setPendingStatus = useFeedbackStore(s => s.setPendingStatus)
 	const updateNews = useNewsStore(s => s.update)
 
-	const refresh = useCallback(async () => {
-		if (!isOnline) return;
+	const refreshAction = useCallback(async () => {
 		if (isRefreshing) return;
 		setIsRefreshing(true);
 
@@ -51,7 +49,6 @@ export function useRefreshNotifications() {
 			setIsRefreshing(false);
 		}
 	}, [
-		isOnline,
 		isRefreshing,
 		checkForUpdate,
 		setPending,
@@ -60,5 +57,5 @@ export function useRefreshNotifications() {
 		updateNews,
 	])
 
-	return { refresh, isRefreshing, isOnline };
+	return useNetworkRefresh(refreshAction, isRefreshing);
 }

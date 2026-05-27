@@ -45,17 +45,7 @@ export function GoalsPage() {
 	return (
 		<div className="min-h-screen text-app-text pb-28">
 			<div className="px-4 pt-4 pb-2">
-				<div className="flex items-center gap-3">
-					<button
-						type="button"
-						onClick={() => navigate(-1)}
-						className="w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted active:scale-95 transition-transform"
-						aria-label="Назад"
-					>
-						<ArrowLeft size={18} />
-					</button>
-					<PageHeader title="Сводка оценок" />
-				</div>
+				<PageHeader title="Сводка оценок" showBack />
 				<div className="mt-5 mb-3 flex items-center justify-between">
 					<div className="w-[2px] self-stretch bg-app-border mr-3 rounded-full" />
 					<p className="text-[12px] text-app-muted mt-2 leading-snug">

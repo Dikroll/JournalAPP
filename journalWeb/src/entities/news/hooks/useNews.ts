@@ -1,95 +1,28 @@
-import { useEffect, useRef } from "react";
 import { ttl } from "@/shared/config";
 import { CACHE_KEYS } from "@/shared/lib";
-import { storage } from "@/shared/lib/encryptedStorage";
-import { getIsOnline } from "@/shared/model/networkStore";
 import { newsApi } from "../api";
+import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { useNewsStore } from "../model/store";
 import type { NewsItem } from "../model/types";
 
 export function useNews() {
 	const { latest, status, error, loadedAt, update } = useNewsStore();
-	const fetchingRef = useRef(false);
-
-	useEffect(() => {
-		if (fetchingRef.current) return;
-		if (
-			latest.length > 0 &&
-			loadedAt &&
-			Date.now() - loadedAt < ttl.ACTIVITY * 1000
-		) {
-			if (status === "idle") update({ status: "success" });
-			return;
-		}
-
-		if (!getIsOnline()) {
-			if (loadedAt !== null) {
-				if (status === "idle") update({ status: "success" });
-				return;
+	const { refresh } = useZustandQuery({
+		cacheKey: CACHE_KEYS.NEWS,
+		ttlMs: ttl.ACTIVITY * 1000,
+		loadedAt,
+		status,
+		hasData: latest.length > 0,
+		fetchFn: () => newsApi.getLatest(),
+		updateStore: (state) => {
+			if (state.data !== undefined) {
+				update({ latest: state.data, status: state.status, loadedAt: state.loadedAt, error: state.error });
+			} else {
+				update({ status: state.status, error: state.error });
 			}
-			update({ status: "error", error: "Нет подключения к интернету" });
-			return;
-		}
-
-		const cached = storage.get<NewsItem[]>(CACHE_KEYS.NEWS);
-		if (cached) {
-			update({
-				latest: cached,
-				status: "success",
-				loadedAt: Date.now(),
-				error: null,
-			});
-			return;
-		}
-
-		fetchingRef.current = true;
-		update({ status: "loading", error: null });
-
-		newsApi
-			.getLatest()
-			.then((data) => {
-				update({
-					latest: data,
-					status: "success",
-					loadedAt: Date.now(),
-					error: null,
-				});
-				storage.set(CACHE_KEYS.NEWS, data, ttl.ACTIVITY);
-			})
-			.catch(() => {
-				if (latest.length === 0) {
-					update({ status: "error", error: "Не удалось загрузить новости" });
-				}
-			})
-			.finally(() => {
-				fetchingRef.current = false;
-			});
-	}, [latest.length, loadedAt, status, update]);
-
-	const refresh = () => {
-		if (fetchingRef.current) return;
-		storage.remove(CACHE_KEYS.NEWS);
-		fetchingRef.current = true;
-		update({ status: "loading", error: null });
-
-		newsApi
-			.getLatest()
-			.then((data) => {
-				update({
-					latest: data,
-					status: "success",
-					loadedAt: Date.now(),
-					error: null,
-				});
-				storage.set(CACHE_KEYS.NEWS, data, ttl.ACTIVITY);
-			})
-			.catch(() =>
-				update({ status: "error", error: "Не удалось загрузить новости" }),
-			)
-			.finally(() => {
-				fetchingRef.current = false;
-			});
-	};
+		},
+		errorMessage: "Не удалось загрузить новости",
+	});
 
 	return { latest, status, error, refresh };
 }

@@ -10,7 +10,7 @@ import {
 	studyNavItems,
 	quickLinksNavItems,
 } from "@/shared/config";
-import { Avatar, Badge } from "@/shared/ui";
+import { Avatar, Badge, CurrencyBadge } from "@/shared/ui";
 import { useUserStore } from "@/entities/user";
 import type { NavItemConfig } from "@/shared/config/navigation";
 
@@ -49,8 +49,8 @@ export const Sidebar = memo(() => {
 	const hwBadge = vm?.hasBadge ? 1 : undefined;
 	const pageTitle = PAGE_TITLES[location.pathname] ?? "Журнал";
 
-	const coins = user?.points?.coins?.balance ?? null;
-	const diamonds = user?.points?.diamonds?.balance ?? null;
+	const coins = user?.points?.coins?.earned ?? null;
+	const diamonds = user?.points?.diamonds?.earned ?? null;
 	const isDebtor = user?.is_debtor ?? false;
 
 	const { weekday, dayMonth } = formatDateParts();
@@ -102,16 +102,10 @@ export const Sidebar = memo(() => {
 							{(coins !== null || diamonds !== null) && (
 								<div className="flex items-center gap-1.5 mt-1">
 									{diamonds !== null && (
-										<div className="flex items-center gap-1 bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#eab308] px-1.5 py-0.5 rounded-md text-[10px] font-bold">
-											<Coins size={10} />
-											<span>{diamonds}</span>
-										</div>
+										<CurrencyBadge type="diamonds" amount={diamonds} size="sm" />
 									)}
 									{coins !== null && (
-										<div className="flex items-center gap-1 bg-[#00D9FF]/10 border border-[#00D9FF]/30 text-[#0ea5e9] px-1.5 py-0.5 rounded-md text-[10px] font-bold">
-											<Gem size={10} />
-											<span>{coins}</span>
-										</div>
+										<CurrencyBadge type="coins" amount={coins} size="sm" />
 									)}
 								</div>
 							)}

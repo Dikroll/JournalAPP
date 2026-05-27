@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ttl } from "@/shared/config";
 import { CACHE_KEYS } from "@/shared/lib";
 import { storage } from "@/shared/lib/encryptedStorage";
@@ -29,7 +29,8 @@ export function useDashboardActivity() {
 	const fetchingRef = useRef(false);
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const refreshActivity = useEffectEvent(async () => {
+	const refreshActivityRef = useRef(async () => {});
+	refreshActivityRef.current = async () => {
 		if (fetchingRef.current) return;
 		if (!getIsOnline()) {
 			if (activity.length === 0) setStatus("error");
@@ -60,7 +61,11 @@ export function useDashboardActivity() {
 				timeoutRef.current = null;
 			}
 		}
-	});
+	};
+
+	const refreshActivity = useCallback(async () => {
+		await refreshActivityRef.current();
+	}, []);
 
 	useEffect(() => {
 		if (activity.length > 0 && status === "idle") {

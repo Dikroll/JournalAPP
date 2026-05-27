@@ -1,4 +1,4 @@
-import { ArrowLeft, Coins, Diamond, RefreshCw, TrendingUp } from "lucide-react";
+import { ArrowLeft, Coins, Gem, RefreshCw, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { ActivityFilter } from "@/entities/dashboard";
 import { useDashboardActivityViewModel } from "@/entities/dashboard";
@@ -16,7 +16,7 @@ const FILTERS: Segment<ActivityFilter>[] = [
 	{
 		key: "COIN",
 		label: "Топгемы",
-		icon: <Diamond size={14} className="text-[#00D9FF]" />,
+		icon: <Gem size={14} className="text-[#00D9FF]" />,
 	},
 	{
 		key: "DIAMOND",

@@ -9,5 +9,6 @@ export { useMonthNav } from "./useMonthNav";
 export { useNetworkInit } from "./useNetworkInit";
 export { usePhotoViewer } from "./usePhotoViewer";
 export { useRefetchOnReconnect } from "./useRefetchOnReconnect";
+export { useNetworkRefresh } from "./useNetworkRefresh";
 export { useScrollableTabs } from "./useScrollableTabs";
 export { useSwipeBack } from "./useSwipeBack";

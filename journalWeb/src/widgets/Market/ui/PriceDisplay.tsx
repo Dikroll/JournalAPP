@@ -1,5 +1,5 @@
 import type { MarketPrice } from '@/entities/market'
-import { Coins, Gem } from 'lucide-react'
+import { CurrencyBadge } from '@/shared/ui'
 
 interface Props {
 	price: MarketPrice;
@@ -11,19 +11,13 @@ export function PriceDisplay({ price, className = "" }: Props) {
 
 	if (price.diamonds) {
 		parts.push(
-			<span key="diamonds" className="inline-flex items-center gap-1">
-				<Coins size={15} className="text-[#FFD700]" />
-				{price.diamonds.toLocaleString("ru-RU")}
-			</span>,
+			<CurrencyBadge key="diamonds" type="diamonds" amount={price.diamonds} size="md" />
 		);
 	}
 
 	if (price.coins) {
 		parts.push(
-			<span key='coins' className='inline-flex items-center gap-1'>
-				<Gem size={15} className='text-[#00D9FF]' />
-				{price.coins.toLocaleString('ru-RU')}
-			</span>,
+			<CurrencyBadge key="coins" type="coins" amount={price.coins} size="md" />
 		);
 	}
 
