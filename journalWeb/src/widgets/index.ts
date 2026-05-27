@@ -49,6 +49,7 @@ export { PriceDisplay } from "./Market/ui/PriceDisplay";
 export { ProductCard } from "./Market/ui/ProductCard";
 export { ProductsTab } from "./Market/ui/ProductsTab";
 export { MarketLink } from "./MarketLink/ui/MarketLink";
+export { DesktopMarketWidget } from "./MarketLink/ui/DesktopMarketWidget";
 // Notifications
 export { ChangelogTab } from "./Notifications/ChangelogTab/ui/ChangelogTab";
 export { ComingSoonTab } from "./Notifications/ComingSoonTab/ui/ComingSoonTab";

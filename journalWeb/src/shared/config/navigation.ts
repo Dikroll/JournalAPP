@@ -7,6 +7,8 @@ import {
 	Library,
 	Star,
 	Newspaper,
+	Store,
+	CreditCard,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -26,12 +28,13 @@ export const mainNavItems: NavItemConfig[] = [
 
 export const studyNavItems: NavItemConfig[] = [
 	{ to: pageConfig.library, label: 'Библиотека', icon: Library, exact: false },
-	// { to: pageConfig.goals, label: 'Цели', icon: Star, exact: false },
 ]
 
 export const quickLinksNavItems: NavItemConfig[] = [
 	{ to: pageConfig.evaluateLesson, label: 'Оценка занятий', icon: Star, exact: false },
 	{ to: pageConfig.news, label: 'Новости', icon: Newspaper, exact: false },
+	{ to: pageConfig.market, label: 'Маркет', icon: Store, exact: false },
+	{ to: pageConfig.payment, label: 'Платежи', icon: CreditCard, exact: false },
 ]
 
 export const bottomBarNavItems: NavItemConfig[] = [

@@ -12,8 +12,6 @@ import { RefreshGradesButton } from '@/features/refreshGrades'
 import { SpecSelector } from '@/features/selectSpec'
 
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
-import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
-import { isWebPlatform } from '@/shared/lib/platform'
 import type { Tab } from '@/widgets'
 import {
 	GoalsSummaryCard,
@@ -35,9 +33,6 @@ export function GradesPage() {
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject()
 	const { subjects: specList, status: specsStatus } = useSubjects()
 	const { progress, attendance } = useDashboardCharts()
-	const isWeb = isWebPlatform
-	const isDesktop = useIsDesktop()
-
 	const handleSpecChange = useCallback(
 		(spec: { id: number } | null) => {
 			const id = spec?.id ?? null;
@@ -82,18 +77,16 @@ export function GradesPage() {
 			<div className="p-4 space-y-4">
 				<PageHeader title="Оценки" actions={<RefreshGradesButton />} />
 
-				{isDesktop && isWeb && progress?.length > 0 && attendance?.length > 0 ? (
-					<div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
-						<GoalsSummaryCard className='h-full' />
+				<div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+					<GoalsSummaryCard className="h-full" />
+					{progress && progress.length > 0 && attendance && attendance.length > 0 && (
 						<GradesCharts
 							progress={progress}
 							attendance={attendance}
-							className='col-span-2'
+							className="hidden xl:grid xl:col-span-2 h-full"
 						/>
-					</div>
-				) : (
-					<GoalsSummaryCard />
-				)}
+					)}
+				</div>
 
 				<SpecSelector
 					subjects={specList}
