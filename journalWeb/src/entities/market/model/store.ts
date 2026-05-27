@@ -1,60 +1,60 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
 import type {
 	MarketCartItem,
 	MarketOrder,
 	MarketOrderDetails,
 	MarketProduct,
-} from './types'
+} from "./types";
 
 interface MarketState {
-	products: MarketProduct[]
-	productsStatus: LoadingState
-	productsError: string | null
-	productsLoadedAt: number | null
+	products: MarketProduct[];
+	productsStatus: LoadingState;
+	productsError: string | null;
+	productsLoadedAt: number | null;
 
-	orders: MarketOrder[]
-	ordersStatus: LoadingState
-	ordersError: string | null
-	ordersLoadedAt: number | null
+	orders: MarketOrder[];
+	ordersStatus: LoadingState;
+	ordersError: string | null;
+	ordersLoadedAt: number | null;
 
-	orderDetails: Record<number, MarketOrderDetails>
-	orderDetailsStatus: Record<number, LoadingState>
+	orderDetails: Record<number, MarketOrderDetails>;
+	orderDetailsStatus: Record<number, LoadingState>;
 
-	cart: MarketCartItem[]
+	cart: MarketCartItem[];
 
-	setProducts: (products: MarketProduct[]) => void
-	setProductsStatus: (status: LoadingState) => void
-	setProductsError: (error: string | null) => void
-	setProductsLoadedAt: (loadedAt: number) => void
+	setProducts: (products: MarketProduct[]) => void;
+	setProductsStatus: (status: LoadingState) => void;
+	setProductsError: (error: string | null) => void;
+	setProductsLoadedAt: (loadedAt: number) => void;
 
-	setOrders: (orders: MarketOrder[]) => void
-	setOrdersStatus: (status: LoadingState) => void
-	setOrdersError: (error: string | null) => void
-	setOrdersLoadedAt: (loadedAt: number) => void
-	setOrderDetails: (orderId: number, details: MarketOrderDetails) => void
-	setOrderDetailsStatus: (orderId: number, status: LoadingState) => void
+	setOrders: (orders: MarketOrder[]) => void;
+	setOrdersStatus: (status: LoadingState) => void;
+	setOrdersError: (error: string | null) => void;
+	setOrdersLoadedAt: (loadedAt: number) => void;
+	setOrderDetails: (orderId: number, details: MarketOrderDetails) => void;
+	setOrderDetailsStatus: (orderId: number, status: LoadingState) => void;
 
-	addToCart: (productId: number, available: number) => void
-	removeFromCart: (productId: number) => void
-	incrementCartItem: (productId: number, available: number) => void
-	decrementCartItem: (productId: number) => void
-	clearCart: () => void
+	addToCart: (productId: number, available: number) => void;
+	removeFromCart: (productId: number) => void;
+	incrementCartItem: (productId: number, available: number) => void;
+	decrementCartItem: (productId: number) => void;
+	clearCart: () => void;
 
-	reset: () => void
+	reset: () => void;
 }
 
 export const useMarketStore = create<MarketState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			products: [],
-			productsStatus: 'idle',
+			productsStatus: "idle",
 			productsError: null,
 			productsLoadedAt: null,
 
 			orders: [],
-			ordersStatus: 'idle',
+			ordersStatus: "idle",
 			ordersError: null,
 			ordersLoadedAt: null,
 
@@ -63,21 +63,21 @@ export const useMarketStore = create<MarketState>()(
 
 			cart: [],
 
-			setProducts: products => set({ products }),
-			setProductsStatus: productsStatus => set({ productsStatus }),
-			setProductsError: productsError => set({ productsError }),
-			setProductsLoadedAt: productsLoadedAt => set({ productsLoadedAt }),
+			setProducts: (products) => set({ products }),
+			setProductsStatus: (productsStatus) => set({ productsStatus }),
+			setProductsError: (productsError) => set({ productsError }),
+			setProductsLoadedAt: (productsLoadedAt) => set({ productsLoadedAt }),
 
-			setOrders: orders => set({ orders }),
-			setOrdersStatus: ordersStatus => set({ ordersStatus }),
-			setOrdersError: ordersError => set({ ordersError }),
-			setOrdersLoadedAt: ordersLoadedAt => set({ ordersLoadedAt }),
+			setOrders: (orders) => set({ orders }),
+			setOrdersStatus: (ordersStatus) => set({ ordersStatus }),
+			setOrdersError: (ordersError) => set({ ordersError }),
+			setOrdersLoadedAt: (ordersLoadedAt) => set({ ordersLoadedAt }),
 			setOrderDetails: (orderId, details) =>
-				set(state => ({
+				set((state) => ({
 					orderDetails: { ...state.orderDetails, [orderId]: details },
 				})),
 			setOrderDetailsStatus: (orderId, status) =>
-				set(state => ({
+				set((state) => ({
 					orderDetailsStatus: {
 						...state.orderDetailsStatus,
 						[orderId]: status,
@@ -85,54 +85,56 @@ export const useMarketStore = create<MarketState>()(
 				})),
 
 			addToCart: (productId, available) =>
-				set(state => {
-					const existing = state.cart.find(item => item.productId === productId)
+				set((state) => {
+					const existing = state.cart.find(
+						(item) => item.productId === productId,
+					);
 					if (existing) {
 						return {
-							cart: state.cart.map(item =>
+							cart: state.cart.map((item) =>
 								item.productId === productId
 									? {
 											...item,
 											quantity: Math.min(item.quantity + 1, available),
-									  }
+										}
 									: item,
 							),
-						}
+						};
 					}
-					return { cart: [...state.cart, { productId, quantity: 1 }] }
+					return { cart: [...state.cart, { productId, quantity: 1 }] };
 				}),
-			removeFromCart: productId =>
-				set(state => ({
-					cart: state.cart.filter(item => item.productId !== productId),
+			removeFromCart: (productId) =>
+				set((state) => ({
+					cart: state.cart.filter((item) => item.productId !== productId),
 				})),
 			incrementCartItem: (productId, available) =>
-				set(state => ({
-					cart: state.cart.map(item =>
+				set((state) => ({
+					cart: state.cart.map((item) =>
 						item.productId === productId
 							? { ...item, quantity: Math.min(item.quantity + 1, available) }
 							: item,
 					),
 				})),
-			decrementCartItem: productId =>
-				set(state => ({
+			decrementCartItem: (productId) =>
+				set((state) => ({
 					cart: state.cart
-						.map(item =>
+						.map((item) =>
 							item.productId === productId
 								? { ...item, quantity: item.quantity - 1 }
 								: item,
 						)
-						.filter(item => item.quantity > 0),
+						.filter((item) => item.quantity > 0),
 				})),
 			clearCart: () => set({ cart: [] }),
 
 			reset: () =>
 				set({
 					products: [],
-					productsStatus: 'idle',
+					productsStatus: "idle",
 					productsError: null,
 					productsLoadedAt: null,
 					orders: [],
-					ordersStatus: 'idle',
+					ordersStatus: "idle",
 					ordersError: null,
 					ordersLoadedAt: null,
 					orderDetails: {},
@@ -141,8 +143,8 @@ export const useMarketStore = create<MarketState>()(
 				}),
 		}),
 		{
-			name: 'market-store',
-			partialize: state => ({
+			name: "market-store",
+			partialize: (state) => ({
 				products: state.products,
 				productsLoadedAt: state.productsLoadedAt,
 				orders: state.orders,
@@ -152,4 +154,4 @@ export const useMarketStore = create<MarketState>()(
 			}),
 		},
 	),
-)
+);

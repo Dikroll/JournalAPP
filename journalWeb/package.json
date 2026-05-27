@@ -7,7 +7,7 @@
 		"postinstall": "node ./scripts/ensure-capacitor-plugin-stubs.mjs",
 		"dev": "vite",
 		"build": "tsc -b && vite build",
-		"lint": "eslint .",
+		"lint": "biome check .",
 		"preview": "vite preview",
 		"release:prepare": "node ./scripts/prepare-android-release.mjs",
 		"test": "vitest run",

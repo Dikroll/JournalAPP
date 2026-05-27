@@ -1,74 +1,82 @@
-import type { ChartPoint } from '@/entities/dashboard'
-import { useGradesCharts } from '@/entities/dashboard'
-import { useElementSize } from '@/shared/hooks'
-import { CustomTooltip } from '@/shared/ui/'
-import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
-import { memo } from 'react'
-import { Bar, BarChart, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { Minus, TrendingDown, TrendingUp } from "lucide-react";
+import { memo } from "react";
+import {
+	Bar,
+	BarChart,
+	Line,
+	LineChart,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
+import type { ChartPoint } from "@/entities/dashboard";
+import { useGradesCharts } from "@/entities/dashboard";
+import { useElementSize } from "@/shared/hooks";
+import { CustomTooltip } from "@/shared/ui/";
 
-const PROGRESS_COLOR = '#F20519'
-const ATTENDANCE_COLOR = '#F0A020'
+const PROGRESS_COLOR = "#F20519";
+const ATTENDANCE_COLOR = "#F0A020";
 
 interface Props {
-	progress: ChartPoint[]
-	attendance: ChartPoint[]
-	className?: string
+	progress: ChartPoint[];
+	attendance: ChartPoint[];
+	className?: string;
 }
 
 const TrendBadge = memo(function TrendBadge({
 	trend,
 	suffix,
 }: {
-	trend: number
-	suffix?: string
+	trend: number;
+	suffix?: string;
 }) {
-	const isPositive = trend > 0
-	const isNeutral = trend === 0
-	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown
+	const isPositive = trend > 0;
+	const isNeutral = trend === 0;
+	const TrendIcon = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown;
 	return (
 		<span
 			className={`flex items-center gap-0.5 text-xs font-medium px-1.5 py-0.5 rounded-full ${
 				isNeutral
-					? 'bg-app-surface-strong text-app-muted'
+					? "bg-app-surface-strong text-app-muted"
 					: isPositive
-					? 'bg-[#10B981]/10 text-[#10B981]'
-					: 'bg-[#EF4444]/10 text-[#EF4444]'
+						? "bg-[#10B981]/10 text-[#10B981]"
+						: "bg-[#EF4444]/10 text-[#EF4444]"
 			}`}
 		>
 			<TrendIcon size={11} />
-			{isPositive ? '+' : ''}
+			{isPositive ? "+" : ""}
 			{trend}
-			{suffix ?? ''}
+			{suffix ?? ""}
 		</span>
-	)
-})
+	);
+});
 
 function NoCursor() {
-	return null
+	return null;
 }
 
 const axisProps = {
 	fontSize: 12,
 	tickLine: false,
 	axisLine: false,
-	tick: { fill: 'var(--color-text-muted)' },
-} as const
+	tick: { fill: "var(--color-text-muted)" },
+} as const;
 
 const tooltipWrapperStyle = {
-	outline: 'none',
-	border: 'none',
-	pointerEvents: 'none' as const,
-	overflow: 'visible' as const,
+	outline: "none",
+	border: "none",
+	pointerEvents: "none" as const,
+	overflow: "visible" as const,
 	zIndex: 50,
-}
+};
 
-const CHART_HEIGHT = 192
+const CHART_HEIGHT = 192;
 
 const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
-	const { ref, width } = useElementSize()
+	const { ref, width } = useElementSize();
 
 	return (
-		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }}>
+		<div ref={ref} className="w-full" style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<LineChart
 					width={width}
@@ -77,7 +85,7 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 					margin={{ top: 16, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
 				>
-					<XAxis dataKey='label' {...axisProps} height={24} />
+					<XAxis dataKey="label" {...axisProps} height={24} />
 					<YAxis
 						domain={[1, 5]}
 						ticks={[1, 2, 3, 4, 5]}
@@ -86,13 +94,13 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 					/>
 					<Tooltip
 						content={<CustomTooltip />}
-						cursor={{ stroke: 'var(--color-border)', strokeWidth: 1 }}
+						cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }}
 						isAnimationActive={true}
 						wrapperStyle={tooltipWrapperStyle}
 					/>
 					<Line
-						type='monotone'
-						dataKey='value'
+						type="monotone"
+						dataKey="value"
 						stroke={PROGRESS_COLOR}
 						strokeWidth={3}
 						dot={{ fill: PROGRESS_COLOR, r: 4, strokeWidth: 0 }}
@@ -102,18 +110,18 @@ const ProgressChart = memo(function ProgressChart({ data }: { data: any[] }) {
 				</LineChart>
 			)}
 		</div>
-	)
-})
+	);
+});
 
 const AttendanceChart = memo(function AttendanceChart({
 	data,
 }: {
-	data: any[]
+	data: any[];
 }) {
-	const { ref, width } = useElementSize()
+	const { ref, width } = useElementSize();
 
 	return (
-		<div ref={ref} className='w-full' style={{ height: CHART_HEIGHT }}>
+		<div ref={ref} className="w-full" style={{ height: CHART_HEIGHT }}>
 			{width > 0 && (
 				<BarChart
 					width={width}
@@ -122,7 +130,7 @@ const AttendanceChart = memo(function AttendanceChart({
 					margin={{ top: 4, right: 8, left: -8, bottom: 0 }}
 					tabIndex={-1}
 				>
-					<XAxis dataKey='label' {...axisProps} height={24} />
+					<XAxis dataKey="label" {...axisProps} height={24} />
 					<YAxis
 						domain={[0, 100]}
 						ticks={[0, 25, 50, 75, 100]}
@@ -130,13 +138,13 @@ const AttendanceChart = memo(function AttendanceChart({
 						width={36}
 					/>
 					<Tooltip
-						content={<CustomTooltip suffix='%' />}
+						content={<CustomTooltip suffix="%" />}
 						cursor={<NoCursor />}
 						isAnimationActive={false}
 						wrapperStyle={tooltipWrapperStyle}
 					/>
 					<Bar
-						dataKey='value'
+						dataKey="value"
 						fill={ATTENDANCE_COLOR}
 						radius={[8, 8, 0, 0]}
 						isAnimationActive={false}
@@ -144,8 +152,8 @@ const AttendanceChart = memo(function AttendanceChart({
 				</BarChart>
 			)}
 		</div>
-	)
-})
+	);
+});
 
 export const GradesCharts = memo(function GradesCharts({
 	progress,
@@ -153,44 +161,44 @@ export const GradesCharts = memo(function GradesCharts({
 	className,
 }: Props) {
 	const { progressData, attendanceData, progressTrend, attendanceTrend } =
-		useGradesCharts(progress, attendance)
+		useGradesCharts(progress, attendance);
 
 	return (
-		<div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${className ?? ''}`}>
+		<div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${className ?? ""}`}>
 			{progressData.length > 0 && (
 				<div
-					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full'
-					style={{ boxShadow: 'var(--shadow-card)' }}
+					className="bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full"
+					style={{ boxShadow: "var(--shadow-card)" }}
 				>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-app-text'>
+					<div className="flex items-center justify-between mb-4">
+						<h3 className="text-base font-bold text-app-text">
 							Динамика оценок
 						</h3>
 						{progressTrend != null && <TrendBadge trend={progressTrend} />}
 					</div>
-					<div className='flex-1 flex flex-col'>
+					<div className="flex-1 flex flex-col">
 						<ProgressChart data={progressData} />
 					</div>
 				</div>
 			)}
 			{attendanceData.length > 0 && (
 				<div
-					className='bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full'
-					style={{ boxShadow: 'var(--shadow-card)' }}
+					className="bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full"
+					style={{ boxShadow: "var(--shadow-card)" }}
 				>
-					<div className='flex items-center justify-between mb-4'>
-						<h3 className='text-base font-bold text-app-text'>
+					<div className="flex items-center justify-between mb-4">
+						<h3 className="text-base font-bold text-app-text">
 							Динамика посещаемости
 						</h3>
 						{attendanceTrend != null && (
-							<TrendBadge trend={attendanceTrend} suffix='%' />
+							<TrendBadge trend={attendanceTrend} suffix="%" />
 						)}
 					</div>
-					<div className='flex-1 flex flex-col'>
+					<div className="flex-1 flex flex-col">
 						<AttendanceChart data={attendanceData} />
 					</div>
 				</div>
 			)}
 		</div>
-	)
-})
+	);
+});

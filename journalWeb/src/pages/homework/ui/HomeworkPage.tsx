@@ -1,33 +1,38 @@
+import { BookOpen, LayoutList } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
 	useHomework,
 	useHomeworkBySubject,
 	useHomeworkGroups,
-} from '@/entities/homework'
-import type { Subject } from '@/entities/subject'
-import { useSubjects } from '@/entities/subject'
-import { RefreshHomeworkButton } from '@/features/refreshHomework'
-import { SpecSelector } from '@/features/selectSpec'
-import type { Segment } from '@/shared/ui'
-import { ErrorView, PageHeader, SegmentedControl, SkeletonList } from '@/shared/ui'
+} from "@/entities/homework";
+import type { Subject } from "@/entities/subject";
+import { useSubjects } from "@/entities/subject";
+import { RefreshHomeworkButton } from "@/features/refreshHomework";
+import { SpecSelector } from "@/features/selectSpec";
+import type { Segment } from "@/shared/ui";
+import {
+	ErrorView,
+	PageHeader,
+	SegmentedControl,
+	SkeletonList,
+} from "@/shared/ui";
 import {
 	HomeworkCountersBar,
 	HomeworkStatusView,
 	HomeworkSubjectView,
-} from '@/widgets'
-import { BookOpen, LayoutList } from 'lucide-react'
-import { useEffect, useState } from 'react'
+} from "@/widgets";
 
-type GroupBy = 'status' | 'subject'
+type GroupBy = "status" | "subject";
 
 const GROUP_TABS: Segment<GroupBy>[] = [
-	{ key: 'status', label: 'По статусу', icon: <LayoutList size={13} /> },
-	{ key: 'subject', label: 'По предметам', icon: <BookOpen size={13} /> },
-]
+	{ key: "status", label: "По статусу", icon: <LayoutList size={13} /> },
+	{ key: "subject", label: "По предметам", icon: <BookOpen size={13} /> },
+];
 
 export function HomeworkPage() {
-	const [groupBy, setGroupBy] = useState<GroupBy>('status')
-	const [selectedSpec, setSelectedSpec] = useState<Subject | null>(null)
-	const { subjects: specList, status: specsStatus } = useSubjects()
+	const [groupBy, setGroupBy] = useState<GroupBy>("status");
+	const [selectedSpec, setSelectedSpec] = useState<Subject | null>(null);
+	const { subjects: specList, status: specsStatus } = useSubjects();
 
 	const {
 		items,
@@ -38,35 +43,35 @@ export function HomeworkPage() {
 		filterStatus,
 		loadMore,
 		setFilter,
-	} = useHomework()
+	} = useHomework();
 
 	const { byStatus, bySubject } = useHomeworkGroups(
 		items,
 		expandedStatuses,
 		counters,
-	)
-	const { subjects, loadSubject, loadMoreForSubject } = useHomeworkBySubject()
+	);
+	const { subjects, loadSubject, loadMoreForSubject } = useHomeworkBySubject();
 
 	useEffect(() => {
-		if (!selectedSpec) return
-		loadSubject(selectedSpec.id, selectedSpec.name)
-	}, [selectedSpec?.id])
+		if (!selectedSpec) return;
+		loadSubject(selectedSpec.id, selectedSpec.name);
+	}, [selectedSpec?.id, selectedSpec, loadSubject]);
 
-	const hasData = counters !== null || Object.keys(items).length > 0
+	const hasData = counters !== null || Object.keys(items).length > 0;
 
-	if (status === 'error' && !hasData) {
+	if (status === "error" && !hasData) {
 		return (
-			<div className='min-h-screen flex items-center justify-center'>
+			<div className="min-h-screen flex items-center justify-center">
 				<ErrorView message={error ?? undefined} />
 			</div>
-		)
+		);
 	}
 
 	return (
-		<div className='min-h-screen text-app-text pb-28'>
-			<div className='p-4 space-y-3'>
+		<div className="min-h-screen text-app-text pb-28">
+			<div className="p-4 space-y-3">
 				<PageHeader
-					title='Домашние задания'
+					title="Домашние задания"
 					actions={<RefreshHomeworkButton />}
 				/>
 
@@ -78,20 +83,24 @@ export function HomeworkPage() {
 					/>
 				)}
 
-				<SegmentedControl segments={GROUP_TABS} active={groupBy} onChange={setGroupBy} />
+				<SegmentedControl
+					segments={GROUP_TABS}
+					active={groupBy}
+					onChange={setGroupBy}
+				/>
 
 				<SpecSelector
 					subjects={specList}
 					selectedId={selectedSpec?.id ?? null}
 					onChange={setSelectedSpec}
-					loading={specsStatus === 'loading'}
+					loading={specsStatus === "loading"}
 				/>
 			</div>
 
-			<div className='px-4'>
-				{status === 'loading' ? (
+			<div className="px-4">
+				{status === "loading" ? (
 					<SkeletonList count={5} height={120} />
-				) : groupBy === 'status' ? (
+				) : groupBy === "status" ? (
 					<HomeworkStatusView
 						byStatus={byStatus}
 						filterStatus={filterStatus}
@@ -113,5 +122,5 @@ export function HomeworkPage() {
 				)}
 			</div>
 		</div>
-	)
+	);
 }

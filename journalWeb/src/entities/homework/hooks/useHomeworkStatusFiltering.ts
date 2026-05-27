@@ -1,6 +1,6 @@
-import type { GroupData, HomeworkStatus } from '@/entities/homework'
-import { STATUS_ORDER } from '@/entities/homework'
-import { useMemo } from 'react'
+import { useMemo } from "react";
+import type { GroupData, HomeworkStatus } from "@/entities/homework";
+import { STATUS_ORDER } from "@/entities/homework";
 
 /**
  * Result from homework status filtering
@@ -9,18 +9,18 @@ export interface HomeworkStatusFilteringResult {
 	/**
 	 * List of statuses to display
 	 */
-	statusesToShow: HomeworkStatus[]
+	statusesToShow: HomeworkStatus[];
 	/**
 	 * Whether any items exist
 	 */
-	hasAnyItems: boolean
+	hasAnyItems: boolean;
 	/**
 	 * Filtered groups by status
 	 */
 	filteredGroups: Array<{
-		status: HomeworkStatus
-		group: GroupData
-	}>
+		status: HomeworkStatus;
+		group: GroupData;
+	}>;
 }
 
 /**
@@ -39,25 +39,25 @@ export function useHomeworkStatusFiltering(
 		// Determine which statuses to show
 		const statusesToShow: HomeworkStatus[] = filterStatus
 			? [filterStatus]
-			: STATUS_ORDER
+			: STATUS_ORDER;
 
 		// Check if any items exist
 		const hasAnyItems = statusesToShow.some(
-			s => (byStatus[s]?.items.length ?? 0) > 0,
-		)
+			(s) => (byStatus[s]?.items.length ?? 0) > 0,
+		);
 
 		// Build filtered groups
 		const filteredGroups = statusesToShow
-			.map(status => ({
+			.map((status) => ({
 				status,
 				group: byStatus[status],
 			}))
-			.filter(({ group }) => group?.items.length ?? false)
+			.filter(({ group }) => group?.items.length ?? false);
 
 		return {
 			statusesToShow,
 			hasAnyItems,
 			filteredGroups,
-		}
-	}, [byStatus, filterStatus])
+		};
+	}, [byStatus, filterStatus]);
 }

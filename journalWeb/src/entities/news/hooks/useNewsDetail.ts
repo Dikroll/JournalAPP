@@ -1,38 +1,38 @@
-import { ttl } from '@/shared/config'
-import { CACHE_KEYS } from '@/shared/lib'
-import { storage } from '@/shared/lib/encryptedStorage'
-import { getIsOnline } from '@/shared/model/networkStore'
-import { useEffect, useRef, useState } from 'react'
-import { newsApi } from '../api'
-import { useNewsStore } from '../model/store'
-import type { NewsDetail } from '../model/types'
+import { useEffect, useRef, useState } from "react";
+import { ttl } from "@/shared/config";
+import { CACHE_KEYS } from "@/shared/lib";
+import { storage } from "@/shared/lib/encryptedStorage";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { newsApi } from "../api";
+import { useNewsStore } from "../model/store";
+import type { NewsDetail } from "../model/types";
 
 export function useNewsDetail(id: number) {
-	const detail = useNewsStore(s => s.details[id])
-	const setDetail = useNewsStore(s => s.setDetail)
-	const markAsRead = useNewsStore(s => s.markAsRead)
+	const detail = useNewsStore((s) => s.details[id]);
+	const setDetail = useNewsStore((s) => s.setDetail);
+	const markAsRead = useNewsStore((s) => s.markAsRead);
 
-	const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
-		detail ? 'success' : 'idle',
-	)
-	const [error, setError] = useState<string | null>(null)
-	const fetchingRef = useRef(false)
+	const [status, setStatus] = useState<
+		"idle" | "loading" | "success" | "error"
+	>(detail ? "success" : "idle");
+	const [error, setError] = useState<string | null>(null);
+	const fetchingRef = useRef(false);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
+		if (fetchingRef.current) return;
 		if (detail) {
 			markAsRead(id)
 			return
 		}
 
 		if (!getIsOnline()) {
-			setStatus('error')
-			setError('Нет подключения к интернету')
-			return
+			setStatus("error");
+			setError("Нет подключения к интернету");
+			return;
 		}
 
-		const cacheKey = CACHE_KEYS.NEWS_DETAIL(id)
-		const cached = storage.get<NewsDetail>(cacheKey)
+		const cacheKey = CACHE_KEYS.NEWS_DETAIL(id);
+		const cached = storage.get<NewsDetail>(cacheKey);
 		if (cached) {
 			setDetail(id, cached)
 			setStatus('success')
@@ -40,8 +40,8 @@ export function useNewsDetail(id: number) {
 			return
 		}
 
-		fetchingRef.current = true
-		setStatus('loading')
+		fetchingRef.current = true;
+		setStatus("loading");
 
 		newsApi
 			.getDetail(id)
@@ -53,13 +53,13 @@ export function useNewsDetail(id: number) {
 				markAsRead(id)
 			})
 			.catch(() => {
-				setStatus('error')
-				setError('Не удалось загрузить новость')
+				setStatus("error");
+				setError("Не удалось загрузить новость");
 			})
 			.finally(() => {
-				fetchingRef.current = false
-			})
-	}, [id, detail, setDetail, markAsRead])
+				fetchingRef.current = false;
+			});
+	}, [id, detail, setDetail, markAsRead]);
 
-	return { detail, status, error }
+	return { detail, status, error };
 }

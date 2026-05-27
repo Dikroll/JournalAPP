@@ -1,6 +1,6 @@
-export { marketApi } from './api'
-export { useMarket } from './hooks/useMarket'
-export { useMarketStore } from './model/store'
+export { marketApi } from "./api";
+export { useMarket } from "./hooks/useMarket";
+export { useMarketStore } from "./model/store";
 export type {
 	MarketCartItem,
 	MarketOrder,
@@ -8,4 +8,4 @@ export type {
 	MarketOrderProduct,
 	MarketPrice,
 	MarketProduct,
-} from './model/types'
+} from "./model/types";

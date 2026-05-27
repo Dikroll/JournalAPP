@@ -1,15 +1,15 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 interface NetworkState {
-	isOnline: boolean
-	setOnline: (v: boolean) => void
+	isOnline: boolean;
+	setOnline: (v: boolean) => void;
 }
 
-export const useNetworkStore = create<NetworkState>()(set => ({
-	isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
-	setOnline: isOnline => set({ isOnline }),
-}))
+export const useNetworkStore = create<NetworkState>()((set) => ({
+	isOnline: typeof navigator !== "undefined" ? navigator.onLine : true,
+	setOnline: (isOnline) => set({ isOnline }),
+}));
 
 export function getIsOnline(): boolean {
-	return useNetworkStore.getState().isOnline
+	return useNetworkStore.getState().isOnline;
 }

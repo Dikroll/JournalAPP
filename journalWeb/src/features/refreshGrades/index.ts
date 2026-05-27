@@ -1,2 +1,2 @@
-export { useRefreshGrades } from './hooks/useRefreshGrades'
-export { RefreshGradesButton } from './ui/RefreshGradesButton'
+export { useRefreshGrades } from "./hooks/useRefreshGrades";
+export { RefreshGradesButton } from "./ui/RefreshGradesButton";

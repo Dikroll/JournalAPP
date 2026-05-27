@@ -17,13 +17,13 @@ import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-type Tab = 'changelog' | 'feedback' | 'news'
+type Tab = "changelog" | "feedback" | "news";
 
 const TABS: Segment<Tab>[] = [
-	{ key: 'changelog', label: 'Обновления', icon: <Sparkles size={13} /> },
-	{ key: 'feedback', label: 'Оценки', icon: <ClipboardCheck size={13} /> },
-	{ key: 'news', label: 'Новости', icon: <Megaphone size={13} /> },
-]
+	{ key: "changelog", label: "Обновления", icon: <Sparkles size={13} /> },
+	{ key: "feedback", label: "Оценки", icon: <ClipboardCheck size={13} /> },
+	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
+];
 
 export function NotificationsPage() {
 	const navigate = useNavigate()
@@ -38,7 +38,7 @@ export function NotificationsPage() {
 	const latestRelease = useAppUpdateStore(s => s.latestRelease)
 	const pending = useFeedbackStore(s => s.pending)
 
-	useSwipeBack()
+	useSwipeBack();
 
 	// Открываем нужную вкладку если пришли с сайдбара
 	useEffect(() => {
@@ -52,28 +52,28 @@ export function NotificationsPage() {
 				? [toChangelogFeedEntry(latestRelease)]
 				: FALLBACK_CHANGELOG,
 		[latestRelease],
-	)
+	);
 
 	useEffect(() => {
 		if (latestRelease && entries.length > 0) {
-			setLastRead(entries[0].id)
+			setLastRead(entries[0].id);
 		}
-	}, [latestRelease, entries, setLastRead])
+	}, [latestRelease, entries, setLastRead]);
 
-	const pendingKeys = useMemo(() => pending.map(p => p.key), [pending])
+	const pendingKeys = useMemo(() => pending.map((p) => p.key), [pending]);
 
 	const newPendingCount = useMemo(
 		() => getNewPendingCount(seenPendingKeys, pendingKeys),
 		[seenPendingKeys, pendingKeys],
-	)
+	);
 
 	useEffect(() => {
-		if (activeTab !== 'feedback') return
-		if (newPendingCount === 0) return
-		markPendingSeen(pendingKeys)
-	}, [activeTab, newPendingCount, pendingKeys, markPendingSeen])
+		if (activeTab !== "feedback") return;
+		if (newPendingCount === 0) return;
+		markPendingSeen(pendingKeys);
+	}, [activeTab, newPendingCount, pendingKeys, markPendingSeen]);
 
-	const unread = getUnreadCount(lastReadChangelogId, entries)
+	const unread = getUnreadCount(lastReadChangelogId, entries);
 
 	const tabsWithBadge = useMemo<Segment<Tab>[]>(
 		() =>
@@ -85,31 +85,31 @@ export function NotificationsPage() {
 				) {
 					return { ...tab, badge: unread }
 				}
-				if (tab.key === 'feedback' && newPendingCount > 0) {
-					return { ...tab, badge: newPendingCount }
+				if (tab.key === "feedback" && newPendingCount > 0) {
+					return { ...tab, badge: newPendingCount };
 				}
-				return tab
+				return tab;
 			}),
 		[unread, lastReadChangelogId, newPendingCount],
-	)
+	);
 
 	return (
-		<div className='min-h-screen text-app-text pb-28'>
-			<div className='p-4 space-y-4'>
-				<div className='flex items-center gap-2'>
+		<div className="min-h-screen text-app-text pb-28">
+			<div className="p-4 space-y-4">
+				<div className="flex items-center gap-2">
 					<IconButton
 						icon={<ArrowLeft size={18} />}
 						onClick={() => navigate(-1)}
-						size='md'
-						shape='square'
-						variant='surface'
-						style={{ boxShadow: 'var(--shadow-card)' }}
-						aria-label='Назад'
+						size="md"
+						shape="square"
+						variant="surface"
+						style={{ boxShadow: "var(--shadow-card)" }}
+						aria-label="Назад"
 					/>
 
-					<div className='flex-1'>
+					<div className="flex-1">
 						<PageHeader
-							title='Уведомления'
+							title="Уведомления"
 							actions={<RefreshNotificationsButton />}
 						/>
 					</div>
@@ -122,15 +122,15 @@ export function NotificationsPage() {
 				/>
 			</div>
 
-			<div className='px-4'>
-				{activeTab === 'changelog' && (
+			<div className="px-4">
+				{activeTab === "changelog" && (
 					<>
 						<AppUpdateBanner />
 						<ChangelogTab entries={entries} />
 					</>
 				)}
-				{activeTab === 'feedback' && <EvaluateLessonList />}
-				{activeTab === 'news' && <NewsTab />}
+				{activeTab === "feedback" && <EvaluateLessonList />}
+				{activeTab === "news" && <NewsTab />}
 			</div>
 		</div>
 	)

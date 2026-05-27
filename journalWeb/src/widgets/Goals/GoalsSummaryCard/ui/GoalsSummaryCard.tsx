@@ -1,6 +1,9 @@
-import { lastValue, useDashboardChartsStore } from '@/entities/dashboard'
-import { useGrades } from '@/entities/grades'
-import { useOverallSummary } from '@/features/goalForecast'
+import { ChevronRight, Target } from "lucide-react";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { lastValue, useDashboardChartsStore } from "@/entities/dashboard";
+import { useGrades } from "@/entities/grades";
+import { useOverallSummary } from "@/features/goalForecast";
 import {
 	GRADE_BG,
 	GRADE_COLOR,
@@ -8,113 +11,110 @@ import {
 	pageConfig,
 	RISK_BG,
 	RISK_COLOR,
-} from '@/shared/config'
-import { ChevronRight, Target } from 'lucide-react'
-import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from "@/shared/config";
 
 function fmt(v: number | null): string {
-	return v === null ? '—' : v.toFixed(2)
+	return v === null ? "—" : v.toFixed(2);
 }
 
 function pickBadgeLabel(
-	risk: ReturnType<typeof useOverallSummary>['risk'],
+	risk: ReturnType<typeof useOverallSummary>["risk"],
 	atRiskCount: number,
 	totalSubjectsWithGoals: number,
 ): string {
-	if (totalSubjectsWithGoals === 0) return 'поставь цели'
-	if (risk === 'danger' || risk === 'watch') return `${atRiskCount} в риске`
-	return 'цели в норме'
+	if (totalSubjectsWithGoals === 0) return "поставь цели";
+	if (risk === "danger" || risk === "watch") return `${atRiskCount} в риске`;
+	return "цели в норме";
 }
 
 export function GoalsSummaryCard({ className }: { className?: string }) {
-	const navigate = useNavigate()
-	const progress = useDashboardChartsStore(s => s.progress)
-	const attendance = useDashboardChartsStore(s => s.attendance)
-	const { entries } = useGrades()
-	const summary = useOverallSummary()
+	const navigate = useNavigate();
+	const progress = useDashboardChartsStore((s) => s.progress);
+	const attendance = useDashboardChartsStore((s) => s.attendance);
+	const { entries } = useGrades();
+	const summary = useOverallSummary();
 
-	const avg = lastValue(progress)
-	const att = lastValue(attendance)
+	const avg = lastValue(progress);
+	const att = lastValue(attendance);
 
 	const distribution = useMemo(() => {
-		const counts: Record<Mark, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+		const counts: Record<Mark, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 		for (const e of entries) {
-			if (!e.marks) continue
+			if (!e.marks) continue;
 			for (const v of Object.values(e.marks)) {
-				if (typeof v === 'number' && v >= 1 && v <= 5) {
-					counts[v as Mark] += 1
+				if (typeof v === "number" && v >= 1 && v <= 5) {
+					counts[v as Mark] += 1;
 				}
 			}
 		}
-		return counts
-	}, [entries])
+		return counts;
+	}, [entries]);
 
 	const totalMarks =
 		distribution[1] +
 		distribution[2] +
 		distribution[3] +
 		distribution[4] +
-		distribution[5]
+		distribution[5];
 
 	const badgeRisk =
-		summary.totalSubjectsWithGoals === 0 ? 'no_goal' : summary.risk
+		summary.totalSubjectsWithGoals === 0 ? "no_goal" : summary.risk;
 	const badgeLabel = pickBadgeLabel(
 		summary.risk,
 		summary.atRiskCount,
 		summary.totalSubjectsWithGoals,
-	)
+	);
 
 	return (
 		<button
-			type='button'
+			type="button"
 			onClick={() => navigate(pageConfig.goals)}
-			className={`w-full text-left rounded-[22px] p-4 border border-app-border bg-app-surface active:scale-[0.99] transition-transform flex flex-col ${className ?? ''}`}
-			style={{ boxShadow: 'var(--shadow-card)' }}
+			className={`w-full text-left rounded-[22px] p-4 border border-app-border bg-app-surface active:scale-[0.99] transition-transform flex flex-col ${className ?? ""}`}
+			style={{ boxShadow: "var(--shadow-card)" }}
 		>
-			<div className='flex items-center justify-between mb-3'>
-				<div className='flex items-center gap-2'>
-					<Target size={16} className='text-app-muted' />
-					<span className='text-[13px] uppercase tracking-wider text-app-muted'>
+			<div className="flex items-center justify-between mb-3">
+				<div className="flex items-center gap-2">
+					<Target size={16} className="text-app-muted" />
+					<span className="text-[13px] uppercase tracking-wider text-app-muted">
 						Сводка оценок
 					</span>
 				</div>
-				<ChevronRight size={18} className='text-app-muted' />
+				<ChevronRight size={18} className="text-app-muted" />
 			</div>
 
-			<div className='grid grid-cols-3 gap-3 mb-3'>
+			<div className="grid grid-cols-3 gap-3 mb-3">
 				<div>
-					<div className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
-						{avg != null ? avg.toFixed(1) : '—'}
+					<div className="text-[28px] font-bold text-app-text leading-none tabular-nums">
+						{avg != null ? avg.toFixed(1) : "—"}
 					</div>
-					<div className='text-[12px] text-app-muted mt-1.5'>средний балл</div>
+					<div className="text-[12px] text-app-muted mt-1.5">средний балл</div>
 				</div>
 				<div>
 					<div
-						className='text-[28px] font-bold leading-none tabular-nums'
+						className="text-[28px] font-bold leading-none tabular-nums"
 						style={{ color: GRADE_COLOR[4] }}
 					>
-						{att != null ? `${att}%` : '—'}
+						{att != null ? `${att}%` : "—"}
 					</div>
-					<div className='text-[12px] text-app-muted mt-1.5'>посещаемость</div>
+					<div className="text-[12px] text-app-muted mt-1.5">посещаемость</div>
 				</div>
 				<div>
-					<div className='text-[28px] font-bold text-app-text leading-none tabular-nums'>
+					<div className="text-[28px] font-bold text-app-text leading-none tabular-nums">
 						{totalMarks}
 					</div>
-					<div className='text-[12px] text-app-muted mt-1.5'>всего оценок</div>
+					<div className="text-[12px] text-app-muted mt-1.5">всего оценок</div>
 				</div>
 			</div>
 
 			{totalMarks > 0 && (
 				<>
 					<div
-						className='flex rounded-full overflow-hidden mb-3'
+						className="flex rounded-full overflow-hidden mb-3"
 						style={{ height: 8 }}
 					>
-						{([5, 4, 3, 2, 1] as const).map(v => {
-							const pct = (distribution[v] / totalMarks) * 100
-							if (pct === 0) return null
+						{([5, 4, 3, 2, 1] as const).map((v) => {
+							const pct = (distribution[v] / totalMarks) * 100;
+							if (pct === 0) return null;
 							return (
 								<div
 									key={v}
@@ -123,21 +123,19 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 										background: GRADE_COLOR[v],
 									}}
 								/>
-							)
+							);
 						})}
 					</div>
 
-					<div className='grid grid-cols-5 gap-1.5 mb-3'>
-						{([5, 4, 3, 2, 1] as const).map(v => {
-							const count = distribution[v]
+					<div className="grid grid-cols-5 gap-1.5 mb-3">
+						{([5, 4, 3, 2, 1] as const).map((v) => {
+							const count = distribution[v];
 							const pct =
-								totalMarks > 0
-									? Math.round((count / totalMarks) * 100)
-									: 0
+								totalMarks > 0 ? Math.round((count / totalMarks) * 100) : 0;
 							return (
 								<div
 									key={v}
-									className='rounded-[14px] py-1 flex flex-col items-center justify-center'
+									className="rounded-[14px] py-1 flex flex-col items-center justify-center"
 									style={{
 										background: GRADE_BG[v],
 										opacity: count === 0 ? 0.45 : 1,
@@ -145,27 +143,27 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 									}}
 								>
 									<span
-										className='text-[20px] font-bold leading-none tabular-nums'
+										className="text-[20px] font-bold leading-none tabular-nums"
 										style={{ color: GRADE_COLOR[v] }}
 									>
 										{v}
 									</span>
-									<span className='text-[12px] font-semibold text-app-text tabular-nums mt-1 leading-none'>
+									<span className="text-[12px] font-semibold text-app-text tabular-nums mt-1 leading-none">
 										{count}
 									</span>
-									<span className='text-[10px] text-app-muted tabular-nums mt-0.5 leading-none'>
+									<span className="text-[10px] text-app-muted tabular-nums mt-0.5 leading-none">
 										{pct}%
 									</span>
 								</div>
-							)
+							);
 						})}
 					</div>
 				</>
 			)}
 
-			<div className='mt-auto flex items-center justify-between w-full pt-3 border-t border-app-border'>
+			<div className="mt-auto flex items-center justify-between w-full pt-3 border-t border-app-border">
 				<span
-					className='inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium'
+					className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-medium"
 					style={{
 						color: RISK_COLOR[badgeRisk],
 						background: RISK_BG[badgeRisk],
@@ -174,18 +172,18 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 					● {badgeLabel}
 				</span>
 				{summary.totalSubjectsWithGoals > 0 && (
-					<span className='text-[12px] text-app-muted'>
-						прогноз{' '}
-						<strong className='text-app-text tabular-nums'>
+					<span className="text-[12px] text-app-muted">
+						прогноз{" "}
+						<strong className="text-app-text tabular-nums">
 							{fmt(summary.forecast)}
-						</strong>{' '}
-						· цель{' '}
-						<strong className='text-app-text tabular-nums'>
+						</strong>{" "}
+						· цель{" "}
+						<strong className="text-app-text tabular-nums">
 							{fmt(summary.target)}
 						</strong>
 					</span>
 				)}
 			</div>
 		</button>
-	)
+	);
 }

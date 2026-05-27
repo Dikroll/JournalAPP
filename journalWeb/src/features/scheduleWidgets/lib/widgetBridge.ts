@@ -1,19 +1,22 @@
-import { Capacitor, registerPlugin } from '@capacitor/core'
-import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
-import type { LessonItem } from '@/entities/schedule'
-import { widgetConfig } from '@/shared/config/widgetConfig'
-import { buildScheduleWidgetPayload, type ScheduleWidgetStats } from './payload'
+import { Capacitor, registerPlugin } from "@capacitor/core";
+import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import type { LessonItem } from "@/entities/schedule";
+import { widgetConfig } from "@/shared/config/widgetConfig";
+import {
+	buildScheduleWidgetPayload,
+	type ScheduleWidgetStats,
+} from "./payload";
 
-const WIDGET_PAYLOAD_FILE = 'widgets/schedule-payload.json'
+const WIDGET_PAYLOAD_FILE = "widgets/schedule-payload.json";
 
 type WidgetBridgePlugin = {
-	saveSchedule: (options: { payload: string }) => Promise<void>
-	clearSchedule: () => Promise<void>
-}
+	saveSchedule: (options: { payload: string }) => Promise<void>;
+	clearSchedule: () => Promise<void>;
+};
 
 const WidgetBridge = Capacitor.isNativePlatform()
-	? registerPlugin<WidgetBridgePlugin>('WidgetBridge')
-	: null
+	? registerPlugin<WidgetBridgePlugin>("WidgetBridge")
+	: null;
 
 export function getScheduleWidgetPayload(
 	lessons: LessonItem[],
@@ -32,7 +35,7 @@ export function getScheduleWidgetPayload(
 		meta: {
 			deepLinkUrl: widgetConfig.deepLinkScheduleUrl,
 		},
-	})
+	});
 }
 
 async function syncWidgetPayloadFile(payload: string) {
@@ -43,7 +46,7 @@ async function syncWidgetPayloadFile(payload: string) {
 			directory: Directory.Data,
 			encoding: Encoding.UTF8,
 			recursive: true,
-		})
+		});
 	} catch {}
 }
 
@@ -52,7 +55,7 @@ async function clearWidgetPayloadFile() {
 		await Filesystem.deleteFile({
 			path: WIDGET_PAYLOAD_FILE,
 			directory: Directory.Data,
-		})
+		});
 	} catch {}
 }
 
@@ -67,18 +70,18 @@ export async function syncScheduleWidgets(
 		tomorrowLessons,
 		stats,
 		weeklyMap,
-	)
-	await syncWidgetPayloadFile(payload)
-	if (!WidgetBridge) return
+	);
+	await syncWidgetPayloadFile(payload);
+	if (!WidgetBridge) return;
 	try {
-		await WidgetBridge.saveSchedule({ payload })
+		await WidgetBridge.saveSchedule({ payload });
 	} catch {}
 }
 
 export async function clearScheduleWidgets() {
-	await clearWidgetPayloadFile()
-	if (!WidgetBridge) return
+	await clearWidgetPayloadFile();
+	if (!WidgetBridge) return;
 	try {
-		await WidgetBridge.clearSchedule()
+		await WidgetBridge.clearSchedule();
 	} catch {}
 }

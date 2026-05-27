@@ -1,19 +1,19 @@
-import { useHomework } from '@/entities/homework'
-import { useNetworkStore } from '@/shared/model/networkStore'
-import { useCallback } from 'react'
+import { useCallback } from "react";
+import { useHomework } from "@/entities/homework";
+import { useNetworkStore } from "@/shared/model/networkStore";
 
 export function useRefreshHomework() {
-	const isOnline = useNetworkStore(s => s.isOnline)
-	const { refresh: doRefresh, status } = useHomework()
+	const isOnline = useNetworkStore((s) => s.isOnline);
+	const { refresh: doRefresh, status } = useHomework();
 
 	const refresh = useCallback(() => {
-		if (!isOnline) return
-		doRefresh()
-	}, [isOnline, doRefresh])
+		if (!isOnline) return;
+		doRefresh();
+	}, [isOnline, doRefresh]);
 
 	return {
 		refresh,
-		isRefreshing: status === 'loading',
+		isRefreshing: status === "loading",
 		isOnline,
-	}
+	};
 }

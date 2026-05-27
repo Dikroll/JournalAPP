@@ -1,48 +1,49 @@
-import type { GradeEntryExpanded } from '@/entities/grades'
-import { getGradeDotColor } from '@/entities/grades'
-import { useMonthNav } from '@/shared/hooks'
-import { MonthGrid } from '@/shared/ui'
+import { useCallback, useMemo, useState } from "react";
+import type { GradeEntryExpanded } from "@/entities/grades";
+import { getGradeDotColor } from "@/entities/grades";
+import { useMonthNav } from "@/shared/hooks";
+import { MonthGrid } from "@/shared/ui";
 import {
 	formatDateWithWeekday,
 	getTodayString,
 	toDateString,
-} from '@/shared/utils'
-import { useCallback, useMemo, useState } from 'react'
-import { GradeEntryRow } from '../../GradesList/ui/GradeEntryRow'
+} from "@/shared/utils";
+import { GradeEntryRow } from "../../GradesList/ui/GradeEntryRow";
 
 interface Props {
-	byMonth: Record<string, Record<string, GradeEntryExpanded[]>>
+	byMonth: Record<string, Record<string, GradeEntryExpanded[]>>;
 }
 
 export function GradesCalendar({ byMonth }: Props) {
-	const months = Object.keys(byMonth).sort()
-	const defaultMonth = months[months.length - 1] ?? getTodayString().slice(0, 7)
+	const months = Object.keys(byMonth).sort();
+	const defaultMonth =
+		months[months.length - 1] ?? getTodayString().slice(0, 7);
 
-	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth)
-	const [selectedDate, setSelectedDate] = useState<string | null>(null)
+	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth);
+	const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
 	const handlePrevMonth = useCallback(() => {
-		prevMonth()
-		setSelectedDate(null)
-	}, [prevMonth])
+		prevMonth();
+		setSelectedDate(null);
+	}, [prevMonth]);
 
 	const handleNextMonth = useCallback(() => {
-		nextMonth()
-		setSelectedDate(null)
-	}, [nextMonth])
+		nextMonth();
+		setSelectedDate(null);
+	}, [nextMonth]);
 
 	const handleDayClick = useCallback((dateStr: string, hasData: boolean) => {
-		if (!hasData) return
-		setSelectedDate(prev => (prev === dateStr ? null : dateStr))
-	}, [])
+		if (!hasData) return;
+		setSelectedDate((prev) => (prev === dateStr ? null : dateStr));
+	}, []);
 
-	const currentMonth = toDateString(year, month, 1).slice(0, 7)
-	const datesWithData = byMonth[currentMonth] ?? {}
+	const currentMonth = toDateString(year, month, 1).slice(0, 7);
+	const datesWithData = byMonth[currentMonth] ?? {};
 
 	const selectedEntries = useMemo(
-		() => (selectedDate ? datesWithData[selectedDate] ?? [] : null),
+		() => (selectedDate ? (datesWithData[selectedDate] ?? []) : null),
 		[selectedDate, datesWithData],
-	)
+	);
 
 	const sortedSelectedEntries = useMemo(
 		() =>
@@ -50,64 +51,72 @@ export function GradesCalendar({ byMonth }: Props) {
 				? [...selectedEntries].sort((a, b) => a.lesson_number - b.lesson_number)
 				: null,
 		[selectedEntries],
-	)
+	);
 
 	const renderDay = useCallback(
-		({ dateStr, day, isToday }: { dateStr: string; day: number; isToday: boolean }) => {
-			const entries = datesWithData[dateStr] ?? []
-			const hasData = entries.length > 0
-			const isSelected = selectedDate === dateStr
-			const dotColor = hasData ? getGradeDotColor(entries) : null
+		({
+			dateStr,
+			day,
+			isToday,
+		}: {
+			dateStr: string;
+			day: number;
+			isToday: boolean;
+		}) => {
+			const entries = datesWithData[dateStr] ?? [];
+			const hasData = entries.length > 0;
+			const isSelected = selectedDate === dateStr;
+			const dotColor = hasData ? getGradeDotColor(entries) : null;
 
 			return (
 				<button
-					type='button'
+					type="button"
 					disabled={!hasData}
 					onClick={() => handleDayClick(dateStr, hasData)}
-					className='relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default'
+					className="relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default"
 					style={{
 						width: 36,
 						height: 36,
-						WebkitTapHighlightColor: 'transparent',
-						background: isSelected ? 'var(--color-brand)' : 'transparent',
+						WebkitTapHighlightColor: "transparent",
+						background: isSelected ? "var(--color-brand)" : "transparent",
 						color: isSelected
-							? '#fff'
+							? "#fff"
 							: hasData
-							? 'var(--color-text)'
-							: 'var(--color-text-faint)',
+								? "var(--color-text)"
+								: "var(--color-text-faint)",
 					}}
 				>
 					{day}
 
 					{isToday && !isSelected && (
 						<span
-							className='absolute inset-0 rounded-full pointer-events-none'
-							style={{ boxShadow: '0 0 0 1.5px var(--color-brand)' }}
+							className="absolute inset-0 rounded-full pointer-events-none"
+							style={{ boxShadow: "0 0 0 1.5px var(--color-brand)" }}
 						/>
 					)}
 
 					{dotColor && !isSelected && (
 						<span
-							className='absolute rounded-full pointer-events-none'
+							className="absolute rounded-full pointer-events-none"
 							style={{
 								width: 4,
 								height: 4,
 								bottom: 3,
-								left: '50%',
-								transform: 'translateX(-50%)',
+								left: "50%",
+								transform: "translateX(-50%)",
 								backgroundColor: dotColor,
 							}}
 						/>
 					)}
 				</button>
-			)
+			);
 		},
 		[datesWithData, selectedDate, handleDayClick],
-	)
+	);
 
 	return (
-		<div className='flex flex-col lg:flex-row gap-6 items-start'>
-			<div className='w-full lg:w-[400px] shrink-0 space-y-4'>
+		<div className="flex flex-col lg:flex-row gap-6 items-start">
+			<div className="w-full lg:w-[400px] shrink-0 space-y-4">
 				<MonthGrid
 					year={year}
 					month={month}
@@ -115,8 +124,28 @@ export function GradesCalendar({ byMonth }: Props) {
 					onNextMonth={handleNextMonth}
 					renderDay={renderDay}
 				/>
+				
+				<div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-2">
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-checked)" }} />
+						<span className="text-[11px] text-app-muted">5</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-new)" }} />
+						<span className="text-[11px] text-app-muted">4 / Посетил</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-pending)" }} />
+						<span className="text-[11px] text-app-muted">3</span>
+					</div>
+					<div className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-overdue)" }} />
+						<span className="text-[11px] text-app-muted">2 / Пропуск</span>
+					</div>
+				</div>
+
 				{Object.keys(datesWithData).length === 0 && (
-					<p className='text-app-muted text-sm text-center py-2'>
+					<p className="text-app-muted text-sm text-center py-2">
 						В этом месяце нет записей
 					</p>
 				)}
@@ -141,24 +170,24 @@ export function GradesCalendar({ byMonth }: Props) {
 				</div>
 			</div>
 
-			<div className='flex-1 w-full'>
+			<div className="flex-1 w-full">
 				{!selectedDate ? (
-					<div className='flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]'>
+					<div className="flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]">
 						Выберите день в календаре для просмотра оценок
 					</div>
 				) : sortedSelectedEntries && sortedSelectedEntries.length > 0 ? (
-					<div className='space-y-3'>
-						<div className='text-base font-bold text-app-text px-1'>
+					<div className="space-y-3">
+						<div className="text-base font-bold text-app-text px-1">
 							{formatDateWithWeekday(selectedDate)}
 						</div>
 						<div
-							className='bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border space-y-2'
-							style={{ boxShadow: 'var(--shadow-card)' }}
+							className="bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border space-y-2"
+							style={{ boxShadow: "var(--shadow-card)" }}
 						>
 							{sortedSelectedEntries.map((entry, idx) => (
 								<div key={`${entry.spec_id}-${entry.lesson_number}`}>
 									{idx > 0 && (
-										<div className='border-t border-app-border my-2' />
+										<div className="border-t border-app-border my-2" />
 									)}
 									<GradeEntryRow entry={entry} />
 								</div>
@@ -166,11 +195,11 @@ export function GradesCalendar({ byMonth }: Props) {
 						</div>
 					</div>
 				) : (
-					<div className='flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]'>
+					<div className="flex items-center justify-center h-full min-h-[200px] text-app-muted text-sm border-2 border-dashed border-app-border rounded-[24px]">
 						Нет записей за {formatDateWithWeekday(selectedDate)}
 					</div>
 				)}
 			</div>
 		</div>
-	)
+	);
 }

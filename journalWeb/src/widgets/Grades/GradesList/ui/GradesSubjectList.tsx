@@ -1,9 +1,10 @@
-import type { SubjectStats } from '@/entities/grades'
+import { useMemo } from "react";
+import type { SubjectStats } from "@/entities/grades";
 import {
 	GRADE_TYPE_CONFIG,
 	gradeCircleStyle,
 	sortSubjects,
-} from '@/entities/grades'
+} from "@/entities/grades";
 import {
 	SortSubjectsControl,
 	useSortSubjectsStore,
@@ -15,23 +16,29 @@ import { isWebPlatform } from '@/shared/lib/platform'
 import { useMemo } from 'react'
 
 interface Props {
-	bySubject: SubjectStats[]
+	bySubject: SubjectStats[];
 }
 
 export function GradesSubjectList({ bySubject }: Props) {
-	const sortKey = useSortSubjectsStore(s => s.sortKey)
-	const sorted = useMemo(() => sortSubjects(bySubject, sortKey), [bySubject, sortKey])
-	const { visibleCount, sentinelRef } = useLazyItems(sorted.length)
+	const sortKey = useSortSubjectsStore((s) => s.sortKey);
+	const sorted = useMemo(
+		() => sortSubjects(bySubject, sortKey),
+		[bySubject, sortKey],
+	);
+	const { visibleCount, sentinelRef } = useLazyItems(sorted.length);
+	const isDesktop = useIsDesktop();
 
 	if (bySubject.length === 0) {
-		return <p className='text-app-muted text-sm text-center py-8'>Нет данных</p>
+		return (
+			<p className="text-app-muted text-sm text-center py-8">Нет данных</p>
+		);
 	}
 
 	const isWeb = isWebPlatform
 	const isDesktop = useIsDesktop()
 
 	return (
-		<div className='space-y-3'>
+		<div className="space-y-3">
 			<SortSubjectsControl />
 
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -41,25 +48,25 @@ export function GradesSubjectList({ bySubject }: Props) {
 						className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-4 border border-app-border flex flex-col h-full`}
 						style={{ boxShadow: 'var(--shadow-card)' }}
 					>
-					<div className='flex items-start justify-between gap-3 mb-4'>
-						<h3 className='text-sm font-semibold text-app-text leading-snug'>
-							{subj.spec_name}
-						</h3>
-						<div
-							className='shrink-0 px-3 py-1.5 rounded-xl border'
-							style={{
-								background: 'var(--color-comment-subtle)',
-								borderColor: 'var(--color-comment-border)',
-							}}
-						>
-							<span
-								className='text-lg font-bold'
-								style={{ color: 'var(--color-comment)' }}
+						<div className="flex items-start justify-between gap-3 mb-4">
+							<h3 className="text-sm font-semibold text-app-text leading-snug">
+								{subj.spec_name}
+							</h3>
+							<div
+								className="shrink-0 px-3 py-1.5 rounded-xl border"
+								style={{
+									background: "var(--color-comment-subtle)",
+									borderColor: "var(--color-comment-border)",
+								}}
 							>
-								{subj.averageGrade > 0 ? subj.averageGrade.toFixed(1) : '—'}
-							</span>
+								<span
+									className="text-lg font-bold"
+									style={{ color: "var(--color-comment)" }}
+								>
+									{subj.averageGrade > 0 ? subj.averageGrade.toFixed(1) : "—"}
+								</span>
+							</div>
 						</div>
-					</div>
 
 					<div
 						className={`-mx-4 overflow-x-auto ${!isDesktop ? 'scrollbar-none' : ''}`}
@@ -109,5 +116,5 @@ export function GradesSubjectList({ bySubject }: Props) {
 			</div>
 			{visibleCount < sorted.length && <div ref={sentinelRef} />}
 		</div>
-	)
+	);
 }

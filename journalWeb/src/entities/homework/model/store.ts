@@ -1,71 +1,71 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { LoadingState } from '@/shared/types'
-import { create } from 'zustand'
-import type { HomeworkCounters, HomeworkItem, HomeworkStatus } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { LoadingState } from "@/shared/types";
+import type { HomeworkCounters, HomeworkItem, HomeworkStatus } from "./types";
 
-export const PREVIEW_SIZE = 6
-export const PAGE_SIZE = 6
+export const PREVIEW_SIZE = 6;
+export const PAGE_SIZE = 6;
 
 export interface SubjectData {
-	specId: number
-	specName: string
-	counters: HomeworkCounters | null
-	items: Record<number, HomeworkItem[]>
-	pages: Record<number, number>
-	expandedStatuses: Set<number>
-	status: LoadingState
-	loadedAt: number | null
+	specId: number;
+	specName: string;
+	counters: HomeworkCounters | null;
+	items: Record<number, HomeworkItem[]>;
+	pages: Record<number, number>;
+	expandedStatuses: Set<number>;
+	status: LoadingState;
+	loadedAt: number | null;
 }
 
 interface HomeworkState {
-	items: Record<number, HomeworkItem[]>
-	pages: Record<number, number>
-	expandedStatuses: Set<number>
-	counters: HomeworkCounters | null
-	status: LoadingState
-	error: string | null
-	filterStatus: HomeworkStatus | null
-	loadedAt: number | null
+	items: Record<number, HomeworkItem[]>;
+	pages: Record<number, number>;
+	expandedStatuses: Set<number>;
+	counters: HomeworkCounters | null;
+	status: LoadingState;
+	error: string | null;
+	filterStatus: HomeworkStatus | null;
+	loadedAt: number | null;
 
-	setItems: (statusKey: number, items: HomeworkItem[]) => void
+	setItems: (statusKey: number, items: HomeworkItem[]) => void;
 	appendItems: (
 		statusKey: number,
 		newItems: HomeworkItem[],
 		page: number,
-	) => void
-	setExpanded: (statusKey: number, expanded: boolean) => void
-	setCounters: (counters: HomeworkCounters) => void
-	setStatus: (s: LoadingState) => void
-	setError: (e: string | null) => void
-	setFilter: (f: HomeworkStatus | null) => void
-	setLoadedAt: (t: number) => void
-	removeItem: (homeworkId: number) => void
+	) => void;
+	setExpanded: (statusKey: number, expanded: boolean) => void;
+	setCounters: (counters: HomeworkCounters) => void;
+	setStatus: (s: LoadingState) => void;
+	setError: (e: string | null) => void;
+	setFilter: (f: HomeworkStatus | null) => void;
+	setLoadedAt: (t: number) => void;
+	removeItem: (homeworkId: number) => void;
 
-	knownSpecs: Array<{ specId: number; specName: string }>
-	subjects: Record<number, SubjectData>
+	knownSpecs: Array<{ specId: number; specName: string }>;
+	subjects: Record<number, SubjectData>;
 
-	setKnownSpecs: (specs: Array<{ specId: number; specName: string }>) => void
+	setKnownSpecs: (specs: Array<{ specId: number; specName: string }>) => void;
 	setSubjectData: (
 		specId: number,
 		specName: string,
 		counters: HomeworkCounters,
 		items: Record<number, HomeworkItem[]>,
-	) => void
+	) => void;
 	appendSubjectItems: (
 		specId: number,
 		statusKey: number,
 		newItems: HomeworkItem[],
 		page: number,
-	) => void
+	) => void;
 	setSubjectExpanded: (
 		specId: number,
 		statusKey: number,
 		expanded: boolean,
-	) => void
-	setSubjectStatus: (specId: number, status: LoadingState) => void
+	) => void;
+	setSubjectStatus: (specId: number, status: LoadingState) => void;
 
-	invalidate: () => void
-	reset: () => void
+	invalidate: () => void;
+	reset: () => void;
 }
 
 function filterItems(
@@ -75,59 +75,57 @@ function filterItems(
 	return Object.fromEntries(
 		Object.entries(items).map(([key, list]) => [
 			key,
-			list.filter(hw => hw.id !== homeworkId),
+			list.filter((hw) => hw.id !== homeworkId),
 		]),
-	)
+	);
 }
 
 export const useHomeworkStore = create<HomeworkState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			items: {},
 			pages: {},
 			expandedStatuses: new Set(),
 			counters: null,
-			status: 'idle',
+			status: "idle",
 			error: null,
 			filterStatus: null,
 			loadedAt: null,
 
-		knownSpecs: [],
-		subjects: {},
+			knownSpecs: [],
+			subjects: {},
 
-		setKnownSpecs: knownSpecs => set({ knownSpecs }),
-		setSubjectData: (specId, specName, counters, items) =>
-			set(state => ({
-				subjects: {
-					...state.subjects,
-					[specId]: {
-						specId,
-						specName,
-						counters,
-						items,
-						pages: Object.fromEntries(
-							Object.keys(items).map(k => [k, 1]),
-						),
-						expandedStatuses: new Set(),
-						status: 'success' as const,
-						loadedAt: Date.now(),
+			setKnownSpecs: (knownSpecs) => set({ knownSpecs }),
+			setSubjectData: (specId, specName, counters, items) =>
+				set((state) => ({
+					subjects: {
+						...state.subjects,
+						[specId]: {
+							specId,
+							specName,
+							counters,
+							items,
+							pages: Object.fromEntries(Object.keys(items).map((k) => [k, 1])),
+							expandedStatuses: new Set(),
+							status: "success" as const,
+							loadedAt: Date.now(),
+						},
 					},
-				},
-			})),
+				})),
 
 			setItems: (statusKey, items) =>
-				set(state => {
-					const nextExpanded = new Set(state.expandedStatuses)
-					nextExpanded.delete(statusKey)
+				set((state) => {
+					const nextExpanded = new Set(state.expandedStatuses);
+					nextExpanded.delete(statusKey);
 					return {
 						items: { ...state.items, [statusKey]: items },
 						pages: { ...state.pages, [statusKey]: 1 },
 						expandedStatuses: nextExpanded,
-					}
+					};
 				}),
 
 			appendItems: (statusKey, newItems, page) =>
-				set(state => ({
+				set((state) => ({
 					items: {
 						...state.items,
 						[statusKey]: [...(state.items[statusKey] ?? []), ...newItems],
@@ -136,20 +134,20 @@ export const useHomeworkStore = create<HomeworkState>()(
 				})),
 
 			setExpanded: (statusKey, expanded) =>
-				set(state => {
-					const next = new Set(state.expandedStatuses)
-					expanded ? next.add(statusKey) : next.delete(statusKey)
-					return { expandedStatuses: next }
+				set((state) => {
+					const next = new Set(state.expandedStatuses);
+					expanded ? next.add(statusKey) : next.delete(statusKey);
+					return { expandedStatuses: next };
 				}),
 
-			setCounters: counters => set({ counters }),
-			setStatus: status => set({ status }),
-			setError: error => set({ error }),
-			setFilter: filterStatus => set({ filterStatus }),
-			setLoadedAt: loadedAt => set({ loadedAt }),
+			setCounters: (counters) => set({ counters }),
+			setStatus: (status) => set({ status }),
+			setError: (error) => set({ error }),
+			setFilter: (filterStatus) => set({ filterStatus }),
+			setLoadedAt: (loadedAt) => set({ loadedAt }),
 
-			removeItem: homeworkId =>
-				set(state => ({
+			removeItem: (homeworkId) =>
+				set((state) => ({
 					items: filterItems(state.items, homeworkId),
 					subjects: Object.fromEntries(
 						Object.entries(state.subjects as Record<string, SubjectData>).map(
@@ -164,9 +162,9 @@ export const useHomeworkStore = create<HomeworkState>()(
 					),
 				})),
 			appendSubjectItems: (specId, statusKey, newItems, page) =>
-				set(state => {
-					const existing = state.subjects[specId]
-					if (!existing) return state
+				set((state) => {
+					const existing = state.subjects[specId];
+					if (!existing) return state;
 					return {
 						subjects: {
 							...state.subjects,
@@ -182,33 +180,33 @@ export const useHomeworkStore = create<HomeworkState>()(
 								pages: { ...existing.pages, [statusKey]: page },
 							},
 						},
-					}
+					};
 				}),
 
 			setSubjectExpanded: (specId, statusKey, expanded) =>
-				set(state => {
-					const existing = state.subjects[specId]
-					if (!existing) return state
-					const next = new Set(existing.expandedStatuses)
-					expanded ? next.add(statusKey) : next.delete(statusKey)
+				set((state) => {
+					const existing = state.subjects[specId];
+					if (!existing) return state;
+					const next = new Set(existing.expandedStatuses);
+					expanded ? next.add(statusKey) : next.delete(statusKey);
 					return {
 						subjects: {
 							...state.subjects,
 							[specId]: { ...existing, expandedStatuses: next },
 						},
-					}
+					};
 				}),
 
 			setSubjectStatus: (specId, status) =>
-				set(state => {
-					const existing = state.subjects[specId]
-					if (!existing) return state
+				set((state) => {
+					const existing = state.subjects[specId];
+					if (!existing) return state;
 					return {
 						subjects: {
 							...state.subjects,
 							[specId]: { ...existing, status },
 						},
-					}
+					};
 				}),
 
 			invalidate: () => set({ loadedAt: null }),
@@ -219,7 +217,7 @@ export const useHomeworkStore = create<HomeworkState>()(
 					pages: {},
 					expandedStatuses: new Set(),
 					counters: null,
-					status: 'idle',
+					status: "idle",
 					error: null,
 					filterStatus: null,
 					loadedAt: null,
@@ -228,38 +226,42 @@ export const useHomeworkStore = create<HomeworkState>()(
 				}),
 		}),
 		{
-			name: 'homework-store',
-			partialize: state => ({
+			name: "homework-store",
+			partialize: (state) => ({
 				items: state.items,
 				pages: state.pages,
 				counters: state.counters,
 				loadedAt: state.loadedAt,
 				knownSpecs: state.knownSpecs,
 				subjects: Object.fromEntries(
-					Object.entries(state.subjects as Record<string, SubjectData>).map(([k, v]) => [
-						k,
-						{
-							...v,
-							expandedStatuses: Array.from(v.expandedStatuses),
-							status: 'idle',
-						},
-					]),
+					Object.entries(state.subjects as Record<string, SubjectData>).map(
+						([k, v]) => [
+							k,
+							{
+								...v,
+								expandedStatuses: Array.from(v.expandedStatuses),
+								status: "idle",
+							},
+						],
+					),
 				),
 				expandedStatuses: Array.from(state.expandedStatuses),
 			}),
 			onRehydrateStorage: () => (state: HomeworkState | undefined) => {
-				if (!state) return
+				if (!state) return;
 				state.expandedStatuses = new Set(
 					state.expandedStatuses as unknown as number[],
-				)
-				state.status = 'idle'
-				for (const sub of Object.values(state.subjects as Record<number, SubjectData>)) {
+				);
+				state.status = "idle";
+				for (const sub of Object.values(
+					state.subjects as Record<number, SubjectData>,
+				)) {
 					sub.expandedStatuses = new Set(
 						sub.expandedStatuses as unknown as number[],
-					)
-					sub.status = 'idle'
+					);
+					sub.status = "idle";
 				}
 			},
 		},
 	),
-)
+);

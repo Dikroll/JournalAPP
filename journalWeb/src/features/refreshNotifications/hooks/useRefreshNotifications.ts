@@ -17,20 +17,20 @@ export function useRefreshNotifications() {
 	const updateNews = useNewsStore(s => s.update)
 
 	const refresh = useCallback(async () => {
-		if (!isOnline) return
-		if (isRefreshing) return
-		setIsRefreshing(true)
+		if (!isOnline) return;
+		if (isRefreshing) return;
+		setIsRefreshing(true);
 
-		const updateTask = checkForUpdate().catch(() => {})
+		const updateTask = checkForUpdate().catch(() => {});
 
 		const pendingTask = feedbackApi
 			.getPending()
-			.then(data => {
-				setPending(data)
-				setPendingLoadedAt(Date.now())
-				setPendingStatus('success')
+			.then((data) => {
+				setPending(data);
+				setPendingLoadedAt(Date.now());
+				setPendingStatus("success");
 			})
-			.catch(() => {})
+			.catch(() => {});
 
 		const newsTask = newsApi
 			.getLatest()
@@ -48,7 +48,7 @@ export function useRefreshNotifications() {
 		try {
 			await Promise.all([updateTask, pendingTask, newsTask])
 		} finally {
-			setIsRefreshing(false)
+			setIsRefreshing(false);
 		}
 	}, [
 		isOnline,
@@ -60,5 +60,5 @@ export function useRefreshNotifications() {
 		updateNews,
 	])
 
-	return { refresh, isRefreshing, isOnline }
+	return { refresh, isRefreshing, isOnline };
 }

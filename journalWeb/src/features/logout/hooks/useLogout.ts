@@ -5,28 +5,28 @@ import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function useLogout() {
-	const [loading, setLoading] = useState(false)
-	const navigate = useNavigate()
-	const clearUser = useUserStore(s => s.clearUser)
+	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
+	const clearUser = useUserStore((s) => s.clearUser);
 
 	const logout = useCallback(async () => {
-		setLoading(true)
+		setLoading(true);
 		try {
-			clearUser()
+			clearUser();
 			resetAllAppState({
 				resetAuth: true,
 				resetTheme: true,
 				resetOnboarding: true,
-			})
+			});
 
-			navigate(pageConfig.login, { replace: true })
+			navigate(pageConfig.login, { replace: true });
 		} finally {
-			setLoading(false)
+			setLoading(false);
 		}
-	}, [clearUser, navigate])
+	}, [clearUser, navigate]);
 
 	return {
 		logout,
 		loading,
-	}
+	};
 }

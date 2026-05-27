@@ -2,10 +2,10 @@ import { Capacitor } from '@capacitor/core'
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 interface BottomSheetProps {
-	children: ReactNode
-	onBackdropClick?: () => void
-	zIndex?: number
-	maxWidth?: string
+	children: ReactNode;
+	onBackdropClick?: () => void;
+	zIndex?: number;
+	maxWidth?: string;
 }
 
 export function BottomSheet({
@@ -21,26 +21,26 @@ export function BottomSheet({
 	const isWeb = Capacitor.getPlatform() === 'web'
 
 	useEffect(() => {
-		const scrollY = window.scrollY
-		const { body } = document
-		body.style.position = 'fixed'
-		body.style.top = `-${scrollY}px`
-		body.style.left = '0'
-		body.style.right = '0'
-		body.style.overflow = 'hidden'
+		const scrollY = window.scrollY;
+		const { body } = document;
+		body.style.position = "fixed";
+		body.style.top = `-${scrollY}px`;
+		body.style.left = "0";
+		body.style.right = "0";
+		body.style.overflow = "hidden";
 		return () => {
-			body.style.position = ''
-			body.style.top = ''
-			body.style.left = ''
-			body.style.right = ''
-			body.style.overflow = ''
-			window.scrollTo(0, scrollY)
-		}
-	}, [])
+			body.style.position = "";
+			body.style.top = "";
+			body.style.left = "";
+			body.style.right = "";
+			body.style.overflow = "";
+			window.scrollTo(0, scrollY);
+		};
+	}, []);
 
 	const dismiss = useCallback(() => {
-		onBackdropClick?.()
-	}, [onBackdropClick])
+		onBackdropClick?.();
+	}, [onBackdropClick]);
 
 	const onTouchStart = useCallback((e: React.TouchEvent) => {
 		if (isWeb) return
@@ -53,27 +53,30 @@ export function BottomSheet({
 		setDragging(true)
 	}, [])
 
-	const onTouchMove = useCallback((e: React.TouchEvent) => {
-		if (!dragging) return
-		const d = e.touches[0].clientY - dragStart.current
-		if (d > 0) setDragY(d)
-	}, [dragging])
+	const onTouchMove = useCallback(
+		(e: React.TouchEvent) => {
+			if (!dragging) return;
+			const d = e.touches[0].clientY - dragStart.current;
+			if (d > 0) setDragY(d);
+		},
+		[dragging],
+	);
 
 	const onTouchEnd = useCallback(() => {
-		if (!dragging) return
-		setDragging(false)
+		if (!dragging) return;
+		setDragging(false);
 		if (dragY > 80) {
-			dismiss()
+			dismiss();
 		}
-		setDragY(0)
-	}, [dragging, dragY, dismiss])
+		setDragY(0);
+	}, [dragging, dragY, dismiss]);
 
 	return (
 		<div
 			className={`fixed inset-0 flex justify-center ${isWeb ? 'items-center p-4' : 'items-end'}`}
 			style={{
-				background: 'var(--color-modal-backdrop)',
-				backdropFilter: 'blur(4px)',
+				background: "var(--color-modal-backdrop)",
+				backdropFilter: "blur(4px)",
 				zIndex,
 			}}
 			onClick={onBackdropClick}
@@ -82,12 +85,12 @@ export function BottomSheet({
 				ref={sheetRef}
 				className={`w-full ${maxWidth ?? 'max-w-md'} ${isWeb ? 'rounded-[28px] border max-h-[90vh] overflow-y-auto' : 'rounded-t-[28px] border-t border-x'} p-5 border-app-border`}
 				style={{
-					background: 'var(--color-modal-bg)',
+					background: "var(--color-modal-bg)",
 					transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
 					transition: dragging ? 'none' : 'transform 0.2s ease-out',
 					boxShadow: isWeb ? '0 10px 40px rgba(0,0,0,0.1)' : undefined,
 				}}
-				onClick={e => e.stopPropagation()}
+				onClick={(e) => e.stopPropagation()}
 				onTouchStart={onTouchStart}
 				onTouchMove={onTouchMove}
 				onTouchEnd={onTouchEnd}
@@ -96,5 +99,5 @@ export function BottomSheet({
 				{children}
 			</div>
 		</div>
-	)
+	);
 }

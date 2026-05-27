@@ -1,125 +1,125 @@
-import type { LessonItem } from '@/entities/schedule'
-import { pageConfig, widgetConfig } from '@/shared/config'
-import { App } from '@capacitor/app'
-import { Capacitor } from '@capacitor/core'
-import { LocalNotifications } from '@capacitor/local-notifications'
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import { LocalNotifications } from "@capacitor/local-notifications";
+import type { LessonItem } from "@/entities/schedule";
+import { pageConfig, widgetConfig } from "@/shared/config";
 import {
 	buildLessonReminderDrafts,
 	DEFAULT_REMINDER_CONFIG,
 	type ReminderConfig,
 	type ReminderNotificationDraft,
-} from './reminderPlanner'
+} from "./reminderPlanner";
 import {
 	clearReminderState,
 	clearScheduleSnapshot,
 	readReminderState,
 	saveScheduleSnapshot,
 	writeReminderState,
-} from './reminderStorage'
+} from "./reminderStorage";
 
-const ANDROID_CHANNEL_ID = 'schedule-reminders'
+const ANDROID_CHANNEL_ID = "schedule-reminders";
 
-let pluginsLoaded = false
-let listenersBound = false
+let pluginsLoaded = false;
+let listenersBound = false;
 
 function loadPlugins() {
-	if (pluginsLoaded) return
-	pluginsLoaded = true
+	if (pluginsLoaded) return;
+	pluginsLoaded = true;
 
 	if (!Capacitor.isNativePlatform?.()) {
-		return
+		return;
 	}
 }
 
 function openScheduleRoute(extra?: {
-	route?: string
-	date?: string
-	lesson?: number
+	route?: string;
+	date?: string;
+	lesson?: number;
 }) {
-	const route = extra?.route || pageConfig.schedule
-	const search = new URLSearchParams()
-	if (extra?.date) search.set('date', extra.date)
-	if (typeof extra?.lesson === 'number') {
-		search.set('lesson', String(extra.lesson))
+	const route = extra?.route || pageConfig.schedule;
+	const search = new URLSearchParams();
+	if (extra?.date) search.set("date", extra.date);
+	if (typeof extra?.lesson === "number") {
+		search.set("lesson", String(extra.lesson));
 	}
 
-	const suffix = search.toString()
-	window.location.hash = suffix ? `#${route}?${suffix}` : `#${route}`
+	const suffix = search.toString();
+	window.location.hash = suffix ? `#${route}?${suffix}` : `#${route}`;
 }
 
 function handleDeepLinkUrl(url: string) {
 	try {
-		const parsed = new URL(url)
-		if (parsed.protocol !== `${widgetConfig.deepLinkScheme}:`) return
+		const parsed = new URL(url);
+		if (parsed.protocol !== `${widgetConfig.deepLinkScheme}:`) return;
 
-		if (parsed.host === 'schedule' || parsed.pathname === '/schedule') {
-			openScheduleRoute({ route: pageConfig.schedule })
-			return
+		if (parsed.host === "schedule" || parsed.pathname === "/schedule") {
+			openScheduleRoute({ route: pageConfig.schedule });
+			return;
 		}
-		if (parsed.host === 'goals' || parsed.pathname === '/goals') {
-			window.location.hash = `#${pageConfig.goals}`
+		if (parsed.host === "goals" || parsed.pathname === "/goals") {
+			window.location.hash = `#${pageConfig.goals}`;
 		}
 	} catch (error) {
-		console.warn('[schedule-reminders] invalid deep link', error)
+		console.warn("[schedule-reminders] invalid deep link", error);
 	}
 }
 
 export async function initReminderListeners() {
-	loadPlugins()
+	loadPlugins();
 	if (!Capacitor.isNativePlatform?.() || listenersBound) {
-		return
+		return;
 	}
 
-	listenersBound = true
+	listenersBound = true;
 
 	try {
-		await App.addListener('appUrlOpen', (event: { url?: string }) => {
-			if (event.url) handleDeepLinkUrl(event.url)
-		})
+		await App.addListener("appUrlOpen", (event: { url?: string }) => {
+			if (event.url) handleDeepLinkUrl(event.url);
+		});
 		await LocalNotifications.addListener(
-			'localNotificationActionPerformed',
+			"localNotificationActionPerformed",
 			(event: {
 				notification?: {
-					extra?: { route?: string; date?: string; lesson?: number }
-				}
+					extra?: { route?: string; date?: string; lesson?: number };
+				};
 			}) => {
-				openScheduleRoute(event.notification?.extra)
+				openScheduleRoute(event.notification?.extra);
 			},
-		)
+		);
 	} catch (error) {
-		console.warn('[schedule-reminders] listener init failed', error)
+		console.warn("[schedule-reminders] listener init failed", error);
 	}
 }
 
 async function ensurePermissionGranted(): Promise<boolean> {
-	loadPlugins()
-	if (!Capacitor.isNativePlatform?.()) return false
+	loadPlugins();
+	if (!Capacitor.isNativePlatform?.()) return false;
 
 	try {
-		const current = await LocalNotifications.checkPermissions()
-		if (current.display === 'granted') return true
+		const current = await LocalNotifications.checkPermissions();
+		if (current.display === "granted") return true;
 
-		const requested = await LocalNotifications.requestPermissions()
-		return requested.display === 'granted'
+		const requested = await LocalNotifications.requestPermissions();
+		return requested.display === "granted";
 	} catch (error) {
-		console.warn('[schedule-reminders] permission request failed', error)
-		return false
+		console.warn("[schedule-reminders] permission request failed", error);
+		return false;
 	}
 }
 
 async function ensureAndroidChannel() {
-	if (Capacitor.getPlatform?.() !== 'android') return
+	if (Capacitor.getPlatform?.() !== "android") return;
 
 	try {
 		await LocalNotifications.createChannel({
 			id: ANDROID_CHANNEL_ID,
-			name: 'Напоминания о парах',
-			description: 'Уведомления перед началом пар',
+			name: "Напоминания о парах",
+			description: "Уведомления перед началом пар",
 			importance: 5,
 			visibility: 1,
-		})
+		});
 	} catch (error) {
-		console.warn('[schedule-reminders] channel init failed', error)
+		console.warn("[schedule-reminders] channel init failed", error);
 	}
 }
 
@@ -134,17 +134,17 @@ function toPluginNotification(draft: ReminderNotificationDraft) {
 		},
 		channelId: ANDROID_CHANNEL_ID,
 		extra: draft.extra,
-	}
+	};
 }
 
 async function cancelScheduledByIds(ids: number[]) {
-	if (ids.length === 0) return
+	if (ids.length === 0) return;
 	try {
 		await LocalNotifications.cancel({
-			notifications: ids.map(id => ({ id })),
-		})
+			notifications: ids.map((id) => ({ id })),
+		});
 	} catch (error) {
-		console.warn('[schedule-reminders] cancel failed', error)
+		console.warn("[schedule-reminders] cancel failed", error);
 	}
 }
 
@@ -152,57 +152,57 @@ export async function syncScheduleReminders(
 	lessons: LessonItem[],
 	config: ReminderConfig = DEFAULT_REMINDER_CONFIG,
 ) {
-	loadPlugins()
-	if (!Capacitor.isNativePlatform?.()) return
+	loadPlugins();
+	if (!Capacitor.isNativePlatform?.()) return;
 
-	const granted = await ensurePermissionGranted()
-	if (!granted) return
+	const granted = await ensurePermissionGranted();
+	if (!granted) return;
 
-	await ensureAndroidChannel()
+	await ensureAndroidChannel();
 
-	const drafts = buildLessonReminderDrafts(lessons, new Date(), config)
-	const prevState = readReminderState()
-	await cancelScheduledByIds(prevState.scheduledIds)
+	const drafts = buildLessonReminderDrafts(lessons, new Date(), config);
+	const prevState = readReminderState();
+	await cancelScheduledByIds(prevState.scheduledIds);
 
 	if (drafts.length === 0) {
 		writeReminderState({
 			scheduledIds: [],
 			lastSyncedDate: lessons[0]?.date ?? null,
 			lastSyncedAt: Date.now(),
-		})
-		return
+		});
+		return;
 	}
 
 	try {
 		await LocalNotifications.schedule({
 			notifications: drafts.map(toPluginNotification),
-		})
+		});
 
 		writeReminderState({
-			scheduledIds: drafts.map(item => item.id),
+			scheduledIds: drafts.map((item) => item.id),
 			lastSyncedDate: lessons[0]?.date ?? null,
 			lastSyncedAt: Date.now(),
-		})
+		});
 	} catch (error) {
-		console.warn('[schedule-reminders] schedule failed', error)
+		console.warn("[schedule-reminders] schedule failed", error);
 	}
 }
 
 export function syncScheduleSnapshot(lessons: LessonItem[]) {
-	saveScheduleSnapshot(lessons)
+	saveScheduleSnapshot(lessons);
 }
 
 export async function cancelScheduledReminders() {
-	loadPlugins()
+	loadPlugins();
 	if (Capacitor.isNativePlatform?.()) {
-		const state = readReminderState()
-		await cancelScheduledByIds(state.scheduledIds)
+		const state = readReminderState();
+		await cancelScheduledByIds(state.scheduledIds);
 	}
 
-	clearReminderState()
+	clearReminderState();
 }
 
 export async function clearScheduleReminders() {
-	clearScheduleSnapshot()
-	await cancelScheduledReminders()
+	clearScheduleSnapshot();
+	await cancelScheduledReminders();
 }

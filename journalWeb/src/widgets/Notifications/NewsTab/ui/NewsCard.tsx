@@ -3,17 +3,23 @@ import { memo } from 'react'
 import type { NewsItem } from '@/entities/news'
 
 interface NewsCardProps {
-	item: NewsItem
-	onClick: () => void
+	item: NewsItem;
+	onClick: () => void;
 }
 
-export const NewsCard = memo(function NewsCard({ item, onClick }: NewsCardProps) {
-	const formattedDate = new Date(item.published_at).toLocaleDateString('ru-RU', {
-		day: 'numeric',
-		month: 'long',
-		hour: '2-digit',
-		minute: '2-digit',
-	})
+export const NewsCard = memo(function NewsCard({
+	item,
+	onClick,
+}: NewsCardProps) {
+	const formattedDate = new Date(item.published_at).toLocaleDateString(
+		"ru-RU",
+		{
+			day: "numeric",
+			month: "long",
+			hour: "2-digit",
+			minute: "2-digit",
+		},
+	);
 
 	return (
 		<div 
@@ -92,5 +98,5 @@ export const NewsCard = memo(function NewsCard({ item, onClick }: NewsCardProps)
 				</div>
 			</div>
 		</div>
-	)
-})
+	);
+});

@@ -1,147 +1,157 @@
-import { getIsOnline } from '@/shared/model/networkStore'
-import { getTodayString } from '@/shared/utils'
-import { useEffect, useRef } from 'react'
-import { scheduleApi } from '../api'
-import { SCHEDULE_CACHE_VERSION, useScheduleStore } from '../model/store'
-import type { LessonItem } from '../model/types'
+import { useEffect, useRef } from "react";
+import { getIsOnline } from "@/shared/model/networkStore";
+import { getTodayString } from "@/shared/utils";
+import { scheduleApi } from "../api";
+import { SCHEDULE_CACHE_VERSION, useScheduleStore } from "../model/store";
+import type { LessonItem } from "../model/types";
 
-const FETCH_TIMEOUT_MS = 15_000
+const FETCH_TIMEOUT_MS = 15_000;
 
-let inFlightPromise: Promise<LessonItem[]> | null = null
-let sessionInitialized = false
-let lastVisitDate: string | null = null
+let inFlightPromise: Promise<LessonItem[]> | null = null;
+let sessionInitialized = false;
+let lastVisitDate: string | null = null;
 
 function isLoadedToday(timestamp: number): boolean {
-	const loadedDate = new Date(timestamp)
+	const loadedDate = new Date(timestamp);
 	return (
 		getTodayString() ===
 		`${loadedDate.getFullYear()}-${String(loadedDate.getMonth() + 1).padStart(
 			2,
-			'0',
-		)}-${String(loadedDate.getDate()).padStart(2, '0')}`
-	)
+			"0",
+		)}-${String(loadedDate.getDate()).padStart(2, "0")}`
+	);
 }
 
 function fetchTodayDeduped(): Promise<LessonItem[]> {
-	if (inFlightPromise) return inFlightPromise
+	if (inFlightPromise) return inFlightPromise;
 	inFlightPromise = scheduleApi.getToday().finally(() => {
-		inFlightPromise = null
-	})
-	return inFlightPromise
+		inFlightPromise = null;
+	});
+	return inFlightPromise;
 }
 
 export function resetScheduleTodayFetch() {
-	sessionInitialized = false
-	inFlightPromise = null
+	sessionInitialized = false;
+	inFlightPromise = null;
 }
 
 export function useScheduleToday() {
-	const today = useScheduleStore(s => s.today)
-	const todayStatus = useScheduleStore(s => s.todayStatus)
-	const todayLoadedAt = useScheduleStore(s => s.todayLoadedAt)
-	const cacheVersion = useScheduleStore(s => s.cacheVersion)
-	const error = useScheduleStore(s => s.error)
-	const setToday = useScheduleStore(s => s.setToday)
-	const setTodayStatus = useScheduleStore(s => s.setTodayStatus)
-	const setTodayLoadedAt = useScheduleStore(s => s.setTodayLoadedAt)
-	const setError = useScheduleStore(s => s.setError)
-	const resetAllCache = useScheduleStore(s => s.resetAllCache)
+	const today = useScheduleStore((s) => s.today);
+	const todayStatus = useScheduleStore((s) => s.todayStatus);
+	const todayLoadedAt = useScheduleStore((s) => s.todayLoadedAt);
+	const cacheVersion = useScheduleStore((s) => s.cacheVersion);
+	const error = useScheduleStore((s) => s.error);
+	const setToday = useScheduleStore((s) => s.setToday);
+	const setTodayStatus = useScheduleStore((s) => s.setTodayStatus);
+	const setTodayLoadedAt = useScheduleStore((s) => s.setTodayLoadedAt);
+	const setError = useScheduleStore((s) => s.setError);
+	const resetAllCache = useScheduleStore((s) => s.resetAllCache);
 
-	const fetchingRef = useRef(false)
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const fetchingRef = useRef(false);
+	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
+		if (fetchingRef.current) return;
 
 		if (cacheVersion !== SCHEDULE_CACHE_VERSION) {
-			resetAllCache()
-			sessionInitialized = false
-			return
+			resetAllCache();
+			sessionInitialized = false;
+			return;
 		}
 
-		if (fetchingRef.current) return
+		if (fetchingRef.current) return;
 
-		const todayStr = getTodayString()
+		const todayStr = getTodayString();
 		if (lastVisitDate !== todayStr) {
-			lastVisitDate = todayStr
-			sessionInitialized = false
+			lastVisitDate = todayStr;
+			sessionInitialized = false;
 		}
 
 		const hasCachedToday =
-			todayLoadedAt !== null && isLoadedToday(todayLoadedAt)
+			todayLoadedAt !== null && isLoadedToday(todayLoadedAt);
 
 		if (todayLoadedAt !== null && !hasCachedToday) {
-			sessionInitialized = false
-			setToday([])
-			setTodayLoadedAt(null)
-			setTodayStatus('idle')
-			setError(null)
-			return
+			sessionInitialized = false;
+			setToday([]);
+			setTodayLoadedAt(null);
+			setTodayStatus("idle");
+			setError(null);
+			return;
 		}
 
 		if (hasCachedToday) {
-			if (todayStatus === 'idle') setTodayStatus('success')
-			return
+			if (todayStatus === "idle") setTodayStatus("success");
+			return;
 		}
 
 		if (!getIsOnline()) {
 			if (todayLoadedAt !== null) {
-				if (todayStatus === 'idle') setTodayStatus('success')
-				return
+				if (todayStatus === "idle") setTodayStatus("success");
+				return;
 			}
-			setTodayStatus('error')
-			setError('Нет подключения к интернету')
-			return
+			setTodayStatus("error");
+			setError("Нет подключения к интернету");
+			return;
 		}
 
 		// Only fetch if we haven't initialized in this session
 		if (sessionInitialized) {
-			return
+			return;
 		}
-		sessionInitialized = true
+		sessionInitialized = true;
 
-		fetchingRef.current = true
-		if (today.length === 0) setTodayStatus('loading')
+		fetchingRef.current = true;
+		if (today.length === 0) setTodayStatus("loading");
 
 		timeoutRef.current = setTimeout(() => {
 			if (fetchingRef.current) {
-				fetchingRef.current = false
+				fetchingRef.current = false;
 				if (today.length === 0) {
-					setTodayStatus('error')
-					setError('Превышено время ожидания')
+					setTodayStatus("error");
+					setError("Превышено время ожидания");
 				}
 			}
-		}, FETCH_TIMEOUT_MS)
+		}, FETCH_TIMEOUT_MS);
 
 		fetchTodayDeduped()
-			.then(data => {
-				setToday(data)
-				setTodayLoadedAt(Date.now())
-				setTodayStatus('success')
+			.then((data) => {
+				setToday(data);
+				setTodayLoadedAt(Date.now());
+				setTodayStatus("success");
 			})
-			.catch(err => {
+			.catch((err) => {
 				const msg =
 					(err as { response?: { data?: { detail?: string } } })?.response?.data
-						?.detail ?? 'Ошибка загрузки расписания'
-				setError(msg)
-				if (today.length === 0) setTodayStatus('error')
+						?.detail ?? "Ошибка загрузки расписания";
+				setError(msg);
+				if (today.length === 0) setTodayStatus("error");
 			})
 			.finally(() => {
-				fetchingRef.current = false
+				fetchingRef.current = false;
 				if (timeoutRef.current) {
-					clearTimeout(timeoutRef.current)
-					timeoutRef.current = null
+					clearTimeout(timeoutRef.current);
+					timeoutRef.current = null;
 				}
-			})
-	}, [cacheVersion, todayLoadedAt])
+			});
+	}, [
+		cacheVersion,
+		todayLoadedAt,
+		resetAllCache,
+		setError,
+		setToday,
+		setTodayLoadedAt,
+		setTodayStatus,
+		today.length,
+		todayStatus,
+	]);
 
 	useEffect(() => {
 		return () => {
 			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current)
+				clearTimeout(timeoutRef.current);
 			}
-		}
-	}, [])
+		};
+	}, []);
 
-	return { today, status: todayStatus, error }
+	return { today, status: todayStatus, error };
 }

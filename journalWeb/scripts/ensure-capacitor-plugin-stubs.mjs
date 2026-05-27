@@ -1,22 +1,22 @@
-import { mkdir, writeFile, access } from 'node:fs/promises'
-import { constants } from 'node:fs'
-import path from 'node:path'
+import { constants } from "node:fs";
+import { access, mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 
-const root = process.cwd()
+const root = process.cwd();
 
 const apkInstallerRoot = path.join(
 	root,
-	'node_modules',
-	'@bixbyte',
-	'capacitor-apk-installer',
-)
+	"node_modules",
+	"@bixbyte",
+	"capacitor-apk-installer",
+);
 
-const iosPluginDir = path.join(apkInstallerRoot, 'ios', 'Plugin')
+const iosPluginDir = path.join(apkInstallerRoot, "ios", "Plugin");
 const podspecPath = path.join(
 	apkInstallerRoot,
-	'BixbyteCapacitorApkInstaller.podspec',
-)
-const swiftPath = path.join(iosPluginDir, 'ApkInstallerPlugin.swift')
+	"BixbyteCapacitorApkInstaller.podspec",
+);
+const swiftPath = path.join(iosPluginDir, "ApkInstallerPlugin.swift");
 
 const podspecContents = `Pod::Spec.new do |s|
   s.name = 'BixbyteCapacitorApkInstaller'
@@ -31,7 +31,7 @@ const podspecContents = `Pod::Spec.new do |s|
   s.dependency 'Capacitor'
   s.swift_version = '5.9'
 end
-`
+`;
 
 const swiftContents = `import Foundation
 import Capacitor
@@ -58,29 +58,29 @@ public class ApkInstallerPlugin: CAPPlugin, CAPBridgedPlugin {
     call.reject("APK install is not supported on iOS")
   }
 }
-`
+`;
 
 async function exists(target) {
 	try {
-		await access(target, constants.F_OK)
-		return true
+		await access(target, constants.F_OK);
+		return true;
 	} catch {
-		return false
+		return false;
 	}
 }
 
 async function ensureApkInstallerIOSStub() {
-	if (!(await exists(apkInstallerRoot))) return
+	if (!(await exists(apkInstallerRoot))) return;
 
-	await mkdir(iosPluginDir, { recursive: true })
+	await mkdir(iosPluginDir, { recursive: true });
 
 	if (!(await exists(podspecPath))) {
-		await writeFile(podspecPath, podspecContents, 'utf8')
+		await writeFile(podspecPath, podspecContents, "utf8");
 	}
 
 	if (!(await exists(swiftPath))) {
-		await writeFile(swiftPath, swiftContents, 'utf8')
+		await writeFile(swiftPath, swiftContents, "utf8");
 	}
 }
 
-await ensureApkInstallerIOSStub()
+await ensureApkInstallerIOSStub();

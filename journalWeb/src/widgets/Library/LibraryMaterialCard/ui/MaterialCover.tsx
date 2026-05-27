@@ -1,11 +1,3 @@
-import type { LibraryMaterial } from '@/entities/library'
-import { useVideoPlayer, VideoPlayerOverlay } from '@/features/playVideo'
-import {
-	getCachedImageUrl,
-	getYouTubeThumbnail,
-	toYouTubeEmbed,
-} from '@/shared/lib'
-import { PhotoViewerModal } from '@/shared/ui'
 import {
 	BookMarked,
 	BookOpen,
@@ -15,9 +7,17 @@ import {
 	Presentation,
 	TestTube,
 	Video,
-} from 'lucide-react'
-import { memo, useState } from 'react'
-import { createPortal } from 'react-dom'
+} from "lucide-react";
+import { memo, useState } from "react";
+import { createPortal } from "react-dom";
+import type { LibraryMaterial } from "@/entities/library";
+import { useVideoPlayer, VideoPlayerOverlay } from "@/features/playVideo";
+import {
+	getCachedImageUrl,
+	getYouTubeThumbnail,
+	toYouTubeEmbed,
+} from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
 
 const TYPE_PLACEHOLDER_ICONS: Record<number, React.ReactNode> = {
 	1: <BookOpen size={28} />,
@@ -28,7 +28,7 @@ const TYPE_PLACEHOLDER_ICONS: Record<number, React.ReactNode> = {
 	6: <Presentation size={28} />,
 	7: <TestTube size={28} />,
 	8: <FileText size={28} />,
-}
+};
 
 const TYPE_PLACEHOLDER_ICONS_LG: Record<number, React.ReactNode> = {
 	1: <BookOpen size={96} />,
@@ -39,14 +39,13 @@ const TYPE_PLACEHOLDER_ICONS_LG: Record<number, React.ReactNode> = {
 	6: <Presentation size={96} />,
 	7: <TestTube size={96} />,
 	8: <FileText size={96} />,
-}
-
+};
 
 interface YoutubePreviewProps {
-	thumbnailUrl: string | null
-	watchUrl: string
-	title: string
-	typeColor: { border: string; bg: string; text: string }
+	thumbnailUrl: string | null;
+	watchUrl: string;
+	title: string;
+	typeColor: { border: string; bg: string; text: string };
 }
 
 function YoutubePreview({
@@ -55,42 +54,42 @@ function YoutubePreview({
 	title,
 	typeColor,
 }: YoutubePreviewProps) {
-	const [thumbErr, setThumbErr] = useState(false)
-	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer()
+	const [thumbErr, setThumbErr] = useState(false);
+	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer();
 
 	const handleClick = () => {
-		openVideo(watchUrl)
-	}
+		openVideo(watchUrl);
+	};
 
-	const previewHeight = { aspectRatio: '16/9' } as React.CSSProperties
+	const previewHeight = { aspectRatio: "16/9" } as React.CSSProperties;
 
 	if (thumbnailUrl && !thumbErr) {
 		return (
 			<>
 				<button
-					type='button'
+					type="button"
 					onClick={handleClick}
-					className='relative w-full overflow-hidden block focus:outline-none group'
+					className="relative w-full overflow-hidden block focus:outline-none group"
 					style={previewHeight}
 				>
 					<img
 						src={thumbnailUrl}
 						alt={title}
-						className='w-full h-full object-cover'
-						loading='lazy'
+						className="w-full h-full object-cover"
+						loading="lazy"
 						onError={() => setThumbErr(true)}
 					/>
-					<div className='absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors'>
+					<div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors">
 						<div
-							className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
+							className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
 							style={{
-								background: 'rgba(255,0,0,0.9)',
-								boxShadow: '0 4px 24px rgba(255,0,0,0.5)',
+								background: "rgba(255,0,0,0.9)",
+								boxShadow: "0 4px 24px rgba(255,0,0,0.5)",
 							}}
 						>
 							<Play
 								size={28}
-								className='text-white'
+								className="text-white"
 								style={{ marginLeft: 3 }}
 							/>
 						</div>
@@ -105,15 +104,15 @@ function YoutubePreview({
 					/>
 				)}
 			</>
-		)
+		);
 	}
 
 	return (
 		<>
 			<button
-				type='button'
+				type="button"
 				onClick={handleClick}
-				className='relative w-full flex items-center justify-center focus:outline-none group'
+				className="relative w-full flex items-center justify-center focus:outline-none group"
 				style={{
 					...previewHeight,
 					background: `linear-gradient(135deg, ${typeColor.bg} 0%, var(--color-surface-strong) 100%)`,
@@ -121,13 +120,13 @@ function YoutubePreview({
 				}}
 			>
 				<div
-					className='w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110'
+					className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
 					style={{
-						background: 'rgba(255,0,0,0.85)',
-						boxShadow: '0 4px 20px rgba(255,0,0,0.35)',
+						background: "rgba(255,0,0,0.85)",
+						boxShadow: "0 4px 20px rgba(255,0,0,0.35)",
 					}}
 				>
-					<Play size={26} className='text-white' style={{ marginLeft: 3 }} />
+					<Play size={26} className="text-white" style={{ marginLeft: 3 }} />
 				</div>
 			</button>
 
@@ -139,32 +138,30 @@ function YoutubePreview({
 				/>
 			)}
 		</>
-	)
+	);
 }
 
-
-
 interface Props {
-	material: LibraryMaterial
-	typeColor: { border: string; bg: string; text: string }
+	material: LibraryMaterial;
+	typeColor: { border: string; bg: string; text: string };
 }
 
 export const MaterialCover = memo(function MaterialCover({
 	material,
 	typeColor,
 }: Props) {
-	const [viewerOpen, setViewerOpen] = useState(false)
-	const [imgError, setImgError] = useState(false)
-	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer()
+	const [viewerOpen, setViewerOpen] = useState(false);
+	const [imgError, setImgError] = useState(false);
+	const { overlayUrl, openVideo, closeOverlay } = useVideoPlayer();
 
-	const photoUrl = getCachedImageUrl(material.cover_image)
-	const isVideo = material.material_type === 5
+	const photoUrl = getCachedImageUrl(material.cover_image);
+	const isVideo = material.material_type === 5;
 
 	const youtubeEmbed =
-		isVideo && material.url ? toYouTubeEmbed(material.url) : null
+		isVideo && material.url ? toYouTubeEmbed(material.url) : null;
 	const youtubeThumbnail =
-		isVideo && material.url ? getYouTubeThumbnail(material.url) : null
-	const isExternalVideo = isVideo && !!material.url && !youtubeEmbed
+		isVideo && material.url ? getYouTubeThumbnail(material.url) : null;
+	const isExternalVideo = isVideo && !!material.url && !youtubeEmbed;
 
 	// YouTube
 	if (youtubeEmbed) {
@@ -175,7 +172,7 @@ export const MaterialCover = memo(function MaterialCover({
 				title={material.theme}
 				typeColor={typeColor}
 			/>
-		)
+		);
 	}
 
 	// Внешнее видео + обложка
@@ -183,29 +180,29 @@ export const MaterialCover = memo(function MaterialCover({
 		return (
 			<>
 				<button
-					type='button'
+					type="button"
 					onClick={() => openVideo(material.url!)}
-					className='relative w-full overflow-hidden block focus:outline-none group'
-					style={{ aspectRatio: '16/9' }}
+					className="relative w-full overflow-hidden block focus:outline-none group"
+					style={{ aspectRatio: "16/9" }}
 				>
 					<img
 						src={photoUrl}
 						alt={material.theme}
-						className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]'
+						className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
 						onError={() => setImgError(true)}
 					/>
-					<div className='absolute inset-0 flex items-center justify-center bg-black/25'>
+					<div className="absolute inset-0 flex items-center justify-center bg-black/25">
 						<div
-							className='w-12 h-12 rounded-full flex items-center justify-center'
+							className="w-12 h-12 rounded-full flex items-center justify-center"
 							style={{
-								background: 'rgba(0,0,0,0.55)',
-								backdropFilter: 'blur(4px)',
-								border: '1.5px solid rgba(255,255,255,0.3)',
+								background: "rgba(0,0,0,0.55)",
+								backdropFilter: "blur(4px)",
+								border: "1.5px solid rgba(255,255,255,0.3)",
 							}}
 						>
 							<Play
 								size={22}
-								className='text-white'
+								className="text-white"
 								style={{ marginLeft: 2 }}
 							/>
 						</div>
@@ -220,7 +217,7 @@ export const MaterialCover = memo(function MaterialCover({
 					/>
 				)}
 			</>
-		)
+		);
 	}
 
 	// Внешнее видео без обложки
@@ -228,9 +225,9 @@ export const MaterialCover = memo(function MaterialCover({
 		return (
 			<>
 				<button
-					type='button'
+					type="button"
 					onClick={() => openVideo(material.url!)}
-					className='w-full flex flex-col items-center justify-center gap-2.5 focus:outline-none'
+					className="w-full flex flex-col items-center justify-center gap-2.5 focus:outline-none"
 					style={{
 						height: 148,
 						background: typeColor.bg,
@@ -238,16 +235,16 @@ export const MaterialCover = memo(function MaterialCover({
 					}}
 				>
 					<div
-						className='w-12 h-12 rounded-full flex items-center justify-center'
+						className="w-12 h-12 rounded-full flex items-center justify-center"
 						style={{
-							background: 'rgba(255,255,255,0.08)',
+							background: "rgba(255,255,255,0.08)",
 							border: `1.5px solid ${typeColor.border}`,
 						}}
 					>
 						<Play size={22} style={{ color: typeColor.text, marginLeft: 2 }} />
 					</div>
 					<span
-						className='text-xs font-medium'
+						className="text-xs font-medium"
 						style={{ color: typeColor.text }}
 					>
 						Смотреть видео
@@ -262,7 +259,7 @@ export const MaterialCover = memo(function MaterialCover({
 					/>
 				)}
 			</>
-		)
+		);
 	}
 
 	// Обычная обложка
@@ -270,15 +267,15 @@ export const MaterialCover = memo(function MaterialCover({
 		return (
 			<>
 				<button
-					type='button'
+					type="button"
 					onClick={() => setViewerOpen(true)}
-					className='w-full overflow-hidden block focus:outline-none'
+					className="w-full overflow-hidden block focus:outline-none"
 					style={{ height: 160 }}
 				>
 					<img
 						src={photoUrl}
 						alt={material.theme}
-						className='w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]'
+						className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
 						onError={() => setImgError(true)}
 					/>
 				</button>
@@ -293,13 +290,13 @@ export const MaterialCover = memo(function MaterialCover({
 						document.body,
 					)}
 			</>
-		)
+		);
 	}
 
 	// Заглушка
 	return (
 		<div
-			className='w-full flex items-center justify-center relative overflow-hidden'
+			className="w-full flex items-center justify-center relative overflow-hidden"
 			style={{
 				height: 120,
 				background: `linear-gradient(135deg, ${typeColor.bg} 0%, var(--color-surface-strong) 100%)`,
@@ -308,7 +305,7 @@ export const MaterialCover = memo(function MaterialCover({
 		>
 			{/* Декоративная иконка на фоне */}
 			<span
-				className='absolute opacity-[0.07]'
+				className="absolute opacity-[0.07]"
 				style={{ color: typeColor.text, right: -8, bottom: -8 }}
 			>
 				{TYPE_PLACEHOLDER_ICONS_LG[material.material_type] ?? (
@@ -318,9 +315,9 @@ export const MaterialCover = memo(function MaterialCover({
 
 			{/* Основная иконка */}
 			<div
-				className='w-12 h-12 rounded-2xl flex items-center justify-center'
+				className="w-12 h-12 rounded-2xl flex items-center justify-center"
 				style={{
-					background: 'rgba(255,255,255,0.06)',
+					background: "rgba(255,255,255,0.06)",
 					border: `1.5px solid ${typeColor.border}`,
 				}}
 			>
@@ -331,5 +328,5 @@ export const MaterialCover = memo(function MaterialCover({
 				</span>
 			</div>
 		</div>
-	)
-})
+	);
+});

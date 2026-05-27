@@ -1,60 +1,60 @@
-import type { ProfileRelative } from '@/entities/profile'
-import { AtSign, ChevronDown, Home, Phone, Users } from 'lucide-react'
-import { useState } from 'react'
-import { phoneTypeLabel } from './ProfileInfoCard'
-import { Divider, InfoRow } from './shared/ProfileInfoParts'
+import { AtSign, ChevronDown, Home, Phone, Users } from "lucide-react";
+import { useState } from "react";
+import type { ProfileRelative } from "@/entities/profile";
+import { phoneTypeLabel } from "./ProfileInfoCard";
+import { Divider, InfoRow } from "./shared/ProfileInfoParts";
 
 function RelativeItem({
 	relative,
 	index,
 }: {
-	relative: ProfileRelative
-	index: number
+	relative: ProfileRelative;
+	index: number;
 }) {
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(false);
 	const initials = relative.full_name
-		.split(' ')
-		.map(n => n[0])
-		.join('')
-		.slice(0, 2)
+		.split(" ")
+		.map((n) => n[0])
+		.join("")
+		.slice(0, 2);
 
 	const hasDetails =
 		!!relative.address ||
 		relative.phones.length > 0 ||
-		relative.emails.length > 0
+		relative.emails.length > 0;
 
 	return (
-		<div className='border border-app-border rounded-[20px] overflow-hidden bg-app-surface'>
-			<div className='flex items-center gap-3 p-4'>
+		<div className="border border-app-border rounded-[20px] overflow-hidden bg-app-surface">
+			<div className="flex items-center gap-3 p-4">
 				<div
-					className='w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0'
+					className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
 					style={{
 						background:
 							index % 2 === 0
-								? 'linear-gradient(135deg, var(--color-gradient-from), var(--color-gradient-to))'
-								: 'linear-gradient(135deg, #7c3aed, #0ea5e9)',
+								? "linear-gradient(135deg, var(--color-gradient-from), var(--color-gradient-to))"
+								: "linear-gradient(135deg, #7c3aed, #0ea5e9)",
 					}}
 				>
 					{initials}
 				</div>
-				<div className='flex-1 min-w-0'>
-					<p className='text-sm font-semibold text-app-text'>
+				<div className="flex-1 min-w-0">
+					<p className="text-sm font-semibold text-app-text">
 						{relative.full_name}
 					</p>
-					<p className='text-xs text-app-muted'>{relative.relationship}</p>
+					<p className="text-xs text-app-muted">{relative.relationship}</p>
 				</div>
 				{hasDetails && (
 					<button
-						className='shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-app-surface active:bg-app-surface-hover'
-						onClick={e => {
-							e.preventDefault()
-							setOpen(v => !v)
+						className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-app-surface active:bg-app-surface-hover"
+						onClick={(e) => {
+							e.preventDefault();
+							setOpen((v) => !v);
 						}}
 					>
 						<ChevronDown
 							size={16}
-							className='text-app-muted transition-transform duration-200'
-							style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+							className="text-app-muted transition-transform duration-200"
+							style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
 						/>
 					</button>
 				)}
@@ -63,20 +63,20 @@ function RelativeItem({
 			{hasDetails && (
 				<div
 					style={{
-						maxHeight: open ? '400px' : '0px',
-						overflow: 'hidden',
-						transition: 'max-height 0.3s ease',
+						maxHeight: open ? "400px" : "0px",
+						overflow: "hidden",
+						transition: "max-height 0.3s ease",
 					}}
 				>
-					<div className='px-4 pb-4 border-t border-app-border'>
+					<div className="px-4 pb-4 border-t border-app-border">
 						{relative.address && (
 							<InfoRow
 								icon={<Home size={15} />}
-								label='Адрес'
+								label="Адрес"
 								value={relative.address}
 							/>
 						)}
-						{relative.phones.map(p => (
+						{relative.phones.map((p) => (
 							<div key={p.number}>
 								<Divider />
 								<InfoRow
@@ -86,50 +86,52 @@ function RelativeItem({
 								/>
 							</div>
 						))}
-						{relative.emails.map(e => (
+						{relative.emails.map((e) => (
 							<div key={e}>
 								<Divider />
-								<InfoRow icon={<AtSign size={15} />} label='Email' value={e} />
+								<InfoRow icon={<AtSign size={15} />} label="Email" value={e} />
 							</div>
 						))}
 					</div>
 				</div>
 			)}
 		</div>
-	)
+	);
 }
 
 interface Props {
-	relatives: ProfileRelative[]
-	flat?: boolean
+	relatives: ProfileRelative[];
+	flat?: boolean;
 }
 
 export function ProfileRelativesCard({ relatives, flat }: Props) {
-	if (!relatives.length) return null
+	if (!relatives.length) return null;
 
 	return (
 		<div
 			className={
 				flat
-					? 'overflow-hidden'
-					: 'bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
+					? "overflow-hidden"
+					: "bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden"
 			}
-			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
+			style={flat ? undefined : { boxShadow: "var(--shadow-card)" }}
 		>
-			<div className={`flex items-center gap-2 ${flat ? 'px-1' : 'px-5'} pt-5 pb-3`}>
-				<Users size={16} className='text-app-muted' />
-				<p className='text-[11px] font-semibold text-app-muted uppercase tracking-wider'>
+			<div
+				className={`flex items-center gap-2 ${flat ? "px-1" : "px-5"} pt-5 pb-3`}
+			>
+				<Users size={16} className="text-app-muted" />
+				<p className="text-[11px] font-semibold text-app-muted uppercase tracking-wider">
 					Родственники
 				</p>
-				<span className='ml-auto text-xs font-semibold text-app-text bg-app-surface-strong px-2 py-0.5 rounded-full'>
+				<span className="ml-auto text-xs font-semibold text-app-text bg-app-surface-strong px-2 py-0.5 rounded-full">
 					{relatives.length}
 				</span>
 			</div>
-			<div className={`${flat ? 'px-0' : 'px-4'} pb-4 space-y-2`}>
+			<div className={`${flat ? "px-0" : "px-4"} pb-4 space-y-2`}>
 				{relatives.map((r, i) => (
 					<RelativeItem key={r.full_name} relative={r} index={i} />
 				))}
 			</div>
 		</div>
-	)
+	);
 }

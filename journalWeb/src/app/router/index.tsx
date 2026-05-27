@@ -19,58 +19,57 @@ import {
 	ProfileDetailsPage,
 	ProfilePage,
 	SchedulePage,
-} from '@/pages'
-import { pageConfig } from '@/shared/config'
-import { ScrollToTop } from '@/shared/lib'
-import { FullscreenLoader } from '@/widgets/Loading/ui/Loader'
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { AppLayout as MobileLayout } from '../layouts'
-import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
-import { WebLayout } from '../layouts/ui/WebLayout'
+} from "@/pages";
+import { pageConfig } from "@/shared/config";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { ScrollToTop } from "@/shared/lib";
+import { FullscreenLoader } from "@/widgets/Loading/ui/Loader";
+import { AppLayout as MobileLayout } from "../layouts";
+import { WebLayout } from "../layouts/ui/WebLayout";
 
 function RootLayout() {
-	const isDesktop = useIsDesktop()
-	return isDesktop ? <WebLayout /> : <MobileLayout />
+	const isDesktop = useIsDesktop();
+	return isDesktop ? <WebLayout /> : <MobileLayout />;
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
-	const hasHydrated = useHydrationStore(s => s.hasHydrated)
+	const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+	const hasHydrated = useHydrationStore((s) => s.hasHydrated);
 
-	if (!hasHydrated) return <FullscreenLoader />
+	if (!hasHydrated) return <FullscreenLoader />;
 
 	return isAuthenticated ? (
-		<>{children}</>
+		children
 	) : (
 		<Navigate to={pageConfig.login} replace />
-	)
+	);
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
-	const hasHydrated = useHydrationStore(s => s.hasHydrated)
+	const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+	const hasHydrated = useHydrationStore((s) => s.hasHydrated);
 
 	if (!hasHydrated) {
 		return (
 			<div
 				style={{
-					minHeight: '100dvh',
-					backgroundColor: 'var(--color-bg, #1F2024)',
+					minHeight: "100dvh",
+					backgroundColor: "var(--color-bg, #1F2024)",
 				}}
 			/>
-		)
+		);
 	}
 
 	const searchParams = new URLSearchParams(
-		window.location.hash.split('?')[1] ?? '',
-	)
-	const isAddingAccount = searchParams.get('addAccount') === 'true'
+		window.location.hash.split("?")[1] ?? "",
+	);
+	const isAddingAccount = searchParams.get("addAccount") === "true";
 
 	if (isAuthenticated && !isAddingAccount) {
-		return <Navigate to='/' replace />
+		return <Navigate to="/" replace />;
 	}
 
-	return <>{children}</>
+	return <>{children}</>;
 }
 
 export function AppRouter() {
@@ -88,7 +87,7 @@ export function AppRouter() {
 				/>
 
 				<Route
-					path='/'
+					path="/"
 					element={
 						<ProtectedRoute>
 							<RootLayout />
@@ -96,29 +95,29 @@ export function AppRouter() {
 					}
 				>
 					<Route index element={<HomePage />} />
-					<Route path='schedule' element={<SchedulePage />} />
-					<Route path='homework' element={<HomeworkPage />} />
-					<Route path='library' element={<LibraryPage />} />
-					<Route path='grades' element={<GradesPage />} />
-					<Route path='goals' element={<GoalsPage />} />
-					<Route path='goals/:specId' element={<GoalDetailPage />} />
-					<Route path='profile' element={<ProfilePage />} />
-					<Route path='profile/details' element={<ProfileDetailsPage />} />
-					<Route path='profile/activity' element={<ProfileActivityPage />} />
+					<Route path="schedule" element={<SchedulePage />} />
+					<Route path="homework" element={<HomeworkPage />} />
+					<Route path="library" element={<LibraryPage />} />
+					<Route path="grades" element={<GradesPage />} />
+					<Route path="goals" element={<GoalsPage />} />
+					<Route path="goals/:specId" element={<GoalDetailPage />} />
+					<Route path="profile" element={<ProfilePage />} />
+					<Route path="profile/details" element={<ProfileDetailsPage />} />
+					<Route path="profile/activity" element={<ProfileActivityPage />} />
 					<Route
-						path='profile/notification-settings'
+						path="profile/notification-settings"
 						element={<NotificationSettingsPage />}
 					/>
-					<Route path='market' element={<MarketPage />} />
-					<Route path='payment' element={<PaymentPage />} />
-					<Route path='notifications' element={<NotificationsPage />} />
-					<Route path='notifications/news/:id' element={<NewsDetailPage />} />
-					<Route path='evaluate-lesson' element={<EvaluateLessonPage />} />
-					<Route path='news' element={<NewsPage />} />
+					<Route path="market" element={<MarketPage />} />
+					<Route path="payment" element={<PaymentPage />} />
+					<Route path="notifications" element={<NotificationsPage />} />
+					<Route path="notifications/news/:id" element={<NewsDetailPage />} />
+					<Route path="evaluate-lesson" element={<EvaluateLessonPage />} />
+					<Route path="news" element={<NewsPage />} />
 				</Route>
 
-				<Route path='*' element={<Navigate to='/' replace />} />
+				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>
 		</HashRouter>
-	)
+	);
 }

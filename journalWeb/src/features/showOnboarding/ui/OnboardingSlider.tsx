@@ -1,51 +1,51 @@
-import { InlineImage } from '@/shared/ui'
-import { ArrowRight } from 'lucide-react'
-import { useOnboardingSlider } from '../hooks/useOnboardingSlider'
+import { ArrowRight } from "lucide-react";
+import { InlineImage } from "@/shared/ui";
+import { useOnboardingSlider } from "../hooks/useOnboardingSlider";
 
 const SLIDES = [
 	{
 		illustration: (
 			<InlineImage
-				src='/illustrations/page1.svg'
-				alt='Всё в одном месте'
-				className='w-full h-full object-contain p-6'
+				src="/illustrations/page1.svg"
+				alt="Всё в одном месте"
+				className="w-full h-full object-contain p-6"
 			/>
 		),
-		tag: 'Студенческий дневник',
-		title: 'Всё в одном месте',
+		tag: "Студенческий дневник",
+		title: "Всё в одном месте",
 		description:
-			'Расписание, оценки, домашние задания и платежи — всё что нужно студенту под рукой.',
+			"Расписание, оценки, домашние задания и платежи — всё что нужно студенту под рукой.",
 	},
 	{
 		illustration: (
 			<InlineImage
-				src='/illustrations/page2.svg'
-				alt='Данные под защитой'
-				className='w-full h-full object-contain p-6'
+				src="/illustrations/page2.svg"
+				alt="Данные под защитой"
+				className="w-full h-full object-contain p-6"
 			/>
 		),
-		tag: 'Безопасность',
-		title: 'Данные под защитой',
+		tag: "Безопасность",
+		title: "Данные под защитой",
 		description:
-			'Данные хранятся на вашем устройстве и передаются по зашифрованному каналу. Мы не храним лишнего.',
+			"Данные хранятся на вашем устройстве и передаются по зашифрованному каналу. Мы не храним лишнего.",
 	},
 	{
 		illustration: (
 			<InlineImage
-				src='/illustrations/page3.svg'
-				alt='Без лишнего шума'
-				className='w-full h-full object-contain p-6'
+				src="/illustrations/page3.svg"
+				alt="Без лишнего шума"
+				className="w-full h-full object-contain p-6"
 			/>
 		),
-		tag: 'Дизайн',
-		title: 'Без лишнего шума',
+		tag: "Дизайн",
+		title: "Без лишнего шума",
 		description:
-			'Современный интерфейс без отвлекающих элементов. Только то, что действительно важно.',
+			"Современный интерфейс без отвлекающих элементов. Только то, что действительно важно.",
 	},
-]
+];
 
 interface Props {
-	onDone: () => void
+	onDone: () => void;
 }
 
 export function OnboardingSlider({ onDone }: Props) {
@@ -56,59 +56,59 @@ export function OnboardingSlider({ onDone }: Props) {
 		handleTouchStart,
 		handleTouchEnd,
 		goToSlide,
-	} = useOnboardingSlider(SLIDES.length, onDone)
-	const slide = SLIDES[current]
+	} = useOnboardingSlider(SLIDES.length, onDone);
+	const slide = SLIDES[current];
 
 	return (
 		<div
-			className='relative flex flex-col'
+			className="relative flex flex-col"
 			style={{
-				width: '100%',
-				height: '100dvh',
-				backgroundColor: 'var(--color-bg)',
-				overflow: 'hidden',
+				width: "100%",
+				height: "100dvh",
+				backgroundColor: "var(--color-bg)",
+				overflow: "hidden",
 			}}
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 		>
 			<div
 				style={{
-					position: 'absolute',
-					bottom: '-80px',
-					left: '-60px',
-					width: '320px',
-					height: '320px',
+					position: "absolute",
+					bottom: "-80px",
+					left: "-60px",
+					width: "320px",
+					height: "320px",
 					background:
-						'radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
+						"radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)",
+					borderRadius: "50%",
+					pointerEvents: "none",
 				}}
 			/>
 			<div
 				style={{
-					position: 'absolute',
-					top: '-60px',
-					right: '-60px',
-					width: '260px',
-					height: '260px',
+					position: "absolute",
+					top: "-60px",
+					right: "-60px",
+					width: "260px",
+					height: "260px",
 					background:
-						'radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)',
-					borderRadius: '50%',
-					pointerEvents: 'none',
+						"radial-gradient(circle, var(--color-brand-subtle) 0%, transparent 70%)",
+					borderRadius: "50%",
+					pointerEvents: "none",
 				}}
 			/>
 
-			<div className='flex justify-end px-6 pt-16 relative z-10'>
+			<div className="flex justify-end px-6 pt-16 relative z-10">
 				{!isLast && (
 					<button
-						onClick={e => {
-							e.preventDefault()
-							onDone()
+						onClick={(e) => {
+							e.preventDefault();
+							onDone();
 						}}
 						style={{
-							color: 'var(--color-text-faint)',
+							color: "var(--color-text-faint)",
 						}}
-						className='text-xs hover:text-white/60'
+						className="text-xs hover:text-white/60"
 					>
 						Пропустить
 					</button>
@@ -116,60 +116,60 @@ export function OnboardingSlider({ onDone }: Props) {
 			</div>
 
 			<div
-				className='flex items-center justify-center px-8 pt-4 pb-2 relative z-10'
-				style={{ flex: '1 1 0' }}
+				className="flex items-center justify-center px-8 pt-4 pb-2 relative z-10"
+				style={{ flex: "1 1 0" }}
 			>
 				<div
-					className='w-full max-w-[260px] aspect-square rounded-[32px] flex items-center justify-center overflow-hidden'
+					className="w-full max-w-[260px] aspect-square rounded-[32px] flex items-center justify-center overflow-hidden"
 					style={{
-						background: 'var(--color-brand-subtle)',
-						border: '1px solid var(--color-brand-border)',
+						background: "var(--color-brand-subtle)",
+						border: "1px solid var(--color-brand-border)",
 					}}
 				>
 					{slide.illustration}
 				</div>
 			</div>
 
-			<div className='px-8 pb-2 relative z-10'>
+			<div className="px-8 pb-2 relative z-10">
 				<span
-					className='text-xs font-medium px-2.5 py-1 rounded-full mb-4 inline-block'
+					className="text-xs font-medium px-2.5 py-1 rounded-full mb-4 inline-block"
 					style={{
-						background: 'var(--color-brand-subtle)',
-						border: '1px solid var(--color-brand-border)',
-						color: 'var(--color-brand)',
+						background: "var(--color-brand-subtle)",
+						border: "1px solid var(--color-brand-border)",
+						color: "var(--color-brand)",
 					}}
 				>
 					{slide.tag}
 				</span>
 				<h1
-					className='text-2xl font-bold mb-3 leading-tight'
-					style={{ color: 'var(--color-text)' }}
+					className="text-2xl font-bold mb-3 leading-tight"
+					style={{ color: "var(--color-text)" }}
 				>
 					{slide.title}
 				</h1>
 				<p
-					className='text-sm leading-relaxed'
-					style={{ color: 'var(--color-text-muted)' }}
+					className="text-sm leading-relaxed"
+					style={{ color: "var(--color-text-muted)" }}
 				>
 					{slide.description}
 				</p>
 			</div>
 
-			<div className='px-6 pb-6 pt-4 flex items-center justify-between relative z-10'>
-				<div className='flex gap-1.5'>
+			<div className="px-6 pb-6 pt-4 flex items-center justify-between relative z-10">
+				<div className="flex gap-1.5">
 					{SLIDES.map((_, i) => (
 						<div
 							key={i}
 							onClick={() => goToSlide(i)}
-							className='cursor-pointer transition-all duration-300'
+							className="cursor-pointer transition-all duration-300"
 							style={{
 								width: i === current ? 20 : 6,
 								height: 6,
 								borderRadius: 3,
 								background:
 									i === current
-										? 'var(--color-brand)'
-										: 'var(--color-text-faint)',
+										? "var(--color-brand)"
+										: "var(--color-text-faint)",
 							}}
 						/>
 					))}
@@ -177,21 +177,21 @@ export function OnboardingSlider({ onDone }: Props) {
 
 				<button
 					onClick={handleNext}
-					className='flex items-center justify-center gap-2 font-semibold text-sm transition-all active:scale-95'
+					className="flex items-center justify-center gap-2 font-semibold text-sm transition-all active:scale-95"
 					style={{
 						height: 48,
 						minWidth: 80,
 						paddingLeft: 24,
 						paddingRight: 24,
 						borderRadius: 16,
-						background: 'var(--color-brand)',
-						color: 'var(--color-text)',
+						background: "var(--color-brand)",
+						color: "var(--color-text)",
 					}}
 				>
-					{isLast ? 'Начать' : 'Далее'}
+					{isLast ? "Начать" : "Далее"}
 					<ArrowRight size={16} />
 				</button>
 			</div>
 		</div>
-	)
+	);
 }

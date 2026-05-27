@@ -1,37 +1,37 @@
-import { create } from 'zustand'
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { Subject } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { Subject } from "./types";
 
 interface SubjectState {
-	subjects: Subject[]
-	status: 'idle' | 'loading' | 'success' | 'error'
-	loadedAt: number | null
+	subjects: Subject[];
+	status: "idle" | "loading" | "success" | "error";
+	loadedAt: number | null;
 
-	setSubjects: (subjects: Subject[]) => void
-	setStatus: (s: SubjectState['status']) => void
-	setLoadedAt: (t: number) => void
+	setSubjects: (subjects: Subject[]) => void;
+	setStatus: (s: SubjectState["status"]) => void;
+	setLoadedAt: (t: number) => void;
 }
 
 export const useSubjectStore = create<SubjectState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			subjects: [],
-			status: 'idle' as const,
+			status: "idle" as const,
 			loadedAt: null,
 
-			setSubjects: subjects => set({ subjects }),
-			setStatus: status => set({ status }),
-			setLoadedAt: loadedAt => set({ loadedAt }),
+			setSubjects: (subjects) => set({ subjects }),
+			setStatus: (status) => set({ status }),
+			setLoadedAt: (loadedAt) => set({ loadedAt }),
 		}),
 		{
-			name: 'subject-store',
-			partialize: state => ({
+			name: "subject-store",
+			partialize: (state) => ({
 				subjects: state.subjects,
 				loadedAt: state.loadedAt,
 			}),
-			onRehydrateStorage: () => state => {
-				if (state) state.status = 'idle'
+			onRehydrateStorage: () => (state) => {
+				if (state) state.status = "idle";
 			},
 		},
 	),
-)
+);

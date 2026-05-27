@@ -1,15 +1,15 @@
 interface InlineImageProps {
-	src: string
-	alt?: string
-	className?: string
-	width?: number
-	height?: number
+	src: string;
+	alt?: string;
+	className?: string;
+	width?: number;
+	height?: number;
 }
 
 export function InlineImage({
 	src,
-	alt = 'Image',
-	className = '',
+	alt = "Image",
+	className = "",
 	width,
 	height,
 }: InlineImageProps) {
@@ -21,9 +21,9 @@ export function InlineImage({
 			width={width}
 			height={height}
 			style={{
-				width: width ? `${width}px` : '100%',
-				height: height ? `${height}px` : 'auto',
+				width: width ? `${width}px` : "100%",
+				height: height ? `${height}px` : "auto",
 			}}
 		/>
-	)
+	);
 }

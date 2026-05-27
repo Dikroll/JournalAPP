@@ -1,2 +1,2 @@
-export { clearScheduleWidgets, syncScheduleWidgets } from './lib/widgetBridge'
-export { computeWidgetStats } from './lib/stats'
+export { computeWidgetStats } from "./lib/stats";
+export { clearScheduleWidgets, syncScheduleWidgets } from "./lib/widgetBridge";

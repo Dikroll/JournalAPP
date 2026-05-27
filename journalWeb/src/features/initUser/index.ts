@@ -1,1 +1,1 @@
-export { useInitUser } from './hooks/useInitUser'
+export { useInitUser } from "./hooks/useInitUser";

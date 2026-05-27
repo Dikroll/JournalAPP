@@ -6,9 +6,9 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 export const TopBar = memo(function TopBar() {
-	const viewModel = useTopBarViewModel()
+	const viewModel = useTopBarViewModel();
 
-	if (!viewModel) return null
+	if (!viewModel) return null;
 
 	const {
 		fullName,
@@ -17,7 +17,7 @@ export const TopBar = memo(function TopBar() {
 		hydrated,
 		shortName,
 		hasBadge,
-	} = viewModel
+	} = viewModel;
 
 	return (
 		<div className='px-4 pt-2 pb-1'>
@@ -48,14 +48,17 @@ export const TopBar = memo(function TopBar() {
 
 				<Link
 					to={pageConfig.notifications}
-					className='relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border border-app-border bg-app-surface transition-all duration-200 hover:bg-app-surface-hover hover:border-brand-border active:scale-95 ml-3'
+					className="relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border border-app-border bg-app-surface transition-all duration-200 hover:bg-app-surface-hover hover:border-brand-border active:scale-95 ml-3"
 				>
-					<Bell size={18} className='text-app-muted' />
+					<Bell size={18} className="text-app-muted" />
 					{hasBadge && (
-						<span className='absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-brand border-2' style={{ borderColor: 'var(--color-surface)' }} />
+						<span
+							className="absolute top-0 right-0 w-2.5 h-2.5 rounded-full bg-brand border-2"
+							style={{ borderColor: "var(--color-surface)" }}
+						/>
 					)}
 				</Link>
 			</div>
 		</div>
-	)
-})
+	);
+});

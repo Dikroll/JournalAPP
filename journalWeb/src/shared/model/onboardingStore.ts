@@ -1,9 +1,9 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import { create } from 'zustand'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
 
 interface OnboardingState {
-	isDone: boolean
-	setDone: () => void
+	isDone: boolean;
+	setDone: () => void;
 }
 
 export const useOnboardingStore = create<OnboardingState>()(
@@ -13,8 +13,8 @@ export const useOnboardingStore = create<OnboardingState>()(
 			setDone: () => set({ isDone: true }),
 		}),
 		{
-			name: 'onboarding-store',
+			name: "onboarding-store",
 			partialize: (state: any) => ({ isDone: state.isDone }),
 		},
 	) as any,
-)
+);

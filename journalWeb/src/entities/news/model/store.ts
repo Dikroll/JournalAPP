@@ -1,10 +1,10 @@
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import { create } from 'zustand'
-import type { NewsState } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { NewsState } from "./types";
 
 export const useNewsStore = create<NewsState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			latest: [],
 			details: {},
 			readIds: [],
@@ -98,9 +98,9 @@ export const useNewsStore = create<NewsState>()(
 				}),
 		}),
 		{
-			name: 'news-store',
+			name: "news-store",
 			version: 1,
-			partialize: state => ({
+			partialize: (state) => ({
 				latest: state.latest,
 				details: state.details,
 				readIds: state.readIds || [],
@@ -108,4 +108,4 @@ export const useNewsStore = create<NewsState>()(
 			}),
 		},
 	),
-)
+);

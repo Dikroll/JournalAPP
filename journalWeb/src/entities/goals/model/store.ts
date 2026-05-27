@@ -1,41 +1,41 @@
-import { create } from 'zustand'
-import { persistEncrypted } from '@/shared/lib/zustandEncryptedPersist'
-import type { Goal, GoalsState } from './types'
+import { create } from "zustand";
+import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
+import type { Goal, GoalsState } from "./types";
 
 function clampTarget(value: number): number {
-	if (!Number.isFinite(value)) return 3
-	return Math.max(2, Math.min(5, Math.round(value)))
+	if (!Number.isFinite(value)) return 3;
+	return Math.max(2, Math.min(5, Math.round(value)));
 }
 
 export const useGoalsStore = create<GoalsState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			targets: {},
 
 			setTarget: (specId, target) =>
-				set(state => {
-					const now = Date.now()
-					const existing = state.targets[specId]
-					const clamped = clampTarget(target)
+				set((state) => {
+					const now = Date.now();
+					const existing = state.targets[specId];
+					const clamped = clampTarget(target);
 					const next: Goal = existing
 						? { target: clamped, createdAt: existing.createdAt, updatedAt: now }
-						: { target: clamped, createdAt: now, updatedAt: now }
-					return { targets: { ...state.targets, [specId]: next } }
+						: { target: clamped, createdAt: now, updatedAt: now };
+					return { targets: { ...state.targets, [specId]: next } };
 				}),
 
-			removeTarget: specId =>
-				set(state => {
+			removeTarget: (specId) =>
+				set((state) => {
 					// Destructure to omit the entry; rename to _removed to satisfy noUnusedLocals
-					const { [specId]: _removed, ...rest } = state.targets
-					return { targets: rest }
+					const { [specId]: _removed, ...rest } = state.targets;
+					return { targets: rest };
 				}),
 
 			reset: () => set({ targets: {} }),
 		}),
 		{
-			name: 'goals-store',
+			name: "goals-store",
 			version: 1,
-			partialize: state => ({ targets: state.targets }),
+			partialize: (state) => ({ targets: state.targets }),
 		},
 	),
-)
+);

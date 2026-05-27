@@ -1,1 +1,1 @@
-export { usePreviewCover } from './hooks/usePreviewCover'
+export { usePreviewCover } from "./hooks/usePreviewCover";

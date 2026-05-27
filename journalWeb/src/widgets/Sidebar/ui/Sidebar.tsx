@@ -1,5 +1,3 @@
-import { memo } from 'react'
-import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   Moon,
   Sun,
@@ -18,34 +16,37 @@ import './Sidebar.css'
 // ─── Типы ─────────────────────────────────────────────────────────────────────
 
 interface NavItem {
-  to: string
-  label: string
-  icon: React.ReactNode
-  badge?: number
+	to: string;
+	label: string;
+	icon: React.ReactNode;
+	badge?: number;
 }
 
 // ─── Маппинг пути → заголовок страницы ───────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
-  [pageConfig.home]:     'Главная',
-  [pageConfig.grades]:   'Оценки',
-  [pageConfig.schedule]: 'Расписание',
-  [pageConfig.homework]: 'Домашние задания',
-  [pageConfig.library]:  'Библиотека',
-  [pageConfig.profile]:  'Профиль',
-  [pageConfig.payment]:  'Платежи',
-}
+	[pageConfig.home]: "Главная",
+	[pageConfig.grades]: "Оценки",
+	[pageConfig.schedule]: "Расписание",
+	[pageConfig.homework]: "Домашние задания",
+	[pageConfig.library]: "Библиотека",
+	[pageConfig.profile]: "Профиль",
+	[pageConfig.payment]: "Платежи",
+};
 
 // ─── Форматирование даты ──────────────────────────────────────────────────────
 
 function formatDateParts(): { weekday: string; dayMonth: string } {
-  const now = new Date()
-  const weekday = now.toLocaleDateString('ru-RU', { weekday: 'long' })
-  const dayMonth = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
-  return {
-    weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
-    dayMonth,
-  }
+	const now = new Date();
+	const weekday = now.toLocaleDateString("ru-RU", { weekday: "long" });
+	const dayMonth = now.toLocaleDateString("ru-RU", {
+		day: "numeric",
+		month: "long",
+	});
+	return {
+		weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+		dayMonth,
+	};
 }
 
 // Removed local Avatar component in favor of shared/ui
@@ -60,13 +61,13 @@ export const Sidebar = memo(() => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const hwBadge = vm?.hasBadge ? 1 : undefined
-  const pageTitle = PAGE_TITLES[location.pathname] ?? 'Журнал'
+	const hwBadge = vm?.hasBadge ? 1 : undefined;
+	const pageTitle = PAGE_TITLES[location.pathname] ?? "Журнал";
 
   const coins = user?.points?.coins?.earned ?? null
   const diamonds = user?.points?.diamonds?.earned ?? null
 
-  const { weekday, dayMonth } = formatDateParts()
+	const { weekday, dayMonth } = formatDateParts();
 
   const mainNav: NavItem[] = mainNavItems.map(item => ({
     to: item.to,
@@ -87,13 +88,64 @@ export const Sidebar = memo(() => {
     icon: <item.icon size={16} />
   }))
 
+	return (
+		<aside className="sidebar-web">
+			{/* ── Шапка: лого + юзер ── */}
+			<div className="sidebar-web__header">
+				{/* Лого */}
+				<div
+					className="sidebar-web__brand"
+					onClick={() => navigate(pageConfig.home)}
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => e.key === "Enter" && navigate(pageConfig.home)}
+				>
+					<span className="sidebar-web__brand-it">IT</span>
+					<span className="sidebar-web__brand-top"> TOP</span>
+					<span className="sidebar-web__brand-college"> COLLEGE</span>
+				</div>
 
+				{/* Дата */}
+				<div className="sidebar-web__date-block sidebar-web__date-block--main">
+					<span className="sidebar-web__date-weekday">{weekday}</span>
+					<span className="sidebar-web__date-dot">·</span>
+					<span className="sidebar-web__date-day">{dayMonth}</span>
+				</div>
 
-  return (
-    <aside className="sidebar-web">
+				{/* Юзер — клик на аватар/имя → профиль */}
+				{vm && (
+					<button
+						type="button"
+						className="sidebar-web__user sidebar-web__user--clickable"
+						onClick={() => navigate(pageConfig.profile)}
+						title="Перейти в профиль"
+					>
+						<Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
+						<div className="sidebar-web__user-info">
+							<div className="sidebar-web__name">{vm.shortName}</div>
+							<div className="sidebar-web__group">{vm.groupName}</div>
 
-      {/* ── Шапка: лого + юзер ── */}
-      <div className="sidebar-web__header">
+							{/* Счётчики монет и кристаллов */}
+							{(coins !== null || diamonds !== null) && (
+								<div className="sidebar-web__counters">
+									{coins !== null && (
+										<span className="sidebar-web__counter sidebar-web__counter--coins">
+											<Coins size={11} />
+											<span>{coins}</span>
+										</span>
+									)}
+									{diamonds !== null && (
+										<span className="sidebar-web__counter sidebar-web__counter--gems">
+											<Gem size={11} />
+											<span>{diamonds}</span>
+										</span>
+									)}
+								</div>
+							)}
+						</div>
+					</button>
+				)}
+			</div>
 
         {/* Лого */}
         <BrandLogo size="sm" className="mb-[0.875rem]" />
@@ -138,6 +190,22 @@ export const Sidebar = memo(() => {
           </button>
         )}
 
+				<button
+					className="sidebar-web__theme-btn"
+					onClick={toggleTheme}
+					type="button"
+					aria-label="Переключить тему"
+				>
+					{theme === "dark" ? <Moon size={14} /> : <Sun size={14} />}
+					<span>{theme === "dark" ? "Тёмная тема" : "Светлая тема"}</span>
+					<div
+						className={`sidebar-web__toggle ${theme === "dark" ? "sidebar-web__toggle--on" : ""}`}
+					/>
+				</button>
+			</div>
+		</aside>
+	);
+});
 
       </div>
 
@@ -181,8 +249,8 @@ Sidebar.displayName = 'Sidebar'
 // ─── NavSection ───────────────────────────────────────────────────────────────
 
 interface NavSectionProps {
-  label: string
-  items: NavItem[]
+	label: string;
+	items: NavItem[];
 }
 
 const NavSection = memo(({ label, items }: NavSectionProps) => (
@@ -206,4 +274,4 @@ const NavSection = memo(({ label, items }: NavSectionProps) => (
   </div>
 ))
 
-NavSection.displayName = 'NavSection'
+NavSection.displayName = "NavSection";

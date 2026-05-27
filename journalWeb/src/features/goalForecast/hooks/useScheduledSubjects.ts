@@ -1,12 +1,12 @@
-import { useScheduleStore } from '@/entities/schedule'
-import { useMemo } from 'react'
+import { useMemo } from "react";
+import { useScheduleStore } from "@/entities/schedule";
 
 function todayIso(): string {
-	return new Date().toISOString().slice(0, 10)
+	return new Date().toISOString().slice(0, 10);
 }
 
 function norm(name: string): string {
-	return name.trim().toLowerCase()
+	return name.trim().toLowerCase();
 }
 
 /**
@@ -14,27 +14,27 @@ function norm(name: string): string {
  * lesson scheduled strictly after today across any cached schedule view.
  */
 export function useFutureScheduledSubjects(): Set<string> {
-	const today = useScheduleStore(s => s.today)
-	const days = useScheduleStore(s => s.days)
-	const weeks = useScheduleStore(s => s.weeks)
-	const months = useScheduleStore(s => s.months)
+	const today = useScheduleStore((s) => s.today);
+	const days = useScheduleStore((s) => s.days);
+	const weeks = useScheduleStore((s) => s.weeks);
+	const months = useScheduleStore((s) => s.months);
 
 	return useMemo(() => {
-		const cutoff = todayIso()
-		const names = new Set<string>()
+		const cutoff = todayIso();
+		const names = new Set<string>();
 		const visit = (list: Array<{ date: string; subject: string }>) => {
 			for (const l of list) {
-				if (l.date > cutoff && l.subject) names.add(norm(l.subject))
+				if (l.date > cutoff && l.subject) names.add(norm(l.subject));
 			}
-		}
-		visit(today)
-		for (const list of Object.values(days)) visit(list)
-		for (const list of Object.values(weeks)) visit(list)
-		for (const list of Object.values(months)) visit(list)
-		return names
-	}, [today, days, weeks, months])
+		};
+		visit(today);
+		for (const list of Object.values(days)) visit(list);
+		for (const list of Object.values(weeks)) visit(list);
+		for (const list of Object.values(months)) visit(list);
+		return names;
+	}, [today, days, weeks, months]);
 }
 
 export function normalizeSubjectName(name: string): string {
-	return norm(name)
+	return norm(name);
 }

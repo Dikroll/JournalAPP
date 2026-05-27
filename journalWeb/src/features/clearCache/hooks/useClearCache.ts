@@ -5,9 +5,9 @@ export function clearCache(): void {
 		resetAuth: false,
 		resetTheme: false,
 		resetOnboarding: false,
-	})
+	});
 }
 
 export function useClearCache() {
-	return clearCache
+	return clearCache;
 }

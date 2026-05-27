@@ -1,17 +1,17 @@
-import { ttl } from '@/shared/config'
-import { isCacheValid } from '@/shared/lib'
-import { useEffect, useRef } from 'react'
-import { dashboardApi } from '../api'
-import { useDashboardChartsStore } from '../model/store'
+import { useEffect, useRef } from "react";
+import { ttl } from "@/shared/config";
+import { isCacheValid } from "@/shared/lib";
+import { dashboardApi } from "../api";
+import { useDashboardChartsStore } from "../model/store";
 
-export { calcTrend, lastValue, toChartData } from '../utils/chartUtils'
+export { calcTrend, lastValue, toChartData } from "../utils/chartUtils";
 
-const CACHE_TTL_MS = ttl.ACTIVITY * 1000
-const FETCH_TIMEOUT_MS = 15_000
+const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
+const FETCH_TIMEOUT_MS = 15_000;
 
-export let fetchStarted = false
+export let fetchStarted = false;
 export function resetFetchStarted() {
-	fetchStarted = false
+	fetchStarted = false;
 }
 
 export function useDashboardCharts() {
@@ -24,52 +24,52 @@ export function useDashboardCharts() {
 		setAttendance,
 		setStatus,
 		setLoadedAt,
-	} = useDashboardChartsStore()
+	} = useDashboardChartsStore();
 
-	const fetchingRef = useRef(false)
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const fetchingRef = useRef(false);
+	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
-		if (fetchingRef.current) return
-		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return
+		if (fetchingRef.current) return;
+		if (isCacheValid(loadedAt, CACHE_TTL_MS)) return;
 
-		fetchingRef.current = true
-		setStatus('loading')
+		fetchingRef.current = true;
+		setStatus("loading");
 
 		timeoutRef.current = setTimeout(() => {
 			if (fetchingRef.current) {
-				fetchingRef.current = false
-				setStatus('error')
+				fetchingRef.current = false;
+				setStatus("error");
 			}
-		}, FETCH_TIMEOUT_MS)
+		}, FETCH_TIMEOUT_MS);
 
 		Promise.all([
 			dashboardApi.getProgressChart(),
 			dashboardApi.getAttendanceChart(),
 		])
 			.then(([progress, attendance]) => {
-				setProgress(progress)
-				setAttendance(attendance)
-				setLoadedAt(Date.now())
-				setStatus('success')
+				setProgress(progress);
+				setAttendance(attendance);
+				setLoadedAt(Date.now());
+				setStatus("success");
 			})
 			.catch(() => {
-				setStatus('error')
+				setStatus("error");
 			})
 			.finally(() => {
-				fetchingRef.current = false
+				fetchingRef.current = false;
 				if (timeoutRef.current) {
-					clearTimeout(timeoutRef.current)
-					timeoutRef.current = null
+					clearTimeout(timeoutRef.current);
+					timeoutRef.current = null;
 				}
-			})
-	}, [loadedAt])
+			});
+	}, [loadedAt, setAttendance, setLoadedAt, setProgress, setStatus]);
 
 	useEffect(() => {
 		return () => {
-			if (timeoutRef.current) clearTimeout(timeoutRef.current)
-		}
-	}, [])
+			if (timeoutRef.current) clearTimeout(timeoutRef.current);
+		};
+	}, []);
 
-	return { progress, attendance, status }
+	return { progress, attendance, status };
 }
