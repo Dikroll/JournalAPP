@@ -1,5 +1,5 @@
 import { useFeedbackStore } from '@/entities/feedback'
-import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
+import { useAppUpdateStore } from '@/features/appUpdate'
 import { RefreshNotificationsButton } from '@/features/refreshNotifications'
 import {
 	FALLBACK_CHANGELOG,
@@ -12,9 +12,8 @@ import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import { ChangelogTab, EvaluateLessonList, NewsTab } from '@/widgets'
-import { isWebPlatform } from '@/shared/lib/platform'
-import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
+import { EvaluateLessonList, NewsTab } from '@/widgets'
+import { ArrowLeft, ClipboardCheck, Megaphone } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -25,9 +24,7 @@ const TABS: Segment<Tab>[] = [
 	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
 ];
 
-if (!isWebPlatform) {
-	TABS.unshift({ key: "changelog", label: "Обновления", icon: <Sparkles size={13} /> })
-}
+
 
 export function NotificationsPage() {
 	const navigate = useNavigate()
@@ -43,6 +40,12 @@ export function NotificationsPage() {
 	const pending = useFeedbackStore(s => s.pending)
 
 	useSwipeBack();
+
+	useEffect(() => {
+		if (activeTab === "changelog") {
+			setActiveTab("news");
+		}
+	}, [activeTab, setActiveTab]);
 
 	// Открываем нужную вкладку если пришли с сайдбара
 	useEffect(() => {
@@ -127,12 +130,7 @@ export function NotificationsPage() {
 			</div>
 
 			<div className="px-4">
-				{activeTab === "changelog" && (
-					<>
-						<AppUpdateBanner />
-						<ChangelogTab entries={entries} />
-					</>
-				)}
+
 				{activeTab === "feedback" && <EvaluateLessonList />}
 				{activeTab === "news" && <NewsTab />}
 			</div>
