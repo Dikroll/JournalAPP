@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useMidnightRefresh } from "@/app/hooks/useMidnightRefresh";
-import { GlowBackground, OfflineBanner } from "@/shared/ui";
+import { GlowBackground } from "@/shared/ui";
 import { Sidebar } from "@/widgets/Sidebar";
 import "./WebLayout.css";
 
@@ -57,9 +57,6 @@ export const WebLayout = memo(() => {
 					</div>
 				</div>
 				<div className="web-layout__main-wrapper">
-					<div className="web-layout__offline-wrapper" style={{ zIndex: 100 }}>
-						<OfflineBanner />
-					</div>
 					<main className="web-layout__content">
 						<Outlet />
 					</main>
