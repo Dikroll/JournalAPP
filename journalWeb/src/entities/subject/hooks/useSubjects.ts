@@ -14,6 +14,7 @@ export function useSubjects() {
 	const setLoadedAt = useSubjectStore((s) => s.setLoadedAt);
 
 	useEntityFetch({
+		cacheKey: "subjects",
 		loadedAt,
 		ttlMs: CACHE_TTL_MS,
 		status,

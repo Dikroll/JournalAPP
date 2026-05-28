@@ -14,6 +14,8 @@ export interface ZustandQueryOptions<T> {
 	errorMessage?: string;
 }
 
+const fetchingPromises = new Map<string, Promise<any>>();
+
 export function useZustandQuery<T>({
 	cacheKey,
 	ttlMs,
@@ -24,7 +26,6 @@ export function useZustandQuery<T>({
 	updateStore,
 	errorMessage = "Ошибка загрузки",
 }: ZustandQueryOptions<T>) {
-	const fetchingRef = useRef(false);
 	const fetchFnRef = useRef(fetchFn);
 	const updateStoreRef = useRef(updateStore);
 
@@ -32,7 +33,11 @@ export function useZustandQuery<T>({
 	updateStoreRef.current = updateStore;
 
 	useEffect(() => {
-		if (fetchingRef.current) return;
+		if (fetchingPromises.has(cacheKey)) {
+			// Already fetching, we can optionally wait for it or just let the initiator update the store
+			return;
+		}
+
 		if (status === "loading") return;
 
 		if (hasData && isCacheValid(loadedAt, ttlMs)) {
@@ -55,36 +60,58 @@ export function useZustandQuery<T>({
 			return;
 		}
 
-		fetchingRef.current = true;
 		updateStoreRef.current({ status: "loading", error: null });
 
-		fetchFnRef.current()
+		const promise = fetchFnRef.current()
 			.then((data) => {
 				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
 				storage.set(cacheKey, data, ttlMs / 1000);
+				return data;
 			})
-			.catch(() => {
+			.catch((err) => {
 				if (!hasData) updateStoreRef.current({ status: "error", error: errorMessage });
+				throw err;
 			})
 			.finally(() => {
-				fetchingRef.current = false;
+				fetchingPromises.delete(cacheKey);
 			});
+
+		fetchingPromises.set(cacheKey, promise);
 	}, [hasData, loadedAt, status, cacheKey, ttlMs, errorMessage]);
 
 	const refresh = useCallback(async () => {
-		if (fetchingRef.current) return;
+		if (fetchingPromises.has(cacheKey)) {
+			try {
+				await fetchingPromises.get(cacheKey);
+			} catch (e) {
+				// ignore
+			}
+			return;
+		}
+
 		storage.remove(cacheKey);
-		fetchingRef.current = true;
 		updateStoreRef.current({ status: "loading", error: null });
 		
+		const promise = fetchFnRef.current()
+			.then((data) => {
+				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
+				storage.set(cacheKey, data, ttlMs / 1000);
+				return data;
+			})
+			.catch((err) => {
+				updateStoreRef.current({ status: "error", error: errorMessage });
+				throw err;
+			})
+			.finally(() => {
+				fetchingPromises.delete(cacheKey);
+			});
+			
+		fetchingPromises.set(cacheKey, promise);
+
 		try {
-			const data = await fetchFnRef.current();
-			updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
-			storage.set(cacheKey, data, ttlMs / 1000);
+			await promise;
 		} catch (err) {
-			updateStoreRef.current({ status: "error", error: errorMessage });
-		} finally {
-			fetchingRef.current = false;
+			// ignore, handled in then/catch above
 		}
 	}, [cacheKey, ttlMs, errorMessage]);
 

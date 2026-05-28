@@ -18,7 +18,7 @@
  */
 export const getEncryptionKey = (): string => {
 	// Try to get from environment variable first
-	const envKey = import.meta.env.REACT_APP_ENCRYPTION_KEY;
+	const envKey = import.meta.env.VITE_ENCRYPTION_KEY;
 
 	if (envKey) {
 		return envKey;
@@ -27,7 +27,7 @@ export const getEncryptionKey = (): string => {
 	// Development fallback - use a development-only key
 	if (import.meta.env.DEV) {
 		console.warn(
-			"[encryption] Using development encryption key. Set REACT_APP_ENCRYPTION_KEY for production.",
+			"[encryption] Using development encryption key. Set VITE_ENCRYPTION_KEY for production.",
 		);
 		return "dev-journal-app-key-2024-replace-in-production";
 	}
@@ -75,6 +75,6 @@ export const encryptionConfig = {
  *
  * Then add to your .env file:
  * ```
- * REACT_APP_ENCRYPTION_KEY=your-generated-hex-string-here
+ * VITE_ENCRYPTION_KEY=your-generated-hex-string-here
  * ```
  */

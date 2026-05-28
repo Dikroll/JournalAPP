@@ -18,6 +18,7 @@ export function useFutureExams() {
 	const setLoadedAt = useExamStore((s) => s.setLoadedAt);
 
 	useEntityFetch({
+		cacheKey: "futureExams",
 		loadedAt,
 		ttlMs: CACHE_TTL_MS,
 		status,

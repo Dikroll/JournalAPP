@@ -171,7 +171,7 @@ export const clearPersistedStoreData = (storeName: string) => {
  * )
  * ```
  */
-export const persistEncrypted = (config: any, options: any): any => {
+export const persistEncrypted: typeof zustandPersist = (config: any, options: any): any => {
 	const userOnRehydrate = options?.onRehydrateStorage;
 	return zustandPersist(config, {
 		...options,
@@ -189,7 +189,7 @@ export const persistEncrypted = (config: any, options: any): any => {
 	}) as any;
 };
 
-export const persistEncryptedKeyOnly = (config: any, options: any): any => {
+export const persistEncryptedKeyOnly: typeof zustandPersist = (config: any, options: any): any => {
 	const defaultOnRehydrate = () => () => {
 		useHydrationStore.setState({ hasHydrated: true });
 	};

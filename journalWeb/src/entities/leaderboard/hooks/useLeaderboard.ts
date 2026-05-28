@@ -21,6 +21,7 @@ export function useLeaderboard() {
 	const update = useLeaderboardStore((s) => s.update);
 
 	useEntityFetch({
+		cacheKey: "leaderboard",
 		loadedAt,
 		ttlMs: CACHE_TTL_MS,
 		status,

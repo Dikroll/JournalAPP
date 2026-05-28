@@ -3,6 +3,7 @@ import { isCacheValid } from "../lib/isCacheValid";
 import { getIsOnline } from "../model/networkStore";
 
 interface UseEntityFetchOptions<T> {
+	cacheKey: string;
 	/** Уже загруженные данные — если есть и кеш валиден, запрос не делается */
 	loadedAt: number | null;
 	/** TTL в миллисекундах */
@@ -21,6 +22,8 @@ interface UseEntityFetchOptions<T> {
 	onCacheHit?: () => void;
 }
 
+const fetchingPromises = new Map<string, Promise<any>>();
+
 /**
  * Универсальный хук для загрузки данных с кешированием.
  * Заменяет повторяющийся паттерн fetchingRef + isCacheValid + setStatus
@@ -30,6 +33,7 @@ interface UseEntityFetchOptions<T> {
  * Если нет сети и данных нет — вызываем onError.
  */
 export function useEntityFetch<T>({
+	cacheKey,
 	loadedAt,
 	ttlMs,
 	status,
@@ -39,46 +43,53 @@ export function useEntityFetch<T>({
 	onStart,
 	onCacheHit,
 }: UseEntityFetchOptions<T>) {
-	const fetchingRef = useRef(false);
+	const fetchFnRef = useRef(fetchFn);
+	const onSuccessRef = useRef(onSuccess);
+	const onErrorRef = useRef(onError);
+	const onStartRef = useRef(onStart);
+	const onCacheHitRef = useRef(onCacheHit);
+
+	fetchFnRef.current = fetchFn;
+	onSuccessRef.current = onSuccess;
+	onErrorRef.current = onError;
+	onStartRef.current = onStart;
+	onCacheHitRef.current = onCacheHit;
 
 	useEffect(() => {
-		if (fetchingRef.current) return;
+		if (fetchingPromises.has(cacheKey)) {
+			// Already fetching elsewhere
+			return;
+		}
 		if (status === "loading") return;
+
 		if (isCacheValid(loadedAt, ttlMs)) {
-			if (status === "idle") onCacheHit?.();
+			if (status === "idle") onCacheHitRef.current?.();
 			return;
 		}
 
 		if (!getIsOnline()) {
 			if (loadedAt !== null) {
-				if (status === "idle") onCacheHit?.();
+				if (status === "idle") onCacheHitRef.current?.();
 				return;
 			}
-			onError?.(new Error("Нет подключения к интернету"));
+			onErrorRef.current?.(new Error("Нет подключения к интернету"));
 			return;
 		}
 
-		fetchingRef.current = true;
-		onStart?.();
+		onStartRef.current?.();
 
-		fetchFn()
+		const promise = fetchFnRef.current()
 			.then((data) => {
-				onSuccess(data);
+				onSuccessRef.current(data);
 			})
 			.catch((err) => {
-				onError?.(err);
+				onErrorRef.current?.(err);
 			})
 			.finally(() => {
-				fetchingRef.current = false;
+				fetchingPromises.delete(cacheKey);
 			});
-	}, [
-		loadedAt,
-		fetchFn,
-		onCacheHit,
-		onError,
-		onStart,
-		onSuccess,
-		status,
-		ttlMs,
-	]); // eslint-disable-line react-hooks/exhaustive-deps
+
+		fetchingPromises.set(cacheKey, promise);
+	}, [cacheKey, loadedAt, status, ttlMs]); // Using stable refs and cacheKey
 }
+

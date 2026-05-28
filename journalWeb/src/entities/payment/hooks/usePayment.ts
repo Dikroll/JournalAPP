@@ -14,6 +14,7 @@ export function usePayment() {
 	const setLoadedAt = usePaymentStore((s) => s.setSummaryLoadedAt);
 
 	useEntityFetch({
+		cacheKey: "payment",
 		loadedAt,
 		ttlMs: CACHE_TTL_MS,
 		status,

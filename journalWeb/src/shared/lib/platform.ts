@@ -9,8 +9,8 @@
  * во время сборки, поэтому мёртвые ветки полностью вырезаются
  * из итогового бандла (tree-shaking).
  */
+import { Capacitor } from "@capacitor/core";
 
-export const isWebPlatform =
-	import.meta.env.VITE_PLATFORM === "web";
+export const isWebPlatform = import.meta.env.VITE_PLATFORM === "web" && !Capacitor.isNativePlatform();
 
-export const isNativePlatform = !isWebPlatform;
+export const isNativePlatform = Capacitor.isNativePlatform();

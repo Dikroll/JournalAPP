@@ -15,6 +15,7 @@ export function useReviews() {
 		useReviewStore();
 
 	useEntityFetch({
+		cacheKey: "reviews",
 		loadedAt,
 		ttlMs: CACHE_TTL_MS,
 		status,

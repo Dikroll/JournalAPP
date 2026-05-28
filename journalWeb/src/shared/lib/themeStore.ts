@@ -12,7 +12,7 @@ interface ThemeState {
 
 export const useThemeStore = create<ThemeState>()(
 	persistEncryptedKeyOnly(
-		(set: any) => ({
+		(set) => ({
 			theme: "dark" as ThemeType,
 
 			setTheme: (theme: ThemeType) => {
@@ -35,7 +35,7 @@ export const useThemeStore = create<ThemeState>()(
 		{
 			name: "theme-store",
 			partialize: (state) => ({ theme: state.theme }),
-			onRehydrateStorage: () => (state) => {
+			onRehydrateStorage: () => (state?: ThemeState) => {
 				if (state?.theme) {
 					applyThemeToDom(state.theme);
 				}
