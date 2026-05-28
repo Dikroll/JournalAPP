@@ -2,6 +2,7 @@ import { PackageOpen, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { MarketProduct } from "@/entities/market";
 import { PhotoViewerModal } from "@/shared/ui";
+import { getCachedImageUrl } from "@/shared/lib";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {
@@ -21,19 +22,19 @@ export function ProductCard({
 }: Props) {
 	const isSoldOut = product.quantity <= 0;
 	const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
+	const fixedImageUrl = getCachedImageUrl(product.image_url);
 
 	return (
 		<>
 			<article className="flex h-full flex-col overflow-hidden rounded-[18px] border border-app-border bg-app-surface">
 				<div
 					className="h-36 shrink-0 bg-app-surface-hover cursor-pointer sm:h-40 xl:h-44"
-					onClick={() => product.image_url && setPhotoViewerOpen(true)}
+					onClick={() => fixedImageUrl && setPhotoViewerOpen(true)}
 				>
-					{product.image_url ? (
+					{fixedImageUrl ? (
 						<img
-							src={product.image_url}
+							src={fixedImageUrl}
 							alt={product.title}
-							loading="lazy"
 							className="w-full h-full object-cover"
 						/>
 					) : (
@@ -88,9 +89,9 @@ export function ProductCard({
 				</div>
 			</article>
 
-			{photoViewerOpen && product.image_url && (
+			{photoViewerOpen && fixedImageUrl && (
 				<PhotoViewerModal
-					src={product.image_url}
+					src={fixedImageUrl}
 					alt={product.title}
 					onClose={() => setPhotoViewerOpen(false)}
 				/>

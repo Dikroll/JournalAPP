@@ -2,6 +2,7 @@ import { Box, Minus, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { MarketProduct } from "@/entities/market";
 import { PhotoViewerModal } from "@/shared/ui";
+import { getCachedImageUrl } from "@/shared/lib";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {
@@ -21,17 +22,18 @@ export function CartItemCard({
 }: Props) {
 	const canIncrement = quantity < product.quantity;
 	const [photoViewerOpen, setPhotoViewerOpen] = useState(false);
+	const fixedImageUrl = getCachedImageUrl(product.image_url);
 
 	return (
 		<>
 			<div className="bg-app-surface rounded-[20px] border border-app-border p-4 flex gap-3">
 				<div
 					className="w-16 h-16 rounded-[16px] overflow-hidden bg-app-surface-hover shrink-0 cursor-pointer"
-					onClick={() => product.image_url && setPhotoViewerOpen(true)}
+					onClick={() => fixedImageUrl && setPhotoViewerOpen(true)}
 				>
-					{product.image_url ? (
+					{fixedImageUrl ? (
 						<img
-							src={product.image_url}
+							src={fixedImageUrl}
 							alt={product.title}
 							className="w-full h-full object-cover"
 						/>
@@ -84,9 +86,9 @@ export function CartItemCard({
 				</div>
 			</div>
 
-			{photoViewerOpen && product.image_url && (
+			{photoViewerOpen && fixedImageUrl && (
 				<PhotoViewerModal
-					src={product.image_url}
+					src={fixedImageUrl}
 					alt={product.title}
 					onClose={() => setPhotoViewerOpen(false)}
 				/>

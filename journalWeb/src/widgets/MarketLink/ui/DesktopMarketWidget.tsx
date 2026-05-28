@@ -3,6 +3,7 @@ import type { UserInfo } from '@/entities/user'
 import { pageConfig } from '@/shared/config'
 import { Coins, Gem, ArrowRight, PackageOpen, Store } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { getCachedImageUrl } from '@/shared/lib'
 import { PriceDisplay } from '@/widgets/Market/ui/PriceDisplay'
 
 interface Props {
@@ -83,11 +84,10 @@ export function DesktopMarketWidget({ user }: Props) {
 								}`}
 							>
 								<div className="w-12 h-12 shrink-0 rounded-xl bg-app-surface border border-app-border overflow-hidden flex items-center justify-center shadow-sm">
-									{product.image_url ? (
+									{getCachedImageUrl(product.image_url) ? (
 										<img
-											src={product.image_url}
+											src={getCachedImageUrl(product.image_url)!}
 											alt={product.title}
-											loading="lazy"
 											className="w-full h-full object-cover"
 										/>
 									) : (

@@ -12,14 +12,16 @@ import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import type { Segment } from '@/shared/ui'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import { EvaluateLessonList, NewsTab } from '@/widgets'
-import { ArrowLeft, ClipboardCheck, Megaphone } from 'lucide-react'
+import { isNativePlatform } from '@/shared/lib/platform'
+import { EvaluateLessonList, NewsTab, ChangelogTab } from '@/widgets'
+import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 type Tab = "changelog" | "feedback" | "news";
 
 const TABS: Segment<Tab>[] = [
+	...(isNativePlatform ? [{ key: "changelog" as Tab, label: "Обновления", icon: <Sparkles size={13} /> }] : []),
 	{ key: "feedback", label: "Оценки", icon: <ClipboardCheck size={13} /> },
 	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
 ];
@@ -42,7 +44,7 @@ export function NotificationsPage() {
 	useSwipeBack();
 
 	useEffect(() => {
-		if (activeTab === "changelog") {
+		if (activeTab === "changelog" && !isNativePlatform) {
 			setActiveTab("news");
 		}
 	}, [activeTab, setActiveTab]);
@@ -131,6 +133,7 @@ export function NotificationsPage() {
 
 			<div className="px-4">
 
+				{activeTab === "changelog" && isNativePlatform && <ChangelogTab entries={entries} />}
 				{activeTab === "feedback" && <EvaluateLessonList />}
 				{activeTab === "news" && <NewsTab />}
 			</div>

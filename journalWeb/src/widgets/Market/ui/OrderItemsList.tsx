@@ -2,6 +2,7 @@ import { PackageOpen } from "lucide-react";
 import { useState } from "react";
 import type { MarketOrderProduct } from "@/entities/market";
 import { PhotoViewerModal } from "@/shared/ui";
+import { getCachedImageUrl } from "@/shared/lib";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {
@@ -28,18 +29,19 @@ export function OrderItemsList({ items }: Props) {
 						item.name ??
 						`Товар #${item.product_id ?? item.id ?? "—"}`;
 					const quantity = item.quantity ?? item.count ?? 1;
+					const fixedImageUrl = getCachedImageUrl(item.image_url);
 
 					return (
 						<div key={item.id ?? index} className="flex gap-3 py-3 items-start">
 							<div
 								className="w-14 h-14 rounded-[12px] overflow-hidden bg-app-surface-hover shrink-0 cursor-pointer"
 								onClick={() =>
-									item.image_url && setPhotoViewerOpen(`${item.id ?? index}`)
+									fixedImageUrl && setPhotoViewerOpen(`${item.id ?? index}`)
 								}
 							>
-								{item.image_url ? (
+								{fixedImageUrl ? (
 									<img
-										src={item.image_url}
+										src={fixedImageUrl}
 										alt={title}
 										className="w-full h-full object-cover"
 									/>
@@ -72,7 +74,7 @@ export function OrderItemsList({ items }: Props) {
 
 			{photoViewerOpen && openedItem?.image_url && (
 				<PhotoViewerModal
-					src={openedItem.image_url}
+					src={getCachedImageUrl(openedItem.image_url) || openedItem.image_url}
 					alt={openedItem.title ?? openedItem.name ?? "Товар"}
 					onClose={() => setPhotoViewerOpen(null)}
 				/>

@@ -133,6 +133,12 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+const Suspended = ({ children }: { children: React.ReactNode }) => (
+	<Suspense fallback={<FullscreenLoader />}>
+		{children}
+	</Suspense>
+);
+
 export function AppRouter() {
 	return (
 		<HashRouter>
@@ -143,7 +149,9 @@ export function AppRouter() {
 						path={pageConfig.login}
 						element={
 							<PublicRoute>
-								<LoginPage />
+								<Suspended>
+									<LoginPage />
+								</Suspended>
 							</PublicRoute>
 						}
 					/>
@@ -156,26 +164,26 @@ export function AppRouter() {
 							</ProtectedRoute>
 						}
 					>
-						<Route index element={<HomePage />} />
-						<Route path="schedule" element={<SchedulePage />} />
-						<Route path="homework" element={<HomeworkPage />} />
-						<Route path="library" element={<LibraryPage />} />
-						<Route path="grades" element={<GradesPage />} />
-						<Route path="goals" element={<GoalsPage />} />
-						<Route path="goals/:specId" element={<GoalDetailPage />} />
-						<Route path="profile" element={<ProfilePage />} />
-						<Route path="profile/details" element={<ProfileDetailsPage />} />
-						<Route path="profile/activity" element={<ProfileActivityPage />} />
+						<Route index element={<Suspended><HomePage /></Suspended>} />
+						<Route path="schedule" element={<Suspended><SchedulePage /></Suspended>} />
+						<Route path="homework" element={<Suspended><HomeworkPage /></Suspended>} />
+						<Route path="library" element={<Suspended><LibraryPage /></Suspended>} />
+						<Route path="grades" element={<Suspended><GradesPage /></Suspended>} />
+						<Route path="goals" element={<Suspended><GoalsPage /></Suspended>} />
+						<Route path="goals/:specId" element={<Suspended><GoalDetailPage /></Suspended>} />
+						<Route path="profile" element={<Suspended><ProfilePage /></Suspended>} />
+						<Route path="profile/details" element={<Suspended><ProfileDetailsPage /></Suspended>} />
+						<Route path="profile/activity" element={<Suspended><ProfileActivityPage /></Suspended>} />
 						<Route
 							path="profile/notification-settings"
-							element={<NotificationSettingsPage />}
+							element={<Suspended><NotificationSettingsPage /></Suspended>}
 						/>
-						<Route path="market" element={<MarketPage />} />
-						<Route path="payment" element={<PaymentPage />} />
-						<Route path="notifications" element={<NotificationsPage />} />
-						<Route path="notifications/news/:id" element={<NewsDetailPage />} />
-						<Route path="evaluate-lesson" element={<EvaluateLessonPage />} />
-						<Route path="news" element={<NewsPage />} />
+						<Route path="market" element={<Suspended><MarketPage /></Suspended>} />
+						<Route path="payment" element={<Suspended><PaymentPage /></Suspended>} />
+						<Route path="notifications" element={<Suspended><NotificationsPage /></Suspended>} />
+						<Route path="notifications/news/:id" element={<Suspended><NewsDetailPage /></Suspended>} />
+						<Route path="evaluate-lesson" element={<Suspended><EvaluateLessonPage /></Suspended>} />
+						<Route path="news" element={<Suspended><NewsPage /></Suspended>} />
 					</Route>
 
 					<Route path="*" element={<Navigate to="/" replace />} />

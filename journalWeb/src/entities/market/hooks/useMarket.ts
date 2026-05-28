@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { ttl } from "@/shared/config";
-import { isCacheValid } from "@/shared/lib";
+import { isCacheValid, preloadImages } from "@/shared/lib";
 import { getIsOnline } from "@/shared/model/networkStore";
 import { marketApi } from "../api";
 import { useMarketStore } from "../model/store";
@@ -172,6 +172,13 @@ export function useMarket() {
 		loadProducts();
 		loadOrders();
 	}, [loadProducts, loadOrders]);
+
+	useEffect(() => {
+		if (products.length > 0) {
+			const urls = products.map((p) => p.image_url);
+			preloadImages(urls);
+		}
+	}, [products]);
 
 	const cartItems = useMemo(
 		() =>

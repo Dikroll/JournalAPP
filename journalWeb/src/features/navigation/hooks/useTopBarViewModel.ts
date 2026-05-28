@@ -10,6 +10,7 @@ import { getCachedImageUrl } from "@/shared/lib";
 import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
 import { useHydrationStore } from "@/shared/lib/hydrationStore";
 import { getInitials, getShortName } from "@/shared/utils/nameUtils";
+import { isNativePlatform } from "@/shared/lib/platform";
 
 function useUserStoreHydrated() {
 	const hasHydrated = useHydrationStore((state) => state.hasHydrated);
@@ -51,6 +52,6 @@ export function useTopBarViewModel() {
 		hydrated,
 		initials: getInitials(fullName),
 		shortName: getShortName(fullName),
-		hasBadge: unreadCount > 0 || pendingFeedbackCount > 0,
+		hasBadge: (isNativePlatform && unreadCount > 0) || pendingFeedbackCount > 0,
 	};
 }
