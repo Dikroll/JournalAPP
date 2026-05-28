@@ -1,18 +1,18 @@
-import { memo } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Moon, Sun, WifiOff } from "lucide-react";
+import { memo } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useUserStore } from "@/entities/user";
 import { useTopBarViewModel } from "@/features/navigation/hooks/useTopBarViewModel";
+import {
+	mainNavItems,
+	pageConfig,
+	quickLinksNavItems,
+	studyNavItems,
+} from "@/shared/config";
+import type { NavItemConfig } from "@/shared/config/navigation";
 import { useThemeStore } from "@/shared/lib/themeStore";
 import { useNetworkStore } from "@/shared/model/networkStore";
-import {
-	pageConfig,
-	mainNavItems,
-	studyNavItems,
-	quickLinksNavItems,
-} from "@/shared/config";
 import { Avatar, Badge, CurrencyBadge } from "@/shared/ui";
-import { useUserStore } from "@/entities/user";
-import type { NavItemConfig } from "@/shared/config/navigation";
 
 const PAGE_TITLES: Record<string, string> = {
 	[pageConfig.home]: "Главная",
@@ -102,7 +102,11 @@ export const Sidebar = memo(() => {
 							{(coins !== null || diamonds !== null) && (
 								<div className="flex items-center gap-1.5 mt-1">
 									{diamonds !== null && (
-										<CurrencyBadge type="diamonds" amount={diamonds} size="sm" />
+										<CurrencyBadge
+											type="diamonds"
+											amount={diamonds}
+											size="sm"
+										/>
 									)}
 									{coins !== null && (
 										<CurrencyBadge type="coins" amount={coins} size="sm" />
@@ -182,20 +186,30 @@ const NavSection = memo(
 						className={({ isActive }) =>
 							`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
 								isActive
-									? "bg-brand/10 text-brand shadow-sm"
+									? "bg-brand/10 shadow-sm"
 									: "text-app-muted hover:bg-app-surface-hover hover:text-app-text"
 							}`
 						}
 					>
-						<div className="flex items-center justify-center shrink-0">
-							<item.icon size={16} />
-						</div>
-						<span className="flex-1 truncate">{item.label}</span>
-						{item.to === pageConfig.homework && hwBadge ? (
-							<Badge className="!border-none !m-0 !h-5 !min-w-[20px] !px-1.5 flex items-center justify-center bg-brand text-white text-[10px] font-bold rounded-md">
-								{hwBadge}
-							</Badge>
-						) : null}
+						{({ isActive }) => (
+							<>
+								<div
+									className={`flex items-center justify-center shrink-0 ${isActive ? "text-brand" : ""}`}
+								>
+									<item.icon size={16} />
+								</div>
+								<span
+									className={`flex-1 truncate ${isActive ? "text-white" : ""}`}
+								>
+									{item.label}
+								</span>
+								{item.to === pageConfig.homework && hwBadge ? (
+									<Badge className="!border-none !m-0 !h-5 !min-w-[20px] !px-1.5 flex items-center justify-center bg-brand text-white text-[10px] font-bold rounded-md">
+										{hwBadge}
+									</Badge>
+								) : null}
+							</>
+						)}
 					</NavLink>
 				))}
 			</div>
