@@ -1,10 +1,18 @@
-import { lazy, Suspense } from "react";
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Component, lazy, type ReactNode, Suspense } from "react";
+import {
+	BrowserRouter,
+	HashRouter,
+	Navigate,
+	Route,
+	Routes,
+	useLocation,
+} from "react-router-dom";
 import { useAuthStore } from "@/features/auth";
-import { useHydrationStore } from "@/shared/model/authStore";
 import { pageConfig } from "@/shared/config";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { ScrollToTop } from "@/shared/lib";
+import { isNativeRuntime } from "@/shared/lib/platform";
+import { useHydrationStore } from "@/shared/model/authStore";
 import { FullscreenLoader } from "@/widgets/Loading/ui/Loader";
 import { AppLayout as MobileLayout } from "../layouts";
 import { WebLayout } from "../layouts/ui/WebLayout";
@@ -23,7 +31,9 @@ const GoalsPage = lazy(() =>
 	import("@/pages/goals/ui/GoalsPage").then((m) => ({ default: m.GoalsPage })),
 );
 const GradesPage = lazy(() =>
-	import("@/pages/grades/ui/GradesPage").then((m) => ({ default: m.GradesPage })),
+	import("@/pages/grades/ui/GradesPage").then((m) => ({
+		default: m.GradesPage,
+	})),
 );
 const HomePage = lazy(() =>
 	import("@/pages/home/ui/HomePage").then((m) => ({ default: m.HomePage })),
@@ -42,7 +52,9 @@ const LoginPage = lazy(() =>
 	import("@/pages/login/ui/LoginPage").then((m) => ({ default: m.LoginPage })),
 );
 const MarketPage = lazy(() =>
-	import("@/pages/market/ui/MarketPage").then((m) => ({ default: m.MarketPage })),
+	import("@/pages/market/ui/MarketPage").then((m) => ({
+		default: m.MarketPage,
+	})),
 );
 const NewsDetailPage = lazy(() =>
 	import("@/pages/notifications/ui/NewsDetailPage").then((m) => ({
@@ -110,19 +122,12 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 	const hasHydrated = useHydrationStore((s) => s.hasHydrated);
 
-	if (!hasHydrated) {
-		return (
-			<div
-				style={{
-					minHeight: "100dvh",
-					backgroundColor: "var(--color-bg, #1F2024)",
-				}}
-			/>
-		);
-	}
+	if (!hasHydrated) return <FullscreenLoader />;
 
 	const searchParams = new URLSearchParams(
-		window.location.hash.split("?")[1] ?? "",
+		isNativeRuntime
+			? (window.location.hash.split("?")[1] ?? "")
+			: window.location.search,
 	);
 	const isAddingAccount = searchParams.get("addAccount") === "true";
 
@@ -134,14 +139,68 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 const Suspended = ({ children }: { children: React.ReactNode }) => (
-	<Suspense fallback={<FullscreenLoader />}>
-		{children}
-	</Suspense>
+	<Suspense fallback={<FullscreenLoader />}>{children}</Suspense>
 );
 
-export function AppRouter() {
+class RouteErrorBoundary extends Component<
+	{ children: ReactNode },
+	{ hasError: boolean }
+> {
+	state = { hasError: false };
+
+	static getDerivedStateFromError() {
+		return { hasError: true };
+	}
+
+	componentDidCatch(error: unknown) {
+		console.error("Route render failed", error);
+	}
+
+	render() {
+		if (!this.state.hasError) return this.props.children;
+
+		return (
+			<div
+				className="min-h-screen flex items-center justify-center text-app-text px-4"
+				style={{ backgroundColor: "var(--color-bg, #1F2024)" }}
+			>
+				<div
+					className="w-full max-w-sm rounded-[24px] border border-app-border bg-app-surface p-5 text-center"
+					style={{ boxShadow: "var(--shadow-card)" }}
+				>
+					<p className="text-base font-semibold">Страница не загрузилась</p>
+					<p className="text-sm text-app-muted mt-2">
+						Попробуйте обновить страницу или вернуться на главную.
+					</p>
+					<div className="grid grid-cols-2 gap-2 mt-4">
+						<button
+							type="button"
+							className="rounded-xl bg-app-surface-hover border border-app-border px-3 py-2 text-sm font-semibold text-app-text"
+							onClick={() => window.location.reload()}
+						>
+							Обновить
+						</button>
+						<button
+							type="button"
+							className="rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white"
+							onClick={() =>
+								window.location.assign(isNativeRuntime ? "#/" : "/")
+							}
+						>
+							На главную
+						</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+function AppRoutes() {
+	const location = useLocation();
+
 	return (
-		<HashRouter>
+		<RouteErrorBoundary key={location.key}>
 			<ScrollToTop />
 			<Suspense fallback={<FullscreenLoader />}>
 				<Routes>
@@ -164,31 +223,167 @@ export function AppRouter() {
 							</ProtectedRoute>
 						}
 					>
-						<Route index element={<Suspended><HomePage /></Suspended>} />
-						<Route path="schedule" element={<Suspended><SchedulePage /></Suspended>} />
-						<Route path="homework" element={<Suspended><HomeworkPage /></Suspended>} />
-						<Route path="library" element={<Suspended><LibraryPage /></Suspended>} />
-						<Route path="grades" element={<Suspended><GradesPage /></Suspended>} />
-						<Route path="goals" element={<Suspended><GoalsPage /></Suspended>} />
-						<Route path="goals/:specId" element={<Suspended><GoalDetailPage /></Suspended>} />
-						<Route path="profile" element={<Suspended><ProfilePage /></Suspended>} />
-						<Route path="profile/details" element={<Suspended><ProfileDetailsPage /></Suspended>} />
-						<Route path="profile/activity" element={<Suspended><ProfileActivityPage /></Suspended>} />
+						<Route
+							index
+							element={
+								<Suspended>
+									<HomePage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="schedule"
+							element={
+								<Suspended>
+									<SchedulePage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="homework"
+							element={
+								<Suspended>
+									<HomeworkPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="library"
+							element={
+								<Suspended>
+									<LibraryPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="grades"
+							element={
+								<Suspended>
+									<GradesPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="goals"
+							element={
+								<Suspended>
+									<GoalsPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="goals/:specId"
+							element={
+								<Suspended>
+									<GoalDetailPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="profile"
+							element={
+								<Suspended>
+									<ProfilePage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="profile/details"
+							element={
+								<Suspended>
+									<ProfileDetailsPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="profile/activity"
+							element={
+								<Suspended>
+									<ProfileActivityPage />
+								</Suspended>
+							}
+						/>
 						<Route
 							path="profile/notification-settings"
-							element={<Suspended><NotificationSettingsPage /></Suspended>}
+							element={
+								<Suspended>
+									<NotificationSettingsPage />
+								</Suspended>
+							}
 						/>
-						<Route path="market" element={<Suspended><MarketPage /></Suspended>} />
-						<Route path="payment" element={<Suspended><PaymentPage /></Suspended>} />
-						<Route path="notifications" element={<Suspended><NotificationsPage /></Suspended>} />
-						<Route path="notifications/news/:id" element={<Suspended><NewsDetailPage /></Suspended>} />
-						<Route path="evaluate-lesson" element={<Suspended><EvaluateLessonPage /></Suspended>} />
-						<Route path="news" element={<Suspended><NewsPage /></Suspended>} />
+						<Route
+							path="market"
+							element={
+								<Suspended>
+									<MarketPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="payment"
+							element={
+								<Suspended>
+									<PaymentPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="notifications"
+							element={
+								<Suspended>
+									<NotificationsPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="notifications/news/:id"
+							element={
+								<Suspended>
+									<NewsDetailPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="evaluate-lesson"
+							element={
+								<Suspended>
+									<EvaluateLessonPage />
+								</Suspended>
+							}
+						/>
+						<Route
+							path="news"
+							element={
+								<Suspended>
+									<NewsPage />
+								</Suspended>
+							}
+						/>
 					</Route>
 
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>
 			</Suspense>
-		</HashRouter>
+		</RouteErrorBoundary>
+	);
+}
+
+function normalizeWebHashUrl() {
+	if (isNativeRuntime) return;
+	if (!window.location.hash.startsWith("#/")) return;
+
+	const hashRoute = window.location.hash.slice(1);
+	const search = hashRoute.includes("?") ? "" : window.location.search;
+	window.history.replaceState(null, "", `${hashRoute}${search}`);
+}
+
+export function AppRouter() {
+	normalizeWebHashUrl();
+	const Router = isNativeRuntime ? HashRouter : BrowserRouter;
+
+	return (
+		<Router>
+			<AppRoutes />
+		</Router>
 	);
 }

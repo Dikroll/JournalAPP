@@ -14,6 +14,8 @@ import { Capacitor } from "@capacitor/core";
 const isExplicitWebBuild = import.meta.env.VITE_PLATFORM === "web";
 const isCapacitorNative = Capacitor.isNativePlatform();
 
+export const isNativeRuntime = isCapacitorNative;
+
 export const isWebPlatform = isExplicitWebBuild && !isCapacitorNative;
 
 export const isNativePlatform = !isExplicitWebBuild || isCapacitorNative;
