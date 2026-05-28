@@ -43,6 +43,12 @@ export const useAppUpdateStore = create<AppUpdateState>()(
 			openSheet: () =>
 				set((state) => {
 					if (state.serverInfo) return { status: "available" };
+					if (state.latestRelease?.apk_url) {
+						return {
+							serverInfo: state.latestRelease,
+							status: "available",
+						};
+					}
 					return {};
 				}),
 		}),

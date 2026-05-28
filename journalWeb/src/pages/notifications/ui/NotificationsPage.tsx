@@ -1,5 +1,5 @@
 import { useFeedbackStore } from '@/entities/feedback'
-import { useAppUpdateStore } from '@/features/appUpdate'
+import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
 import { RefreshNotificationsButton } from '@/features/refreshNotifications'
 import {
 	FALLBACK_CHANGELOG,
@@ -133,7 +133,12 @@ export function NotificationsPage() {
 
 			<div className="px-4">
 
-				{activeTab === "changelog" && isNativePlatform && <ChangelogTab entries={entries} />}
+				{activeTab === "changelog" && isNativePlatform && (
+					<>
+						<AppUpdateBanner allowLatestReleaseFallback />
+						<ChangelogTab entries={entries} />
+					</>
+				)}
 				{activeTab === "feedback" && <EvaluateLessonList />}
 				{activeTab === "news" && <NewsTab />}
 			</div>

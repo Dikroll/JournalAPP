@@ -2,11 +2,20 @@ import { Download } from "lucide-react";
 import { useAppUpdate } from "../hooks/useAppUpdate";
 import { useAppUpdateStore } from "../model/store";
 
-export function AppUpdateBanner() {
-	const { serverInfo, status } = useAppUpdate();
+interface AppUpdateBannerProps {
+	allowLatestReleaseFallback?: boolean;
+}
+
+export function AppUpdateBanner({
+	allowLatestReleaseFallback = false,
+}: AppUpdateBannerProps) {
+	const { serverInfo, latestRelease, status } = useAppUpdate();
 	const openSheet = useAppUpdateStore((s) => s.openSheet);
 
-	if (!serverInfo) return null;
+	const releaseInfo =
+		serverInfo ?? (allowLatestReleaseFallback ? latestRelease : null);
+
+	if (!releaseInfo) return null;
 
 	const isDownloading = status === "downloading";
 
@@ -26,7 +35,7 @@ export function AppUpdateBanner() {
 				<Download size={16} className="text-brand" />
 				<div className="text-left">
 					<p className="text-sm font-semibold text-app-text">
-						Доступно обновление v{serverInfo.version}
+						Доступно обновление v{releaseInfo.version}
 					</p>
 					<p className="text-xs text-app-muted">
 						{isDownloading
