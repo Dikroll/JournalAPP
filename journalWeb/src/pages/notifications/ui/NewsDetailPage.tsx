@@ -1,6 +1,7 @@
 import { ArrowLeft, Calendar } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNewsDetail } from "@/entities/news";
+import { normalizeNewsHtml } from "@/entities/news/lib/normalizeNewsHtml";
 import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { IconButton } from "@/shared/ui";
 
@@ -82,7 +83,10 @@ export function NewsDetailPage() {
 					{/* HTML Content */}
 					<div
 						className="px-4 pt-2 news-content"
-						dangerouslySetInnerHTML={{ __html: detail.content_html }}
+						// biome-ignore lint/security/noDangerouslySetInnerHtml: news content is trusted API HTML, with media URLs normalized before rendering.
+						dangerouslySetInnerHTML={{
+							__html: normalizeNewsHtml(detail.content_html),
+						}}
 					/>
 				</>
 			)}

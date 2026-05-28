@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { useNewsDetail } from "@/entities/news";
+import { normalizeNewsHtml } from "@/entities/news/lib/normalizeNewsHtml";
 import { BottomSheet, IconButton } from "@/shared/ui";
 
 interface NewsDetailSheetProps {
@@ -43,7 +44,10 @@ export function NewsDetailSheet({ id, onClose }: NewsDetailSheetProps) {
 					{detail?.content_html && (
 						<div
 							className="prose prose-invert max-w-none text-app-text text-sm"
-							dangerouslySetInnerHTML={{ __html: detail.content_html.replace(/src="\/([^"]+)"/g, 'src="https://journal.top-academy.ru/$1"') }}
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: news content is trusted API HTML, with media URLs normalized before rendering.
+							dangerouslySetInnerHTML={{
+								__html: normalizeNewsHtml(detail.content_html),
+							}}
 							style={
 								{
 									"--tw-prose-body": "var(--color-text)",
