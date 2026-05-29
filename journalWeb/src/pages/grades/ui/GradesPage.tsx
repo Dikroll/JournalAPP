@@ -1,11 +1,11 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-
+import { useDashboardCharts } from "@/entities/dashboard/hooks/useDashboardCharts";
 import {
 	useGrades,
 	useGradesBySubject,
 	useGradesGroups,
 } from "@/entities/grades";
-import { useDashboardCharts } from "@/entities/dashboard/hooks/useDashboardCharts";
+import { useScheduleWeek } from "@/entities/schedule";
 
 import { useSubjects } from "@/entities/subject";
 import { RefreshGradesButton } from "@/features/refreshGrades";
@@ -13,12 +13,13 @@ import { SpecSelector } from "@/features/selectSpec";
 
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { ErrorView, PageHeader, SkeletonList } from "@/shared/ui";
-import type { Tab } from "@/widgets/Grades/GradesTabs/ui/GradesTabs";
+import { getTodayString } from "@/shared/utils";
 import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
 import { GradesCalendar } from "@/widgets/Grades/GradesCalendar/ui/GradesCalendar";
 import { GradesExamList } from "@/widgets/Grades/GradesList/ui/GradesExamList";
 import { GradesRecentList } from "@/widgets/Grades/GradesList/ui/GradesRecentList";
 import { GradesSubjectList } from "@/widgets/Grades/GradesList/ui/GradesSubjectList";
+import type { Tab } from "@/widgets/Grades/GradesTabs/ui/GradesTabs";
 import { GradesTabs } from "@/widgets/Grades/GradesTabs/ui/GradesTabs";
 
 const GradesCharts = lazy(() =>
@@ -31,10 +32,12 @@ export function GradesPage() {
 	const [activeTab, setActiveTab] = useState<Tab>("recent");
 	const [selectedSpecId, setSelectedSpecId] = useState<number | null>(null);
 	const isDesktop = useIsDesktop();
+	const today = useMemo(() => getTodayString(), []);
 
 	const { entries, status, error, refresh } = useGrades();
 	const { bySubject: subjectCache, loadSubject } = useGradesBySubject();
 	const { subjects: specList, status: specsStatus } = useSubjects();
+	const { lessons: weekLessons } = useScheduleWeek(today);
 	const { progress, attendance } = useDashboardCharts({
 		enabled: status === "success",
 	});
@@ -61,6 +64,12 @@ export function GradesPage() {
 			return entries.filter((e) => e.spec_id === selectedSpecId);
 		return entries;
 	}, [selectedSubjectCache, selectedSpecId, entries]);
+
+	const selectedSubjectName = useMemo(
+		() =>
+			specList.find((subject) => subject.id === selectedSpecId)?.name ?? null,
+		[specList, selectedSpecId],
+	);
 
 	const { byDate, bySubject, byMonth } = useGradesGroups(
 		sourceEntries,
@@ -112,7 +121,13 @@ export function GradesPage() {
 					<SkeletonList count={3} height={80} />
 				) : (
 					<>
-						{activeTab === "recent" && <GradesRecentList byDate={byDate} />}
+						{activeTab === "recent" && (
+							<GradesRecentList
+								byDate={byDate}
+								scheduledLessons={weekLessons}
+								selectedSubjectName={selectedSubjectName}
+							/>
+						)}
 						{activeTab === "calendar" && <GradesCalendar byMonth={byMonth} />}
 						{activeTab === "subjects" && (
 							<GradesSubjectList bySubject={bySubject} />
