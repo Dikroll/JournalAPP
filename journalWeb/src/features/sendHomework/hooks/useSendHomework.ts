@@ -4,6 +4,7 @@ import { useOfflineQueueStore } from "@/features/offlineQueue";
 import { saveFileForQueue } from "@/features/offlineQueue/lib/fileStorage";
 import { getIsOnline } from "@/shared/model/networkStore";
 import { sendHomeworkApi } from "../api";
+import { createHomeworkSubmitPayload } from "../lib/submitPayload";
 import type { SendStep } from "../model/types";
 
 const FORBIDDEN = [".txt", ".csv"];
@@ -67,7 +68,8 @@ export function useSendHomework(
 
 	const submit = useCallback(async () => {
 		const trimmed = state.text.trim();
-		const hasFile = !!state.file;
+		const selectedFile = state.file;
+		const hasFile = selectedFile != null;
 		const hasText = trimmed.length >= MIN_TEXT;
 		const textTooShort = trimmed.length > 0 && trimmed.length < MIN_TEXT;
 
@@ -86,8 +88,8 @@ export function useSendHomework(
 				const queueId = `hw-${Date.now()}`;
 				let fileLocalPath: string | null = null;
 
-				if (hasFile) {
-					fileLocalPath = await saveFileForQueue(state.file!, queueId);
+				if (selectedFile) {
+					fileLocalPath = await saveFileForQueue(selectedFile, queueId);
 				}
 
 				addToQueue({
@@ -123,9 +125,9 @@ export function useSendHomework(
 			let file_path = "";
 			let tmp_file = "";
 
-			if (hasFile) {
+			if (selectedFile) {
 				setState((s) => ({ ...s, step: "uploading", error: null }));
-				const uploaded = await sendHomeworkApi.uploadFile(state.file!);
+				const uploaded = await sendHomeworkApi.uploadFile(selectedFile);
 				filename = uploaded.filename;
 				file_path = uploaded.file_path;
 				tmp_file = uploaded.tmp_file;
@@ -133,13 +135,16 @@ export function useSendHomework(
 
 			setState((s) => ({ ...s, step: "submitting" }));
 
-			await sendHomeworkApi.submit({
-				id: studId ?? homeworkId,
-				stud_answer: trimmed || null,
-				filename: filename || null,
-				file_path: file_path || null,
-				tmp_file: tmp_file || null,
-			});
+			await sendHomeworkApi.submit(
+				createHomeworkSubmitPayload({
+					id: studId ?? homeworkId,
+					text: trimmed,
+					filename,
+					filePath: file_path,
+					tmpFile: tmp_file,
+					mark: state.mark,
+				}),
+			);
 
 			if (userId != null) {
 				await sendHomeworkApi

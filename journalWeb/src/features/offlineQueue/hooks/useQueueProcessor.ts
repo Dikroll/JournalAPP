@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useHomeworkStore } from "@/entities/homework/model/store";
 import { sendHomeworkApi } from "@/features/sendHomework/api";
+import { createHomeworkSubmitPayload } from "@/features/sendHomework/lib/submitPayload";
 import { getIsOnline, useNetworkStore } from "@/shared/model/networkStore";
 import { deleteQueueFile, readFileFromQueue } from "../lib/fileStorage";
 import { useOfflineQueueStore } from "../model/store";
@@ -25,13 +26,16 @@ async function processItem(item: QueuedHomework): Promise<void> {
 		tmp_file = uploaded.tmp_file;
 	}
 
-	await sendHomeworkApi.submit({
-		id: item.studId ?? item.homeworkId,
-		stud_answer: item.text || null,
-		filename: filename || null,
-		file_path: file_path || null,
-		tmp_file: tmp_file || null,
-	});
+	await sendHomeworkApi.submit(
+		createHomeworkSubmitPayload({
+			id: item.studId ?? item.homeworkId,
+			text: item.text,
+			filename,
+			filePath: file_path,
+			tmpFile: tmp_file,
+			mark: item.mark,
+		}),
+	);
 
 	if (item.userId != null) {
 		await sendHomeworkApi

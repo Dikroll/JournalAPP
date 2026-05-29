@@ -7,6 +7,8 @@ import type {
 } from "../model/types";
 
 export const homeworkApi = {
+	refreshCache: () => api.post(apiConfig.HOMEWORK_REFRESH).then((r) => r.data),
+
 	getAll: (groupId: number, page = 1) =>
 		api
 			.get<HomeworkAllResponse>(apiConfig.HOMEWORK_ALL, {

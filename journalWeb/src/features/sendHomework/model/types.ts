@@ -4,8 +4,10 @@ export interface SubmitHomeworkPayload {
 	filename: string | null;
 	file_path: string | null;
 	tmp_file: string | null;
-	spent_hours?: number;
-	spent_minutes?: number;
+	mark: number;
+	creation_time: string;
+	spent_hours: number;
+	spent_minutes: number;
 }
 
 export type SendStep =
