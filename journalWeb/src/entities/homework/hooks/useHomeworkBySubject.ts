@@ -17,7 +17,8 @@ async function runLoadSubject(
 	specName: string,
 	force: boolean,
 ) {
-	if (loadingBySubject.has(specId)) {
+	// When force=true, skip dedup so we always fetch fresh data.
+	if (!force && loadingBySubject.has(specId)) {
 		return loadingBySubject.get(specId);
 	}
 

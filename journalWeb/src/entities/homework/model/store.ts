@@ -231,7 +231,8 @@ export const useHomeworkStore = create<HomeworkState>()(
 				items: state.items,
 				pages: state.pages,
 				counters: state.counters,
-				loadedAt: state.loadedAt,
+				// loadedAt intentionally NOT persisted — after reload we always
+				// re-fetch from the API so users never see stale data.
 				knownSpecs: state.knownSpecs,
 				subjects: Object.fromEntries(
 					Object.entries(state.subjects as Record<string, SubjectData>).map(
@@ -241,6 +242,7 @@ export const useHomeworkStore = create<HomeworkState>()(
 								...v,
 								expandedStatuses: Array.from(v.expandedStatuses),
 								status: "idle",
+								loadedAt: null,
 							},
 						],
 					),

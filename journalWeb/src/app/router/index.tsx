@@ -144,9 +144,9 @@ const Suspended = ({ children }: { children: React.ReactNode }) => (
 
 class RouteErrorBoundary extends Component<
 	{ children: ReactNode },
-	{ hasError: boolean }
+	{ hasError: boolean; retried: boolean }
 > {
-	state = { hasError: false };
+	state = { hasError: false, retried: false };
 
 	static getDerivedStateFromError() {
 		return { hasError: true };
@@ -155,6 +155,25 @@ class RouteErrorBoundary extends Component<
 	componentDidCatch(error: unknown) {
 		console.error("Route render failed", error);
 	}
+
+	/**
+	 * Clears all persisted store data from localStorage and redirects
+	 * to the login page. This recovers from corrupted encrypted storage
+	 * (e.g. after manual cache clear that removes encryption keys).
+	 */
+	handleClearAndLogin = () => {
+		try {
+			// Clear everything in localStorage to remove any corrupted encrypted data
+			localStorage.clear();
+		} catch {
+			// localStorage itself might be broken
+		}
+		window.location.assign(isNativeRuntime ? "#/login" : "/login");
+	};
+
+	handleRetry = () => {
+		this.setState({ hasError: false, retried: true });
+	};
 
 	render() {
 		if (!this.state.hasError) return this.props.children;
@@ -171,12 +190,18 @@ class RouteErrorBoundary extends Component<
 					<p className="text-base font-semibold">Страница не загрузилась</p>
 					<p className="text-sm text-app-muted mt-2">
 						Попробуйте обновить страницу или вернуться на главную.
+						{this.state.retried && (
+							<>
+								<br />
+								Если проблема повторяется, нажмите «Сбросить данные».
+							</>
+						)}
 					</p>
-					<div className="grid grid-cols-2 gap-2 mt-4">
+					<div className={`grid ${this.state.retried ? "grid-cols-3" : "grid-cols-2"} gap-2 mt-4`}>
 						<button
 							type="button"
 							className="rounded-xl bg-app-surface-hover border border-app-border px-3 py-2 text-sm font-semibold text-app-text"
-							onClick={() => window.location.reload()}
+							onClick={this.handleRetry}
 						>
 							Обновить
 						</button>
@@ -189,6 +214,15 @@ class RouteErrorBoundary extends Component<
 						>
 							На главную
 						</button>
+						{this.state.retried && (
+							<button
+								type="button"
+								className="rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white"
+								onClick={this.handleClearAndLogin}
+							>
+								Сбросить
+							</button>
+						)}
 					</div>
 				</div>
 			</div>

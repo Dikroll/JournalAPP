@@ -12,7 +12,9 @@ const loadingAllByGroup = new Map<number, Promise<void>>();
 const loadingMoreByKey = new Map<string, Promise<void>>();
 
 async function runLoadAll(groupId: number, force: boolean) {
-	if (loadingAllByGroup.has(groupId)) {
+	// When force=true (manual refresh), skip dedup so we always hit the API.
+	// When force=false (auto-refresh / mount), deduplicate concurrent requests.
+	if (!force && loadingAllByGroup.has(groupId)) {
 		await loadingAllByGroup.get(groupId);
 		return;
 	}
