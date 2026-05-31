@@ -11,6 +11,12 @@ const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
 const loadingAllByGroup = new Map<number, Promise<void>>();
 const loadingMoreByKey = new Map<string, Promise<void>>();
 
+/** Clears in-flight request dedup maps. Call on logout / account switch. */
+export function resetHomeworkFetch() {
+	loadingAllByGroup.clear();
+	loadingMoreByKey.clear();
+}
+
 async function runLoadAll(groupId: number, force: boolean) {
 	// When force=true (manual refresh), skip dedup so we always hit the API.
 	// When force=false (auto-refresh / mount), deduplicate concurrent requests.
@@ -22,13 +28,18 @@ async function runLoadAll(groupId: number, force: boolean) {
 	const store = useHomeworkStore.getState();
 	const { loadedAt, status: currentStatus } = store;
 
+	const hasData = loadedAt !== null;
+
+	// SWR: if we have data, show it immediately
+	if (hasData && currentStatus === "idle") store.setStatus("success");
+
+	// If cache is fresh AND not forced, skip the API call
 	if (!force && isCacheValid(loadedAt, CACHE_TTL_MS)) {
-		if (currentStatus === "idle") store.setStatus("success");
 		return;
 	}
 
 	if (!getIsOnline()) {
-		if (loadedAt !== null) {
+		if (hasData) {
 			if (currentStatus === "idle") store.setStatus("success");
 			return;
 		}
@@ -37,7 +48,10 @@ async function runLoadAll(groupId: number, force: boolean) {
 		return;
 	}
 
-	store.setStatus("loading");
+	// Only show loading spinner when there's no data at all
+	if (!hasData) {
+		store.setStatus("loading");
+	}
 	store.setError(null);
 
 	const promise = (async () => {

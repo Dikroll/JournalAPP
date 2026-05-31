@@ -10,6 +10,8 @@ interface UseEntityFetchOptions<T> {
 	ttlMs: number;
 	/** Статус загрузки — пропускаем если уже идёт */
 	status: string;
+	/** Есть ли данные — для SWR: если true, показываем их пока идёт фоновый запрос */
+	hasData?: boolean;
 	/** Функция загрузки — должна вернуть Promise */
 	fetchFn: () => Promise<T>;
 	/** Коллбек при успехе */
@@ -24,10 +26,18 @@ interface UseEntityFetchOptions<T> {
 
 const fetchingPromises = new Map<string, Promise<any>>();
 
+/** Clear all in-flight dedup entries. Call on logout / account switch. */
+export function resetEntityFetch() {
+	fetchingPromises.clear();
+}
+
 /**
- * Универсальный хук для загрузки данных с кешированием.
- * Заменяет повторяющийся паттерн fetchingRef + isCacheValid + setStatus
- * в useFutureExams, useExamResults, usePayment, useReviews, useSubjects и др.
+ * Универсальный хук для загрузки данных с SWR (stale-while-revalidate).
+ *
+ * - Если есть кешированные данные — показываем сразу
+ * - Всегда идём на API за свежими данными (если TTL истёк)
+ * - Пока фоновый запрос летит, пользователь видит старые данные
+ * - Спиннер "loading" показывается только когда данных вообще нет
  *
  * Offline-aware: если нет сети и есть кешированные данные — показываем стэйл.
  * Если нет сети и данных нет — вызываем onError.
@@ -37,6 +47,7 @@ export function useEntityFetch<T>({
 	loadedAt,
 	ttlMs,
 	status,
+	hasData = loadedAt !== null,
 	fetchFn,
 	onSuccess,
 	onError,
@@ -57,13 +68,19 @@ export function useEntityFetch<T>({
 
 	useEffect(() => {
 		if (fetchingPromises.has(cacheKey)) {
-			// Already fetching elsewhere
+			// Already fetching — just normalize status if needed
+			if (hasData && status === "idle") onCacheHitRef.current?.();
 			return;
 		}
 		if (status === "loading") return;
 
-		if (isCacheValid(loadedAt, ttlMs)) {
-			if (status === "idle") onCacheHitRef.current?.();
+		// SWR: if we have data, show it right away
+		if (hasData && status === "idle") {
+			onCacheHitRef.current?.();
+		}
+
+		// If cache is still fresh, skip the revalidation
+		if (hasData && isCacheValid(loadedAt, ttlMs)) {
 			return;
 		}
 
@@ -76,20 +93,26 @@ export function useEntityFetch<T>({
 			return;
 		}
 
-		onStartRef.current?.();
+		// Only show loading state if there's no data at all
+		if (!hasData) {
+			onStartRef.current?.();
+		}
 
+		// Always revalidate from API
 		const promise = fetchFnRef.current()
 			.then((data) => {
 				onSuccessRef.current(data);
 			})
 			.catch((err) => {
-				onErrorRef.current?.(err);
+				// Only propagate error if there's no stale data to show
+				if (!hasData) {
+					onErrorRef.current?.(err);
+				}
 			})
 			.finally(() => {
 				fetchingPromises.delete(cacheKey);
 			});
 
 		fetchingPromises.set(cacheKey, promise);
-	}, [cacheKey, loadedAt, status, ttlMs]); // Using stable refs and cacheKey
+	}, [cacheKey, loadedAt, status, ttlMs, hasData]);
 }
-

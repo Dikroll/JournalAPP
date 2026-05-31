@@ -16,6 +16,18 @@ export interface ZustandQueryOptions<T> {
 
 const fetchingPromises = new Map<string, Promise<any>>();
 
+/** Clear all in-flight dedup entries. Call on logout / account switch. */
+export function resetZustandQueryFetch() {
+	fetchingPromises.clear();
+}
+
+/**
+ * Stale-While-Revalidate (SWR) strategy:
+ * - If we have data → show it immediately as "success"
+ * - Always revalidate from API in the background (respecting a short dedup window)
+ * - When fresh data arrives → update the store silently
+ * - Only show "loading" spinner when there's NO data at all
+ */
 export function useZustandQuery<T>({
 	cacheKey,
 	ttlMs,
@@ -34,14 +46,22 @@ export function useZustandQuery<T>({
 
 	useEffect(() => {
 		if (fetchingPromises.has(cacheKey)) {
-			// Already fetching, we can optionally wait for it or just let the initiator update the store
+			// Already fetching — just make sure data is visible
+			if (hasData && status === "idle") {
+				updateStoreRef.current({ status: "success" });
+			}
 			return;
 		}
 
 		if (status === "loading") return;
 
+		// SWR: if we have data, show it right away regardless of cache validity
+		if (hasData && status === "idle") {
+			updateStoreRef.current({ status: "success" });
+		}
+
+		// If cache is still fresh, skip the revalidation fetch
 		if (hasData && isCacheValid(loadedAt, ttlMs)) {
-			if (status === "idle") updateStoreRef.current({ status: "success" });
 			return;
 		}
 
@@ -54,14 +74,21 @@ export function useZustandQuery<T>({
 			return;
 		}
 
-		const cached = storage.get<T>(cacheKey);
-		if (cached) {
-			updateStoreRef.current({ data: cached, status: "success", loadedAt: Date.now(), error: null });
-			return;
+		// Try localStorage cache only when we have NO data at all
+		if (!hasData) {
+			const cached = storage.get<T>(cacheKey);
+			if (cached) {
+				updateStoreRef.current({ data: cached, status: "success", loadedAt: Date.now(), error: null });
+				// Don't return — still revalidate below
+			}
 		}
 
-		updateStoreRef.current({ status: "loading", error: null });
+		// Only show loading spinner if there's no data to display
+		if (!hasData) {
+			updateStoreRef.current({ status: "loading", error: null });
+		}
 
+		// Always fetch from API (background revalidation)
 		const promise = fetchFnRef.current()
 			.then((data) => {
 				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
@@ -69,7 +96,10 @@ export function useZustandQuery<T>({
 				return data;
 			})
 			.catch((err) => {
-				if (!hasData) updateStoreRef.current({ status: "error", error: errorMessage });
+				// Only show error state if there's no stale data to display
+				if (!hasData) {
+					updateStoreRef.current({ status: "error", error: errorMessage });
+				}
 				throw err;
 			})
 			.finally(() => {
@@ -80,18 +110,18 @@ export function useZustandQuery<T>({
 	}, [hasData, loadedAt, status, cacheKey, ttlMs, errorMessage]);
 
 	const refresh = useCallback(async () => {
+		// Manual refresh always forces a new fetch
 		if (fetchingPromises.has(cacheKey)) {
-			try {
-				await fetchingPromises.get(cacheKey);
-			} catch (e) {
-				// ignore
-			}
-			return;
+			fetchingPromises.delete(cacheKey);
 		}
 
 		storage.remove(cacheKey);
-		updateStoreRef.current({ status: "loading", error: null });
-		
+
+		// Only show loading if no data
+		if (!hasData) {
+			updateStoreRef.current({ status: "loading", error: null });
+		}
+
 		const promise = fetchFnRef.current()
 			.then((data) => {
 				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
@@ -105,15 +135,15 @@ export function useZustandQuery<T>({
 			.finally(() => {
 				fetchingPromises.delete(cacheKey);
 			});
-			
+
 		fetchingPromises.set(cacheKey, promise);
 
 		try {
 			await promise;
-		} catch (err) {
-			// ignore, handled in then/catch above
+		} catch {
+			// handled above
 		}
-	}, [cacheKey, ttlMs, errorMessage]);
+	}, [cacheKey, hasData, ttlMs, errorMessage]);
 
 	return { refresh };
 }

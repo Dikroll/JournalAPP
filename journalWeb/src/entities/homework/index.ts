@@ -6,8 +6,11 @@ export {
 	STATUS_MAP,
 	STATUS_ORDER,
 } from "./configs/homeworkConfig";
-export { useHomework } from "./hooks/useHomework";
-export { useHomeworkBySubject } from "./hooks/useHomeworkBySubject";
+export { resetHomeworkFetch, useHomework } from "./hooks/useHomework";
+export {
+	resetHomeworkBySubjectFetch,
+	useHomeworkBySubject,
+} from "./hooks/useHomeworkBySubject";
 export { useHomeworkGroups } from "./hooks/useHomeworkGroups";
 export { useHomeworkStatusFiltering } from "./hooks/useHomeworkStatusFiltering";
 export { useHomeworkSubjectFiltering } from "./hooks/useHomeworkSubjectFiltering";

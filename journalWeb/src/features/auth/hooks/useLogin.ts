@@ -54,13 +54,13 @@ export function useLogin() {
 		try {
 			const { access_token } = await authApi.login(payload)
 
-			if (isAddingAccount) {
-				resetAllAppState({
-					resetAuth: false,
-					resetTheme: false,
-					resetOnboarding: false,
-				})
-			}
+			// Always clear cached data from the previous session so the new
+			// user never sees stale homework/grades/schedule from another account.
+			resetAllAppState({
+				resetAuth: false,
+				resetTheme: false,
+				resetOnboarding: false,
+			})
 
 			setToken(access_token, username.trim())
 

@@ -7,7 +7,10 @@
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
 		/>
 		<title>Journal</title>
-		<meta name="description" content="Электронный журнал — расписание, оценки, домашние задания" />
+		<meta
+			name="description"
+			content="Электронный журнал — расписание, оценки, домашние задания"
+		/>
 
 		<!-- PWA -->
 		<link rel="manifest" href="/manifest.webmanifest" />
@@ -16,9 +19,12 @@
 		<!-- iOS PWA -->
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta
+			name="apple-mobile-web-app-status-bar-style"
+			content="black-translucent"
+		/>
 		<meta name="apple-mobile-web-app-title" content="Journal" />
-		<link rel="apple-touch-icon" href="/icons/icon-192.webp" />
+		<link rel="apple-touch-icon" href="/icons/icon-512.webp" />
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -27,28 +33,19 @@
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
 		<script>
-			if ("serviceWorker" in navigator) {
-				window.addEventListener("load", () => {
-					const isLocalRuntime = ["localhost", "127.0.0.1", "::1"].includes(
-						window.location.hostname,
-					);
-
-					if (isLocalRuntime || window.location.protocol === "capacitor:") {
-						navigator.serviceWorker.getRegistrations().then((registrations) => {
-							registrations.forEach((registration) => registration.unregister());
-						});
-						if ("caches" in window) {
-							caches.keys().then((keys) => {
-								keys
-									.filter((key) => key.startsWith("journal-"))
-									.forEach((key) => caches.delete(key));
-							});
-						}
-						return;
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.getRegistrations().then(registrations => {
+						registrations.forEach(registration => registration.unregister())
+					})
+					if ('caches' in window) {
+						caches.keys().then(keys => {
+							keys
+								.filter(key => key.startsWith('journal-'))
+								.forEach(key => caches.delete(key))
+						})
 					}
-
-					navigator.serviceWorker.register("/sw.js");
-				});
+				})
 			}
 		</script>
 	</body>

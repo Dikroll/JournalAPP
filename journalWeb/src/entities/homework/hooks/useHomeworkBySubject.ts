@@ -11,6 +11,12 @@ const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
 const loadingBySubject = new Map<number, Promise<void>>();
 const loadingMoreBySubject = new Map<string, Promise<void>>();
 
+/** Clears in-flight request dedup maps. Call on logout / account switch. */
+export function resetHomeworkBySubjectFetch() {
+	loadingBySubject.clear();
+	loadingMoreBySubject.clear();
+}
+
 async function runLoadSubject(
 	groupId: number,
 	specId: number,

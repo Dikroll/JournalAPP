@@ -4,6 +4,8 @@ import { useFeedbackStore } from "@/entities/feedback/model/store";
 import { useGoalsStore } from "@/entities/goals";
 import { useGradesStore } from "@/entities/grades/model/store";
 import { useHomeworkStore } from "@/entities/homework/model/store";
+import { resetHomeworkFetch } from "@/entities/homework/hooks/useHomework";
+import { resetHomeworkBySubjectFetch } from "@/entities/homework/hooks/useHomeworkBySubject";
 import { useLeaderboardStore } from "@/entities/leaderboard/model/store";
 import { useLibraryStore } from "@/entities/library/model/store";
 import { useMarketStore } from "@/entities/market/model/store";
@@ -27,6 +29,8 @@ import {
 } from "@/features/offlineQueue";
 import { clearScheduleReminders } from "@/features/scheduleReminders/lib/mobileReminders";
 import { clearScheduleWidgets } from "@/features/scheduleWidgets";
+import { resetEntityFetch } from "@/shared/hooks/useEntityFetch";
+import { resetZustandQueryFetch } from "@/shared/hooks/useZustandQuery";
 import { storage } from "@/shared/lib/encryptedStorage";
 import { useThemeStore } from "@/shared/lib/themeStore";
 import { clearPersistedStoreData } from "@/shared/lib/zustandEncryptedPersist";
@@ -49,6 +53,10 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	storage.clear("cache:");
 	resetInitUserFetch();
 	resetScheduleTodayFetch();
+	resetHomeworkFetch();
+	resetHomeworkBySubjectFetch();
+	resetEntityFetch();
+	resetZustandQueryFetch();
 	clearScheduleReminders().catch(() => {});
 	clearScheduleWidgets().catch(() => {});
 	clearGoalsWidget().catch(() => {});
