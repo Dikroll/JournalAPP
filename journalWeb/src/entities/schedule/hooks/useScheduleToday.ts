@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getTodayString } from "@/shared/utils";
 import { useEntityFetch } from "@/shared/hooks/useEntityFetch";
 import { scheduleApi } from "../api";
