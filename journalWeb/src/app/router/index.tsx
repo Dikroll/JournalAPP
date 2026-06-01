@@ -135,103 +135,17 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+import { ErrorBoundary } from "@/shared/ui";
+
 const Suspended = ({ children }: { children: React.ReactNode }) => (
 	<Suspense fallback={<FullscreenLoader />}>{children}</Suspense>
 );
-
-class RouteErrorBoundary extends Component<
-	{ children: ReactNode },
-	{ hasError: boolean; retried: boolean }
-> {
-	state = { hasError: false, retried: false };
-
-	static getDerivedStateFromError() {
-		return { hasError: true };
-	}
-
-	componentDidCatch(error: unknown) {
-		console.error("Route render failed", error);
-	}
-
-	/**
-	 * Clears all persisted store data from localStorage and redirects
-	 * to the login page. This recovers from corrupted encrypted storage
-	 * (e.g. after manual cache clear that removes encryption keys).
-	 */
-	handleClearAndLogin = () => {
-		try {
-			// Clear everything in localStorage to remove any corrupted encrypted data
-			localStorage.clear();
-		} catch {
-			// localStorage itself might be broken
-		}
-		window.location.assign(isNativeRuntime ? "#/login" : "/login");
-	};
-
-	handleRetry = () => {
-		this.setState({ hasError: false, retried: true });
-	};
-
-	render() {
-		if (!this.state.hasError) return this.props.children;
-
-		return (
-			<div
-				className="min-h-screen flex items-center justify-center text-app-text px-4"
-				style={{ backgroundColor: "var(--color-bg, #1F2024)" }}
-			>
-				<div
-					className="w-full max-w-sm rounded-[24px] border border-app-border bg-app-surface p-5 text-center"
-					style={{ boxShadow: "var(--shadow-card)" }}
-				>
-					<p className="text-base font-semibold">Страница не загрузилась</p>
-					<p className="text-sm text-app-muted mt-2">
-						Попробуйте обновить страницу или вернуться на главную.
-						{this.state.retried && (
-							<>
-								<br />
-								Если проблема повторяется, нажмите «Сбросить данные».
-							</>
-						)}
-					</p>
-					<div className={`grid ${this.state.retried ? "grid-cols-3" : "grid-cols-2"} gap-2 mt-4`}>
-						<button
-							type="button"
-							className="rounded-xl bg-app-surface-hover border border-app-border px-3 py-2 text-sm font-semibold text-app-text"
-							onClick={this.handleRetry}
-						>
-							Обновить
-						</button>
-						<button
-							type="button"
-							className="rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white"
-							onClick={() =>
-								window.location.assign(isNativeRuntime ? "#/" : "/")
-							}
-						>
-							На главную
-						</button>
-						{this.state.retried && (
-							<button
-								type="button"
-								className="rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white"
-								onClick={this.handleClearAndLogin}
-							>
-								Сбросить
-							</button>
-						)}
-					</div>
-				</div>
-			</div>
-		);
-	}
-}
 
 function AppRoutes() {
 	const location = useLocation();
 
 	return (
-		<RouteErrorBoundary key={location.key}>
+		<ErrorBoundary key={location.key} fallback={<FullscreenLoader />}>
 			<ScrollToTop />
 			<Suspense fallback={<FullscreenLoader />}>
 				<Routes>
@@ -395,7 +309,7 @@ function AppRoutes() {
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>
 			</Suspense>
-		</RouteErrorBoundary>
+		</ErrorBoundary>
 	);
 }
 
