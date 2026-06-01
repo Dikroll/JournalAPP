@@ -3,6 +3,7 @@ import { usePayment } from '@/entities/payment/hooks/usePayment'
 import { usePaymentIndex } from '@/entities/payment/hooks/usePaymentIndex'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
+import { pageConfig, PAGE_TITLES } from '@/shared/config'
 import { ErrorView, PageHeader, SkeletonList } from '@/shared/ui'
 import {
 	PaymentHistoryCard,
@@ -48,7 +49,7 @@ export function PaymentPage() {
 		<div className='pb-6 text-app-text'>
 			<div className='px-4 pt-4 pb-4'>
 				<PageHeader 
-					title='Оплата' 
+					title={PAGE_TITLES[pageConfig.payment]} 
 					showBack={!isDesktop}
 					actions={
 						<button

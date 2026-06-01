@@ -11,6 +11,7 @@ import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
 import type { Segment } from '@/shared/ui'
+import { pageConfig, PAGE_TITLES } from '@/shared/config'
 import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
 import { isNativePlatform } from '@/shared/lib/platform'
 import { EvaluateLessonList, NewsTab, ChangelogTab } from '@/widgets'
@@ -118,7 +119,7 @@ export function NotificationsPage() {
 
 					<div className="flex-1">
 						<PageHeader
-							title="Уведомления"
+							title={PAGE_TITLES[pageConfig.notifications]}
 							actions={<RefreshNotificationsButton />}
 						/>
 					</div>

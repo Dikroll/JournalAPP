@@ -1,7 +1,9 @@
 import { type MarketPrice, useMarket } from '@/entities/market'
+import { useUser } from '@/entities/user'
 import { RefreshMarketButton } from '@/features/refreshMarket'
 import { useSwipeBack } from '@/shared/hooks'
 import type { Segment } from '@/shared/ui'
+import { pageConfig, PAGE_TITLES } from '@/shared/config'
 import { PageHeader, SegmentedControl } from '@/shared/ui'
 import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
 import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
@@ -60,7 +62,12 @@ export function MarketPage() {
 		refresh,
 	} = useMarket();
 
-	const userBalance = { diamonds: 1000, coins: 5000 };
+	const user = useUser();
+
+	const userBalance = useMemo(() => ({
+		diamonds: user?.points?.diamonds?.balance ?? 0,
+		coins: user?.points?.coins?.balance ?? 0,
+	}), [user]);
 	useSwipeBack();
 	const cartByProduct = useMemo(
 		() => new Map(cartItems.map((item) => [item.productId, item.quantity])),
@@ -92,7 +99,7 @@ export function MarketPage() {
 			<div className='p-4 space-y-3'>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-2'>
-						<PageHeader title='Маркет' showBack={!isDesktop} />
+						<PageHeader title={PAGE_TITLES[pageConfig.market]} showBack={!isDesktop} />
 					</div>
 					<RefreshMarketButton
 						isRefreshing={

@@ -7,6 +7,7 @@ import {
 	useScheduleRemindersStore,
 } from "@/features/scheduleReminders";
 import { useSwipeBack } from "@/shared/hooks";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { IconButton, PageHeader } from "@/shared/ui";
 
 export function NotificationSettingsPage() {
@@ -28,7 +29,7 @@ export function NotificationSettingsPage() {
 					aria-label="Назад"
 				/>
 				<div className="flex-1">
-					<PageHeader title="Уведомления" />
+					<PageHeader title={PAGE_TITLES[pageConfig.notificationSettings]} />
 				</div>
 			</div>
 

@@ -12,6 +12,7 @@ import { RefreshGradesButton } from "@/features/refreshGrades";
 import { SpecSelector } from "@/features/selectSpec";
 
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { ErrorView, PageHeader, SkeletonList } from "@/shared/ui";
 import { getTodayString } from "@/shared/utils";
 import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
@@ -89,7 +90,7 @@ export function GradesPage() {
 	return (
 		<div className="min-h-screen text-app-text pb-28">
 			<div className="p-4 space-y-4">
-				<PageHeader title="Оценки" actions={<RefreshGradesButton />} />
+				<PageHeader title={PAGE_TITLES[pageConfig.grades]} actions={<RefreshGradesButton />} />
 
 				<div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
 					<GoalsSummaryCard className="h-full" />

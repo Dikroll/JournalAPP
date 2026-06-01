@@ -11,6 +11,7 @@ import {
 import type { ChangelogEntry } from "@/features/sendNotifications/model/store";
 import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
 import type { Segment } from "@/shared/ui";
 import { PageHeader, SegmentedControl } from "@/shared/ui";
@@ -71,7 +72,7 @@ export function NewsPage() {
 				<div className="flex items-center gap-2">
 					<div className="flex-1">
 						<PageHeader
-							title="Новости"
+							title={PAGE_TITLES[pageConfig.news]}
 							showBack={!isDesktop}
 							actions={<RefreshNotificationsButton />}
 						/>

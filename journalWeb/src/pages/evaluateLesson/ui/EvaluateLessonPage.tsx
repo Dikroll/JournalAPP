@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { IconButton, PageHeader } from "@/shared/ui";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { EvaluateLessonList } from "@/widgets";
 
 export function EvaluateLessonPage() {
@@ -23,7 +24,7 @@ export function EvaluateLessonPage() {
 						aria-label="Назад"
 					/>
 					<div className="flex-1">
-						<PageHeader title="Оценка занятий" />
+						<PageHeader title={PAGE_TITLES[pageConfig.evaluateLesson]} />
 					</div>
 				</div>
 			</div>

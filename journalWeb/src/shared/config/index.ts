@@ -1,4 +1,4 @@
-export { pageConfig } from './pageConfig'
+export { pageConfig, PAGE_TITLES } from './pageConfig'
 
 export { apiConfig } from './apiConfig'
 

@@ -10,6 +10,7 @@ import { useSubjects } from "@/entities/subject";
 import { RefreshHomeworkButton } from "@/features/refreshHomework";
 import { SpecSelector } from "@/features/selectSpec";
 import type { Segment } from "@/shared/ui";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import {
 	ErrorView,
 	PageHeader,
@@ -71,7 +72,7 @@ export function HomeworkPage() {
 		<div className="min-h-screen text-app-text pb-28">
 			<div className="p-4 space-y-3">
 				<PageHeader
-					title="Домашние задания"
+					title={PAGE_TITLES[pageConfig.homework]}
 					actions={<RefreshHomeworkButton />}
 				/>
 

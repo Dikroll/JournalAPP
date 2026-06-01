@@ -19,3 +19,21 @@ class PageConfig {
 }
 
 export const pageConfig = new PageConfig();
+
+export const PAGE_TITLES: Record<string, string> = {
+	[pageConfig.home]: "Главная",
+	[pageConfig.grades]: "Оценки",
+	[pageConfig.schedule]: "Расписание",
+	[pageConfig.homework]: "Домашние задания",
+	[pageConfig.library]: "Библиотека",
+	[pageConfig.profile]: "Профиль",
+	[pageConfig.profileDetails]: "Детали профиля",
+	[pageConfig.profileActivity]: "Изменения баланса",
+	[pageConfig.goals]: "Сводка оценок",
+	[pageConfig.payment]: "Платежи",
+	[pageConfig.market]: "Маркет",
+	[pageConfig.notifications]: "Уведомления",
+	[pageConfig.notificationSettings]: "Настройки уведомлений",
+	[pageConfig.evaluateLesson]: "Оценка занятий",
+	[pageConfig.news]: "Новости",
+};

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { resetAllAppState } from '@/shared/lib/resetAllAppState'
 import { useProfileDetails } from '@/entities/profile'
-import { pageConfig } from '@/shared/config'
+import { pageConfig, PAGE_TITLES } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'
 import {
@@ -42,7 +42,7 @@ export function ProfileDetailsPage() {
 				/>
 
 				<div className="flex-1">
-					<PageHeader title="Детали профиля" />
+					<PageHeader title={PAGE_TITLES[pageConfig.profileDetails]} />
 				</div>
 			</div>
 

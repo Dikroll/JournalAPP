@@ -168,3 +168,16 @@ export function formatWeekLabel(mondayStr: string): string {
 	const endMonthName = end.toLocaleDateString("ru-RU", { month: "long" });
 	return `${start.getDate()} ${startMonthName} - ${end.getDate()} ${endMonthName}`;
 }
+
+export function getTodayDateParts() {
+	const now = new Date();
+	const weekday = now.toLocaleDateString("ru-RU", { weekday: "long" });
+	const dayMonth = now.toLocaleDateString("ru-RU", {
+		day: "numeric",
+		month: "long",
+	});
+	return {
+		weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+		dayMonth,
+	};
+}

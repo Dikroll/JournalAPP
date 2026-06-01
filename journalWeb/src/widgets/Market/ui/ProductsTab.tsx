@@ -1,7 +1,7 @@
 import type { MarketPrice, MarketProduct } from "@/entities/market";
 import { Badge, SkeletonList } from "@/shared/ui";
 import { ProductCard } from "./ProductCard";
-
+import { PriceDisplay } from "./PriceDisplay";
 interface Props {
 	products: MarketProduct[];
 	cartByProduct: Map<number, number>;
@@ -36,13 +36,19 @@ export function ProductsTab({
 }: Props) {
 	return (
 		<>
-			{products.length > 0 && (
-				<div className="flex items-center gap-2">
+			<div className="flex items-center justify-between">
+				{products.length > 0 ? (
 					<Badge variant="neutral" size="xs">
 						Товары: {products.length}
 					</Badge>
+				) : (
+					<div />
+				)}
+				<div className="flex items-center gap-2">
+					<span className="text-xs text-app-muted">Баланс:</span>
+					<PriceDisplay price={userBalance} className="text-sm font-medium" />
 				</div>
-			)}
+			</div>
 			{productsStatus === "loading" && products.length === 0 ? (
 				<SkeletonList count={4} height={260} />
 			) : productsStatus === "error" && products.length === 0 ? (

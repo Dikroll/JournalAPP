@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from "lucide-react";
-import { GlowBackground } from "@/shared/ui";
+import { GlowBackground, BrandLogo } from "@/shared/ui";
 import { useLogin } from "../hooks/useLogin";
 
 export function LoginForm() {
@@ -45,18 +45,9 @@ export function LoginForm() {
 							display: none !important; visibility: hidden; pointer-events: none;
 						}
 					`}</style>
-					<div className="text-center mb-2">
-						<h1 className="text-lg font-semibold text-app-text tracking-wide flex items-center justify-center gap-[2px]">
-							<span className="bg-brand text-white py-0.5 px-[5px] rounded-[3px] text-sm font-bold">
-								IT
-							</span>
-							<span className="relative text-app-text font-semibold">
-								TOP
-								<span className="absolute -top-[1px] -right-[6px] w-[14px] h-[14px] border-t-2 border-r-2 border-brand" />
-							</span>
-							<span className="ml-[10px]">COLLEGE</span>
-						</h1>
-						<p className="text-xs text-app-muted mt-1">Student Portal</p>
+					<div className="text-center mb-2 flex flex-col items-center">
+						<BrandLogo as="h1" className="justify-center" />
+						<p className="text-xs text-app-muted mt-2">Student Portal</p>
 					</div>
 
 					{error && (

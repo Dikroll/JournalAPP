@@ -2,6 +2,7 @@ import { CalendarDays, LayoutList } from "lucide-react";
 import { useState } from "react";
 import { RefreshScheduleButton } from "@/features/refreshSchedule";
 import type { Segment } from "@/shared/ui";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { PageHeader, SegmentedControl } from "@/shared/ui";
 import { ScheduleCalendar, ScheduleWeekView } from "@/widgets";
 
@@ -18,7 +19,7 @@ export function SchedulePage() {
 	return (
 		<div>
 			<div className="p-4 space-y-4">
-				<PageHeader title="Расписание" actions={<RefreshScheduleButton />} />
+				<PageHeader title={PAGE_TITLES[pageConfig.schedule]} actions={<RefreshScheduleButton />} />
 
 				<SegmentedControl segments={VIEWS} active={view} onChange={setView} />
 

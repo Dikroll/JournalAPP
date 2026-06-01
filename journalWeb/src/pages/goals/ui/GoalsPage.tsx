@@ -7,6 +7,7 @@ import { useGoalsOverview, useOverallSummary } from "@/features/goalForecast";
 import { SpecSelector } from "@/features/selectSpec";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { PageHeader } from "@/shared/ui";
 import {
 	EmptyGoalsState,
@@ -45,7 +46,7 @@ export function GoalsPage() {
 	return (
 		<div className="min-h-screen text-app-text pb-28">
 			<div className="px-4 pt-4 pb-2">
-				<PageHeader title="Сводка оценок" showBack />
+				<PageHeader title={PAGE_TITLES[pageConfig.goals]} showBack />
 				<div className="mt-5 mb-3 flex items-center justify-between">
 					<div className="w-[2px] self-stretch bg-app-border mr-3 rounded-full" />
 					<p className="text-[12px] text-app-muted mt-2 leading-snug">

@@ -4,6 +4,7 @@ import type { ActivityFilter } from "@/entities/dashboard";
 import { useDashboardActivityViewModel } from "@/entities/dashboard";
 import { useSwipeBack } from "@/shared/hooks";
 import type { Segment } from "@/shared/ui";
+import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { PageHeader, SegmentedControl } from "@/shared/ui";
 import { ActivityIntroCard } from "@/widgets/Profile/Activity/ui/ActivityIntroCard";
 import { ActivityList } from "@/widgets/Profile/Activity/ui/ActivityList";
@@ -43,7 +44,7 @@ export function ProfileActivityPage() {
 					<ArrowLeft size={18} />
 				</button>
 				<div className="flex-1">
-					<PageHeader title="Изменения баланса" />
+					<PageHeader title={PAGE_TITLES[pageConfig.profileActivity]} />
 				</div>
 				<button
 					onClick={() => void model.refreshActivity()}
