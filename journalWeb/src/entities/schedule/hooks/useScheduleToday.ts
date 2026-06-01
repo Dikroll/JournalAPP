@@ -1,25 +1,9 @@
 import { useEffect, useRef } from "react";
-import { getIsOnline } from "@/shared/model/networkStore";
-import { useAuthStore } from "@/shared/model/authStore";
 import { getTodayString } from "@/shared/utils";
+import { useEntityFetch } from "@/shared/hooks/useEntityFetch";
 import { scheduleApi } from "../api";
 import { SCHEDULE_CACHE_VERSION, useScheduleStore } from "../model/store";
 import type { LessonItem } from "../model/types";
-
-const FETCH_TIMEOUT_MS = 15_000;
-const ERROR_STATE_DELAY_MS = 600;
-
-let inFlightPromise: Promise<LessonItem[]> | null = null;
-let sessionInitialized = false;
-let lastVisitDate: string | null = null;
-let fetchGeneration = 0;
-
-function isRequestCurrent(generation: number, username: string | null) {
-	return (
-		generation === fetchGeneration &&
-		useAuthStore.getState().activeUsername === username
-	);
-}
 
 function isLoadedToday(timestamp: number): boolean {
 	const loadedDate = new Date(timestamp);
@@ -32,18 +16,8 @@ function isLoadedToday(timestamp: number): boolean {
 	);
 }
 
-function fetchTodayDeduped(): Promise<LessonItem[]> {
-	if (inFlightPromise) return inFlightPromise;
-	inFlightPromise = scheduleApi.getToday().finally(() => {
-		inFlightPromise = null;
-	});
-	return inFlightPromise;
-}
-
 export function resetScheduleTodayFetch() {
-	fetchGeneration += 1;
-	sessionInitialized = false;
-	inFlightPromise = null;
+	// Let useEntityFetch handle cache resets if needed, or we just invalidate store
 }
 
 export function useScheduleToday() {
@@ -52,129 +26,47 @@ export function useScheduleToday() {
 	const todayLoadedAt = useScheduleStore((s) => s.todayLoadedAt);
 	const cacheVersion = useScheduleStore((s) => s.cacheVersion);
 	const error = useScheduleStore((s) => s.error);
+	
 	const setToday = useScheduleStore((s) => s.setToday);
 	const setTodayStatus = useScheduleStore((s) => s.setTodayStatus);
 	const setTodayLoadedAt = useScheduleStore((s) => s.setTodayLoadedAt);
 	const setError = useScheduleStore((s) => s.setError);
 	const resetAllCache = useScheduleStore((s) => s.resetAllCache);
 
-	const fetchingRef = useRef(false);
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const isTodayValid = todayLoadedAt !== null && isLoadedToday(todayLoadedAt);
 
 	useEffect(() => {
-		if (fetchingRef.current) return;
-
-		if (cacheVersion !== SCHEDULE_CACHE_VERSION) {
+		if (cacheVersion !== SCHEDULE_CACHE_VERSION || (todayLoadedAt !== null && !isTodayValid)) {
 			resetAllCache();
-			sessionInitialized = false;
-			return;
 		}
+	}, [cacheVersion, isTodayValid, todayLoadedAt, resetAllCache]);
 
-		if (fetchingRef.current) return;
-
-		const todayStr = getTodayString();
-		if (lastVisitDate !== todayStr) {
-			lastVisitDate = todayStr;
-			sessionInitialized = false;
-		}
-
-		const hasCachedToday =
-			todayLoadedAt !== null && isLoadedToday(todayLoadedAt);
-
-		if (todayLoadedAt !== null && !hasCachedToday) {
-			sessionInitialized = false;
-			setToday([]);
-			setTodayLoadedAt(null);
-			setTodayStatus("idle");
+	useEntityFetch({
+		cacheKey: "scheduleToday",
+		loadedAt: isTodayValid ? todayLoadedAt : null,
+		ttlMs: 24 * 60 * 60 * 1000, // It's validated by date, so 24h TTL is fine
+		status: todayStatus,
+		fetchFn: () => scheduleApi.getToday(),
+		onStart: () => {
+			setTodayStatus("loading");
 			setError(null);
-			return;
-		}
-
-		if (hasCachedToday) {
+		},
+		onSuccess: (data: LessonItem[]) => {
+			setToday(data);
+			setTodayLoadedAt(Date.now());
+			setTodayStatus("success");
+		},
+		onError: (err) => {
+			const msg =
+				(err as { response?: { data?: { detail?: string } } })?.response?.data
+					?.detail ?? "Ошибка загрузки расписания";
+			setError(msg);
+			if (today.length === 0) setTodayStatus("error");
+		},
+		onCacheHit: () => {
 			if (todayStatus === "idle") setTodayStatus("success");
-			return;
-		}
-
-		if (!getIsOnline()) {
-			if (todayLoadedAt !== null) {
-				if (todayStatus === "idle") setTodayStatus("success");
-				return;
-			}
-			const generation = fetchGeneration;
-			const username = useAuthStore.getState().activeUsername;
-			setTimeout(() => {
-				if (!isRequestCurrent(generation, username)) return;
-				setTodayStatus("error");
-				setError("Нет подключения к интернету");
-			}, ERROR_STATE_DELAY_MS);
-			return;
-		}
-
-		// Only fetch if we haven't initialized in this session
-		if (sessionInitialized) {
-			return;
-		}
-		sessionInitialized = true;
-
-		fetchingRef.current = true;
-		const generation = fetchGeneration;
-		const username = useAuthStore.getState().activeUsername;
-		if (today.length === 0) setTodayStatus("loading");
-
-		timeoutRef.current = setTimeout(() => {
-			if (!isRequestCurrent(generation, username)) return;
-			if (fetchingRef.current) {
-				fetchingRef.current = false;
-				if (today.length === 0) {
-					setTodayStatus("error");
-					setError("Превышено время ожидания");
-				}
-			}
-		}, FETCH_TIMEOUT_MS);
-
-		fetchTodayDeduped()
-			.then((data) => {
-				if (!isRequestCurrent(generation, username)) return;
-				setToday(data);
-				setTodayLoadedAt(Date.now());
-				setTodayStatus("success");
-			})
-			.catch((err) => {
-				const msg =
-					(err as { response?: { data?: { detail?: string } } })?.response?.data
-						?.detail ?? "Ошибка загрузки расписания";
-				setTimeout(() => {
-					if (!isRequestCurrent(generation, username)) return;
-					setError(msg);
-					if (today.length === 0) setTodayStatus("error");
-				}, ERROR_STATE_DELAY_MS);
-			})
-			.finally(() => {
-				fetchingRef.current = false;
-				if (timeoutRef.current) {
-					clearTimeout(timeoutRef.current);
-					timeoutRef.current = null;
-				}
-			});
-	}, [
-		cacheVersion,
-		todayLoadedAt,
-		resetAllCache,
-		setError,
-		setToday,
-		setTodayLoadedAt,
-		setTodayStatus,
-		today.length,
-		todayStatus,
-	]);
-
-	useEffect(() => {
-		return () => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
-			}
-		};
-	}, []);
+		},
+	});
 
 	return { today, status: todayStatus, error };
 }

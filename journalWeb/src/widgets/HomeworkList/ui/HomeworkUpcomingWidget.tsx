@@ -1,4 +1,4 @@
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen, CheckCircle, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useHomework } from "@/entities/homework";
 import { STATUS_KEY_MAP } from "@/entities/homework/configs/homeworkConfig";
@@ -57,60 +57,69 @@ export function HomeworkUpcomingWidget({
 				</button>
 			</div>
 
-			<div className="flex flex-col gap-2">
-				{upcoming.length === 0 ? (
-					<div className="text-app-muted text-sm py-4 text-center">
-						Нет актуальных заданий
-					</div>
-				) : (
-					upcoming.map((hw) => {
-						const isOverdue = hw.status === STATUS_KEY_MAP.overdue;
+			<div
+				className="flex flex-col gap-2 overflow-y-auto flex-1 min-h-0"
+				style={{ scrollbarWidth: "thin" }}
+			>
+				{upcoming.map((hw) => {
+					const isOverdue = hw.status === STATUS_KEY_MAP.overdue;
 
-						return (
-							<button
-								key={hw.id}
-								type="button"
-								className="flex w-full items-center justify-between p-3 rounded-[14px] bg-app-surface-strong border border-app-border transition-colors hover:bg-app-surface-active cursor-pointer group text-left"
-								onClick={() => navigate("/homework")}
-							>
-								<div className="flex items-center gap-3 min-w-0 pr-3">
-									<div
-										className="w-[2px] h-6 rounded-full"
-										style={{
-											background: isOverdue
-												? "var(--color-status-overdue, #ef4444)"
-												: "var(--color-status-checked, #22c55e)",
-										}}
-									/>
-									<div className="flex flex-col min-w-0">
-										<span className="text-[13px] font-medium text-app-text truncate">
-											{hw.spec_name}
+					return (
+						<button
+							key={hw.id}
+							type="button"
+							className="flex w-full items-center justify-between p-3 rounded-[14px] bg-app-surface-strong border border-app-border transition-colors hover:bg-app-surface-active cursor-pointer group text-left shrink-0"
+							onClick={() => navigate("/homework")}
+						>
+							<div className="flex items-center gap-3 min-w-0 pr-3">
+								<div
+									className="w-[2px] h-6 rounded-full shrink-0"
+									style={{
+										background: isOverdue
+											? "var(--color-status-overdue, #ef4444)"
+											: "var(--color-status-checked, #22c55e)",
+									}}
+								/>
+								<div className="flex flex-col min-w-0">
+									<span className="text-[13px] font-medium text-app-text truncate">
+										{hw.spec_name}
+									</span>
+									{hw.theme && (
+										<span className="text-[12px] text-app-muted truncate mt-0.5">
+											{hw.theme}
 										</span>
-										{hw.theme && (
-											<span className="text-[12px] text-app-muted truncate mt-0.5">
-												{hw.theme}
-											</span>
-										)}
-									</div>
+									)}
 								</div>
-								<div className="flex items-center gap-2 shrink-0">
-									<div
-										className={`px-2 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap flex items-center gap-1 ${
-											isOverdue
-												? "bg-status-overdue/10 text-status-overdue"
-												: "bg-app-surface text-app-muted"
-										}`}
-									>
-										{getDeadlineLabel(hw.deadline, isOverdue)}
-									</div>
-									<ChevronRight
-										size={16}
-										className="text-app-muted opacity-0 group-hover:opacity-100 transition-opacity"
-									/>
+							</div>
+							<div className="flex items-center gap-2 shrink-0">
+								<div
+									className={`px-2 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap flex items-center gap-1 ${
+										isOverdue
+											? "bg-status-overdue/10 text-status-overdue"
+											: "bg-app-surface text-app-muted"
+									}`}
+								>
+									{getDeadlineLabel(hw.deadline, isOverdue)}
 								</div>
-							</button>
-						);
-					})
+								<ChevronRight
+									size={16}
+									className="text-app-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+								/>
+							</div>
+						</button>
+					);
+				})}
+
+				{/* Декоративное заполнение пустого пространства, если заданий мало */}
+				{upcoming.length <= 2 && (
+					<div className="flex-1 flex flex-col items-center justify-center min-h-[120px] opacity-40 select-none pointer-events-none mt-2">
+						<CheckCircle size={32} className="mb-2 text-app-muted" />
+						<p className="text-[13px] font-medium text-app-muted text-center leading-snug">
+							{upcoming.length === 0
+								? "Нет актуальных заданий\nВы всё сдали!"
+								: "Почти всё готово!\nОтличная работа."}
+						</p>
+					</div>
 				)}
 			</div>
 		</div>

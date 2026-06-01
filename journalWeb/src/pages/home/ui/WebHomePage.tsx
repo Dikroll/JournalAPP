@@ -17,74 +17,23 @@ export function WebHomePage() {
 	const user = useUser();
 
 	return (
-		<div className="p-5 pb-8 flex flex-col gap-4 w-full">
+		<div className="p-5 pb-8 flex flex-col gap-4 w-full h-full min-h-0">
 			{/* ОСНОВНАЯ СЕТКА: 3 колонки */}
 			<div
-				className="grid gap-4"
+				className="grid gap-4 flex-1 min-h-0"
 				style={{
 					gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-					alignItems: "start",
+					alignItems: "stretch",
 				}}
 			>
-				{/* ── КОЛОНКА 1 ── */}
-				<div className="flex flex-col gap-4 min-w-0">
-					{/* Сводка / Профиль */}
+				{/* ── КОЛОНКА 1 (Планирование) ── */}
+				<div className="flex flex-col gap-4 min-w-0 h-full">
+					{/* Сводка */}
 					<GoalsSummaryCard />
 
-					{/* Лидеры */}
+					{/* Экзамены (без скролла) */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
-						style={{
-							background: "var(--color-surface)",
-							boxShadow: "var(--shadow-card)",
-							minHeight: "16.25rem",
-						}}
-					>
-						<div
-							className="overflow-y-auto flex-1 min-h-0"
-							style={{ scrollbarWidth: "thin" }}
-						>
-							{user && <Leaderboard myStudentId={user.student_id} />}
-						</div>
-					</div>
-
-					{/* Домашка */}
-					<HomeworkUpcomingWidget />
-				</div>
-
-				{/* ── КОЛОНКА 2 ── */}
-				<div className="flex flex-col gap-4 min-w-0">
-					{/* Следующая пара */}
-					<NextClassWidget />
-
-					{/* Последние оценки */}
-					<RecentGradesWidget />
-
-					{/* Активность за неделю */}
-					<ActivityWidget />
-				</div>
-
-				{/* ── КОЛОНКА 3 ── */}
-				<div className="flex flex-col gap-4 min-w-0">
-					{/* Расписание */}
-					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
-						style={{
-							background: "var(--color-surface)",
-							boxShadow: "var(--shadow-card)",
-						}}
-					>
-						<div
-							className="overflow-y-auto flex-1 min-h-0 -mx-3 px-3 pt-2 pb-3"
-							style={{ scrollbarWidth: "thin" }}
-						>
-							<HomeScheduleSection cardVariant="homeDesktop" />
-						</div>
-					</div>
-
-					{/* Экзамены */}
-					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
+						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
@@ -96,11 +45,53 @@ export function WebHomePage() {
 								Будущие экзамены
 							</h2>
 						</div>
+						<FutureExams limit={3} />
+					</div>
+
+					{/* Домашка (тянется, чтобы закрыть дыру, внутри будет красивое заполнение) */}
+					<HomeworkUpcomingWidget className="flex-1" />
+				</div>
+
+				{/* ── КОЛОНКА 2 (Расписание) ── */}
+				<div className="flex flex-col gap-4 min-w-0 h-full">
+					{/* Следующая пара */}
+					<NextClassWidget />
+
+					{/* Расписание (без скролла, тянется чтобы закрыть дыру снизу) */}
+					<div
+						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1"
+						style={{
+							background: "var(--color-surface)",
+							boxShadow: "var(--shadow-card)",
+						}}
+					>
+						<div className="-mx-3 px-3 pt-2 pb-3 flex flex-col flex-1">
+							<HomeScheduleSection cardVariant="homeDesktop" />
+						</div>
+					</div>
+				</div>
+
+				{/* ── КОЛОНКА 3 (Результаты) ── */}
+				<div className="flex flex-col gap-4 min-w-0 h-full">
+					{/* Последние оценки */}
+					<RecentGradesWidget />
+
+					{/* Активность (График красиво тянется по высоте!) */}
+					<ActivityWidget className="flex-1" />
+
+					{/* Лидеры (Схлопывается по контенту, чтобы не было дыры снизу) */}
+					<div
+						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
+						style={{
+							background: "var(--color-surface)",
+							boxShadow: "var(--shadow-card)",
+						}}
+					>
 						<div
-							className="overflow-y-auto flex-1 min-h-0"
+							className="overflow-y-auto shrink-0 -mx-3 px-3"
 							style={{ scrollbarWidth: "thin" }}
 						>
-							<FutureExams limit={3} />
+							{user && <Leaderboard myStudentId={user.student_id} />}
 						</div>
 					</div>
 				</div>
@@ -108,3 +99,4 @@ export function WebHomePage() {
 		</div>
 	);
 }
+
