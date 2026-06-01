@@ -24,12 +24,31 @@ const ACHIEVEMENT_LABELS: Record<string, string> = {
 	MARKET_ORDER: "Покупка в магазине",
 	WORK_IN_CLASS: "Работа в классе",
 	SURVEY: "Опрос",
+	AUTO_MARK_EXPIRED_HOMEWORK: "Просроченное домашнее задание",
+	REDO_HOMETASK: "Пересдача домашнего задания",
+	REDO_LABORATORY_WORK: "Пересдача лабораторной работы",
+	INTIME_LABORATORY_WORK: "Лабораторная работа сдана вовремя",
+	QUIZ_PASSING_EXPIRATION: "Просроченный тест",
+	PASSED_QUIZ: "Тест пройден",
+	"20_VISITS_WITHOUT_GAP": "20 посещений без пропусков",
+	"20_VISITS_WITHOUT_DELAY": "20 посещений без опозданий",
+	"10_VISITS_WITHOUT_GAP": "10 посещений без пропусков",
+	"10_VISITS_WITHOUT_DELAY": "10 посещений без опозданий",
+	"5_VISITS_WITHOUT_GAP": "5 посещений без пропусков",
+	"5_VISITS_WITHOUT_DELAY": "5 посещений без опозданий",
+	FILL_IN_PROFILE: "Заполнение профиля",
 };
 
 /**
  * Achievements that represent spending/deducting resources
  */
-const SPEND_ACHIEVEMENTS = new Set(["MARKET_ORDER"]);
+const SPEND_ACHIEVEMENTS = new Set([
+	"MARKET_ORDER",
+	"AUTO_MARK_EXPIRED_HOMEWORK",
+	"REDO_HOMETASK",
+	"REDO_LABORATORY_WORK",
+	"QUIZ_PASSING_EXPIRATION"
+]);
 
 /**
  * Determine operation type based on achievement name
