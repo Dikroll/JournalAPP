@@ -121,14 +121,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function PublicRoute({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 	const hasHydrated = useHydrationStore((s) => s.hasHydrated);
+	const location = useLocation();
 
 	if (!hasHydrated) return <FullscreenLoader />;
 
-	const searchParams = new URLSearchParams(
-		isNativeRuntime
-			? (window.location.hash.split("?")[1] ?? "")
-			: window.location.search,
-	);
+	const searchParams = new URLSearchParams(location.search);
 	const isAddingAccount = searchParams.get("addAccount") === "true";
 
 	if (isAuthenticated && !isAddingAccount) {

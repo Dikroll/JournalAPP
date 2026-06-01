@@ -5,7 +5,7 @@ import { fixUrl } from '@/shared/lib/imageCache'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../api'
-import { useAuthStore, useHydrationStore } from '@/shared/model/authStore'
+import { useAuthStore } from '@/shared/model/authStore'
 import type { LoginRequest } from '../model/types'
 
 export function useLogin() {
@@ -17,17 +17,10 @@ export function useLogin() {
 
 	const setToken = useAuthStore(s => s.setToken)
 	const saveAccount = useAuthStore(s => s.saveAccount)
-	const isAuthenticated = useAuthStore(s => s.isAuthenticated)
-	const hasHydrated = useHydrationStore(s => s.hasHydrated)
 	const setUser = useUserStore(s => s.setUser)
 	const navigate = useNavigate()
 
 	const submittingRef = useRef(false)
-
-	const isAddingAccount = window.location.hash.includes('addAccount=true')
-	if (hasHydrated && isAuthenticated && !isAddingAccount) {
-		navigate('/', { replace: true })
-	}
 
 	const submit = async (e: React.FormEvent) => {
 		e.preventDefault()
