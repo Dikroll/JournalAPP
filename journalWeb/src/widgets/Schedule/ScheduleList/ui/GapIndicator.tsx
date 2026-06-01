@@ -19,11 +19,11 @@ export function GapIndicator({ gap, compact = false }: Props) {
 
 	return (
 		<div
-			className={`flex items-center gap-2 px-4 ${compact ? "py-0.5" : "py-1.5"}`}
+			className={`schedule-gap-indicator flex items-center gap-2 px-4 ${compact ? "py-0.5" : "py-1.5"}`}
 		>
 			<div className="flex-1 h-px" style={{ background: `${color}30` }} />
 			<div
-				className="flex items-center gap-1.5 rounded-full px-2.5 py-1 border"
+				className="schedule-gap-indicator__label flex items-center gap-1.5 rounded-full px-2.5 py-1 border"
 				style={{
 					background: `${color}10`,
 					borderColor: `${color}25`,

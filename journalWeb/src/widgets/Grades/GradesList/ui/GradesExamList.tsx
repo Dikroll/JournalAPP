@@ -2,7 +2,6 @@ import type { ExamResult } from '@/entities/exam'
 import { useExamResults } from '@/entities/exam'
 import { useLazyItems } from '@/shared/hooks'
 import { ErrorView, SkeletonList } from '@/shared/ui'
-import { isWebPlatform } from '@/shared/lib/platform'
 import { formatDate } from '@/shared/utils'
 import { CheckCircle, Clock, GraduationCap } from 'lucide-react'
 
@@ -77,7 +76,6 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 
 export function GradesExamList() {
 	const { exams, status } = useExamResults()
-	const isWeb = isWebPlatform
 
 	if (status === 'loading') return <SkeletonList count={3} height={72} />
 
@@ -97,31 +95,51 @@ export function GradesExamList() {
 	const Section = ({
 		title,
 		items,
+		scrollable,
 	}: {
 		title: string
 		items: ExamResult[]
+		scrollable?: boolean
 	}) => {
 		const { visibleCount, sentinelRef } = useLazyItems(
 			items.length,
 			5,
 			5,
 		)
+		const visibleItems = scrollable ? items : items.slice(0, visibleCount)
 
 		if (!items.length) return null
 		return (
-			<div className='space-y-2'>
+			<div
+				className={
+					scrollable
+						? 'space-y-2 md:flex md:h-[calc(100vh-16rem)] md:min-h-0 md:flex-col'
+						: 'space-y-2'
+				}
+			>
 				<p className='text-sm font-medium text-app-muted px-1'>{title}</p>
 				<div
-					className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-3 border border-app-border`}
+					className={`bg-app-surface rounded-[24px] md:rounded-2xl p-3 border border-app-border ${
+						scrollable ? 'md:flex md:min-h-0 md:flex-1 md:flex-col' : ''
+					}`}
 					style={{ boxShadow: 'var(--shadow-card)' }}
 				>
-					{items.slice(0, visibleCount).map((exam, idx) => (
-						<div key={exam.exam_id}>
-							{idx > 0 && <div className='border-t border-app-border my-1' />}
-							<ExamRow exam={exam} />
-						</div>
-					))}
-					<div ref={sentinelRef} />
+					<div
+						className={
+							scrollable
+								? 'md:flex-1 md:min-h-0 md:overflow-y-auto md:pr-1'
+								: ''
+						}
+						style={scrollable ? { scrollbarWidth: 'thin' } : undefined}
+					>
+						{visibleItems.map((exam, idx) => (
+							<div key={exam.exam_id}>
+								{idx > 0 && <div className='border-t border-app-border my-1' />}
+								<ExamRow exam={exam} />
+							</div>
+						))}
+						{!scrollable && <div ref={sentinelRef} />}
+					</div>
 				</div>
 			</div>
 		)
@@ -129,7 +147,7 @@ export function GradesExamList() {
 
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-			<Section title='Сданные' items={passed} />
+			<Section title='Сданные' items={passed} scrollable />
 			<Section title='Не сданные' items={pending} />
 		</div>
 	)

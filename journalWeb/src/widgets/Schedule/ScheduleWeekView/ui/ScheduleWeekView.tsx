@@ -185,18 +185,20 @@ export function ScheduleWeekView() {
 								)}
 							</div>
 
-							{/* Lessons — flat list */}
+							{/* Lessons */}
 							{!isEmpty ? (
-								<ul className="flex flex-col gap-3">
+								<ul className="schedule-week-day__lessons flex flex-col gap-3">
 									{dayLessons.map((lesson, i) => (
 										<li
 											key={`${lesson.started_at}-${lesson.room}`}
-											className="flex flex-col"
+											className="schedule-week-day__lesson flex flex-col"
 										>
 											{i > 0 && (
-												<GapIndicator
-													gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
-												/>
+												<div className="schedule-week-day__gap">
+													<GapIndicator
+														gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
+													/>
+												</div>
 											)}
 											<LessonCard
 												lesson={lesson}

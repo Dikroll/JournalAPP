@@ -53,6 +53,7 @@ export function PaymentPage() {
 					showBack={!isDesktop}
 					actions={
 						<button
+							type='button'
 							onClick={handleDownload}
 							disabled={isDownloading}
 							className={`w-9 h-9 rounded-[14px] bg-app-surface border border-app-border flex items-center justify-center text-app-muted transition-transform ${
@@ -73,11 +74,15 @@ export function PaymentPage() {
 				)}
 
 				{summary && (
-					<>
-						<PaymentRequisitesCard requisites={requisites} />
-						<PaymentScheduleCard schedule={summary.schedule} />
-						<PaymentHistoryCard history={summary.history} />
-					</>
+					<div className='payment-page__grid space-y-3'>
+						<div>
+							<PaymentRequisitesCard requisites={requisites} />
+						</div>
+						<div className='space-y-3'>
+							<PaymentScheduleCard schedule={summary.schedule} />
+							<PaymentHistoryCard history={summary.history} />
+						</div>
+					</div>
 				)}
 			</div>
 		</div>

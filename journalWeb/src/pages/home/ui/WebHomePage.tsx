@@ -67,7 +67,7 @@ export function WebHomePage() {
 						}}
 					>
 						<div
-							className="overflow-y-auto flex-1 min-h-0 -mr-2 pr-2"
+							className="overflow-y-auto flex-1 min-h-0 -mx-3 px-3 pt-2 pb-3"
 							style={{ scrollbarWidth: "thin" }}
 						>
 							<HomeScheduleSection />

@@ -176,7 +176,7 @@ const NavSection = memo(
 									<item.icon size={16} />
 								</div>
 								<span
-									className={`flex-1 truncate ${isActive ? 'text-white' : ''}`}
+									className={`flex-1 truncate ${isActive ? 'text-app-text' : ''}`}
 								>
 									{item.label}
 								</span>
