@@ -1,15 +1,25 @@
 import { useEffect, useRef } from "react";
 import { getIsOnline } from "@/shared/model/networkStore";
+import { useAuthStore } from "@/shared/model/authStore";
 import { getTodayString } from "@/shared/utils";
 import { scheduleApi } from "../api";
 import { SCHEDULE_CACHE_VERSION, useScheduleStore } from "../model/store";
 import type { LessonItem } from "../model/types";
 
 const FETCH_TIMEOUT_MS = 15_000;
+const ERROR_STATE_DELAY_MS = 600;
 
 let inFlightPromise: Promise<LessonItem[]> | null = null;
 let sessionInitialized = false;
 let lastVisitDate: string | null = null;
+let fetchGeneration = 0;
+
+function isRequestCurrent(generation: number, username: string | null) {
+	return (
+		generation === fetchGeneration &&
+		useAuthStore.getState().activeUsername === username
+	);
+}
 
 function isLoadedToday(timestamp: number): boolean {
 	const loadedDate = new Date(timestamp);
@@ -31,6 +41,7 @@ function fetchTodayDeduped(): Promise<LessonItem[]> {
 }
 
 export function resetScheduleTodayFetch() {
+	fetchGeneration += 1;
 	sessionInitialized = false;
 	inFlightPromise = null;
 }
@@ -89,8 +100,13 @@ export function useScheduleToday() {
 				if (todayStatus === "idle") setTodayStatus("success");
 				return;
 			}
-			setTodayStatus("error");
-			setError("Нет подключения к интернету");
+			const generation = fetchGeneration;
+			const username = useAuthStore.getState().activeUsername;
+			setTimeout(() => {
+				if (!isRequestCurrent(generation, username)) return;
+				setTodayStatus("error");
+				setError("Нет подключения к интернету");
+			}, ERROR_STATE_DELAY_MS);
 			return;
 		}
 
@@ -101,9 +117,12 @@ export function useScheduleToday() {
 		sessionInitialized = true;
 
 		fetchingRef.current = true;
+		const generation = fetchGeneration;
+		const username = useAuthStore.getState().activeUsername;
 		if (today.length === 0) setTodayStatus("loading");
 
 		timeoutRef.current = setTimeout(() => {
+			if (!isRequestCurrent(generation, username)) return;
 			if (fetchingRef.current) {
 				fetchingRef.current = false;
 				if (today.length === 0) {
@@ -115,6 +134,7 @@ export function useScheduleToday() {
 
 		fetchTodayDeduped()
 			.then((data) => {
+				if (!isRequestCurrent(generation, username)) return;
 				setToday(data);
 				setTodayLoadedAt(Date.now());
 				setTodayStatus("success");
@@ -123,8 +143,11 @@ export function useScheduleToday() {
 				const msg =
 					(err as { response?: { data?: { detail?: string } } })?.response?.data
 						?.detail ?? "Ошибка загрузки расписания";
-				setError(msg);
-				if (today.length === 0) setTodayStatus("error");
+				setTimeout(() => {
+					if (!isRequestCurrent(generation, username)) return;
+					setError(msg);
+					if (today.length === 0) setTodayStatus("error");
+				}, ERROR_STATE_DELAY_MS);
 			})
 			.finally(() => {
 				fetchingRef.current = false;

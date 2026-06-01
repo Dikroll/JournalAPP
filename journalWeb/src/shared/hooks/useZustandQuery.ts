@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { isCacheValid } from "../lib/isCacheValid";
 import { getIsOnline } from "../model/networkStore";
 import { storage } from "../lib/encryptedStorage";
+import { useAuthStore } from "../model/authStore";
 
 export interface ZustandQueryOptions<T> {
 	cacheKey: string;
@@ -15,10 +16,20 @@ export interface ZustandQueryOptions<T> {
 }
 
 const fetchingPromises = new Map<string, Promise<any>>();
+let fetchGeneration = 0;
+const ERROR_STATE_DELAY_MS = 600;
 
 /** Clear all in-flight dedup entries. Call on logout / account switch. */
 export function resetZustandQueryFetch() {
+	fetchGeneration += 1;
 	fetchingPromises.clear();
+}
+
+function isRequestCurrent(generation: number, username: string | null) {
+	return (
+		generation === fetchGeneration &&
+		useAuthStore.getState().activeUsername === username
+	);
 }
 
 /**
@@ -70,7 +81,12 @@ export function useZustandQuery<T>({
 				if (status === "idle") updateStoreRef.current({ status: "success" });
 				return;
 			}
-			updateStoreRef.current({ status: "error", error: "Нет подключения к интернету" });
+			const generation = fetchGeneration;
+			const username = useAuthStore.getState().activeUsername;
+			setTimeout(() => {
+				if (!isRequestCurrent(generation, username)) return;
+				updateStoreRef.current({ status: "error", error: "Нет подключения к интернету" });
+			}, ERROR_STATE_DELAY_MS);
 			return;
 		}
 
@@ -89,8 +105,11 @@ export function useZustandQuery<T>({
 		}
 
 		// Always fetch from API (background revalidation)
+		const generation = fetchGeneration;
+		const username = useAuthStore.getState().activeUsername;
 		const promise = fetchFnRef.current()
 			.then((data) => {
+				if (!isRequestCurrent(generation, username)) return data;
 				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
 				storage.set(cacheKey, data, ttlMs / 1000);
 				return data;
@@ -98,7 +117,10 @@ export function useZustandQuery<T>({
 			.catch((err) => {
 				// Only show error state if there's no stale data to display
 				if (!hasData) {
-					updateStoreRef.current({ status: "error", error: errorMessage });
+					setTimeout(() => {
+						if (!isRequestCurrent(generation, username)) return;
+						updateStoreRef.current({ status: "error", error: errorMessage });
+					}, ERROR_STATE_DELAY_MS);
 				}
 				throw err;
 			})
@@ -122,14 +144,20 @@ export function useZustandQuery<T>({
 			updateStoreRef.current({ status: "loading", error: null });
 		}
 
+		const generation = fetchGeneration;
+		const username = useAuthStore.getState().activeUsername;
 		const promise = fetchFnRef.current()
 			.then((data) => {
+				if (!isRequestCurrent(generation, username)) return data;
 				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
 				storage.set(cacheKey, data, ttlMs / 1000);
 				return data;
 			})
 			.catch((err) => {
-				updateStoreRef.current({ status: "error", error: errorMessage });
+				setTimeout(() => {
+					if (!isRequestCurrent(generation, username)) return;
+					updateStoreRef.current({ status: "error", error: errorMessage });
+				}, ERROR_STATE_DELAY_MS);
 				throw err;
 			})
 			.finally(() => {

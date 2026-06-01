@@ -21,6 +21,7 @@ export function GradesCalendar({ byMonth }: Props) {
 
 	const { year, month, prevMonth, nextMonth } = useMonthNav(defaultMonth);
 	const [selectedDate, setSelectedDate] = useState<string | null>(null);
+	const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 
 	const handlePrevMonth = useCallback(() => {
 		prevMonth();
@@ -66,6 +67,7 @@ export function GradesCalendar({ byMonth }: Props) {
 			const entries = datesWithData[dateStr] ?? [];
 			const hasData = entries.length > 0;
 			const isSelected = selectedDate === dateStr;
+			const isHovered = hoveredDate === dateStr;
 			const dotInfo = hasData ? getGradeDotInfo(entries) : null;
 			const tooltip = dotInfo
 				? `${formatDateWithWeekday(dateStr)}. ${dotInfo.label}: ${dotInfo.description}`
@@ -76,6 +78,10 @@ export function GradesCalendar({ byMonth }: Props) {
 					type="button"
 					disabled={!hasData}
 					onClick={() => handleDayClick(dateStr, hasData)}
+					onMouseEnter={() => setHoveredDate(dateStr)}
+					onMouseLeave={() => setHoveredDate(null)}
+					onFocus={() => setHoveredDate(dateStr)}
+					onBlur={() => setHoveredDate(null)}
 					title={tooltip}
 					aria-label={tooltip}
 					className="relative flex items-center justify-center rounded-full text-xs font-semibold disabled:cursor-default"
@@ -83,7 +89,11 @@ export function GradesCalendar({ byMonth }: Props) {
 						width: 36,
 						height: 36,
 						WebkitTapHighlightColor: "transparent",
-						background: isSelected ? "var(--color-brand)" : "transparent",
+						background: isSelected
+							? "var(--color-brand)"
+							: isHovered
+								? "var(--color-surface-hover)"
+								: "transparent",
 						color: isSelected
 							? "#fff"
 							: hasData
@@ -116,7 +126,7 @@ export function GradesCalendar({ byMonth }: Props) {
 				</button>
 			);
 		},
-		[datesWithData, selectedDate, handleDayClick],
+		[datesWithData, selectedDate, hoveredDate, handleDayClick],
 	);
 
 	return (

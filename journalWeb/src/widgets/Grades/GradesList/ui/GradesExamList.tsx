@@ -3,7 +3,8 @@ import { useExamResults } from '@/entities/exam'
 import { useLazyItems } from '@/shared/hooks'
 import { ErrorView, SkeletonList } from '@/shared/ui'
 import { formatDate } from '@/shared/utils'
-import { CheckCircle, Clock, GraduationCap } from 'lucide-react'
+import { CheckCircle, Clock, GraduationCap, Search } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 function getMarkColor(mark: number): string {
 	if (mark >= 4)
@@ -76,6 +77,24 @@ function ExamRow({ exam }: { exam: ExamResult }) {
 
 export function GradesExamList() {
 	const { exams, status } = useExamResults()
+	const [query, setQuery] = useState('')
+
+	const filteredExams = useMemo(() => {
+		const normalized = query.trim().toLocaleLowerCase('ru-RU')
+		if (!normalized) return exams
+
+		return exams.filter(exam =>
+			[exam.spec, exam.teacher, exam.comment, exam.date]
+				.filter(Boolean)
+				.some(value =>
+					String(value).toLocaleLowerCase('ru-RU').includes(normalized),
+				),
+		)
+	}, [exams, query])
+
+	const passed = filteredExams.filter(e => e.mark > 0)
+	const pending = filteredExams.filter(e => e.mark === 0)
+	const hasFilteredResults = passed.length > 0 || pending.length > 0
 
 	if (status === 'loading') return <SkeletonList count={3} height={72} />
 
@@ -88,9 +107,6 @@ export function GradesExamList() {
 			<p className='text-app-muted text-sm text-center py-8'>Нет экзаменов</p>
 		)
 	}
-
-	const passed = exams.filter(e => e.mark > 0)
-	const pending = exams.filter(e => e.mark === 0)
 
 	const Section = ({
 		title,
@@ -146,9 +162,27 @@ export function GradesExamList() {
 	}
 
 	return (
-		<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-			<Section title='Сданные' items={passed} scrollable />
-			<Section title='Не сданные' items={pending} />
+		<div className='space-y-4'>
+			<label className='flex items-center gap-2 rounded-2xl border border-app-border bg-app-surface px-3 py-2.5 text-app-muted'>
+				<Search size={15} className='shrink-0' />
+				<input
+					value={query}
+					onChange={e => setQuery(e.target.value)}
+					placeholder='Поиск по экзамену'
+					className='min-w-0 flex-1 bg-transparent text-sm text-app-text placeholder:text-app-muted'
+				/>
+			</label>
+
+			{hasFilteredResults ? (
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<Section title='Сданные' items={passed} scrollable />
+					<Section title='Не сданные' items={pending} />
+				</div>
+			) : (
+				<p className='text-app-muted text-sm text-center py-8'>
+					Экзамены не найдены
+				</p>
+			)}
 		</div>
 	)
 }

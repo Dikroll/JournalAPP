@@ -1,5 +1,5 @@
 import { LogOut, Plus } from "lucide-react";
-import { useEffect } from "react";
+import { BottomSheet } from "@/shared/ui";
 import { useAccountSwitcher } from "../hooks/useAccountSwitcher";
 import { AccountRow } from "./AccountRow";
 import { LogoutConfirm } from "./LogoutConfirm";
@@ -22,24 +22,6 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 		handleLogout,
 	} = useAccountSwitcher(onReset, onClose);
 
-	useEffect(() => {
-		const scrollY = window.scrollY;
-		const { body } = document;
-		body.style.position = "fixed";
-		body.style.top = `-${scrollY}px`;
-		body.style.left = "0";
-		body.style.right = "0";
-		body.style.overflow = "hidden";
-		return () => {
-			body.style.position = "";
-			body.style.top = "";
-			body.style.left = "";
-			body.style.right = "";
-			body.style.overflow = "";
-			window.scrollTo(0, scrollY);
-		};
-	}, []);
-
 	if (confirmLogout) {
 		return (
 			<LogoutConfirm
@@ -50,24 +32,8 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 	}
 
 	return (
-		<div
-			className="fixed inset-0 flex items-end z-[200]"
-			style={{
-				background: "var(--color-modal-backdrop)",
-				backdropFilter: "blur(4px)",
-			}}
-			onClick={onClose}
-		>
-			<div
-				className="w-full rounded-t-[28px] p-5 space-y-3 border-t border-x border-app-border"
-				style={{
-					background: "var(--color-modal-bg)",
-					maxHeight: "80dvh",
-					overflowY: "auto",
-				}}
-				onClick={(e) => e.stopPropagation()}
-			>
-				<div className="w-10 h-1 bg-glass-strong rounded-full mx-auto mb-2" />
+		<BottomSheet onBackdropClick={onClose} maxWidth="max-w-lg">
+			<div className="space-y-3">
 				<p className="text-sm font-semibold text-app-text mb-3">Аккаунты</p>
 
 				<div className="space-y-2">
@@ -110,6 +76,6 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 					Выйти из аккаунта
 				</button>
 			</div>
-		</div>
+		</BottomSheet>
 	);
 }

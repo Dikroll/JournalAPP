@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { isCacheValid } from "../lib/isCacheValid";
 import { getIsOnline } from "../model/networkStore";
+import { useAuthStore } from "../model/authStore";
 
 interface UseEntityFetchOptions<T> {
 	cacheKey: string;
@@ -25,10 +26,20 @@ interface UseEntityFetchOptions<T> {
 }
 
 const fetchingPromises = new Map<string, Promise<any>>();
+let fetchGeneration = 0;
+const ERROR_STATE_DELAY_MS = 600;
 
 /** Clear all in-flight dedup entries. Call on logout / account switch. */
 export function resetEntityFetch() {
+	fetchGeneration += 1;
 	fetchingPromises.clear();
+}
+
+function isRequestCurrent(generation: number, username: string | null) {
+	return (
+		generation === fetchGeneration &&
+		useAuthStore.getState().activeUsername === username
+	);
 }
 
 /**
@@ -89,7 +100,12 @@ export function useEntityFetch<T>({
 				if (status === "idle") onCacheHitRef.current?.();
 				return;
 			}
-			onErrorRef.current?.(new Error("Нет подключения к интернету"));
+			const generation = fetchGeneration;
+			const username = useAuthStore.getState().activeUsername;
+			setTimeout(() => {
+				if (!isRequestCurrent(generation, username)) return;
+				onErrorRef.current?.(new Error("Нет подключения к интернету"));
+			}, ERROR_STATE_DELAY_MS);
 			return;
 		}
 
@@ -99,14 +115,20 @@ export function useEntityFetch<T>({
 		}
 
 		// Always revalidate from API
+		const generation = fetchGeneration;
+		const username = useAuthStore.getState().activeUsername;
 		const promise = fetchFnRef.current()
 			.then((data) => {
+				if (!isRequestCurrent(generation, username)) return;
 				onSuccessRef.current(data);
 			})
 			.catch((err) => {
 				// Only propagate error if there's no stale data to show
 				if (!hasData) {
-					onErrorRef.current?.(err);
+					setTimeout(() => {
+						if (!isRequestCurrent(generation, username)) return;
+						onErrorRef.current?.(err);
+					}, ERROR_STATE_DELAY_MS);
 				}
 			})
 			.finally(() => {

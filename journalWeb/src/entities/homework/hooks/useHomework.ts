@@ -2,17 +2,28 @@ import { useCallback, useEffect } from "react";
 import { useUserStore } from "@/entities/user";
 import { timing, ttl } from "@/shared/config";
 import { isCacheValid, preloadImages } from "@/shared/lib";
+import { useAuthStore } from "@/shared/model/authStore";
 import { getIsOnline } from "@/shared/model/networkStore";
 import { homeworkApi } from "../api";
 import { PAGE_SIZE, PREVIEW_SIZE, useHomeworkStore } from "../model/store";
 
 const CACHE_TTL_MS = ttl.ACTIVITY * 1000;
+const ERROR_STATE_DELAY_MS = 600;
 
 const loadingAllByGroup = new Map<number, Promise<void>>();
 const loadingMoreByKey = new Map<string, Promise<void>>();
+let fetchGeneration = 0;
+
+function isRequestCurrent(generation: number, username: string | null) {
+	return (
+		generation === fetchGeneration &&
+		useAuthStore.getState().activeUsername === username
+	);
+}
 
 /** Clears in-flight request dedup maps. Call on logout / account switch. */
 export function resetHomeworkFetch() {
+	fetchGeneration += 1;
 	loadingAllByGroup.clear();
 	loadingMoreByKey.clear();
 }
@@ -43,8 +54,13 @@ async function runLoadAll(groupId: number, force: boolean) {
 			if (currentStatus === "idle") store.setStatus("success");
 			return;
 		}
-		store.setError("Нет подключения к интернету");
-		store.setStatus("error");
+		const generation = fetchGeneration;
+		const username = useAuthStore.getState().activeUsername;
+		setTimeout(() => {
+			if (!isRequestCurrent(generation, username)) return;
+			store.setError("Нет подключения к интернету");
+			store.setStatus("error");
+		}, ERROR_STATE_DELAY_MS);
 		return;
 	}
 
@@ -54,9 +70,12 @@ async function runLoadAll(groupId: number, force: boolean) {
 	}
 	store.setError(null);
 
+	const generation = fetchGeneration;
+	const username = useAuthStore.getState().activeUsername;
 	const promise = (async () => {
 		try {
 			const { counters, items } = await homeworkApi.getAll(groupId);
+			if (!isRequestCurrent(generation, username)) return;
 			const latest = useHomeworkStore.getState();
 			latest.setCounters(counters);
 
@@ -87,9 +106,12 @@ async function runLoadAll(groupId: number, force: boolean) {
 
 			if (photoUrls.length > 0) preloadImages(photoUrls);
 		} catch {
-			const latest = useHomeworkStore.getState();
-			latest.setError("Не удалось загрузить домашние задания");
-			if (latest.loadedAt === null) latest.setStatus("error");
+			setTimeout(() => {
+				if (!isRequestCurrent(generation, username)) return;
+				const latest = useHomeworkStore.getState();
+				latest.setError("Не удалось загрузить домашние задания");
+				if (latest.loadedAt === null) latest.setStatus("error");
+			}, ERROR_STATE_DELAY_MS);
 		} finally {
 			loadingAllByGroup.delete(groupId);
 		}
@@ -103,6 +125,8 @@ async function runLoadMore(groupId: number, statusKey: number) {
 	const mapKey = `${groupId}-${statusKey}`;
 	if (loadingMoreByKey.has(mapKey)) return loadingMoreByKey.get(mapKey);
 
+	const generation = fetchGeneration;
+	const username = useAuthStore.getState().activeUsername;
 	const promise = (async () => {
 		try {
 			const store = useHomeworkStore.getState();
@@ -113,6 +137,7 @@ async function runLoadMore(groupId: number, statusKey: number) {
 				groupId,
 				nextPage,
 			);
+			if (!isRequestCurrent(generation, username)) return;
 			store.appendItems(statusKey, newItems, nextPage);
 
 			const newPhotos = newItems

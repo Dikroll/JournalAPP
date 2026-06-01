@@ -135,6 +135,12 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+function MobileOnlyRoute({ children }: { children: React.ReactNode }) {
+	const isDesktop = useIsDesktop();
+
+	return isDesktop ? <Navigate to={pageConfig.news} replace /> : <>{children}</>;
+}
+
 import { ErrorBoundary } from "@/shared/ui";
 
 const Suspended = ({ children }: { children: React.ReactNode }) => (
@@ -275,17 +281,21 @@ function AppRoutes() {
 						<Route
 							path="notifications"
 							element={
-								<Suspended>
-									<NotificationsPage />
-								</Suspended>
+								<MobileOnlyRoute>
+									<Suspended>
+										<NotificationsPage />
+									</Suspended>
+								</MobileOnlyRoute>
 							}
 						/>
 						<Route
 							path="notifications/news/:id"
 							element={
-								<Suspended>
-									<NewsDetailPage />
-								</Suspended>
+								<MobileOnlyRoute>
+									<Suspended>
+										<NewsDetailPage />
+									</Suspended>
+								</MobileOnlyRoute>
 							}
 						/>
 						<Route

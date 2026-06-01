@@ -1,6 +1,5 @@
 import { LogOut } from "lucide-react";
-import { useEffect } from "react";
-import { SheetButton } from "@/shared/ui";
+import { BottomSheet, SheetButton } from "@/shared/ui";
 
 interface Props {
 	onConfirm: () => void;
@@ -8,39 +7,9 @@ interface Props {
 }
 
 export function LogoutConfirm({ onConfirm, onCancel }: Props) {
-	useEffect(() => {
-		const scrollY = window.scrollY;
-		const { body } = document;
-		body.style.position = "fixed";
-		body.style.top = `-${scrollY}px`;
-		body.style.left = "0";
-		body.style.right = "0";
-		body.style.overflow = "hidden";
-		return () => {
-			body.style.position = "";
-			body.style.top = "";
-			body.style.left = "";
-			body.style.right = "";
-			body.style.overflow = "";
-			window.scrollTo(0, scrollY);
-		};
-	}, []);
-
 	return (
-		<div
-			className="fixed inset-0 flex items-end z-[200]"
-			style={{
-				background: "var(--color-modal-backdrop)",
-				backdropFilter: "blur(4px)",
-			}}
-			onClick={onCancel}
-		>
-			<div
-				className="w-full rounded-t-[28px] p-5 space-y-3 border-t border-x border-app-border"
-				style={{ background: "var(--color-modal-bg)" }}
-				onClick={(e) => e.stopPropagation()}
-			>
-				<div className="w-10 h-1 bg-glass-strong rounded-full mx-auto mb-2" />
+		<BottomSheet onBackdropClick={onCancel} maxWidth="max-w-sm">
+			<div className="space-y-3">
 				<div className="flex items-center gap-3 mb-1">
 					<div className="w-10 h-10 rounded-full bg-glass border border-glass-border flex items-center justify-center">
 						<LogOut size={18} className="text-app-muted" />
@@ -59,6 +28,6 @@ export function LogoutConfirm({ onConfirm, onCancel }: Props) {
 				</SheetButton>
 				<SheetButton onClick={onCancel}>Отмена</SheetButton>
 			</div>
-		</div>
+		</BottomSheet>
 	);
 }

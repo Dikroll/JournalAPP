@@ -110,41 +110,47 @@ export function SettingsSection({ onAccounts, onClearCache }: Props) {
 					</>
 				)}
 
-				<button
-					type="button"
-					onClick={() => navigate(pageConfig.notificationSettings)}
-					className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-app-surface-hover transition-colors"
-					style={{ WebkitTapHighlightColor: "transparent" }}
-				>
-					<div
-						className="w-8 h-8 rounded-xl flex items-center justify-center"
-						style={{
-							background: remindersEnabled
-								? "var(--color-brand-subtle)"
-								: "var(--color-surface-strong)",
-							border: remindersEnabled
-								? "1px solid var(--color-brand-border)"
-								: "1px solid var(--color-border)",
-						}}
-					>
-						<BellRing
-							size={15}
-							className={remindersEnabled ? "text-brand" : "text-app-muted"}
-						/>
-					</div>
-					<span className="flex-1 text-sm font-medium text-app-text text-left">
-						Уведомления
-					</span>
-					<span className="text-xs text-app-faint">
-						{remindersEnabled ? "Вкл" : "Выкл"}
-					</span>
-					<ChevronRight size={16} className="text-app-faint" />
-				</button>
+				{!isDesktop && (
+					<>
+						<button
+							type="button"
+							onClick={() => navigate(pageConfig.notificationSettings)}
+							className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-app-surface-hover transition-colors"
+							style={{ WebkitTapHighlightColor: "transparent" }}
+						>
+							<div
+								className="w-8 h-8 rounded-xl flex items-center justify-center"
+								style={{
+									background: remindersEnabled
+										? "var(--color-brand-subtle)"
+										: "var(--color-surface-strong)",
+									border: remindersEnabled
+										? "1px solid var(--color-brand-border)"
+										: "1px solid var(--color-border)",
+								}}
+							>
+								<BellRing
+									size={15}
+									className={
+										remindersEnabled ? "text-brand" : "text-app-muted"
+									}
+								/>
+							</div>
+							<span className="flex-1 text-sm font-medium text-app-text text-left">
+								Уведомления
+							</span>
+							<span className="text-xs text-app-faint">
+								{remindersEnabled ? "Вкл" : "Выкл"}
+							</span>
+							<ChevronRight size={16} className="text-app-faint" />
+						</button>
 
-				<div
-					className="mx-4 h-px"
-					style={{ background: "var(--color-border)" }}
-				/>
+						<div
+							className="mx-4 h-px"
+							style={{ background: "var(--color-border)" }}
+						/>
+					</>
+				)}
 
 				{/* Очистить кэш */}
 				<button

@@ -82,7 +82,6 @@ function buildDisplayDays(
 	}
 
 	for (const lesson of scheduledLessons) {
-		if (!isPastLesson(lesson)) continue;
 		if (
 			selectedSubject &&
 			normalizeSubject(lesson.subject) !== selectedSubject
@@ -113,6 +112,8 @@ function buildDisplayDays(
 }
 
 function PendingLessonRow({ lesson }: { lesson: LessonItem }) {
+	const isPast = isPastLesson(lesson);
+
 	return (
 		<div
 			className="grid gap-2 py-2"
@@ -135,7 +136,7 @@ function PendingLessonRow({ lesson }: { lesson: LessonItem }) {
 				<div className="flex items-center flex-wrap gap-1.5 mt-1.5 text-[11px] text-app-muted font-medium">
 					<span className="flex items-center gap-1">
 						<Clock size={11} className="flex-shrink-0" />
-						Ожидает отметки
+						{isPast ? "Ожидает отметки" : "По расписанию"}
 					</span>
 					{lesson.room && (
 						<span className="flex items-center gap-1 text-app-faint">
