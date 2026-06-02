@@ -5,14 +5,21 @@ import { InlineImage } from "@/shared/ui";
 import { getTodayString } from "@/shared/utils";
 import { GapIndicator } from "./GapIndicator";
 import { LessonCard } from "./LessonCard";
+import type { LessonCardVariant } from "./LessonCard";
 
 interface Props {
 	lessons: LessonItem[];
 	forDate?: string;
 	compact?: boolean;
+	cardVariant?: LessonCardVariant;
 }
 
-export function LessonList({ lessons, forDate, compact = false }: Props) {
+export function LessonList({
+	lessons,
+	forDate,
+	compact = false,
+	cardVariant = "default",
+}: Props) {
 	const nowMinutes = useCurrentMinutes();
 	const todayStr = getTodayString();
 	const isToday = !forDate || forDate === todayStr;
@@ -49,6 +56,7 @@ export function LessonList({ lessons, forDate, compact = false }: Props) {
 					<LessonCard
 						lesson={lesson}
 						compact={compact}
+						variant={cardVariant}
 						isCurrent={
 							isToday &&
 							nowMinutes >= toMinutes(lesson.started_at) &&

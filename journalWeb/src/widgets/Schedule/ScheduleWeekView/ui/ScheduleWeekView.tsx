@@ -199,6 +199,7 @@ export function ScheduleWeekView() {
 											)}
 											<LessonCard
 												lesson={lesson}
+												variant="weekDesktop"
 												isCurrent={
 													isToday &&
 													nowMinutes >= toMinutes(lesson.started_at) &&

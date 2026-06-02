@@ -8,8 +8,15 @@ import { toMinutes, useCurrentMinutes } from "@/shared/hooks";
 import { InlineImage } from "@/shared/ui";
 import { GapIndicator } from "./GapIndicator";
 import { LessonCard } from "./LessonCard";
+import type { LessonCardVariant } from "./LessonCard";
 
-export function ScheduleList({ compact = false }: { compact?: boolean }) {
+export function ScheduleList({
+	compact = false,
+	cardVariant = "default",
+}: {
+	compact?: boolean;
+	cardVariant?: LessonCardVariant;
+}) {
 	const { today, status, error } = useScheduleToday();
 	const nowMinutes = useCurrentMinutes();
 
@@ -71,6 +78,7 @@ export function ScheduleList({ compact = false }: { compact?: boolean }) {
 					<LessonCard
 						lesson={lesson}
 						compact={compact}
+						variant={cardVariant}
 						isCurrent={
 							nowMinutes >= toMinutes(lesson.started_at) &&
 							nowMinutes <= toMinutes(lesson.finished_at)

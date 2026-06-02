@@ -3,8 +3,15 @@ import { useHomeSchedule } from "@/entities/schedule";
 import { IconButton, SkeletonCard } from "@/shared/ui";
 import { formatDateLong } from "@/shared/utils";
 import { LessonList, ScheduleList } from "@/widgets";
+import type { LessonCardVariant } from "../../ScheduleList/ui/LessonCard";
 
-export function HomeScheduleSection({ compact = false }: { compact?: boolean } = {}) {
+export function HomeScheduleSection({
+	compact = false,
+	cardVariant = "default",
+}: {
+	compact?: boolean;
+	cardVariant?: LessonCardVariant;
+} = {}) {
 	const {
 		offset,
 		dateStr,
@@ -76,7 +83,7 @@ export function HomeScheduleSection({ compact = false }: { compact?: boolean } =
 
 			<div className="flex flex-col flex-1 min-h-0">
 				{offset === 0 ? (
-					<ScheduleList compact={compact} />
+					<ScheduleList compact={compact} cardVariant={cardVariant} />
 				) : otherStatus === "loading" && otherLessons.length === 0 ? (
 					<div className="flex flex-col gap-3">
 						{[0, 1, 2].map((i) => (
@@ -88,7 +95,12 @@ export function HomeScheduleSection({ compact = false }: { compact?: boolean } =
 						Ошибка загрузки расписания
 					</p>
 				) : (
-					<LessonList lessons={otherLessons} forDate={dateStr} compact={compact} />
+					<LessonList
+						lessons={otherLessons}
+						forDate={dateStr}
+						compact={compact}
+						cardVariant={cardVariant}
+					/>
 				)}
 			</div>
 		</>

@@ -70,7 +70,7 @@ export function WebHomePage() {
 							className="overflow-y-auto flex-1 min-h-0 -mx-3 px-3 pt-2 pb-3"
 							style={{ scrollbarWidth: "thin" }}
 						>
-							<HomeScheduleSection />
+							<HomeScheduleSection cardVariant="homeDesktop" />
 						</div>
 					</div>
 

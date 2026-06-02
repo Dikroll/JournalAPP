@@ -7,13 +7,15 @@ import {
 	useLessonNotesStore,
 } from "@/entities/schedule";
 import { LessonNoteSheet } from "@/features/manageLessonNote";
-import { getShortName } from "@/shared/utils";
+
+export type LessonCardVariant = "default" | "homeDesktop" | "weekDesktop";
 
 interface Props {
 	lesson: LessonItem;
 	isCurrent?: boolean;
 	timeLabel?: string;
 	compact?: boolean;
+	variant?: LessonCardVariant;
 }
 
 export function LessonCard({
@@ -21,13 +23,15 @@ export function LessonCard({
 	isCurrent = false,
 	timeLabel,
 	compact = false,
+	variant = "default",
 }: Props) {
 	const [showSheet, setShowSheet] = useState(false);
 	const lessonKey = makeLessonKey(lesson.date, lesson.lesson);
 	const notes = useLessonNotesStore(
 		useCallback((s) => getNotesForKey(s.notes, lessonKey), [lessonKey]),
 	);
-	const teacherName = getShortName(lesson.teacher);
+	const isHomeDesktop = variant === "homeDesktop";
+	const isWeekDesktop = variant === "weekDesktop";
 
 	return (
 		<>
@@ -73,10 +77,9 @@ export function LessonCard({
 						</span>
 					)}
 				</div>
-			) : (
-				/* ── Полная карточка (мобайл / другой день) ── */
+			) : isWeekDesktop ? (
 				<div
-					className={`relative overflow-hidden rounded-[20px] px-3 py-2 border transition-all flex-1 flex flex-col justify-center min-h-0 ${
+					className={`relative rounded-[20px] px-3 py-2 border transition-all flex-1 min-h-0 overflow-hidden ${
 						isCurrent
 							? "bg-app-surface-active border-app-border-strong"
 							: "bg-app-surface border-app-border"
@@ -89,56 +92,170 @@ export function LessonCard({
 					}}
 				>
 					<div
-						className={`absolute left-0 top-0 z-10 h-10 w-10 ${
-							isCurrent ? "text-red-400" : "text-app-muted"
+						className={`pointer-events-none absolute right-3 top-3 z-10 hidden h-7 w-7 items-center justify-center rounded-full border md:flex ${
+							isCurrent
+								? "bg-brand-subtle border-brand-border text-brand"
+								: "bg-app-surface border-app-border text-app-muted"
 						}`}
 					>
-						<svg
-							className="absolute left-0 top-0 h-9 w-9"
-							viewBox="0 0 36 36"
-							aria-hidden="true"
-						>
-							<path
-								d="M34 1H18C8.6 1 1 8.6 1 18V34"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeWidth="2.25"
-								opacity={isCurrent ? 0.85 : 0.65}
-							/>
-						</svg>
-						<span className="absolute left-3.5 top-4 text-[15px] font-bold leading-none [font-variant-numeric:tabular-nums]">
+						<span className="text-[13px] font-bold leading-none [font-variant-numeric:tabular-nums]">
 							{lesson.lesson}
 						</span>
 					</div>
 
-					<div className="ml-auto mr-1 flex w-fit min-w-[132px] max-w-full items-center justify-center gap-1.5 rounded-xl border border-app-border bg-app-bg/35 px-2 py-1 text-app-muted mb-1.5">
-						<Clock size={10} className="shrink-0" />
+					<div className="flex items-center gap-3 mb-1 md:hidden">
+						<div
+							className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border ${
+								isCurrent
+									? "bg-brand-subtle border-brand-border"
+									: "bg-app-surface border-app-border"
+							}`}
+						>
+							<span
+								className={`text-[11px] font-bold leading-none ${
+									isCurrent ? "text-brand" : "text-app-muted"
+								}`}
+							>
+								{lesson.lesson}
+							</span>
+						</div>
+						<p className="line-clamp-3 flex-1 font-semibold text-app-text leading-snug text-[13px]">
+							{lesson.subject}
+						</p>
+					</div>
+
+					<div className="hidden md:flex items-center gap-1.5 text-app-muted mb-1 pr-11">
+						<Clock size={10} />
 						<span className="text-[11px] whitespace-nowrap">
 							{lesson.started_at}–{lesson.finished_at}
 						</span>
+						{timeLabel && (
+							<span className="text-[10px] font-medium text-brand ml-auto">
+								{timeLabel}
+							</span>
+						)}
 					</div>
 
-					<p className="line-clamp-3 font-semibold text-app-text leading-snug text-[13px] mb-1">
+					<p className="hidden font-semibold text-app-text leading-[1.22] text-[11px] pr-7 md:line-clamp-4">
 						{lesson.subject}
 					</p>
 
-					<div className="flex items-center gap-1.5 text-app-muted mb-1 min-w-0">
-						<User size={10} />
-						<span className="text-[10px] truncate">{teacherName}</span>
+					<div className="flex items-center gap-1.5 text-app-muted mb-0.5 pl-11 md:pl-0 md:mb-1">
+						<Clock size={10} className="md:hidden" />
+						<span className="text-[11px] md:hidden">
+							{lesson.started_at} – {lesson.finished_at}
+						</span>
+						{timeLabel && (
+							<span className="text-[10px] font-medium text-brand ml-auto md:hidden">
+								{timeLabel}
+							</span>
+						)}
+						<User size={10} className="hidden md:block" />
+						<span className="hidden truncate text-[10px] md:block">
+							{lesson.teacher}
+						</span>
 					</div>
 
-					<div className="flex items-center gap-2 flex-wrap">
+					<div className="flex items-center gap-1.5 text-app-muted mb-1 pl-11 md:hidden">
+						<User size={10} />
+						<span className="text-[10px] truncate">{lesson.teacher}</span>
+					</div>
+
+					<div className="flex items-center gap-2 flex-wrap pl-11 md:pl-0">
 						<div className="inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 py-0.5">
 							<MapPin size={9} className="text-app-text flex-shrink-0" />
 							<span className="text-[10px] text-app-text">{lesson.room}</span>
 						</div>
 
+						{notes.map((note) => (
+							<button
+								key={note.id}
+								type="button"
+								onClick={() => setShowSheet(true)}
+								className="inline-flex items-center gap-1.5 rounded-lg px-2 py-0.5 border transition-colors"
+								style={{
+									background: `${note.status.color}10`,
+									borderColor: `${note.status.color}30`,
+								}}
+							>
+								<StickyNote size={9} style={{ color: note.status.color }} />
+								<span
+									className="text-[10px] font-medium truncate max-w-[120px]"
+									style={{ color: note.status.color }}
+								>
+									{note.text}
+								</span>
+							</button>
+						))}
+
+						<button
+							type="button"
+							onClick={() => setShowSheet(true)}
+							className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-0.5 text-app-faint hover:text-app-muted transition-colors"
+						>
+							<Plus size={9} />
+							<span className="text-[10px]">Заметка</span>
+						</button>
+					</div>
+				</div>
+			) : (
+				/* ── Полная карточка (мобайл / другой день) ── */
+				<div
+					className={`rounded-[20px] px-3 border transition-all flex-1 flex flex-col justify-center min-h-0 overflow-hidden ${isHomeDesktop ? "py-3" : "py-1.5"} ${
+						isCurrent
+							? "bg-app-surface-active border-app-border-strong"
+							: "bg-app-surface border-app-border"
+					}`}
+					style={{
+						boxShadow: isCurrent
+							? "var(--shadow-card)"
+							: "0 2px 12px 0 rgba(0,0,0,0.2)",
+						backdropFilter: "blur(16px)",
+					}}
+				>
+					<div className={`flex items-center gap-3 ${isHomeDesktop ? "mb-2" : "mb-1"}`}>
+						<div
+							className={`flex-shrink-0 rounded-full flex items-center justify-center border ${isHomeDesktop ? "w-10 h-10" : "w-8 h-8"} ${
+								isCurrent
+									? "bg-brand-subtle border-brand-border"
+									: "bg-app-surface border-app-border"
+							}`}
+						>
+							<span
+								className={`font-bold leading-none ${isHomeDesktop ? "text-[13px]" : "text-[11px]"} ${
+									isCurrent ? "text-brand" : "text-app-muted"
+								}`}
+							>
+								{lesson.lesson}
+							</span>
+						</div>
+						<p className={`line-clamp-3 flex-1 font-semibold text-app-text leading-snug ${isHomeDesktop ? "text-[16px]" : "text-[13px]"}`}>
+							{lesson.subject}
+						</p>
+					</div>
+
+					<div className={`flex items-center gap-1.5 text-app-muted mb-0.5 ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
+						<Clock size={isHomeDesktop ? 13 : 10} />
+						<span className={isHomeDesktop ? "text-[13px]" : "text-[11px]"}>
+							{lesson.started_at} – {lesson.finished_at}
+						</span>
 						{timeLabel && (
-							<span className="inline-flex items-center rounded-lg border border-red-500/25 bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-400">
+							<span className={`${isHomeDesktop ? "text-[12px]" : "text-[10px]"} font-medium text-brand ml-auto`}>
 								{timeLabel}
 							</span>
 						)}
+					</div>
+
+					<div className={`flex items-center gap-1.5 text-app-muted mb-1 ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
+						<User size={isHomeDesktop ? 13 : 10} />
+						<span className={`${isHomeDesktop ? "text-[13px]" : "text-[10px]"} truncate`}>{lesson.teacher}</span>
+					</div>
+
+					<div className={`flex items-center gap-2 flex-wrap ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
+						<div className={`inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 ${isHomeDesktop ? "py-1" : "py-0.5"}`}>
+							<MapPin size={isHomeDesktop ? 11 : 9} className="text-app-text flex-shrink-0" />
+							<span className={`${isHomeDesktop ? "text-[12px]" : "text-[10px]"} text-app-text`}>{lesson.room}</span>
+						</div>
 
 						{notes.map((note) => (
 							<button
