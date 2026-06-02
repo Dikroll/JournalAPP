@@ -52,10 +52,6 @@ export function HomeworkCardActions({
 	const studResultUrl = studFileUrl ?? (studAnswerIsUrl ? studAnswer : null);
 	const hasAnswer = !!(studResultUrl || studAnswer);
 
-	// For overdue/new/returned homework that expired 6+ months ago,
-	// the upload button is replaced with an expired warning
-	const canSubmit = !isExpired || isChecked || isPending;
-
 	const handleDelete = () => {
 		deleteHomework(() => setShowDeleteWarning(false));
 	};
