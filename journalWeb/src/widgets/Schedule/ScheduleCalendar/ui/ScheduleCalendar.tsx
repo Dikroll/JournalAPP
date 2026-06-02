@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useScheduleMonth } from "@/entities/schedule";
 import { useMonthNav } from "@/shared/hooks";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { MonthGrid } from "@/shared/ui";
 import {
 	formatDateLong,
@@ -12,6 +13,7 @@ import { LessonList } from "../../ScheduleList/ui/LessonList";
 
 export function ScheduleCalendar() {
 	const { year, month, prevMonth, nextMonth } = useMonthNav();
+	const isDesktop = useIsDesktop();
 	const [selectedDate, setSelectedDate] = useState<string>(getTodayString());
 
 	const dateFilter = toDateString(year, month, 1);
@@ -45,27 +47,40 @@ export function ScheduleCalendar() {
 									setSelectedDate(dateStr);
 								}}
 								className={`
-									relative flex items-center justify-center
-									rounded-full text-xs font-semibold
+									group relative flex items-center justify-center
+									rounded-full p-0
 									disabled:cursor-default
-									${isSelected ? "bg-brand text-white" : ""}
-									${
-										!isSelected && isActive
-											? "text-app-text hover:bg-app-surface-hover cursor-pointer"
-											: ""
-									}
-									${!isSelected && !isActive ? "text-app-faint" : ""}
+									${isActive ? "cursor-pointer" : ""}
 								`}
-								style={{ width: 44, height: 44 }}
+								style={{
+									width: isDesktop ? 52 : 44,
+									height: isDesktop ? 52 : 44,
+								}}
 							>
-								{day}
+								<span
+									className={`
+										relative flex h-[34px] w-[34px] items-center justify-center
+										rounded-full ${isDesktop ? "text-sm" : "text-xs"} font-semibold leading-none
+										${isSelected ? "bg-brand text-white" : ""}
+										${
+											!isSelected && isActive
+												? "text-app-text group-hover:bg-app-surface-hover"
+												: ""
+										}
+										${!isSelected && !isActive ? "text-app-faint" : ""}
+									`}
+								>
+									{day}
 
-								{isToday && !isSelected && (
-									<span
-										className="absolute inset-0 rounded-full pointer-events-none"
-										style={{ boxShadow: "0 0 0 1.5px var(--color-brand)" }}
-									/>
-								)}
+									{isToday && !isSelected && (
+										<span
+											className="absolute inset-0 rounded-full pointer-events-none"
+											style={{
+												boxShadow: "0 0 0 1.5px var(--color-brand)",
+											}}
+										/>
+									)}
+								</span>
 							</button>
 						);
 					}}

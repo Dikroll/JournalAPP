@@ -4,9 +4,23 @@ import { isCacheValid } from "@/shared/lib/isCacheValid";
 import { getIsOnline } from "@/shared/model/networkStore";
 import { feedbackApi } from "../api";
 import { useFeedbackStore } from "../model/store";
+import type { PendingFeedback } from "../model/types";
 
 const CACHE_TTL_MS = ttl.FEEDBACK * 1000;
 const FETCH_TIMEOUT_MS = 15_000;
+
+type PendingFeedbackResponse =
+	| PendingFeedback[]
+	| {
+			items?: PendingFeedback[];
+			pending?: PendingFeedback[];
+			data?: PendingFeedback[];
+	  };
+
+function normalizePendingResponse(data: PendingFeedbackResponse) {
+	if (Array.isArray(data)) return data;
+	return data.items ?? data.pending ?? data.data ?? [];
+}
 
 export function useFeedback() {
 	const pending = useFeedbackStore((s) => s.pending);
@@ -30,66 +44,73 @@ export function useFeedback() {
 	const timeoutPendingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const timeoutTagsRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	// Fetch pending
-	useEffect(() => {
-		if (fetchingPendingRef.current) return;
-		if (isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) {
-			if (pendingStatus === "idle") setPendingStatus("success");
-			return;
-		}
-
-		if (!getIsOnline()) {
-			if (pendingLoadedAt !== null) {
+	const fetchPending = useCallback(
+		(force = false) => {
+			if (fetchingPendingRef.current) return;
+			if (!force && isCacheValid(pendingLoadedAt, CACHE_TTL_MS)) {
 				if (pendingStatus === "idle") setPendingStatus("success");
 				return;
 			}
-			setPendingStatus("error");
-			setError("Нет подключения к интернету");
-			return;
-		}
 
-		fetchingPendingRef.current = true;
-		setPendingStatus("loading");
-
-		timeoutPendingRef.current = setTimeout(() => {
-			if (fetchingPendingRef.current) {
-				fetchingPendingRef.current = false;
-				setPendingStatus("error");
-				setError("Превышено время ожидания");
-			}
-		}, FETCH_TIMEOUT_MS);
-
-		feedbackApi
-			.getPending()
-			.then((data) => {
-				const items = Array.isArray(data) ? data : ((data as any).items || (data as any).pending || (data as any).data || []);
-				setPending(items);
-				setPendingLoadedAt(Date.now());
-				setPendingStatus("success");
-			})
-			.catch((err) => {
-				const msg =
-					(err as { response?: { data?: { detail?: string } } })?.response?.data
-						?.detail ?? "Ошибка загрузки оценок занятий";
-				setError(msg);
-				if (pending.length === 0) setPendingStatus("error");
-			})
-			.finally(() => {
-				fetchingPendingRef.current = false;
-				if (timeoutPendingRef.current) {
-					clearTimeout(timeoutPendingRef.current);
-					timeoutPendingRef.current = null;
+			if (!getIsOnline()) {
+				if (pendingLoadedAt !== null) {
+					if (pendingStatus === "idle") setPendingStatus("success");
+					return;
 				}
-			});
-	}, [
-		pendingLoadedAt,
-		pending.length,
-		pendingStatus,
-		setError,
-		setPending,
-		setPendingLoadedAt,
-		setPendingStatus,
-	]);
+				setPendingStatus("error");
+				setError("Нет подключения к интернету");
+				return;
+			}
+
+			fetchingPendingRef.current = true;
+			setPendingStatus("loading");
+
+			timeoutPendingRef.current = setTimeout(() => {
+				if (fetchingPendingRef.current) {
+					fetchingPendingRef.current = false;
+					setPendingStatus("error");
+					setError("Превышено время ожидания");
+				}
+			}, FETCH_TIMEOUT_MS);
+
+			feedbackApi
+				.getPending()
+				.then((data) => {
+					const items = normalizePendingResponse(data);
+					setPending(items);
+					setPendingLoadedAt(Date.now());
+					setPendingStatus("success");
+				})
+				.catch((err) => {
+					const msg =
+						(err as { response?: { data?: { detail?: string } } })?.response
+							?.data?.detail ?? "Ошибка загрузки оценок занятий";
+					setError(msg);
+					if (pending.length === 0) setPendingStatus("error");
+				})
+				.finally(() => {
+					fetchingPendingRef.current = false;
+					if (timeoutPendingRef.current) {
+						clearTimeout(timeoutPendingRef.current);
+						timeoutPendingRef.current = null;
+					}
+				});
+		},
+		[
+			pendingLoadedAt,
+			pending.length,
+			pendingStatus,
+			setError,
+			setPending,
+			setPendingLoadedAt,
+			setPendingStatus,
+		],
+	);
+
+	// Fetch pending
+	useEffect(() => {
+		fetchPending();
+	}, [fetchPending]);
 
 	// Fetch tags
 	useEffect(() => {
@@ -154,10 +175,8 @@ export function useFeedback() {
 
 	const refreshPending = useCallback(() => {
 		setPendingLoadedAt(0);
-		if (pendingStatus !== "loading") {
-			setPendingStatus("idle");
-		}
-	}, [setPendingLoadedAt, pendingStatus, setPendingStatus]);
+		fetchPending(true);
+	}, [fetchPending, setPendingLoadedAt]);
 
 	return { pending, pendingStatus, tags, tagsStatus, error, refreshPending };
 }

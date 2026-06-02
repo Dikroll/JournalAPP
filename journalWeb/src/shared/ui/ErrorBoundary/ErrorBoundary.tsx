@@ -41,12 +41,14 @@ export class ErrorBoundary extends Component<Props, State> {
 	};
 
 	handleRetry = () => {
-		this.setState({ hasError: false, retried: true, showErrorUI: false });
+		this.setState({ retried: true });
+		window.location.reload();
 	};
 
 	render() {
 		if (!this.state.hasError) return this.props.children;
-		if (this.state.hasError && !this.state.showErrorUI) return this.props.fallback ?? null;
+		if (this.state.hasError && !this.state.showErrorUI)
+			return this.props.fallback ?? null;
 
 		return (
 			<div
@@ -67,7 +69,9 @@ export class ErrorBoundary extends Component<Props, State> {
 							</>
 						)}
 					</p>
-					<div className={`grid ${this.state.retried ? "grid-cols-3" : "grid-cols-2"} gap-2 mt-4`}>
+					<div
+						className={`grid ${this.state.retried ? "grid-cols-3" : "grid-cols-2"} gap-2 mt-4`}
+					>
 						<button
 							type="button"
 							className="rounded-xl bg-app-surface-hover border border-app-border px-3 py-2 text-sm font-semibold text-app-text"
@@ -78,7 +82,9 @@ export class ErrorBoundary extends Component<Props, State> {
 						<button
 							type="button"
 							className="rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white"
-							onClick={() => window.location.assign(isNativeRuntime ? "#/" : "/")}
+							onClick={() =>
+								window.location.assign(isNativeRuntime ? "#/" : "/")
+							}
 						>
 							На главную
 						</button>

@@ -230,9 +230,11 @@ export function GradesRecentList({
 	scheduledLessons = [],
 	selectedSubjectName = null,
 }: Props) {
+	const isDesktop = useIsDesktop();
+	const showScheduledMask = isWebPlatform && isDesktop;
 	const displayByDate = buildDisplayDays(
 		byDate,
-		scheduledLessons,
+		showScheduledMask ? scheduledLessons : [],
 		selectedSubjectName,
 	);
 	const { visibleCount, sentinelRef } = useLazyItems(
@@ -240,7 +242,6 @@ export function GradesRecentList({
 		20,
 		15,
 	);
-	const isDesktop = useIsDesktop();
 
 	if (displayByDate.length === 0) {
 		return (
