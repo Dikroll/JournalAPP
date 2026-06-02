@@ -23,8 +23,8 @@ async function runLoadSubject(
 	specName: string,
 	force: boolean,
 ) {
-	// When force=true, skip dedup so we always fetch fresh data.
-	if (!force && loadingBySubject.has(specId)) {
+	// When force=true, skip cache but STILL deduplicate concurrent requests.
+	if (loadingBySubject.has(specId)) {
 		return loadingBySubject.get(specId);
 	}
 

@@ -29,9 +29,9 @@ export function resetHomeworkFetch() {
 }
 
 async function runLoadAll(groupId: number, force: boolean) {
-	// When force=true (manual refresh), skip dedup so we always hit the API.
-	// When force=false (auto-refresh / mount), deduplicate concurrent requests.
-	if (!force && loadingAllByGroup.has(groupId)) {
+	// When force=true (manual refresh), skip cache but STILL deduplicate concurrent identical requests.
+	// When force=false (auto-refresh / mount), also deduplicate concurrent requests.
+	if (loadingAllByGroup.has(groupId)) {
 		await loadingAllByGroup.get(groupId);
 		return;
 	}
