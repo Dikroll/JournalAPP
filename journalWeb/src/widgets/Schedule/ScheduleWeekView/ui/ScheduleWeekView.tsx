@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Coffee } from "lucide-react";
-import { useCallback, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import {
 	getGapBetweenLessons,
 	getLessonTimeLabel,
@@ -104,8 +104,7 @@ export function ScheduleWeekView() {
 			</div>
 
 			<div
-				className="flex flex-col md:flex-row md:overflow-x-auto gap-4 md:items-start pb-4 md:snap-x md:snap-mandatory scroll-smooth md:-mx-4 md:px-4 lg:mx-0 lg:px-0"
-				style={{ scrollbarWidth: "none" }}
+				className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 md:items-start"
 			>
 				{weekDays.map((dateStr, actualIdx) => {
 					const dayLessons = byDate[dateStr] ?? [];
@@ -119,9 +118,8 @@ export function ScheduleWeekView() {
 
 					if (isWeekend && isEmpty) {
 						return (
-							<>
+							<Fragment key={dateStr}>
 								<div
-									key={`${dateStr}-mob`}
 									className="flex md:hidden items-center gap-3 px-1 opacity-40"
 								>
 									<span className="text-xs font-semibold text-app-muted w-6 shrink-0">
@@ -135,8 +133,7 @@ export function ScheduleWeekView() {
 								</div>
 								
 								<div
-									key={`${dateStr}-desk`}
-									className="hidden md:flex shrink-0 w-[30px] flex-col items-center gap-3 opacity-40 snap-start pt-3"
+									className="hidden md:flex h-full min-h-[160px] flex-col items-center justify-center gap-3 rounded-[24px] border border-dashed border-app-border bg-app-surface/40 opacity-50"
 								>
 									<span className="text-[10px] font-bold text-app-muted uppercase">
 										{RU_DAYS_SHORT[actualIdx]}
@@ -144,14 +141,14 @@ export function ScheduleWeekView() {
 									<div className="w-[2px] h-[120px] bg-app-border rounded-full" />
 									<Coffee size={12} className="text-app-faint" />
 								</div>
-							</>
+							</Fragment>
 						);
 					}
 
 					return (
 						<section
 							key={dateStr}
-							className={`w-full shrink-0 md:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] xl:w-[calc(25%-12px)] 2xl:w-[calc(20%-13px)] md:snap-start bg-app-surface rounded-[24px] p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
+							className={`w-full min-w-0 bg-app-surface rounded-[24px] p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
 							style={{ boxShadow: "var(--shadow-card)" }}
 						>
 							{/* Section header */}
