@@ -397,6 +397,11 @@
 	box-shadow: var(--shadow-nav);
 	backdrop-filter: blur(24px);
 	-webkit-backdrop-filter: blur(24px);
+	/* Prevent flickering on Chromium/Edge (Windows) when tab becomes inactive.
+	   Forces a persistent GPU compositing layer so the backdrop-filter
+	   doesn't get dropped during paint de-prioritization. */
+	will-change: transform;
+	transform: translateZ(0);
 }
 
 @theme {

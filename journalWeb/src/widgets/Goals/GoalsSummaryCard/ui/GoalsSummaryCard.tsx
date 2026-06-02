@@ -1,7 +1,7 @@
 import { ChevronRight, Target } from "lucide-react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { lastValue, useDashboardChartsStore } from "@/entities/dashboard";
+import { lastValue, useDashboardCharts } from "@/entities/dashboard";
 import { useGrades } from "@/entities/grades";
 import { useOverallSummary } from "@/features/goalForecast";
 import {
@@ -29,8 +29,7 @@ function pickBadgeLabel(
 
 export function GoalsSummaryCard({ className }: { className?: string }) {
 	const navigate = useNavigate();
-	const progress = useDashboardChartsStore((s) => s.progress);
-	const attendance = useDashboardChartsStore((s) => s.attendance);
+	const { progress, attendance } = useDashboardCharts({});
 	const { entries } = useGrades();
 	const summary = useOverallSummary();
 

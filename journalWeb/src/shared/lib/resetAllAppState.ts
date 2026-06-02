@@ -74,8 +74,9 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	clearPersistedStoreData("schedule-store");
 	clearPersistedStoreData("offline-queue-store");
 	clearPersistedStoreData("feedback-store");
-	clearPersistedStoreData("notes-store");
+	clearPersistedStoreData("lesson-notes-store");
 	clearPersistedStoreData("goals-store");
+	clearPersistedStoreData("library-store");
 	clearPersistedStoreData("profile-details-store");
 	clearPersistedStoreData("user-store");
 	clearPersistedStoreData("news-store");

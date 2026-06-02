@@ -137,7 +137,7 @@ export function useSendHomework(
 
 			await sendHomeworkApi.submit(
 				createHomeworkSubmitPayload({
-					id: studId ?? homeworkId,
+					id: homeworkId,
 					text: trimmed,
 					filename,
 					filePath: file_path,

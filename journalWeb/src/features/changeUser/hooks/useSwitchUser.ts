@@ -9,6 +9,7 @@ export function useSwitchUser(onReset: () => void) {
 	const [switching, setSwitching] = useState(false);
 	const switchAccount = useAuthStore((s) => s.switchAccount);
 	const saveAccount = useAuthStore((s) => s.saveAccount);
+	const removeAccount = useAuthStore((s) => s.removeAccount);
 	const setUser = useUserStore((s) => s.setUser);
 	const navigate = useNavigate();
 
@@ -31,15 +32,27 @@ export function useSwitchUser(onReset: () => void) {
 						groupName: userData.group.name,
 						avatarUrl: fixUrl(userData.photo_url),
 					});
-				} catch {}
+				} catch (err: unknown) {
+					// If token is expired/revoked, remove the stale account
+					const status = (err as { response?: { status?: number } })
+						?.response?.status;
+					if (status === 401) {
+						removeAccount(username);
+						navigate(pageConfig.login, { replace: true });
+						return;
+					}
+					// For other errors (network, etc.) — still navigate to home,
+					// the initUser flow will retry fetching user data
+				}
 
 				navigate(pageConfig.home, { replace: true });
 			} finally {
 				setSwitching(false);
 			}
 		},
-		[onReset, switchAccount, saveAccount, setUser, navigate],
+		[onReset, switchAccount, saveAccount, removeAccount, setUser, navigate],
 	);
 
 	return { switchTo, switching };
 }
+

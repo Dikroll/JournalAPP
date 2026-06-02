@@ -33,6 +33,25 @@ api.interceptors.response.use(
 			if (isLoginEndpoint) {
 				return Promise.reject(err);
 			}
+
+			// Token is expired/revoked — clear auth state and redirect to login
+			// We use dynamic import to avoid circular dependency issues
+			try {
+				const { useAuthStore } = await import("../model/authStore");
+				const state = useAuthStore.getState();
+				if (state.isAuthenticated) {
+					useAuthStore.setState({
+						token: null,
+						isAuthenticated: false,
+						activeUsername: null,
+					});
+				}
+			} catch {}
+
+			// Redirect to login if not already there
+			if (!window.location.pathname.includes("/login")) {
+				window.location.replace("/login");
+			}
 		}
 		return Promise.reject(err);
 	},
