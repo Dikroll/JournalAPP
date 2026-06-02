@@ -7,6 +7,7 @@ export {
 	STATUS_ORDER,
 } from "./configs/homeworkConfig";
 export { resetHomeworkFetch, useHomework } from "./hooks/useHomework";
+export { useHomeworkBadgeCount } from "./hooks/useHomeworkBadgeCount";
 export {
 	resetHomeworkBySubjectFetch,
 	useHomeworkBySubject,

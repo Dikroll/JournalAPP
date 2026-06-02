@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persistEncrypted } from "@/shared/lib/zustandEncryptedPersist";
 import type { LoadingState } from "@/shared/types";
+import { STATUS_MAP } from "../configs/homeworkConfig";
 import type { HomeworkCounters, HomeworkItem, HomeworkStatus } from "./types";
 
 export const PREVIEW_SIZE = 6;
@@ -80,6 +81,30 @@ function filterItems(
 	);
 }
 
+function findHomeworkItem(
+	items: Record<number, HomeworkItem[]>,
+	homeworkId: number,
+): HomeworkItem | undefined {
+	for (const list of Object.values(items)) {
+		const item = list.find((hw) => hw.id === homeworkId);
+		if (item) return item;
+	}
+}
+
+function decrementCounters(
+	counters: HomeworkCounters | null,
+	item: HomeworkItem | undefined,
+): HomeworkCounters | null {
+	if (!counters || !item) return counters;
+
+	const status = STATUS_MAP[item.status];
+	return {
+		...counters,
+		total: Math.max(0, counters.total - 1),
+		...(status ? { [status]: Math.max(0, counters[status] - 1) } : {}),
+	};
+}
+
 export const useHomeworkStore = create<HomeworkState>()(
 	persistEncrypted(
 		(set) => ({
@@ -147,20 +172,42 @@ export const useHomeworkStore = create<HomeworkState>()(
 			setLoadedAt: (loadedAt) => set({ loadedAt }),
 
 			removeItem: (homeworkId) =>
-				set((state) => ({
-					items: filterItems(state.items, homeworkId),
-					subjects: Object.fromEntries(
-						Object.entries(state.subjects as Record<string, SubjectData>).map(
-							([specId, subjectData]) => [
-								specId,
-								{
-									...subjectData,
-									items: filterItems(subjectData.items, homeworkId),
+				set((state) => {
+					const removedItem =
+						findHomeworkItem(state.items, homeworkId) ??
+						Object.values(state.subjects)
+							.map((subjectData) =>
+								findHomeworkItem(subjectData.items, homeworkId),
+							)
+							.find(Boolean);
+
+					return {
+						items: filterItems(state.items, homeworkId),
+						counters: decrementCounters(state.counters, removedItem),
+						subjects: Object.fromEntries(
+							Object.entries(state.subjects as Record<string, SubjectData>).map(
+								([specId, subjectData]) => {
+									const subjectRemovedItem = findHomeworkItem(
+										subjectData.items,
+										homeworkId,
+									);
+
+									return [
+										specId,
+										{
+											...subjectData,
+											counters: decrementCounters(
+												subjectData.counters,
+												subjectRemovedItem,
+											),
+											items: filterItems(subjectData.items, homeworkId),
+										},
+									];
 								},
-							],
+							),
 						),
-					),
-				})),
+					};
+				}),
 			appendSubjectItems: (specId, statusKey, newItems, page) =>
 				set((state) => {
 					const existing = state.subjects[specId];
