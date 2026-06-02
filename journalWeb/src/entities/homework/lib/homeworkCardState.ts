@@ -10,11 +10,25 @@ export interface HomeworkCardState {
 	isReturned: boolean;
 	isOverdue: boolean;
 	isNew: boolean;
+	isExpired: boolean;
 	grade: number | null;
 	gradeStyle: ReturnType<typeof getGradeStyle> | null;
 	cardBg: string;
 	hasComment: boolean;
 	commentAlwaysVisible: boolean;
+}
+
+/**
+ * Returns true if the homework overdue date is more than 6 months ago.
+ * After 6 months past the overdue date, the upstream API rejects submissions.
+ */
+export function isHomeworkExpired(overdueDate: string | null | undefined): boolean {
+	if (!overdueDate) return false;
+	const overdue = new Date(overdueDate);
+	if (Number.isNaN(overdue.getTime())) return false;
+	const sixMonthsAgo = new Date();
+	sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+	return overdue < sixMonthsAgo;
 }
 
 export function deriveHomeworkCardState(
@@ -25,6 +39,7 @@ export function deriveHomeworkCardState(
 	const isReturned = hw.statusKey === "returned";
 	const isOverdue = hw.statusKey === "overdue";
 	const isNew = hw.statusKey === "new";
+	const isExpired = isHomeworkExpired(hw.overdue_date);
 
 	const grade = isChecked ? hw.grade : null;
 	const gradeStyle = grade != null ? getGradeStyle(grade) : null;
@@ -44,6 +59,7 @@ export function deriveHomeworkCardState(
 		isReturned,
 		isOverdue,
 		isNew,
+		isExpired,
 		grade,
 		gradeStyle,
 		cardBg,

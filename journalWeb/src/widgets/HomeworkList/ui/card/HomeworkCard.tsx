@@ -25,6 +25,7 @@ export const HomeworkCard = memo(
 			config,
 			isOverdue,
 			isReturned,
+			isExpired,
 			grade,
 			gradeStyle,
 			cardBg,
@@ -103,6 +104,7 @@ export const HomeworkCard = memo(
 								studAnswer={hw.stud_answer}
 								studFileUrl={hw.stud_file_url ?? null}
 								studId={hw.stud_id ?? null}
+								isExpired={isExpired}
 							/>
 						</div>
 					</div>

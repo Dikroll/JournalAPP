@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { useHomeworkStore } from "@/entities/homework";
+import { useHomeworkStore, isHomeworkExpired } from "@/entities/homework";
 import { useOfflineQueueStore } from "@/features/offlineQueue";
 import { saveFileForQueue } from "@/features/offlineQueue/lib/fileStorage";
 import { getIsOnline } from "@/shared/model/networkStore";
@@ -67,6 +67,23 @@ export function useSendHomework(
 	);
 
 	const submit = useCallback(async () => {
+		// Safety check: prevent submission of homework expired >6 months
+		const stateStore = useHomeworkStore.getState();
+		const allItems = [
+			...Object.values(stateStore.items).flat(),
+			...Object.values(stateStore.subjects).flatMap((s) =>
+				Object.values(s.items).flat(),
+			),
+		];
+		const hw = allItems.find((h) => h.id === homeworkId);
+		if (hw && isHomeworkExpired(hw.overdue_date)) {
+			setState((s) => ({
+				...s,
+				error: "Срок сдачи истёк более 6 месяцев назад — задание нельзя отправить",
+			}));
+			return;
+		}
+
 		const trimmed = state.text.trim();
 		const selectedFile = state.file;
 		const hasFile = selectedFile != null;

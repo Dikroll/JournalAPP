@@ -17,6 +17,7 @@ export { useHomeworkSubjectFiltering } from "./hooks/useHomeworkSubjectFiltering
 export {
 	canEditHomework,
 	deriveHomeworkCardState,
+	isHomeworkExpired,
 	shouldShowStatusBadge,
 } from "./lib/homeworkCardState";
 export type { SubjectData } from "./model/store";

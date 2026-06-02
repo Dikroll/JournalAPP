@@ -2,6 +2,7 @@ import {
 	Download,
 	ExternalLink,
 	MessageSquare,
+	OctagonAlert,
 	Trash2,
 	Upload,
 } from "lucide-react";
@@ -22,6 +23,7 @@ interface Props {
 	studAnswer: string | null;
 	studFileUrl: string | null;
 	studId: number | null;
+	isExpired?: boolean;
 }
 
 export function HomeworkCardActions({
@@ -32,6 +34,7 @@ export function HomeworkCardActions({
 	studAnswer,
 	studFileUrl,
 	studId,
+	isExpired = false,
 }: Props) {
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [showDeleteWarning, setShowDeleteWarning] = useState(false);
@@ -48,6 +51,10 @@ export function HomeworkCardActions({
 	const studAnswerIsUrl = !!studAnswer?.startsWith("http");
 	const studResultUrl = studFileUrl ?? (studAnswerIsUrl ? studAnswer : null);
 	const hasAnswer = !!(studResultUrl || studAnswer);
+
+	// For overdue/new/returned homework that expired 6+ months ago,
+	// the upload button is replaced with an expired warning
+	const canSubmit = !isExpired || isChecked || isPending;
 
 	const handleDelete = () => {
 		deleteHomework(() => setShowDeleteWarning(false));
@@ -107,6 +114,15 @@ export function HomeworkCardActions({
 		</button>
 	);
 
+	const ExpiredBadge = (
+		<div className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-2xl text-xs bg-overdue-bg border border-overdue-border">
+			<OctagonAlert size={14} className="text-status-overdue shrink-0" />
+			<span className="text-status-overdue">
+				Срок сдачи истёк более 6 месяцев назад
+			</span>
+		</div>
+	);
+
 	const DeleteBtn = (
 		<button
 			type="button"
@@ -132,6 +148,11 @@ export function HomeworkCardActions({
 							{ViewAnswerBtn}
 						</div>
 						{DeleteBtn}
+					</>
+				) : isExpired ? (
+					<>
+						{ExpiredBadge}
+						{DownloadTaskBtn}
 					</>
 				) : isReturned ? (
 					<>
