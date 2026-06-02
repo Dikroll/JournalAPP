@@ -31,11 +31,14 @@ export function HomeworkUpcomingWidget({
 	const overdueItems = items[STATUS_KEY_MAP.overdue] || [];
 	const newItems = items[STATUS_KEY_MAP.new] || [];
 
-	const upcoming = [...overdueItems, ...newItems]
-		.sort(
-			(a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
-		)
-		.slice(0, limit);
+	const fullUpcoming = [...overdueItems, ...newItems].sort(
+		(a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
+	);
+	
+	const upcoming = limit ? fullUpcoming.slice(0, limit) : fullUpcoming;
+	const hasMore = limit ? fullUpcoming.length > limit : false;
+	const hasSpaceForPlaceholder = limit !== undefined && limit > upcoming.length;
+	const shouldShowButton = hasMore || hasSpaceForPlaceholder;
 
 	return (
 		<div
@@ -109,9 +112,8 @@ export function HomeworkUpcomingWidget({
 					);
 				})}
 
-				{/* Декоративное заполнение пустого пространства, если заданий мало */}
-				{upcoming.length === 0 && (
-					<div className="flex-1 flex flex-col items-center justify-center min-h-[120px] opacity-40 select-none pointer-events-none mt-2">
+				{upcoming.length === 0 ? (
+					<div className="flex-1 flex flex-col items-center justify-center min-h-[120px] opacity-40 select-none pointer-events-none mt-2 shrink-0">
 						<CheckCircle size={32} className="mb-2 text-app-muted" />
 						<p className="text-[13px] font-medium text-app-muted text-center leading-snug">
 							Нет актуальных заданий
@@ -119,6 +121,18 @@ export function HomeworkUpcomingWidget({
 							Вы всё сдали!
 						</p>
 					</div>
+				) : (
+					shouldShowButton && (
+						<>
+							<div className="flex-1 min-h-0 pointer-events-none shrink-0" />
+							<button
+								onClick={() => navigate("/homework")}
+								className="w-full mt-2 py-2.5 rounded-xl border border-transparent bg-transparent text-app-muted/50 text-[13px] font-medium hover:bg-app-surface-active hover:text-app-text transition-colors shrink-0"
+							>
+								Это все актуальные задания
+							</button>
+						</>
+					)
 				)}
 			</div>
 		</div>

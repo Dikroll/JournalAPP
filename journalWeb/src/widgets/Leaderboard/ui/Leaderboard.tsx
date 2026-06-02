@@ -119,22 +119,22 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 								>
 									{rank === 1 && (
 										<Crown
-											size={16}
-											className="absolute -top-5 text-[#EAB308]"
+											size={20}
+											className="absolute -top-[18px] text-[#EAB308]"
 										/>
 									)}
-									<div className="relative">
+									<div className="relative mt-2">
 										<Avatar
 											photoUrl={getCachedImageUrl(s.photo_url) || ""}
 											fullName={s.full_name}
-											size={48}
-											className="border-2"
+											size={56}
+											className="border-[3px]"
 											style={{ borderColor: color }}
 											onClick={() => s.photo_url ? setPhotoViewerSrc(getCachedImageUrl(s.photo_url) || s.photo_url) : undefined}
 										/>
 										<div
-											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[#1C1C1E] text-white"
-											style={{ border: `1px solid ${color}` }}
+											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold bg-[#1C1C1E] text-white"
+											style={{ border: `1.5px solid ${color}` }}
 										>
 											{rank}
 										</div>
@@ -166,31 +166,31 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 
 					{/* ME */}
 					{me && (
-						<div className="flex items-center gap-3 px-3 py-2 rounded-[16px] bg-[#D97706]/10 border border-[#D97706]/20">
-							<div className="w-5 text-center text-[13px] font-bold text-[#D97706]">
+						<div className="flex items-center gap-3 px-4 py-3 rounded-[16px] bg-[#D97706]/10 border border-[#D97706]/20 mt-auto">
+							<div className="w-6 text-center text-[15px] font-bold text-[#D97706]">
 								{me.position}
 							</div>
 							<Avatar
 								photoUrl={getCachedImageUrl(me.photo_url) || ""}
 								fullName={me.full_name}
-								size={32}
+								size={40}
 								onClick={() => me.photo_url ? setPhotoViewerSrc(getCachedImageUrl(me.photo_url) || me.photo_url) : undefined}
 							/>
 							<div className="flex flex-col min-w-0 flex-1">
-								<span className="text-[13px] font-medium text-[#D97706] truncate">
+								<span className="text-[14px] font-medium text-[#D97706] truncate">
 									{getShortName(me.full_name)} (Вы)
 								</span>
 							</div>
 							<div
-								className="flex items-center gap-1 rounded-xl border px-2.5 py-1.5 shrink-0"
+								className="flex items-center gap-1.5 rounded-xl border px-3 py-2 shrink-0"
 								style={{
 									background: HIGHLIGHT.badgeBg,
 									borderColor: HIGHLIGHT.badgeBorder,
 								}}
 							>
-								<Coins size={13} style={{ color: HIGHLIGHT.coin }} />
+								<Coins size={14} style={{ color: HIGHLIGHT.coin }} />
 								<span
-									className="text-[13px] font-bold"
+									className="text-[14px] font-bold"
 									style={{ color: HIGHLIGHT.text }}
 								>
 									{me.points.toLocaleString()}

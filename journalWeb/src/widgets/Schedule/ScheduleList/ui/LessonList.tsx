@@ -63,7 +63,7 @@ export function LessonList({
 				);
 
 	return (
-		<div className="relative">
+		<div className="relative flex flex-col min-h-0 w-full h-full">
 			{isHomeDesktop && (
 				<div
 					className="absolute left-[16px] top-[18px] bottom-[18px] w-[2px] -translate-x-1/2 rounded-full z-0"
@@ -77,7 +77,7 @@ export function LessonList({
 				/>
 			)}
 			<ul
-				className={`relative z-10 flex flex-col ${isHomeDesktop ? "gap-0" : compact ? "gap-1.5" : "gap-3"}`}
+				className={`relative z-10 flex flex-col flex-1 min-h-0 ${isHomeDesktop ? "gap-0" : compact ? "gap-1.5" : "gap-3"}`}
 			>
 				{visibleLessons.map((lesson, i) => {
 					const isCurrent =
@@ -91,7 +91,7 @@ export function LessonList({
 					return (
 						<li
 							key={`${lesson.started_at}-${lesson.room}`}
-							className="flex flex-col"
+							className="flex flex-col min-h-0"
 						>
 							{i > 0 && (
 								<GapIndicator
@@ -119,11 +119,17 @@ export function LessonList({
 						</li>
 					);
 				})}
-				{hiddenCount > 0 && (
+				{hiddenCount > 0 ? (
 					<li className={isHomeDesktop ? "pl-[36px] pr-2 pt-1" : ""}>
 						<div className="rounded-[12px] border border-dashed border-app-border px-3 py-2 text-[12px] font-medium text-app-muted">
 							Еще {hiddenCount} пар
 						</div>
+					</li>
+				) : (
+					<li className="flex-1 flex flex-col items-center justify-start min-h-[40px] opacity-30 select-none pointer-events-none mt-4 shrink-0">
+						<p className="text-[12px] font-medium text-app-muted text-center pl-[20px]">
+							На этот день всё
+						</p>
 					</li>
 				)}
 			</ul>

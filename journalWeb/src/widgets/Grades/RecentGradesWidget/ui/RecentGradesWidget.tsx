@@ -3,19 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { getGradeStyle, useGrades } from "@/entities/grades";
 import { formatDateRelative } from "@/shared/utils";
 
-export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
+export function RecentGradesWidget({ limit, className = "" }: { limit?: number; className?: string }) {
 	const { entries } = useGrades();
 	const navigate = useNavigate();
 
-	const recentGrades = entries
+	const sortedGrades = entries
 		.filter((e) => e.marks && Object.values(e.marks).some((v) => v !== null))
-		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-		.slice(0, limit);
+		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+		
+	const recentGrades = limit ? sortedGrades.slice(0, limit) : sortedGrades;
 
 	if (recentGrades.length === 0) {
 		return (
 			<div
-				className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
+				className={`rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 ${className}`}
 				style={{
 					background: "var(--color-surface)",
 					boxShadow: "var(--shadow-card)",
@@ -34,7 +35,7 @@ export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
 						Все оценки
 					</button>
 				</div>
-				<div className="text-app-muted text-sm py-4 text-center">
+				<div className="text-app-muted text-sm py-4 text-center flex-1 flex items-center justify-center">
 					Оценок пока нет
 				</div>
 			</div>
@@ -43,7 +44,7 @@ export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
 
 	return (
 		<div
-			className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
+			className={`rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 ${className}`}
 			style={{
 				background: "var(--color-surface)",
 				boxShadow: "var(--shadow-card)",
@@ -63,7 +64,7 @@ export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
 				</button>
 			</div>
 
-			<div className="flex flex-col gap-2">
+			<div className="flex flex-col gap-2 overflow-y-auto pr-1 -mr-1">
 				{recentGrades.map((entry, idx) => {
 					// We take the first non-null mark for simplicity
 					const markValue = entry.marks
@@ -73,7 +74,7 @@ export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
 					return (
 						<div
 							key={`${entry.date}-${entry.lesson_number}-${idx}`}
-							className="flex items-center justify-between py-1 border-b border-app-border last:border-0"
+							className="flex items-center justify-between py-1 border-b border-app-border last:border-0 shrink-0"
 						>
 							<div className="flex flex-col min-w-0 pr-3">
 								<span className="text-xs font-medium text-app-text truncate">
