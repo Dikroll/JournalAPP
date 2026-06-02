@@ -112,7 +112,7 @@ export function LessonCard({
 						</span>
 					</div>
 
-					<div className="ml-8 mr-1 flex items-center justify-center gap-1.5 rounded-xl border border-app-border bg-app-bg/35 px-2 py-1 text-app-muted mb-1.5 min-w-0">
+					<div className="ml-auto mr-1 flex w-fit min-w-[132px] max-w-full items-center justify-center gap-1.5 rounded-xl border border-app-border bg-app-bg/35 px-2 py-1 text-app-muted mb-1.5">
 						<Clock size={10} className="shrink-0" />
 						<span className="text-[11px] whitespace-nowrap">
 							{lesson.started_at}–{lesson.finished_at}
