@@ -23,14 +23,14 @@ export function GapIndicator({ gap, compact = false }: Props) {
 		>
 			<div className="flex-1 h-px" style={{ background: `${color}30` }} />
 			<div
-				className="schedule-gap-indicator__label flex items-center gap-1.5 rounded-full px-2.5 py-1 border"
+				className="schedule-gap-indicator__label flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 border"
 				style={{
 					background: `${color}10`,
 					borderColor: `${color}25`,
 				}}
 			>
 				<Icon size={10} style={{ color }} />
-				<span className="text-[10px] font-medium" style={{ color }}>
+				<span className="text-[10px] font-medium leading-none whitespace-nowrap" style={{ color }}>
 					{label} · {formatGapMinutes(gap.minutes)}
 				</span>
 			</div>

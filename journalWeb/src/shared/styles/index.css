@@ -191,6 +191,14 @@ svg:focus-visible,
 		border-color: transparent !important;
 		padding-left: 4px;
 		padding-right: 4px;
+		white-space: nowrap;
+		line-height: 1;
+		flex-shrink: 0;
+	}
+
+	.web-layout .schedule-week-day__gap .schedule-gap-indicator {
+		min-height: 20px;
+		align-items: center;
 	}
 
 	.web-layout .payment-page__grid {

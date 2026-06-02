@@ -7,6 +7,7 @@ import {
 	useLessonNotesStore,
 } from "@/entities/schedule";
 import { LessonNoteSheet } from "@/features/manageLessonNote";
+import { getShortName } from "@/shared/utils";
 
 interface Props {
 	lesson: LessonItem;
@@ -26,6 +27,7 @@ export function LessonCard({
 	const notes = useLessonNotesStore(
 		useCallback((s) => getNotesForKey(s.notes, lessonKey), [lessonKey]),
 	);
+	const teacherName = getShortName(lesson.teacher);
 
 	return (
 		<>
@@ -74,7 +76,7 @@ export function LessonCard({
 			) : (
 				/* ── Полная карточка (мобайл / другой день) ── */
 				<div
-					className={`rounded-[20px] px-3 py-2 border transition-all flex-1 flex flex-col justify-center min-h-0 overflow-hidden ${
+					className={`relative overflow-hidden rounded-[20px] px-3 py-2 border transition-all flex-1 flex flex-col justify-center min-h-0 ${
 						isCurrent
 							? "bg-app-surface-active border-app-border-strong"
 							: "bg-app-surface border-app-border"
@@ -86,25 +88,35 @@ export function LessonCard({
 						backdropFilter: "blur(16px)",
 					}}
 				>
-					<div className="flex items-center gap-1.5 rounded-xl border border-app-border bg-app-bg/35 px-2 py-1 text-app-muted mb-1.5 min-w-0">
-						<span
-							className={`shrink-0 rounded-lg border px-1.5 py-0.5 text-[10px] font-bold leading-none ${
-								isCurrent
-									? "bg-brand-subtle border-brand-border text-brand"
-									: "bg-app-surface border-app-border text-app-muted"
-							}`}
+					<div
+						className={`absolute left-0 top-0 z-10 h-10 w-10 ${
+							isCurrent ? "text-red-400" : "text-app-muted"
+						}`}
+					>
+						<svg
+							className="absolute left-0 top-0 h-9 w-9"
+							viewBox="0 0 36 36"
+							aria-hidden="true"
 						>
+							<path
+								d="M34 1H18C8.6 1 1 8.6 1 18V34"
+								fill="none"
+								stroke="currentColor"
+								strokeLinecap="round"
+								strokeWidth="2.25"
+								opacity={isCurrent ? 0.85 : 0.65}
+							/>
+						</svg>
+						<span className="absolute left-3.5 top-4 text-[15px] font-bold leading-none [font-variant-numeric:tabular-nums]">
 							{lesson.lesson}
 						</span>
+					</div>
+
+					<div className="ml-8 mr-1 flex items-center justify-center gap-1.5 rounded-xl border border-app-border bg-app-bg/35 px-2 py-1 text-app-muted mb-1.5 min-w-0">
 						<Clock size={10} className="shrink-0" />
 						<span className="text-[11px] whitespace-nowrap">
-							{lesson.started_at} – {lesson.finished_at}
+							{lesson.started_at}–{lesson.finished_at}
 						</span>
-						{timeLabel && (
-							<span className="text-[10px] font-medium text-brand ml-auto truncate">
-								{timeLabel}
-							</span>
-						)}
 					</div>
 
 					<p className="line-clamp-3 font-semibold text-app-text leading-snug text-[13px] mb-1">
@@ -113,7 +125,7 @@ export function LessonCard({
 
 					<div className="flex items-center gap-1.5 text-app-muted mb-1 min-w-0">
 						<User size={10} />
-						<span className="text-[10px] truncate">{lesson.teacher}</span>
+						<span className="text-[10px] truncate">{teacherName}</span>
 					</div>
 
 					<div className="flex items-center gap-2 flex-wrap">
@@ -121,6 +133,12 @@ export function LessonCard({
 							<MapPin size={9} className="text-app-text flex-shrink-0" />
 							<span className="text-[10px] text-app-text">{lesson.room}</span>
 						</div>
+
+						{timeLabel && (
+							<span className="inline-flex items-center rounded-lg border border-red-500/25 bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-400">
+								{timeLabel}
+							</span>
+						)}
 
 						{notes.map((note) => (
 							<button
