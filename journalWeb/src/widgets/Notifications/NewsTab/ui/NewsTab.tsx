@@ -1,5 +1,5 @@
 import { Megaphone } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useNews } from "@/entities/news";
 import { EmptyState, SkeletonList } from "@/shared/ui";
 import { ErrorView } from "@/shared/ui/ErrorView/ErrorView";
@@ -8,6 +8,10 @@ import { NewsCard } from "./NewsCard";
 export function NewsTab() {
 	const { latest, status } = useNews();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const detailPathPrefix = location.pathname.startsWith("/notifications")
+		? "/notifications/news"
+		: "/news";
 
 	return (
 		<div className="space-y-3 pb-8">
@@ -31,7 +35,7 @@ export function NewsTab() {
 					<NewsCard
 						key={item.id}
 						item={item}
-						onClick={() => navigate(`/notifications/news/${item.id}`)}
+						onClick={() => navigate(`${detailPathPrefix}/${item.id}`)}
 					/>
 				))}
 			</div>

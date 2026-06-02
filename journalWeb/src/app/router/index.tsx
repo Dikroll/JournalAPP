@@ -314,6 +314,14 @@ function AppRoutes() {
 								</Suspended>
 							}
 						/>
+						<Route
+							path="news/:id"
+							element={
+								<Suspended>
+									<NewsDetailPage />
+								</Suspended>
+							}
+						/>
 					</Route>
 
 					<Route path="*" element={<Navigate to="/" replace />} />
