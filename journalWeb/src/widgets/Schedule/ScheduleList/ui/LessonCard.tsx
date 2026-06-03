@@ -129,11 +129,6 @@ export function LessonCard({
 						<span className="text-[12px] whitespace-nowrap">
 							{lesson.started_at}–{lesson.finished_at}
 						</span>
-						{timeLabel && (
-							<span className="text-[11px] font-medium text-brand ml-auto">
-								{timeLabel}
-							</span>
-						)}
 					</div>
 
 					<p className="hidden font-semibold text-app-text leading-[1.22] text-[13px] pr-7 md:line-clamp-4">
