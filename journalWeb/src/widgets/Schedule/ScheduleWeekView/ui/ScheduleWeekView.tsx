@@ -1,5 +1,5 @@
-import { ChevronLeft, ChevronRight, Coffee } from "lucide-react";
-import { Fragment, useCallback, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useState } from "react";
 import {
 	getGapBetweenLessons,
 	getLessonTimeLabel,
@@ -19,6 +19,14 @@ import {
 } from "@/shared/utils";
 import { GapIndicator } from "../../ScheduleList/ui/GapIndicator";
 import { LessonCard } from "../../ScheduleList/ui/LessonCard";
+
+const LOADING_SKELETONS = [
+	{ id: "primary", height: 160 },
+	{ id: "secondary-1", height: 120 },
+	{ id: "secondary-2", height: 120 },
+	{ id: "secondary-3", height: 120 },
+	{ id: "secondary-4", height: 120 },
+];
 
 function formatWeekRange(days: string[]): string {
 	if (days.length < 2) return "";
@@ -43,11 +51,11 @@ export function ScheduleWeekView() {
 	if (status === "loading" && lessons.length === 0) {
 		return (
 			<div className="flex flex-col gap-3">
-				{Array.from({ length: 5 }, (_, i) => (
+				{LOADING_SKELETONS.map((skeleton) => (
 					<div
-						key={i}
+						key={skeleton.id}
 						className="bg-app-surface rounded-[24px] border border-app-border animate-pulse"
-						style={{ height: i === 0 ? 160 : 120 }}
+						style={{ height: skeleton.height }}
 					/>
 				))}
 			</div>
@@ -63,6 +71,11 @@ export function ScheduleWeekView() {
 	}
 
 	const byDate = groupLessonsByDate(lessons, weekDays);
+	const weekdayDates = weekDays.slice(0, 5);
+	const weekendDatesWithLessons = weekDays
+		.slice(5)
+		.filter((dateStr) => (byDate[dateStr] ?? []).length > 0);
+	const visibleDays = [...weekdayDates, ...weekendDatesWithLessons];
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -103,47 +116,16 @@ export function ScheduleWeekView() {
 				/>
 			</div>
 
-			<div
-				className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 xl:gap-3 md:items-start"
-			>
-				{weekDays.map((dateStr, actualIdx) => {
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xl:gap-3 md:items-start">
+				{visibleDays.map((dateStr) => {
+					const actualIdx = weekDays.indexOf(dateStr);
 					const dayLessons = byDate[dateStr] ?? [];
 					const isToday = dateStr === today;
 					const todayTimeInfo = isToday
 						? getScheduleTimeInfo(dayLessons, nowMinutes)
 						: null;
 					const isPast = dateStr < today;
-					const isWeekend = actualIdx >= 5;
 					const isEmpty = dayLessons.length === 0;
-
-					if (isWeekend && isEmpty) {
-						return (
-							<Fragment key={dateStr}>
-								<div
-									className="flex md:hidden items-center gap-3 px-1 opacity-40"
-								>
-									<span className="text-xs font-semibold text-app-muted w-6 shrink-0">
-										{RU_DAYS_SHORT[actualIdx]}
-									</span>
-									<span className="text-xs text-app-muted">
-										{formatDateCompact(dateStr)}
-									</span>
-									<div className="flex-1 h-px bg-app-border" />
-									<Coffee size={11} className="text-app-faint shrink-0" />
-								</div>
-								
-								<div
-									className="hidden md:flex h-full min-h-[160px] flex-col items-center justify-center gap-3 rounded-[24px] border border-dashed border-app-border bg-app-surface/40 opacity-50"
-								>
-									<span className="text-[10px] font-bold text-app-muted uppercase">
-										{RU_DAYS_SHORT[actualIdx]}
-									</span>
-									<div className="w-[2px] h-[120px] bg-app-border rounded-full" />
-									<Coffee size={12} className="text-app-faint" />
-								</div>
-							</Fragment>
-						);
-					}
 
 					return (
 						<section
@@ -193,7 +175,10 @@ export function ScheduleWeekView() {
 											{i > 0 && (
 												<div className="schedule-week-day__gap">
 													<GapIndicator
-														gap={getGapBetweenLessons(dayLessons[i - 1], lesson)}
+														gap={getGapBetweenLessons(
+															dayLessons[i - 1],
+															lesson,
+														)}
 													/>
 												</div>
 											)}

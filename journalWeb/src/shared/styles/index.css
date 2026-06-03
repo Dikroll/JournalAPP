@@ -173,13 +173,13 @@ svg:focus-visible,
 	}
 
 	.web-layout .schedule-week-day__lesson > div:last-child {
-		height: 132px;
-		min-height: 132px;
+		height: 152px;
+		min-height: 152px;
 	}
 
 	.web-layout .schedule-week-day__gap {
 		position: absolute;
-		top: -29px;
+		top: -31px;
 		left: 8px;
 		right: 8px;
 		z-index: 2;

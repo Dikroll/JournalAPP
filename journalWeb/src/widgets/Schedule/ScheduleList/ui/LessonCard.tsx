@@ -79,7 +79,7 @@ export function LessonCard({
 				</div>
 			) : isWeekDesktop ? (
 				<div
-					className={`relative rounded-[20px] px-3 py-2 border transition-all flex-1 min-h-0 overflow-hidden ${
+					className={`relative rounded-[20px] px-3.5 py-3 border transition-all flex-1 min-h-0 overflow-hidden ${
 						isCurrent
 							? "bg-app-surface-active border-app-border-strong"
 							: "bg-app-surface border-app-border"
@@ -98,7 +98,7 @@ export function LessonCard({
 								: "bg-app-surface border-app-border text-app-muted"
 						}`}
 					>
-						<span className="text-[13px] font-bold leading-none [font-variant-numeric:tabular-nums]">
+						<span className="text-[14px] font-bold leading-none [font-variant-numeric:tabular-nums]">
 							{lesson.lesson}
 						</span>
 					</div>
@@ -124,23 +124,23 @@ export function LessonCard({
 						</p>
 					</div>
 
-					<div className="hidden md:flex items-center gap-1.5 text-app-muted mb-1 pr-11">
-						<Clock size={10} />
-						<span className="text-[11px] whitespace-nowrap">
+					<div className="hidden md:flex items-center gap-1.5 text-app-muted mb-1.5 pr-11">
+						<Clock size={11} />
+						<span className="text-[12px] whitespace-nowrap">
 							{lesson.started_at}–{lesson.finished_at}
 						</span>
 						{timeLabel && (
-							<span className="text-[10px] font-medium text-brand ml-auto">
+							<span className="text-[11px] font-medium text-brand ml-auto">
 								{timeLabel}
 							</span>
 						)}
 					</div>
 
-					<p className="hidden font-semibold text-app-text leading-[1.22] text-[11px] pr-7 md:line-clamp-4">
+					<p className="hidden font-semibold text-app-text leading-[1.22] text-[13px] pr-7 md:line-clamp-4">
 						{lesson.subject}
 					</p>
 
-					<div className="flex items-center gap-1.5 text-app-muted mb-0.5 pl-11 md:pl-0 md:mb-1">
+					<div className="flex items-center gap-1.5 text-app-muted mb-0.5 pl-11 md:pl-0 md:mb-1.5">
 						<Clock size={10} className="md:hidden" />
 						<span className="text-[11px] md:hidden">
 							{lesson.started_at} – {lesson.finished_at}
@@ -150,8 +150,8 @@ export function LessonCard({
 								{timeLabel}
 							</span>
 						)}
-						<User size={10} className="hidden md:block" />
-						<span className="hidden truncate text-[10px] md:block">
+						<User size={11} className="hidden md:block" />
+						<span className="hidden truncate text-[11px] md:block">
 							{lesson.teacher}
 						</span>
 					</div>
@@ -162,9 +162,9 @@ export function LessonCard({
 					</div>
 
 					<div className="flex items-center gap-2 flex-wrap pl-11 md:pl-0">
-						<div className="inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 py-0.5">
-							<MapPin size={9} className="text-app-text flex-shrink-0" />
-							<span className="text-[10px] text-app-text">{lesson.room}</span>
+						<div className="inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 py-1">
+							<MapPin size={10} className="text-app-text flex-shrink-0" />
+							<span className="text-[11px] text-app-text">{lesson.room}</span>
 						</div>
 
 						{notes.map((note) => (
@@ -172,15 +172,15 @@ export function LessonCard({
 								key={note.id}
 								type="button"
 								onClick={() => setShowSheet(true)}
-								className="inline-flex items-center gap-1.5 rounded-lg px-2 py-0.5 border transition-colors"
+								className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 border transition-colors"
 								style={{
 									background: `${note.status.color}10`,
 									borderColor: `${note.status.color}30`,
 								}}
 							>
-								<StickyNote size={9} style={{ color: note.status.color }} />
+								<StickyNote size={10} style={{ color: note.status.color }} />
 								<span
-									className="text-[10px] font-medium truncate max-w-[120px]"
+									className="text-[11px] font-medium truncate max-w-[120px]"
 									style={{ color: note.status.color }}
 								>
 									{note.text}
@@ -191,10 +191,10 @@ export function LessonCard({
 						<button
 							type="button"
 							onClick={() => setShowSheet(true)}
-							className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-0.5 text-app-faint hover:text-app-muted transition-colors"
+							className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-1 text-app-faint hover:text-app-muted transition-colors"
 						>
-							<Plus size={9} />
-							<span className="text-[10px]">Заметка</span>
+							<Plus size={10} />
+							<span className="text-[11px]">Заметка</span>
 						</button>
 					</div>
 				</div>
