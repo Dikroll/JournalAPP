@@ -1,11 +1,14 @@
 import { CalendarDays } from "lucide-react";
+import { useState } from "react";
 import { useFutureExams } from "@/entities/exam";
 import { illustrations } from "@/shared/config/illustrationsConfig";
 import { EmptyState, SurfaceCard } from "@/shared/ui";
 import { formatDate } from "@/shared/utils";
+import { FutureExamsModal } from "./FutureExamsModal";
 
-export function FutureExams() {
+export function FutureExams({ limit }: { limit?: number } = {}) {
 	const { exams, status } = useFutureExams();
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	if (status === "loading" && exams.length === 0)
 		return <p className="text-app-muted text-sm">Загрузка...</p>;
@@ -21,10 +24,14 @@ export function FutureExams() {
 			/>
 		);
 
+	const displayExams = limit ? exams.slice(0, limit) : exams;
+	const hasMore = limit ? exams.length > limit : false;
+
 	return (
-		<div>
-			<ul className="flex flex-col gap-2">
-				{exams.map((exam) => (
+		<>
+			<div className="flex flex-col gap-2">
+				<ul className="flex flex-col gap-2">
+					{displayExams.map((exam) => (
 					<li key={`${exam.date}-${exam.spec}`}>
 						<SurfaceCard paddingClassName="p-2.5" className="backdrop-blur-sm flex items-center gap-2.5">
 						<div
@@ -76,6 +83,22 @@ export function FutureExams() {
 					</li>
 				))}
 			</ul>
+			
+			{hasMore && (
+				<button
+					onClick={() => setIsModalOpen(true)}
+					className="w-full mt-2 py-2.5 rounded-xl border border-app-border bg-app-surface text-app-muted text-[13px] font-medium hover:bg-app-border hover:text-app-text transition-colors"
+				>
+					Показать все ({exams.length})
+				</button>
+			)}
 		</div>
+
+		<FutureExamsModal 
+			isOpen={isModalOpen} 
+			onClose={() => setIsModalOpen(false)} 
+			exams={exams} 
+		/>
+		</>
 	);
 }

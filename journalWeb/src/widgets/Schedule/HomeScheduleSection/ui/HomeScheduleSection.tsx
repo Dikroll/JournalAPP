@@ -25,7 +25,7 @@ export function HomeScheduleSection({
 
 	return (
 		<>
-			<div className="mt-2 mb-2 flex items-center justify-between">
+			<div className="mt-2 mb-1 flex items-center justify-between">
 				{/* ЛЕВАЯ ЧАСТЬ */}
 				<button
 					type="button"
@@ -60,14 +60,17 @@ export function HomeScheduleSection({
 						aria-label="Предыдущий день"
 					/>
 
-					{offset !== 0 && (
-						<button
-							onClick={goToday}
-							className="h-9 px-3 text-xs font-medium rounded-2xl border border-app-border bg-app-surface hover:bg-app-surface/80 transition"
-						>
-							К сегодня
-						</button>
-					)}
+					<button
+						disabled={offset === 0}
+						onClick={goToday}
+						className={`h-9 px-3 text-xs font-medium rounded-2xl border transition ${
+							offset === 0 
+								? 'border-transparent text-app-muted bg-transparent cursor-default'
+								: 'border-app-border bg-app-surface hover:bg-app-surface/80 text-app-text'
+						}`}
+					>
+						К сегодня
+					</button>
 
 					<IconButton
 						icon={<ChevronRight size={18} />}

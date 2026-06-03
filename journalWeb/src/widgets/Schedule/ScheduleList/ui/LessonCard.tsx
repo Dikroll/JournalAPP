@@ -193,10 +193,78 @@ export function LessonCard({
 						</button>
 					</div>
 				</div>
+			) : isHomeDesktop ? (
+				/* ── Таймлайн карточка (homeDesktop) ── */
+				<div className="relative py-1 pl-[36px] pr-2 flex flex-col justify-center min-h-0">
+					{/* Timeline dot */}
+					<div 
+						className={`absolute left-[16px] top-[18px] -translate-x-1/2 w-[9px] h-[9px] rounded-full z-10 ring-[3px] ring-app-surface ${
+							isCurrent ? "bg-[#F59E0B]" : "bg-[#3B82F6]"
+						}`}
+					/>
+					
+					{/* Card Content Wrapper */}
+					<div 
+						className={`flex flex-col flex-1 rounded-[16px] px-3.5 py-2.5 border transition-all ${
+							isCurrent
+								? "bg-app-surface-active border-app-border-strong"
+								: "bg-app-surface border-transparent hover:border-app-border"
+						}`}
+					>
+						<div className="flex items-center gap-1.5 text-app-muted mb-1">
+							<span className="text-[11px] font-medium">
+								{lesson.started_at} – {lesson.finished_at}
+							</span>
+							{timeLabel && (
+								<span className="text-[10px] font-medium text-brand ml-auto">
+									{timeLabel}
+								</span>
+							)}
+						</div>
+
+						<p className="line-clamp-2 font-semibold text-app-text leading-snug text-[13px] mb-2">
+							{lesson.subject}
+						</p>
+
+						<div className="flex items-center gap-2 flex-wrap">
+							<span className="text-[11px] text-app-muted">{lesson.room}</span>
+
+							{notes.map((note) => (
+								<button
+									key={note.id}
+									type="button"
+									onClick={() => setShowSheet(true)}
+									className="inline-flex items-center gap-1.5 rounded-lg px-2 py-0.5 border transition-colors"
+									style={{
+										background: `${note.status.color}10`,
+										borderColor: `${note.status.color}30`,
+									}}
+								>
+									<StickyNote size={9} style={{ color: note.status.color }} />
+									<span
+										className="text-[10px] font-medium truncate max-w-[120px]"
+										style={{ color: note.status.color }}
+									>
+										{note.text}
+									</span>
+								</button>
+							))}
+
+							<button
+								type="button"
+								onClick={() => setShowSheet(true)}
+								className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-0.5 text-app-faint hover:text-app-muted transition-colors"
+							>
+								<Plus size={9} />
+								<span className="text-[10px]">Заметка</span>
+							</button>
+						</div>
+					</div>
+				</div>
 			) : (
 				/* ── Полная карточка (мобайл / другой день) ── */
 				<div
-					className={`rounded-[20px] px-3 border transition-all flex-1 flex flex-col justify-center min-h-0 overflow-hidden ${isHomeDesktop ? "py-3" : "py-1.5"} ${
+					className={`rounded-[20px] px-3 border transition-all flex-1 flex flex-col justify-center min-h-0 overflow-hidden py-1.5 ${
 						isCurrent
 							? "bg-app-surface-active border-app-border-strong"
 							: "bg-app-surface border-app-border"
@@ -208,48 +276,48 @@ export function LessonCard({
 						backdropFilter: "blur(16px)",
 					}}
 				>
-					<div className={`flex items-center gap-3 ${isHomeDesktop ? "mb-2" : "mb-1"}`}>
+					<div className="flex items-center gap-3 mb-1">
 						<div
-							className={`flex-shrink-0 rounded-full flex items-center justify-center border ${isHomeDesktop ? "w-10 h-10" : "w-8 h-8"} ${
+							className={`flex-shrink-0 rounded-full flex items-center justify-center border w-8 h-8 ${
 								isCurrent
 									? "bg-brand-subtle border-brand-border"
 									: "bg-app-surface border-app-border"
 							}`}
 						>
 							<span
-								className={`font-bold leading-none ${isHomeDesktop ? "text-[13px]" : "text-[11px]"} ${
+								className={`font-bold leading-none text-[11px] ${
 									isCurrent ? "text-brand" : "text-app-muted"
 								}`}
 							>
 								{lesson.lesson}
 							</span>
 						</div>
-						<p className={`line-clamp-3 flex-1 font-semibold text-app-text leading-snug ${isHomeDesktop ? "text-[16px]" : "text-[13px]"}`}>
+						<p className="line-clamp-3 flex-1 font-semibold text-app-text leading-snug text-[13px]">
 							{lesson.subject}
 						</p>
 					</div>
 
-					<div className={`flex items-center gap-1.5 text-app-muted mb-0.5 ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
-						<Clock size={isHomeDesktop ? 13 : 10} />
-						<span className={isHomeDesktop ? "text-[13px]" : "text-[11px]"}>
+					<div className="flex items-center gap-1.5 text-app-muted mb-0.5 pl-11">
+						<Clock size={10} />
+						<span className="text-[11px]">
 							{lesson.started_at} – {lesson.finished_at}
 						</span>
 						{timeLabel && (
-							<span className={`${isHomeDesktop ? "text-[12px]" : "text-[10px]"} font-medium text-brand ml-auto`}>
+							<span className="text-[10px] font-medium text-brand ml-auto">
 								{timeLabel}
 							</span>
 						)}
 					</div>
 
-					<div className={`flex items-center gap-1.5 text-app-muted mb-1 ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
-						<User size={isHomeDesktop ? 13 : 10} />
-						<span className={`${isHomeDesktop ? "text-[13px]" : "text-[10px]"} truncate`}>{lesson.teacher}</span>
+					<div className="flex items-center gap-1.5 text-app-muted mb-1 pl-11">
+						<User size={10} />
+						<span className="text-[10px] truncate">{lesson.teacher}</span>
 					</div>
 
-					<div className={`flex items-center gap-2 flex-wrap ${isHomeDesktop ? "pl-[52px]" : "pl-11"}`}>
-						<div className={`inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 ${isHomeDesktop ? "py-1" : "py-0.5"}`}>
-							<MapPin size={isHomeDesktop ? 11 : 9} className="text-app-text flex-shrink-0" />
-							<span className={`${isHomeDesktop ? "text-[12px]" : "text-[10px]"} text-app-text`}>{lesson.room}</span>
+					<div className="flex items-center gap-2 flex-wrap pl-11">
+						<div className="inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 py-0.5">
+							<MapPin size={9} className="text-app-text flex-shrink-0" />
+							<span className="text-[10px] text-app-text">{lesson.room}</span>
 						</div>
 
 						{notes.map((note) => (

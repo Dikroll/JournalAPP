@@ -1,107 +1,142 @@
-import { TrendingUp } from "lucide-react";
+import { Crown, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import type { LeaderboardScope } from "@/entities/leaderboard";
 import { useLeaderboard } from "@/entities/leaderboard";
-import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
-import { LeaderboardRow } from "./LeaderboardRow";
-
-export function Leaderboard({ myStudentId }: { myStudentId: number }) {
-	const isDesktop = useIsDesktop();
+import { useUser } from "@/entities/user";
+import { getCachedImageUrl } from "@/shared/lib";
+import { getShortName } from "@/shared/utils/nameUtils";
+import { LeaderboardModal } from "./LeaderboardModal";
+import { Avatar } from "@/shared/ui";
+export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [scope, setScope] = useState<LeaderboardScope>("group");
-	const { groupStudents, streamStudents, myRankGroup, myRankStream, status } =
-		useLeaderboard();
+	const { groupStudents, streamStudents, status } = useLeaderboard();
+	const user = useUser();
 
-	const myRank = scope === "group" ? myRankGroup : myRankStream;
+	const students = scope === "group" ? groupStudents : streamStudents;
+	
+	const top3 = students.slice(0, 3);
+	
+	// Ensure we have 3 slots even if there are fewer students
+	const paddedTop3 = [
+		top3[0] || null,
+		top3[1] || null,
+		top3[2] || null,
+	];
+
+	const meIndex = students.findIndex(s => s.student_id === myStudentId);
+	const me = meIndex >= 0 ? students[meIndex] : null;
+
+	const getRankColor = (rank: number) => {
+		if (rank === 1) return "#EAB308"; // Gold
+		if (rank === 2) return "#9CA3AF"; // Silver
+		if (rank === 3) return "#D97706"; // Bronze
+		return "var(--color-text-muted)";
+	};
 
 	return (
-		<div className={isDesktop ? "flex flex-col h-full" : ""}>
-			<div
-				className={`flex items-center justify-between mb-3 ${isDesktop ? "shrink-0" : ""}`}
-			>
-				<h3 className="text-app-text text-base font-semibold flex items-center gap-2">
-					<TrendingUp size={18} className="text-status-comment" />
-					Лидеры
+		<div className="flex flex-col h-full">
+			<div className="flex items-center justify-between mb-4 shrink-0">
+				<h3 className="text-app-text text-sm font-bold flex items-center gap-2">
+					Лидеры группы
 				</h3>
-				<div className="flex bg-app-surface rounded-xl border border-app-border p-0.5">
-					{(["group", "stream"] as LeaderboardScope[]).map((s) => (
-						<button
-							key={s}
-							onClick={() => setScope(s)}
-							className={`px-3 py-1 rounded-[10px] text-xs font-medium transition-all ${
-								scope === s
-									? "bg-status-comment text-white"
-									: "text-app-muted hover:text-app-text"
-							}`}
-						>
-							{s === "group" ? "Группа" : "Поток"}
-						</button>
-					))}
+				<div className="flex items-center gap-2">
+					<button
+						onClick={() => setIsModalOpen(true)}
+						className="text-xs font-medium text-app-muted bg-app-surface-strong hover:bg-app-border px-3 py-1.5 rounded-xl transition-colors"
+					>
+						Весь рейтинг
+					</button>
 				</div>
 			</div>
 
-			{myRank && (
-				<div
-					className={`flex items-center gap-2 mb-2 ${isDesktop ? "shrink-0" : ""}`}
-				>
-					{myRank.week_diff !== 0 && (
-						<span
-							className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-								myRank.week_diff > 0
-									? "bg-checked-subtle text-status-checked"
-									: "bg-overdue-bg text-status-overdue"
-							}`}
-						>
-							{myRank.week_diff > 0 ? "+" : ""}
-							{myRank.week_diff} за неделю
-						</span>
+			{status === "loading" ? (
+				<div className="space-y-4 animate-pulse">
+					<div className="flex justify-between">
+						{[1, 2, 3].map((i) => (
+							<div key={i} className="flex flex-col items-center gap-2">
+								<div className="w-12 h-12 rounded-full bg-app-surface-strong" />
+								<div className="w-16 h-3 bg-app-surface-strong rounded" />
+							</div>
+						))}
+					</div>
+					<div className="h-14 bg-app-surface-strong rounded-[18px]" />
+				</div>
+			) : (
+				<div className="flex flex-col flex-1">
+					{/* TOP 3 */}
+					<div className="flex items-start justify-between px-2 mb-6">
+						{paddedTop3.map((s, idx) => {
+							const rank = idx + 1;
+							const color = getRankColor(rank);
+							
+							if (!s) {
+								return (
+									<div key={idx} className="flex flex-col items-center w-1/3 opacity-0">
+										<div className="w-12 h-12" />
+									</div>
+								);
+							}
+							
+							return (
+								<div key={s.student_id} className="flex flex-col items-center w-1/3 relative">
+									{rank === 1 && (
+										<Crown size={16} className="absolute -top-5 text-[#EAB308]" />
+									)}
+									<div className="relative">
+										<Avatar 
+											photoUrl={getCachedImageUrl(s.photo_url) || ""} 
+											fullName={s.full_name} 
+											size={48} 
+											className="border-2"
+											style={{ borderColor: color }}
+										/>
+										<div 
+											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[#1C1C1E] text-white"
+											style={{ border: `1px solid ${color}` }}
+										>
+											{rank}
+										</div>
+									</div>
+									<span className="text-[11px] font-semibold text-app-text mt-3 text-center line-clamp-1 break-all">
+										{getShortName(s.full_name)}
+									</span>
+									<span className="text-[10px] text-app-muted mt-0.5">
+										{s.points}
+									</span>
+								</div>
+							);
+						})}
+					</div>
+
+					<div className="h-2" />
+
+					{/* ME */}
+					{me && (
+						<div className="flex items-center gap-3 px-3 py-2 rounded-[16px] bg-[#D97706]/10 border border-[#D97706]/20">
+							<div className="w-5 text-center text-[13px] font-bold text-[#D97706]">
+								{meIndex + 1}
+							</div>
+							<Avatar photoUrl={getCachedImageUrl(me.photo_url) || ""} fullName={me.full_name} size={32} />
+							<div className="flex flex-col min-w-0 flex-1">
+								<span className="text-[13px] font-medium text-[#D97706] truncate">
+									{getShortName(me.full_name)} (Вы)
+								</span>
+							</div>
+							<span className="text-[13px] font-medium text-app-text">
+								{me.points}
+							</span>
+						</div>
 					)}
 				</div>
 			)}
-
-			<div className={isDesktop ? "flex-1 min-h-0 relative" : ""}>
-				<div
-					className={
-						isDesktop ? "absolute inset-0 overflow-y-auto pr-1" : "pr-1"
-					}
-					style={{ scrollbarWidth: "thin" }}
-				>
-					{status === "loading" ? (
-						<div className="space-y-2 min-h-max">
-							{[1, 2, 3, 4, 5].map((i) => (
-								<div
-									key={i}
-									className="bg-app-surface rounded-[18px] h-14 animate-pulse border border-app-border"
-								/>
-							))}
-						</div>
-					) : (
-						<>
-							<div
-								className={`space-y-2 min-h-max ${scope === "group" ? "" : "hidden"}`}
-							>
-								{groupStudents.map((s) => (
-									<LeaderboardRow
-										key={s.student_id}
-										student={s}
-										isMe={s.student_id === myStudentId}
-									/>
-								))}
-							</div>
-							<div
-								className={`space-y-2 min-h-max ${scope === "stream" ? "" : "hidden"}`}
-							>
-								{streamStudents.map((s) => (
-									<LeaderboardRow
-										key={s.student_id}
-										student={s}
-										isMe={s.student_id === myStudentId}
-									/>
-								))}
-							</div>
-						</>
-					)}
-				</div>
-			</div>
+			<LeaderboardModal 
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				groupStudents={groupStudents}
+				streamStudents={streamStudents}
+				myStudentId={myStudentId}
+			/>
 		</div>
 	);
 }

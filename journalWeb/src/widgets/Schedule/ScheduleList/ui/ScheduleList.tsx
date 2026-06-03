@@ -61,9 +61,17 @@ export function ScheduleList({
 
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson);
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
+	const isHomeDesktop = cardVariant === "homeDesktop";
 
 	return (
-		<ul className={`flex flex-col flex-1 min-h-0 gap-1.5`}>
+		<div className="relative flex flex-col flex-1 min-h-0 w-full">
+			{isHomeDesktop && (
+				<div 
+					className="absolute left-[16px] top-4 bottom-4 w-[1px] z-0" 
+					style={{ background: 'var(--color-border)' }} 
+				/>
+			)}
+			<ul className={`flex flex-col flex-1 min-h-0 ${isHomeDesktop ? 'gap-0' : 'gap-1.5'}`}>
 			{sorted.map((lesson, i) => (
 				<li
 					key={`${lesson.started_at}-${lesson.room}`}
@@ -73,6 +81,7 @@ export function ScheduleList({
 						<GapIndicator
 							gap={getGapBetweenLessons(sorted[i - 1], lesson)}
 							compact={compact}
+							variant={cardVariant}
 						/>
 					)}
 					<LessonCard
@@ -87,6 +96,7 @@ export function ScheduleList({
 					/>
 				</li>
 			))}
-		</ul>
+			</ul>
+		</div>
 	);
 }

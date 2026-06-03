@@ -1,145 +1,111 @@
-import { useHomework } from "@/entities/homework";
-import { useUser } from "@/entities/user";
-import { BookOpen } from "lucide-react";
-import { FutureExams } from "@/widgets/FutureExams/ui/FutureExams";
-import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
-import { HomeworkCountersBar } from "@/widgets/HomeworkList/ui/shared/HomeworkCounterBar";
-import { Leaderboard } from "@/widgets/Leaderboard/ui/Leaderboard";
-import { ReviewsList } from "@/widgets/ReviewList/ui/ReviewList";
-import { HomeScheduleSection } from "@/widgets/Schedule/HomeScheduleSection/ui/HomeScheduleSection";
+import { useHomework } from '@/entities/homework'
+import { useUser } from '@/entities/user'
+import { FutureExams } from '@/widgets/FutureExams/ui/FutureExams'
+import { GoalsSummaryCard } from '@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard'
+import { RecentGradesWidget } from '@/widgets/Grades/RecentGradesWidget/ui/RecentGradesWidget'
+import { HomeworkUpcomingWidget } from '@/widgets/HomeworkList/ui/HomeworkUpcomingWidget'
+import { Leaderboard } from '@/widgets/Leaderboard/ui/Leaderboard'
+import { ActivityWidget } from '@/widgets/DashboardCharts/ui/ActivityWidget'
+import { HomeScheduleSection } from '@/widgets/Schedule/HomeScheduleSection/ui/HomeScheduleSection'
+import { NextClassWidget } from '@/widgets/Schedule/NextClassWidget/ui/NextClassWidget'
+import { BookOpen } from 'lucide-react'
 
 /**
  * WebHomePage — десктопная версия главной страницы.
- * MacBook Air 13" (1470×956 logical px).
- *
- * Макет (3 колонки):
- * ┌──────────────┬────────────────┬──────────────┐  высота: 480px
- * │ GoalsSummary │ HomeSchedule   │ Домашка      │
- * │ FutureExams  │                │              │
- * ├──────────────┴────────────────┴──────────────┤  высота: 380px
- * │ Leaderboard          │ Reviews               │
- * └──────────────────────┴───────────────────────┘
+ * 3-колоночный макет.
  */
 export function WebHomePage() {
-	const user = useUser();
-	const { counters, filterStatus, setFilter } = useHomework();
+	const user = useUser()
 
 	return (
-		<div className="p-5 pb-8 flex flex-col gap-4 w-full">
+		<div className='p-5 pb-8 flex flex-col gap-4 w-full'>
+			{/* ОСНОВНАЯ СЕТКА: 3 колонки */}
 			<div
-				className="grid gap-4"
+				className='grid gap-4'
 				style={{
-					gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-					alignItems: "stretch",
+					gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+					alignItems: 'start',
 				}}
 			>
-				{/* ── РЯД 1, ЛЕВО (Сводка + Лидеры) ── */}
-				<div className="flex flex-col gap-4 min-w-0">
-					{/* Сводка */}
+				{/* ── КОЛОНКА 1 ── */}
+				<div className='flex flex-col gap-4 min-w-0'>
+					{/* Сводка / Профиль */}
 					<GoalsSummaryCard />
 
 					{/* Лидеры */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
+						className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0'
 						style={{
-							background: "var(--color-surface)",
-							boxShadow: "var(--shadow-card)",
-							minHeight: "16.25rem",
+							background: 'var(--color-surface)',
+							boxShadow: 'var(--shadow-card)',
+							minHeight: '16.25rem',
 						}}
 					>
 						<div
-							className="overflow-y-auto flex-1 min-h-0"
-							style={{ scrollbarWidth: "thin" }}
+							className='overflow-y-auto flex-1 min-h-0'
+							style={{ scrollbarWidth: 'thin' }}
 						>
 							{user && <Leaderboard myStudentId={user.student_id} />}
 						</div>
 					</div>
+
+					{/* Домашка */}
+					<HomeworkUpcomingWidget />
 				</div>
 
-				{/* ── РЯД 1, ПРАВО (Расписание + Домашка) ── */}
-				<div className="flex flex-col gap-4 min-w-0">
+				{/* ── КОЛОНКА 2 ── */}
+				<div className='flex flex-col gap-4 min-w-0'>
+					{/* Следующая пара */}
+					<NextClassWidget />
+
+					{/* Последние оценки */}
+					<RecentGradesWidget />
+
+					{/* Активность за неделю */}
+					<ActivityWidget />
+				</div>
+
+				{/* ── КОЛОНКА 3 ── */}
+				<div className='flex flex-col gap-4 min-w-0'>
 					{/* Расписание */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
+						className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0'
 						style={{
-							background: "var(--color-surface)",
-							boxShadow: "var(--shadow-card)",
+							background: 'var(--color-surface)',
+							boxShadow: 'var(--shadow-card)',
 						}}
 					>
 						<div
-							className="overflow-y-auto flex-1 min-h-0 -mx-3 px-3 pt-2 pb-3"
-							style={{ scrollbarWidth: "thin" }}
+							className='overflow-y-auto flex-1 min-h-0 -mx-3 px-3 pt-2 pb-3'
+							style={{ scrollbarWidth: 'thin' }}
 						>
-							<HomeScheduleSection cardVariant="homeDesktop" />
+							<HomeScheduleSection cardVariant='homeDesktop' />
 						</div>
 					</div>
 
-					{/* Домашка */}
+					{/* Экзамены */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0 min-w-0 overflow-hidden"
+						className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0'
 						style={{
-							background: "var(--color-surface)",
-							boxShadow: "var(--shadow-card)",
+							background: 'var(--color-surface)',
+							boxShadow: 'var(--shadow-card)',
 						}}
 					>
-						<div className="flex items-center gap-2 mb-4 shrink-0">
-							<BookOpen size={15} className="text-app-muted shrink-0" />
-							<h2 className="text-sm font-bold text-app-text">Домашка</h2>
+						<div className='flex items-center gap-2 mb-3 shrink-0'>
+							<div className='w-[2px] h-5 bg-app-border rounded-full' />
+							<h2 className='text-sm font-bold text-app-text'>
+								Будущие экзамены
+							</h2>
 						</div>
-						<div className="homework-counters-full">
-							{counters && (
-								<HomeworkCountersBar
-									counters={counters}
-									activeFilter={filterStatus}
-									onFilter={setFilter}
-									readonly={true}
-									columns={2}
-								/>
-							)}
+						<div
+							className='overflow-y-auto flex-1 min-h-0'
+							style={{ scrollbarWidth: 'thin' }}
+						>
+							<FutureExams limit={3} />
 						</div>
-					</div>
-				</div>
-
-				{/* ── РЯД 2, ЛЕВО (Экзамены) ── */}
-				<div
-					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
-					style={{
-						background: "var(--color-surface)",
-						boxShadow: "var(--shadow-card)",
-						height: "23.75rem",
-					}}
-				>
-					<div className="flex items-center gap-2 mb-3 shrink-0">
-						<div className="w-[2px] h-5 bg-app-border rounded-full" />
-						<h2 className="text-sm font-bold text-app-text">
-							Будущие экзамены
-						</h2>
-					</div>
-					<div
-						className="overflow-y-auto flex-1 min-h-0"
-						style={{ scrollbarWidth: "thin" }}
-					>
-						<FutureExams />
-					</div>
-				</div>
-
-				{/* ── РЯД 2, ПРАВО (Отзывы) ── */}
-				<div
-					className="rounded-[20px] border border-app-border p-4 flex flex-col h-full min-h-0"
-					style={{
-						background: "var(--color-surface)",
-						boxShadow: "var(--shadow-card)",
-						height: "23.75rem",
-					}}
-				>
-					<div
-						className="overflow-y-auto flex-1 min-h-0"
-						style={{ scrollbarWidth: "thin" }}
-					>
-						<ReviewsList />
 					</div>
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
