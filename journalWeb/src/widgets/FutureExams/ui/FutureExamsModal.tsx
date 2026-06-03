@@ -1,34 +1,36 @@
-import { createPortal } from 'react-dom'
-import { X, CalendarDays } from 'lucide-react'
-import type { FutureExam } from '@/entities/exam'
-import { SurfaceCard } from '@/shared/ui'
-import { formatDate } from '@/shared/utils'
+import { CalendarDays, X } from "lucide-react";
+import { createPortal } from "react-dom";
+import type { FutureExamItem } from "@/entities/exam";
+import { SurfaceCard } from "@/shared/ui";
+import { formatDate } from "@/shared/utils";
 
 interface Props {
-	isOpen: boolean
-	onClose: () => void
-	exams: FutureExam[]
+	isOpen: boolean;
+	onClose: () => void;
+	exams: FutureExamItem[];
 }
 
 export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
 	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12 animate-in fade-in duration-200">
 			{/* Backdrop */}
-			<div 
-				className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-				onClick={onClose} 
+			<button
+				type="button"
+				aria-label="Закрыть будущие экзамены"
+				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+				onClick={onClose}
 			/>
-			
+
 			{/* Modal Container */}
 			<div className="relative w-full max-w-2xl max-h-full flex flex-col bg-app-surface border border-app-border rounded-[24px] shadow-2xl overflow-hidden">
-				
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
 					<h2 className="text-xl font-bold text-app-text">Будущие экзамены</h2>
-					
-					<button 
+
+					<button
+						type="button"
 						onClick={onClose}
 						className="absolute top-6 right-6 text-app-muted hover:text-app-text transition-colors"
 					>
@@ -37,11 +39,17 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 				</div>
 
 				{/* Content Scroll Area */}
-				<div className="flex-1 overflow-y-auto p-6" style={{ scrollbarWidth: 'thin' }}>
+				<div
+					className="flex-1 overflow-y-auto p-6"
+					style={{ scrollbarWidth: "thin" }}
+				>
 					<ul className="flex flex-col gap-2">
 						{exams.map((exam) => (
 							<li key={`${exam.date}-${exam.spec}`}>
-								<SurfaceCard paddingClassName="p-3" className="flex items-center gap-3">
+								<SurfaceCard
+									paddingClassName="p-3"
+									className="flex items-center gap-3"
+								>
 									<div
 										className="flex-shrink-0 w-12 h-12 rounded-xl flex flex-col items-center justify-center"
 										style={
@@ -94,6 +102,6 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 				</div>
 			</div>
 		</div>,
-		document.body
-	)
+		document.body,
+	);
 }

@@ -74,9 +74,7 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 			<div className="flex items-center justify-between mb-3">
 				<div className="flex items-center gap-2">
 					<Target size={16} className="text-app-muted" />
-					<span className="text-[13px] uppercase tracking-wider text-app-muted">
-						Сводка оценок
-					</span>
+					<span className="text-sm font-bold text-app-text">Сводка оценок</span>
 				</div>
 				<ChevronRight size={18} className="text-app-muted" />
 			</div>

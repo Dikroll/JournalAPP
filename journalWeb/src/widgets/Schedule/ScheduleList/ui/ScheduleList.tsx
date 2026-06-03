@@ -7,8 +7,8 @@ import {
 import { toMinutes, useCurrentMinutes } from "@/shared/hooks";
 import { InlineImage } from "@/shared/ui";
 import { GapIndicator } from "./GapIndicator";
-import { LessonCard } from "./LessonCard";
 import type { LessonCardVariant } from "./LessonCard";
+import { LessonCard } from "./LessonCard";
 
 export function ScheduleList({
 	compact = false,
@@ -62,40 +62,75 @@ export function ScheduleList({
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson);
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
 	const isHomeDesktop = cardVariant === "homeDesktop";
+	const activeTimelineDots = sorted.filter(
+		(lesson) =>
+			nowMinutes >= toMinutes(lesson.started_at) &&
+			nowMinutes <= toMinutes(lesson.finished_at),
+	).length
+		? sorted.findIndex(
+				(lesson) =>
+					nowMinutes >= toMinutes(lesson.started_at) &&
+					nowMinutes <= toMinutes(lesson.finished_at),
+			) + 1
+		: sorted.filter((lesson) => nowMinutes > toMinutes(lesson.finished_at))
+				.length;
+	const timelineFillPercent =
+		sorted.length <= 1
+			? activeTimelineDots > 0
+				? 100
+				: 0
+			: Math.max(
+					0,
+					Math.min(100, ((activeTimelineDots - 1) / (sorted.length - 1)) * 100),
+				);
 
 	return (
 		<div className="relative flex flex-col flex-1 min-h-0 w-full">
 			{isHomeDesktop && (
-				<div 
-					className="absolute left-[16px] top-4 bottom-4 w-[1px] z-0" 
-					style={{ background: 'var(--color-border)' }} 
+				<div
+					className="absolute left-[16px] top-[18px] bottom-[18px] w-[2px] -translate-x-1/2 rounded-full z-0"
+					style={{
+						background: `linear-gradient(to bottom, #3B82F6 0%, #3B82F6 ${timelineFillPercent}%, var(--color-border-strong) ${timelineFillPercent}%, var(--color-border-strong) 100%)`,
+						boxShadow:
+							timelineFillPercent > 0
+								? "0 0 12px rgba(59, 130, 246, 0.35)"
+								: "none",
+					}}
 				/>
 			)}
-			<ul className={`flex flex-col flex-1 min-h-0 ${isHomeDesktop ? 'gap-0' : 'gap-1.5'}`}>
-			{sorted.map((lesson, i) => (
-				<li
-					key={`${lesson.started_at}-${lesson.room}`}
-					className="flex flex-col min-h-0"
-				>
-					{i > 0 && (
-						<GapIndicator
-							gap={getGapBetweenLessons(sorted[i - 1], lesson)}
+			<ul
+				className={`flex flex-col flex-1 min-h-0 ${isHomeDesktop ? "gap-0" : "gap-1.5"}`}
+			>
+				{sorted.map((lesson, i) => (
+					<li
+						key={`${lesson.started_at}-${lesson.room}`}
+						className="flex flex-col min-h-0"
+					>
+						{i > 0 && (
+							<GapIndicator
+								gap={getGapBetweenLessons(sorted[i - 1], lesson)}
+								compact={compact}
+								variant={cardVariant}
+								isActive={
+									nowMinutes > toMinutes(sorted[i - 1].finished_at) &&
+									nowMinutes < toMinutes(lesson.started_at)
+								}
+								isPast={nowMinutes >= toMinutes(lesson.started_at)}
+							/>
+						)}
+						<LessonCard
+							lesson={lesson}
 							compact={compact}
 							variant={cardVariant}
+							isCurrent={
+								nowMinutes >= toMinutes(lesson.started_at) &&
+								nowMinutes <= toMinutes(lesson.finished_at)
+							}
+							isPast={nowMinutes > toMinutes(lesson.finished_at)}
+							timeLabel={getLessonTimeLabel(timeInfo, lesson)}
 						/>
-					)}
-					<LessonCard
-						lesson={lesson}
-						compact={compact}
-						variant={cardVariant}
-						isCurrent={
-							nowMinutes >= toMinutes(lesson.started_at) &&
-							nowMinutes <= toMinutes(lesson.finished_at)
-						}
-						timeLabel={getLessonTimeLabel(timeInfo, lesson)}
-					/>
-				</li>
-			))}
+					</li>
+				))}
 			</ul>
 		</div>
 	);

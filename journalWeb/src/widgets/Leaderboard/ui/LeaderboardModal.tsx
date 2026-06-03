@@ -1,18 +1,70 @@
-import { createPortal } from 'react-dom'
-import { X, Crown } from 'lucide-react'
-import { useState } from 'react'
-import { Avatar } from '@/shared/ui'
-import { getCachedImageUrl } from '@/shared/lib'
-import { getShortName } from '@/shared/utils/nameUtils'
-import type { LeaderboardScope, LeaderboardStudent } from '@/entities/leaderboard'
+import { Coins, Crown, X } from "lucide-react";
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import type {
+	LeaderboardScope,
+	LeaderboardStudent,
+} from "@/entities/leaderboard";
+import { getCachedImageUrl } from "@/shared/lib";
+import { Avatar } from "@/shared/ui";
+import { getShortName } from "@/shared/utils/nameUtils";
 
 interface Props {
-	isOpen: boolean
-	onClose: () => void
-	groupStudents: LeaderboardStudent[]
-	streamStudents: LeaderboardStudent[]
-	myStudentId?: number
+	isOpen: boolean;
+	onClose: () => void;
+	groupStudents: LeaderboardStudent[];
+	streamStudents: LeaderboardStudent[];
+	myStudentId?: number;
 }
+
+const RANK_COLORS: Record<number, string> = {
+	1: "#FBBF24",
+	2: "#CBD5E1",
+	3: "#D97706",
+};
+
+const RANK_SURFACES: Record<
+	number,
+	{
+		bg: string;
+		border: string;
+		badgeBg: string;
+		badgeBorder: string;
+		text: string;
+	}
+> = {
+	1: {
+		bg: "linear-gradient(180deg, rgba(251, 191, 36, 0.18), rgba(251, 191, 36, 0.07))",
+		border: "rgba(251, 191, 36, 0.42)",
+		badgeBg: "rgba(251, 191, 36, 0.14)",
+		badgeBorder: "rgba(251, 191, 36, 0.36)",
+		text: "#FBBF24",
+	},
+	2: {
+		bg: "linear-gradient(180deg, rgba(203, 213, 225, 0.16), rgba(203, 213, 225, 0.06))",
+		border: "rgba(203, 213, 225, 0.34)",
+		badgeBg: "rgba(203, 213, 225, 0.12)",
+		badgeBorder: "rgba(203, 213, 225, 0.28)",
+		text: "#CBD5E1",
+	},
+	3: {
+		bg: "linear-gradient(180deg, rgba(217, 119, 6, 0.18), rgba(217, 119, 6, 0.07))",
+		border: "rgba(217, 119, 6, 0.38)",
+		badgeBg: "rgba(217, 119, 6, 0.13)",
+		badgeBorder: "rgba(217, 119, 6, 0.32)",
+		text: "#D97706",
+	},
+};
+
+const HIGHLIGHT = {
+	bg: "var(--color-highlight-bg)",
+	border: "var(--color-highlight-border)",
+	text: "var(--color-highlight-text)",
+	badgeBg: "var(--color-highlight-badge-bg)",
+	badgeBorder: "var(--color-highlight-badge-border)",
+	coin: "var(--color-highlight-coin)",
+	shadow: "var(--color-highlight-shadow)",
+};
 
 export function LeaderboardModal({
 	isOpen,
@@ -21,62 +73,65 @@ export function LeaderboardModal({
 	streamStudents,
 	myStudentId,
 }: Props) {
-	const [scope, setScope] = useState<LeaderboardScope>('group')
-	if (!isOpen) return null
+	const [scope, setScope] = useState<LeaderboardScope>("group");
+	if (!isOpen) return null;
 
-	const students = scope === 'group' ? groupStudents : streamStudents
-	const meIndex = students.findIndex(s => s.student_id === myStudentId)
-	
-	const top3 = students.slice(0, 3)
-	const rest = students.slice(3)
+	const students = scope === "group" ? groupStudents : streamStudents;
+	const meIndex = students.findIndex((s) => s.student_id === myStudentId);
+
+	const top3 = students.slice(0, 3);
+	const rest = students.slice(3);
 
 	const getRankColor = (rank: number) => {
-		if (rank === 1) return "#EAB308" // Gold
-		if (rank === 2) return "#9CA3AF" // Silver
-		if (rank === 3) return "#D97706" // Bronze
-		return "var(--color-text-muted)"
-	}
+		return RANK_COLORS[rank] ?? "var(--color-text-muted)";
+	};
 
 	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12 animate-in fade-in duration-200">
 			{/* Backdrop */}
-			<div 
-				className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-				onClick={onClose} 
+			<button
+				type="button"
+				aria-label="Закрыть рейтинг"
+				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+				onClick={onClose}
 			/>
-			
+
 			{/* Modal Container */}
-			<div className="relative w-full max-w-4xl max-h-full flex flex-col bg-app-surface border border-app-border rounded-[24px] shadow-2xl overflow-hidden">
-				
+			<div
+				className="relative w-full max-w-4xl max-h-full flex flex-col border border-app-border rounded-[24px] shadow-2xl overflow-hidden"
+				style={{ background: "var(--color-modal-bg)" }}
+			>
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
 					<h2 className="text-xl font-bold text-app-text">Рейтинг</h2>
-					
+
 					{/* Tabs */}
 					<div className="flex gap-6 mx-auto sm:absolute sm:left-1/2 sm:-translate-x-1/2">
-						{(['group', 'stream'] as LeaderboardScope[]).map(s => (
+						{(["group", "stream"] as LeaderboardScope[]).map((s) => (
 							<button
+								type="button"
 								key={s}
 								onClick={() => setScope(s)}
 								className={`pb-2 text-sm font-medium transition-colors border-b-2 ${
 									scope === s
-										? 'border-[#EF4444] text-app-text'
-										: 'border-transparent text-app-muted hover:text-app-text'
+										? "border-[#EF4444] text-app-text"
+										: "border-transparent text-app-muted hover:text-app-text"
 								}`}
 							>
-								{s === 'group' ? 'Группа' : 'Поток'}
+								{s === "group" ? "Группа" : "Поток"}
 							</button>
 						))}
 					</div>
-					
-					<button 
+
+					<button
+						type="button"
 						onClick={onClose}
 						className="absolute top-6 right-6 text-app-muted hover:text-app-text transition-colors"
 					>
 						<X size={20} />
 					</button>
 				</div>
-				
+
 				{/* Subtitle */}
 				{meIndex >= 0 && (
 					<div className="text-center py-4 text-sm text-app-muted shrink-0">
@@ -85,85 +140,158 @@ export function LeaderboardModal({
 				)}
 
 				{/* Content Scroll Area */}
-				<div className="flex-1 overflow-y-auto p-6" style={{ scrollbarWidth: 'thin' }}>
-					
+				<div
+					className="flex-1 overflow-y-auto p-6"
+					style={{ scrollbarWidth: "thin" }}
+				>
 					{/* TOP 3 */}
 					<div className="flex justify-center gap-4 sm:gap-8 mb-8">
 						{[
-							{ student: top3[1], rank: 2, mt: 'mt-8' },
-							{ student: top3[0], rank: 1, mt: 'mt-0' },
-							{ student: top3[2], rank: 3, mt: 'mt-12' },
+							{ student: top3[1], rank: 2, mt: "mt-8" },
+							{ student: top3[0], rank: 1, mt: "mt-0" },
+							{ student: top3[2], rank: 3, mt: "mt-12" },
 						].map(({ student, rank, mt }) => {
-							if (!student) return <div key={rank} className={`w-24 sm:w-32 ${mt}`} />
-							const color = getRankColor(rank)
-							
+							if (!student)
+								return (
+									<div key={rank} className={`w-[7.5rem] sm:w-40 ${mt}`} />
+								);
+							const color = getRankColor(rank);
+							const rankSurface = RANK_SURFACES[rank];
+
 							return (
-								<div key={student.student_id} className={`flex flex-col items-center w-24 sm:w-32 ${mt} p-4 rounded-3xl bg-app-surface-strong border border-app-border`}>
+								<div
+									key={student.student_id}
+									className={`flex flex-col items-center w-[7.5rem] sm:w-40 ${mt} px-4 py-5 rounded-3xl border`}
+									style={{
+										background: rankSurface.bg,
+										borderColor: rankSurface.border,
+									}}
+								>
 									<div className="relative mb-3">
 										{rank === 1 && (
-											<Crown size={24} className="absolute -top-7 left-1/2 -translate-x-1/2 text-[#EAB308]" />
+											<Crown
+												size={24}
+												className="absolute -top-7 left-1/2 -translate-x-1/2 text-[#EAB308]"
+											/>
 										)}
-										<Avatar 
-											photoUrl={getCachedImageUrl(student.photo_url) || ""} 
-											fullName={student.full_name} 
-											size={64} 
+										<Avatar
+											photoUrl={getCachedImageUrl(student.photo_url) || ""}
+											fullName={student.full_name}
+											size={70}
 											className="border-[3px]"
 											style={{ borderColor: color }}
 										/>
-										<div 
+										<div
 											className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-[#1C1C1E] text-white"
 											style={{ border: `2px solid ${color}` }}
 										>
 											{rank}
 										</div>
 									</div>
-									<span className="text-sm font-semibold text-app-text text-center line-clamp-1 mb-1 break-all">
+									<span className="text-sm font-semibold text-app-text text-center line-clamp-2 mb-1 leading-tight">
 										{getShortName(student.full_name)}
 									</span>
-									<span className="text-xs text-app-muted font-medium">
-										{student.points.toLocaleString()}
-									</span>
+									<div
+										className="mt-1 flex items-center gap-1 rounded-xl border px-2.5 py-1"
+										style={{
+											background: rankSurface.badgeBg,
+											borderColor: rankSurface.badgeBorder,
+										}}
+									>
+										<Coins size={12} style={{ color: rankSurface.text }} />
+										<span
+											className="text-xs font-bold"
+											style={{ color: rankSurface.text }}
+										>
+											{student.points.toLocaleString()}
+										</span>
+									</div>
 								</div>
-							)
+							);
 						})}
 					</div>
 
 					{/* REST OF LIST */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
 						{rest.map((student, idx) => {
-							const rank = idx + 4
-							const isMe = student.student_id === myStudentId
-							
+							const rank = idx + 4;
+							const isMe = student.student_id === myStudentId;
+
 							return (
-								<div 
-									key={student.student_id} 
-									className={`flex items-center gap-3 px-3 py-2 rounded-2xl ${
-										isMe ? 'bg-app-surface-strong border border-[#D97706]/30' : 'hover:bg-app-surface-strong transition-colors'
-									}`}
+								<div
+									key={student.student_id}
+									className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-colors hover:bg-app-surface-strong"
+									style={
+										isMe
+											? {
+													background: HIGHLIGHT.bg,
+													border: `1px solid ${HIGHLIGHT.border}`,
+													boxShadow: HIGHLIGHT.shadow,
+												}
+											: {
+													border: "1px solid transparent",
+												}
+									}
 								>
-									<div className={`w-6 text-center text-sm font-bold ${isMe ? 'text-[#D97706]' : 'text-app-muted'}`}>
+									<div
+										className="w-6 text-center text-sm font-bold shrink-0"
+										style={{
+											color: isMe ? HIGHLIGHT.text : getRankColor(rank),
+										}}
+									>
 										{rank}
 									</div>
-									<Avatar 
-										photoUrl={getCachedImageUrl(student.photo_url) || ""} 
-										fullName={student.full_name} 
-										size={32} 
+									<Avatar
+										photoUrl={getCachedImageUrl(student.photo_url) || ""}
+										fullName={student.full_name}
+										size={32}
 									/>
 									<div className="flex-1 min-w-0">
-										<span className={`text-sm font-medium truncate ${isMe ? 'text-[#D97706]' : 'text-app-text'}`}>
-											{getShortName(student.full_name)} {isMe && '(Вы)'}
+										<span
+											className="text-sm font-semibold truncate"
+											style={{
+												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+											}}
+										>
+											{getShortName(student.full_name)} {isMe && "(Вы)"}
 										</span>
 									</div>
-									<div className={`text-sm font-medium ${isMe ? 'text-app-text' : 'text-app-muted'}`}>
-										{student.points.toLocaleString()}
+									<div
+										className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
+										style={
+											isMe
+												? {
+														background: HIGHLIGHT.badgeBg,
+														border: `1px solid ${HIGHLIGHT.badgeBorder}`,
+													}
+												: {
+														background: "var(--color-surface-strong)",
+														border: "1px solid var(--color-border)",
+													}
+										}
+									>
+										<Coins
+											size={13}
+											style={{
+												color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
+											}}
+										/>
+										<span
+											className="text-sm font-bold"
+											style={{
+												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+											}}
+										>
+											{student.points.toLocaleString()}
+										</span>
 									</div>
 								</div>
-							)
+							);
 						})}
 					</div>
 				</div>
 			</div>
 		</div>,
-		document.body
-	)
+		document.body,
+	);
 }

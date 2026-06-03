@@ -1,49 +1,77 @@
-import { Crown, TrendingUp } from "lucide-react";
+import { Coins, Crown, Trophy } from "lucide-react";
 import { useState } from "react";
 import type { LeaderboardScope } from "@/entities/leaderboard";
 import { useLeaderboard } from "@/entities/leaderboard";
-import { useUser } from "@/entities/user";
 import { getCachedImageUrl } from "@/shared/lib";
+import { Avatar } from "@/shared/ui";
 import { getShortName } from "@/shared/utils/nameUtils";
 import { LeaderboardModal } from "./LeaderboardModal";
-import { Avatar } from "@/shared/ui";
+
+const RANK_COLORS: Record<number, string> = {
+	1: "#FBBF24",
+	2: "#CBD5E1",
+	3: "#D97706",
+};
+
+const RANK_SURFACES: Record<
+	number,
+	{ badgeBg: string; badgeBorder: string; text: string }
+> = {
+	1: {
+		badgeBg: "rgba(251, 191, 36, 0.14)",
+		badgeBorder: "rgba(251, 191, 36, 0.36)",
+		text: "#FBBF24",
+	},
+	2: {
+		badgeBg: "rgba(203, 213, 225, 0.12)",
+		badgeBorder: "rgba(203, 213, 225, 0.28)",
+		text: "#CBD5E1",
+	},
+	3: {
+		badgeBg: "rgba(217, 119, 6, 0.13)",
+		badgeBorder: "rgba(217, 119, 6, 0.32)",
+		text: "#D97706",
+	},
+};
+
+const HIGHLIGHT = {
+	badgeBg: "var(--color-highlight-badge-bg)",
+	badgeBorder: "var(--color-highlight-badge-border)",
+	text: "var(--color-highlight-text)",
+	coin: "var(--color-highlight-coin)",
+};
+
 export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [scope, setScope] = useState<LeaderboardScope>("group");
+	const scope: LeaderboardScope = "group";
 	const { groupStudents, streamStudents, status } = useLeaderboard();
-	const user = useUser();
 
 	const students = scope === "group" ? groupStudents : streamStudents;
-	
-	const top3 = students.slice(0, 3);
-	
-	// Ensure we have 3 slots even if there are fewer students
-	const paddedTop3 = [
-		top3[0] || null,
-		top3[1] || null,
-		top3[2] || null,
-	];
 
-	const meIndex = students.findIndex(s => s.student_id === myStudentId);
+	const top3 = students.slice(0, 3);
+
+	// Ensure we have 3 slots even if there are fewer students
+	const paddedTop3 = [top3[0] || null, top3[1] || null, top3[2] || null];
+
+	const meIndex = students.findIndex((s) => s.student_id === myStudentId);
 	const me = meIndex >= 0 ? students[meIndex] : null;
 
 	const getRankColor = (rank: number) => {
-		if (rank === 1) return "#EAB308"; // Gold
-		if (rank === 2) return "#9CA3AF"; // Silver
-		if (rank === 3) return "#D97706"; // Bronze
-		return "var(--color-text-muted)";
+		return RANK_COLORS[rank] ?? "var(--color-text-muted)";
 	};
 
 	return (
 		<div className="flex flex-col h-full">
 			<div className="flex items-center justify-between mb-4 shrink-0">
 				<h3 className="text-app-text text-sm font-bold flex items-center gap-2">
-					Лидеры группы
+					<Trophy size={16} className="text-app-muted shrink-0" />
+					<span>Лидеры группы</span>
 				</h3>
 				<div className="flex items-center gap-2">
 					<button
+						type="button"
 						onClick={() => setIsModalOpen(true)}
-						className="text-xs font-medium text-app-muted bg-app-surface-strong hover:bg-app-border px-3 py-1.5 rounded-xl transition-colors"
+						className="text-xs font-semibold text-app-muted bg-app-surface-strong border border-app-border hover:bg-app-surface-active hover:text-app-text hover:border-app-border-strong active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand/30 px-3 py-1.5 rounded-xl transition-all"
 					>
 						Весь рейтинг
 					</button>
@@ -69,29 +97,39 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 						{paddedTop3.map((s, idx) => {
 							const rank = idx + 1;
 							const color = getRankColor(rank);
-							
+							const rankSurface = RANK_SURFACES[rank];
+
 							if (!s) {
 								return (
-									<div key={idx} className="flex flex-col items-center w-1/3 opacity-0">
+									<div
+										key={`empty-rank-${rank}`}
+										className="flex flex-col items-center w-1/3 opacity-0"
+									>
 										<div className="w-12 h-12" />
 									</div>
 								);
 							}
-							
+
 							return (
-								<div key={s.student_id} className="flex flex-col items-center w-1/3 relative">
+								<div
+									key={s.student_id}
+									className="flex flex-col items-center w-1/3 relative"
+								>
 									{rank === 1 && (
-										<Crown size={16} className="absolute -top-5 text-[#EAB308]" />
+										<Crown
+											size={16}
+											className="absolute -top-5 text-[#EAB308]"
+										/>
 									)}
 									<div className="relative">
-										<Avatar 
-											photoUrl={getCachedImageUrl(s.photo_url) || ""} 
-											fullName={s.full_name} 
-											size={48} 
+										<Avatar
+											photoUrl={getCachedImageUrl(s.photo_url) || ""}
+											fullName={s.full_name}
+											size={48}
 											className="border-2"
 											style={{ borderColor: color }}
 										/>
-										<div 
+										<div
 											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[#1C1C1E] text-white"
 											style={{ border: `1px solid ${color}` }}
 										>
@@ -101,9 +139,21 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 									<span className="text-[11px] font-semibold text-app-text mt-3 text-center line-clamp-1 break-all">
 										{getShortName(s.full_name)}
 									</span>
-									<span className="text-[10px] text-app-muted mt-0.5">
-										{s.points}
-									</span>
+									<div
+										className="mt-1 flex items-center gap-1 rounded-lg border px-2 py-0.5"
+										style={{
+											background: rankSurface.badgeBg,
+											borderColor: rankSurface.badgeBorder,
+										}}
+									>
+										<Coins size={10} style={{ color: rankSurface.text }} />
+										<span
+											className="text-[10px] font-bold"
+											style={{ color: rankSurface.text }}
+										>
+											{s.points.toLocaleString()}
+										</span>
+									</div>
 								</div>
 							);
 						})}
@@ -117,20 +167,36 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 							<div className="w-5 text-center text-[13px] font-bold text-[#D97706]">
 								{meIndex + 1}
 							</div>
-							<Avatar photoUrl={getCachedImageUrl(me.photo_url) || ""} fullName={me.full_name} size={32} />
+							<Avatar
+								photoUrl={getCachedImageUrl(me.photo_url) || ""}
+								fullName={me.full_name}
+								size={32}
+							/>
 							<div className="flex flex-col min-w-0 flex-1">
 								<span className="text-[13px] font-medium text-[#D97706] truncate">
 									{getShortName(me.full_name)} (Вы)
 								</span>
 							</div>
-							<span className="text-[13px] font-medium text-app-text">
-								{me.points}
-							</span>
+							<div
+								className="flex items-center gap-1 rounded-xl border px-2.5 py-1.5 shrink-0"
+								style={{
+									background: HIGHLIGHT.badgeBg,
+									borderColor: HIGHLIGHT.badgeBorder,
+								}}
+							>
+								<Coins size={13} style={{ color: HIGHLIGHT.coin }} />
+								<span
+									className="text-[13px] font-bold"
+									style={{ color: HIGHLIGHT.text }}
+								>
+									{me.points.toLocaleString()}
+								</span>
+							</div>
 						</div>
 					)}
 				</div>
 			)}
-			<LeaderboardModal 
+			<LeaderboardModal
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				groupStudents={groupStudents}

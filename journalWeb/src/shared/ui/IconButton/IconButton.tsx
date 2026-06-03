@@ -31,7 +31,7 @@ const variantStyles: Record<IconButtonVariant, string> = {
 	overlay:
 		"bg-glass border border-glass-border text-app-muted hover:text-app-text hover:bg-glass-active",
 	surface:
-		"bg-app-surface border border-app-border text-app-muted active:scale-95 transition-transform",
+		"bg-app-surface-strong border border-app-border text-app-muted hover:text-app-text hover:bg-app-surface-active active:scale-95 transition-transform",
 };
 
 export function IconButton({

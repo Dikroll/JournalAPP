@@ -13,6 +13,7 @@ export type LessonCardVariant = "default" | "homeDesktop" | "weekDesktop";
 interface Props {
 	lesson: LessonItem;
 	isCurrent?: boolean;
+	isPast?: boolean;
 	timeLabel?: string;
 	compact?: boolean;
 	variant?: LessonCardVariant;
@@ -21,6 +22,7 @@ interface Props {
 export function LessonCard({
 	lesson,
 	isCurrent = false,
+	isPast = false,
 	timeLabel,
 	compact = false,
 	variant = "default",
@@ -32,6 +34,11 @@ export function LessonCard({
 	);
 	const isHomeDesktop = variant === "homeDesktop";
 	const isWeekDesktop = variant === "weekDesktop";
+	const timelineDotClass = isCurrent
+		? "bg-[#EF4444]"
+		: isPast
+			? "bg-[#3B82F6]"
+			: "bg-[#64748B]";
 
 	return (
 		<>
@@ -197,18 +204,18 @@ export function LessonCard({
 				/* ── Таймлайн карточка (homeDesktop) ── */
 				<div className="relative py-1 pl-[36px] pr-2 flex flex-col justify-center min-h-0">
 					{/* Timeline dot */}
-					<div 
-						className={`absolute left-[16px] top-[18px] -translate-x-1/2 w-[9px] h-[9px] rounded-full z-10 ring-[3px] ring-app-surface ${
-							isCurrent ? "bg-[#F59E0B]" : "bg-[#3B82F6]"
-						}`}
-					/>
-					
+					<div className="absolute left-[16px] top-[18px] -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full z-10 bg-app-surface flex items-center justify-center">
+						<div
+							className={`w-3 h-3 rounded-full border border-app-border shadow-[0_0_8px_rgba(59,130,246,0.22)] ${timelineDotClass}`}
+						/>
+					</div>
+
 					{/* Card Content Wrapper */}
-					<div 
+					<div
 						className={`flex flex-col flex-1 rounded-[16px] px-3.5 py-2.5 border transition-all ${
 							isCurrent
 								? "bg-app-surface-active border-app-border-strong"
-								: "bg-app-surface border-transparent hover:border-app-border"
+								: "bg-app-surface-hover border-app-border"
 						}`}
 					>
 						<div className="flex items-center gap-1.5 text-app-muted mb-1">
@@ -253,7 +260,7 @@ export function LessonCard({
 							<button
 								type="button"
 								onClick={() => setShowSheet(true)}
-								className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-0.5 text-app-faint hover:text-app-muted transition-colors"
+								className="inline-flex items-center gap-1 border border-dashed border-app-border rounded-lg px-2 py-0.5 text-app-faint hover:text-app-text hover:bg-app-surface-active hover:border-app-border-strong active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand/30 transition-all"
 							>
 								<Plus size={9} />
 								<span className="text-[10px]">Заметка</span>
