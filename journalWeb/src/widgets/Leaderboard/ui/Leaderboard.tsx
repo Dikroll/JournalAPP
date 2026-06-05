@@ -4,6 +4,7 @@ import type { LeaderboardScope } from "@/entities/leaderboard";
 import { useLeaderboard } from "@/entities/leaderboard";
 import { getCachedImageUrl } from "@/shared/lib";
 import { Avatar } from "@/shared/ui";
+import { PhotoViewerModal } from "@/shared/ui/PhotoViewerModal/PhotoViewerModal";
 import { getShortName } from "@/shared/utils/nameUtils";
 import { LeaderboardModal } from "./LeaderboardModal";
 
@@ -43,8 +44,9 @@ const HIGHLIGHT = {
 
 export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [photoViewerSrc, setPhotoViewerSrc] = useState<string | null>(null);
 	const scope: LeaderboardScope = "group";
-	const { groupStudents, streamStudents, status } = useLeaderboard();
+	const { groupStudents, streamStudents, status, myRankGroup, myRankStream } = useLeaderboard();
 
 	const students = scope === "group" ? groupStudents : streamStudents;
 
@@ -95,7 +97,7 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 					{/* TOP 3 */}
 					<div className="flex items-start justify-between px-2 mb-6">
 						{paddedTop3.map((s, idx) => {
-							const rank = idx + 1;
+							const rank = s ? s.position : idx + 1;
 							const color = getRankColor(rank);
 							const rankSurface = RANK_SURFACES[rank];
 
@@ -128,6 +130,7 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 											size={48}
 											className="border-2"
 											style={{ borderColor: color }}
+											onClick={() => s.photo_url ? setPhotoViewerSrc(getCachedImageUrl(s.photo_url) || s.photo_url) : undefined}
 										/>
 										<div
 											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-[#1C1C1E] text-white"
@@ -165,12 +168,13 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 					{me && (
 						<div className="flex items-center gap-3 px-3 py-2 rounded-[16px] bg-[#D97706]/10 border border-[#D97706]/20">
 							<div className="w-5 text-center text-[13px] font-bold text-[#D97706]">
-								{meIndex + 1}
+								{me.position}
 							</div>
 							<Avatar
 								photoUrl={getCachedImageUrl(me.photo_url) || ""}
 								fullName={me.full_name}
 								size={32}
+								onClick={() => me.photo_url ? setPhotoViewerSrc(getCachedImageUrl(me.photo_url) || me.photo_url) : undefined}
 							/>
 							<div className="flex flex-col min-w-0 flex-1">
 								<span className="text-[13px] font-medium text-[#D97706] truncate">
@@ -202,7 +206,16 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 				groupStudents={groupStudents}
 				streamStudents={streamStudents}
 				myStudentId={myStudentId}
+				myRankGroup={myRankGroup}
+				myRankStream={myRankStream}
 			/>
+
+			{photoViewerSrc && (
+				<PhotoViewerModal
+					src={photoViewerSrc}
+					onClose={() => setPhotoViewerSrc(null)}
+				/>
+			)}
 		</div>
 	);
 }

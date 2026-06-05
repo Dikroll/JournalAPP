@@ -4,9 +4,11 @@ import { createPortal } from "react-dom";
 import type {
 	LeaderboardScope,
 	LeaderboardStudent,
+	MyRankEntry,
 } from "@/entities/leaderboard";
 import { getCachedImageUrl } from "@/shared/lib";
 import { Avatar } from "@/shared/ui";
+import { PhotoViewerModal } from "@/shared/ui/PhotoViewerModal/PhotoViewerModal";
 import { getShortName } from "@/shared/utils/nameUtils";
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 	groupStudents: LeaderboardStudent[];
 	streamStudents: LeaderboardStudent[];
 	myStudentId?: number;
+	myRankGroup?: MyRankEntry;
+	myRankStream?: MyRankEntry;
 }
 
 const RANK_COLORS: Record<number, string> = {
@@ -72,12 +76,20 @@ export function LeaderboardModal({
 	groupStudents,
 	streamStudents,
 	myStudentId,
+	myRankGroup,
+	myRankStream,
 }: Props) {
 	const [scope, setScope] = useState<LeaderboardScope>("group");
+	const [photoViewerSrc, setPhotoViewerSrc] = useState<string | null>(null);
 	if (!isOpen) return null;
 
 	const students = scope === "group" ? groupStudents : streamStudents;
 	const meIndex = students.findIndex((s) => s.student_id === myStudentId);
+
+	// For the subtitle: use student.position if user is in the list,
+	// otherwise fall back to the API rank for the current scope
+	const apiRank = scope === "group" ? myRankGroup : myRankStream;
+	const myPosition = meIndex >= 0 ? students[meIndex].position : apiRank?.position ?? null;
 
 	const top3 = students.slice(0, 3);
 	const rest = students.slice(3);
@@ -87,7 +99,7 @@ export function LeaderboardModal({
 	};
 
 	return createPortal(
-		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12 animate-in fade-in duration-200">
+		<div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-12 animate-in fade-in duration-200">
 			{/* Backdrop */}
 			<button
 				type="button"
@@ -99,7 +111,7 @@ export function LeaderboardModal({
 			{/* Modal Container */}
 			<div
 				className="relative w-full max-w-4xl max-h-full flex flex-col border border-app-border rounded-[24px] shadow-2xl overflow-hidden"
-				style={{ background: "var(--color-modal-bg)" }}
+				style={{ background: "var(--color-modal-bg)", maxHeight: "calc(100vh - 16px)" }}
 			>
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
@@ -133,15 +145,15 @@ export function LeaderboardModal({
 				</div>
 
 				{/* Subtitle */}
-				{meIndex >= 0 && (
+				{myPosition != null && (
 					<div className="text-center py-4 text-sm text-app-muted shrink-0">
-						Ваше место: {meIndex + 1} из {students.length}
+						Ваше место: {myPosition}
 					</div>
 				)}
 
 				{/* Content Scroll Area */}
 				<div
-					className="flex-1 overflow-y-auto p-6"
+					className="flex-1 overflow-y-auto p-4 sm:p-6"
 					style={{ scrollbarWidth: "thin" }}
 				>
 					{/* TOP 3 */}
@@ -180,6 +192,7 @@ export function LeaderboardModal({
 											size={70}
 											className="border-[3px]"
 											style={{ borderColor: color }}
+											onClick={() => student.photo_url ? setPhotoViewerSrc(getCachedImageUrl(student.photo_url) || student.photo_url) : undefined}
 										/>
 										<div
 											className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-[#1C1C1E] text-white"
@@ -211,86 +224,117 @@ export function LeaderboardModal({
 						})}
 					</div>
 
-					{/* REST OF LIST */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-						{rest.map((student, idx) => {
-							const rank = idx + 4;
-							const isMe = student.student_id === myStudentId;
+					{/* REST OF LIST – left column fills first */}
+				{(() => {
+					const mid = Math.ceil(rest.length / 2);
+					const leftCol = rest.slice(0, mid);
+					const rightCol = rest.slice(mid);
 
-							return (
+					const renderStudent = (student: LeaderboardStudent) => {
+						const rank = student.position;
+						const isMe = student.student_id === myStudentId;
+
+						return (
+							<div
+								key={student.student_id}
+								className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-colors hover:bg-app-surface-strong"
+								style={
+									isMe
+										? {
+												background: HIGHLIGHT.bg,
+												border: `1px solid ${HIGHLIGHT.border}`,
+												boxShadow: HIGHLIGHT.shadow,
+											}
+										: {
+												border: "1px solid transparent",
+											}
+								}
+							>
 								<div
-									key={student.student_id}
-									className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-colors hover:bg-app-surface-strong"
+									className="w-6 text-center text-sm font-bold shrink-0"
+									style={{
+										color: isMe ? HIGHLIGHT.text : getRankColor(rank),
+									}}
+								>
+									{rank}
+								</div>
+								<Avatar
+									photoUrl={getCachedImageUrl(student.photo_url) || ""}
+									fullName={student.full_name}
+									size={32}
+									onClick={() => student.photo_url ? setPhotoViewerSrc(getCachedImageUrl(student.photo_url) || student.photo_url) : undefined}
+								/>
+								<div className="flex-1 min-w-0 flex items-center gap-1">
+									<span
+										className="text-sm font-semibold truncate block"
+										style={{
+											color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+										}}
+									>
+										{getShortName(student.full_name)}
+									</span>
+									{isMe && (
+										<span
+											className="text-sm font-semibold shrink-0"
+											style={{ color: HIGHLIGHT.text }}
+										>
+											(Вы)
+										</span>
+									)}
+								</div>
+								<div
+									className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
 									style={
 										isMe
 											? {
-													background: HIGHLIGHT.bg,
-													border: `1px solid ${HIGHLIGHT.border}`,
-													boxShadow: HIGHLIGHT.shadow,
+													background: HIGHLIGHT.badgeBg,
+													border: `1px solid ${HIGHLIGHT.badgeBorder}`,
 												}
 											: {
-													border: "1px solid transparent",
+													background: "var(--color-surface-strong)",
+													border: "1px solid var(--color-border)",
 												}
 									}
 								>
-									<div
-										className="w-6 text-center text-sm font-bold shrink-0"
+									<Coins
+										size={13}
 										style={{
-											color: isMe ? HIGHLIGHT.text : getRankColor(rank),
+											color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
+										}}
+									/>
+									<span
+										className="text-sm font-bold"
+										style={{
+											color: isMe ? HIGHLIGHT.text : "var(--color-text)",
 										}}
 									>
-										{rank}
-									</div>
-									<Avatar
-										photoUrl={getCachedImageUrl(student.photo_url) || ""}
-										fullName={student.full_name}
-										size={32}
-									/>
-									<div className="flex-1 min-w-0">
-										<span
-											className="text-sm font-semibold truncate"
-											style={{
-												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
-											}}
-										>
-											{getShortName(student.full_name)} {isMe && "(Вы)"}
-										</span>
-									</div>
-									<div
-										className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
-										style={
-											isMe
-												? {
-														background: HIGHLIGHT.badgeBg,
-														border: `1px solid ${HIGHLIGHT.badgeBorder}`,
-													}
-												: {
-														background: "var(--color-surface-strong)",
-														border: "1px solid var(--color-border)",
-													}
-										}
-									>
-										<Coins
-											size={13}
-											style={{
-												color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
-											}}
-										/>
-										<span
-											className="text-sm font-bold"
-											style={{
-												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
-											}}
-										>
-											{student.points.toLocaleString()}
-										</span>
-									</div>
+										{student.points.toLocaleString()}
+									</span>
 								</div>
-							);
-						})}
-					</div>
+							</div>
+						);
+					};
+
+					return (
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+							<div className="flex flex-col gap-y-2">
+								{leftCol.map((s) => renderStudent(s))}
+							</div>
+							<div className="flex flex-col gap-y-2">
+								{rightCol.map((s) => renderStudent(s))}
+							</div>
+						</div>
+					);
+				})()}
 				</div>
 			</div>
+
+			{photoViewerSrc && (
+				<PhotoViewerModal
+					src={photoViewerSrc}
+					onClose={() => setPhotoViewerSrc(null)}
+				/>
+			)}
 		</div>,
 		document.body,
 	);

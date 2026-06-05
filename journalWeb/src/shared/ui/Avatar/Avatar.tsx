@@ -7,6 +7,7 @@ interface Props {
 	size?: number | string
 	className?: string
 	style?: CSSProperties
+	onClick?: () => void
 }
 
 export function Avatar({
@@ -15,12 +16,14 @@ export function Avatar({
 	size = 40,
 	className = '',
 	style,
+	onClick,
 }: Props) {
 	if (photoUrl) {
 		return (
 			<div
-				className={`rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-app-surface border border-app-border ${className}`}
+				className={`rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center bg-app-surface border border-app-border ${onClick ? 'cursor-pointer' : ''} ${className}`}
 				style={{ width: size, height: size, ...style }}
+				onClick={onClick}
 			>
 				<img
 					src={photoUrl}
@@ -33,7 +36,7 @@ export function Avatar({
 
 	return (
 		<div
-			className={`flex items-center justify-center rounded-full text-white font-bold select-none border border-app-border ${className}`}
+			className={`flex items-center justify-center rounded-full text-white font-bold select-none border border-app-border ${onClick ? 'cursor-pointer' : ''} ${className}`}
 			style={{
 				width: size,
 				height: size,
@@ -42,6 +45,7 @@ export function Avatar({
 				flexShrink: 0,
 				...style,
 			}}
+			onClick={onClick}
 		>
 			{getInitials(fullName)}
 		</div>
