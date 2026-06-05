@@ -15,34 +15,23 @@ export function MarketLink() {
 			className="bg-app-surface rounded-[20px] p-4 border border-app-border block active:scale-[0.99] transition-transform"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
-			<div className="flex items-center justify-between gap-3">
-				<div className="flex items-center gap-3 min-w-0">
-					<div className="w-11 h-11 rounded-[16px] bg-brand/10 flex items-center justify-center text-white">
-						<ShoppingBag size={21} />
-					</div>
-					<div className="min-w-0">
-						<p className="text-sm font-semibold text-app-text">Маркет</p>
-						<p className="text-xs text-app-muted mt-0.5 truncate">
-							Товары за топмани и топгемы
-						</p>
-					</div>
-				</div>
-				<span className="text-sm text-brand font-medium shrink-0">Открыть</span>
+			<div className="flex items-center justify-between mb-4">
+				<h3 className="text-app-text text-sm font-bold flex items-center gap-2">
+					<ShoppingBag size={16} className="text-app-muted shrink-0" />
+					<span>Маркет</span>
+				</h3>
+				<span className="text-xs font-semibold text-brand">Открыть</span>
 			</div>
 
 			{topProducts.length > 0 && (
-				<div className="mt-4 rounded-2xl border border-app-border bg-app-surface-hover overflow-hidden">
+				<div className="flex flex-col gap-3">
 					{topProducts.map((product, index) => {
 						const imageUrl = getCachedImageUrl(product.image_url);
 
 						return (
 							<div
 								key={product.id}
-								className={`flex items-center gap-3 p-3 ${
-									index !== topProducts.length - 1
-										? "border-b border-app-border"
-										: ""
-								}`}
+								className={`flex items-center gap-3`}
 							>
 								<div className="w-11 h-11 shrink-0 rounded-xl bg-app-surface border border-app-border overflow-hidden flex items-center justify-center">
 									{imageUrl ? (

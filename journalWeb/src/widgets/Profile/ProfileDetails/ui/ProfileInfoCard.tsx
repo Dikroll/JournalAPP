@@ -1,35 +1,35 @@
+import type { ProfileDetails } from '@/entities/profile'
+import { formatDate } from '@/shared/utils'
 import {
 	AtSign,
 	Calendar,
 	CheckCircle2,
-	Home,
+	MapPin,
 	Phone,
 	XCircle,
-} from "lucide-react";
-import type { ProfileDetails } from "@/entities/profile";
-import { formatDate } from "@/shared/utils";
-import { Divider, InfoRow } from "./shared/ProfileInfoParts";
+} from 'lucide-react'
+import { Divider, InfoRow } from './shared/ProfileInfoParts'
 
 export function phoneTypeLabel(type: number): string {
 	const map: Record<number, string> = {
-		0: "Мобильный",
-		1: "Домашний",
-		2: "Рабочий",
-	};
-	return map[type] ?? "Телефон";
+		0: 'Мобильный',
+		1: 'Домашний',
+		2: 'Рабочий',
+	}
+	return map[type] ?? 'Телефон'
 }
 
 function VerifiedBadge({ ok }: { ok: boolean }) {
 	return ok ? (
-		<CheckCircle2 size={16} className="text-status-checked" />
+		<CheckCircle2 size={16} className='text-status-checked' />
 	) : (
-		<XCircle size={16} className="text-status-overdue" />
-	);
+		<XCircle size={16} className='text-status-overdue' />
+	)
 }
 
 interface Props {
-	details: ProfileDetails;
-	flat?: boolean;
+	details: ProfileDetails
+	flat?: boolean
 }
 
 export function ProfileInfoCard({ details, flat }: Props) {
@@ -37,53 +37,63 @@ export function ProfileInfoCard({ details, flat }: Props) {
 		<div
 			className={
 				flat
-					? "overflow-hidden"
-					: "bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden"
+					? 'overflow-hidden'
+					: 'bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden'
 			}
-			style={flat ? undefined : { boxShadow: "var(--shadow-card)" }}
+			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
-			<p
-				className={`text-[11px] font-semibold text-app-muted uppercase tracking-wider ${
-					flat ? "px-1" : "px-5"
-				} pt-5 pb-2`}
-			>
-				Личные данные
-			</p>
-			<div className={`${flat ? "px-0" : "px-5"} pb-1`}>
-				<InfoRow
-					icon={<Calendar size={15} />}
-					label="Дата рождения"
-					value={formatDate(details.birthday)}
-				/>
+			{!flat && (
+				<p
+					className={`text-xs font-semibold text-app-muted uppercase tracking-wider px-5 pt-5 pb-4`}
+				>
+					Личные данные
+				</p>
+			)}
+			<div className={`${flat ? '' : 'px-5'} pb-1 flex flex-col`}>
+				<div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8'>
+					<InfoRow
+						icon={<Calendar size={18} strokeWidth={1.5} />}
+						label='Дата рождения'
+						value={formatDate(details.birthday)}
+					/>
+					{details.phones.length > 0 && (
+						<InfoRow
+							icon={<Phone size={18} strokeWidth={1.5} />}
+							label={phoneTypeLabel(details.phones[0].type)}
+							value={details.phones[0].number}
+							badge={<VerifiedBadge ok={details.is_phone_verified} />}
+						/>
+					)}
+				</div>
 				<Divider />
-				<InfoRow
-					icon={<Home size={15} />}
-					label="Адрес"
-					value={details.address}
-				/>
-				<Divider />
-				<InfoRow
-					icon={<AtSign size={15} />}
-					label="Email"
-					value={details.email}
-					badge={<VerifiedBadge ok={details.is_email_verified} />}
-				/>
-				{details.phones.map((p, i) => (
+				<div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8'>
+					<InfoRow
+						icon={<AtSign size={18} strokeWidth={1.5} />}
+						label='Email'
+						value={details.email}
+						badge={<VerifiedBadge ok={details.is_email_verified} />}
+					/>
+					<InfoRow
+						icon={<MapPin size={18} strokeWidth={1.5} />}
+						label='Адрес'
+						value={details.address}
+					/>
+				</div>
+				{details.phones.slice(1).map((p, i) => (
 					<div key={p.number}>
 						<Divider />
-						<InfoRow
-							icon={<Phone size={15} />}
-							label={phoneTypeLabel(p.type)}
-							value={p.number}
-							badge={
-								i === 0 ? (
-									<VerifiedBadge ok={details.is_phone_verified} />
-								) : undefined
-							}
-						/>
+						<div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8'>
+							{/* Placeholder for left column */}
+							<div className='hidden lg:block' />
+							<InfoRow
+								icon={<Phone size={18} strokeWidth={1.5} />}
+								label={phoneTypeLabel(p.type)}
+								value={p.number}
+							/>
+						</div>
 					</div>
 				))}
 			</div>
 		</div>
-	);
+	)
 }

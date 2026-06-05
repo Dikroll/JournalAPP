@@ -6,6 +6,9 @@ import { useProfileDetails } from '@/entities/profile'
 import { pageConfig, PAGE_TITLES } from '@/shared/config'
 import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
 import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'
+import { useAuthStore } from '@/shared/model/authStore'
+import { useUserStore } from '@/entities/user'
+import { LogoutConfirm } from '@/features/changeUser/ui/LogoutConfirm'
 import {
 	AccountSwitcher,
 	ClearCacheSheet,
@@ -21,11 +24,35 @@ export function ProfileDetailsPage() {
 	const { details, status } = useProfileDetails();
 	const [showSwitcher, setShowSwitcher] = useState(false);
 	const [showClearCache, setShowClearCache] = useState(false);
+	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+	const logout = useAuthStore((s) => s.logout);
+	const clearUser = useUserStore((s) => s.clearUser);
+	const activeUsername = useAuthStore((s) => s.activeUsername);
 
 	useSwipeBack();
 
 	const handleAddAccount = () => {
 		navigate(`${pageConfig.login}?addAccount=true`);
+	};
+
+	const handleLogout = () => {
+		const remaining = useAuthStore
+			.getState()
+			.accounts.filter((a) => a.username !== activeUsername);
+		resetAllAppState({
+			resetAuth: false,
+			resetTheme: false,
+			resetOnboarding: false,
+		});
+		clearUser();
+		logout();
+		setShowLogoutConfirm(false);
+		if (remaining.length === 0) {
+			navigate(pageConfig.login, { replace: true });
+		} else {
+			navigate(pageConfig.home, { replace: true });
+		}
 	};
 
 	return (
@@ -63,6 +90,7 @@ export function ProfileDetailsPage() {
 				<SettingsSection
 					onAccounts={() => setShowSwitcher(true)}
 					onClearCache={() => setShowClearCache(true)}
+					onLogout={() => setShowLogoutConfirm(true)}
 				/>
 			</div>
 
@@ -82,6 +110,13 @@ export function ProfileDetailsPage() {
 
 			{showClearCache && (
 				<ClearCacheSheet onClose={() => setShowClearCache(false)} />
+			)}
+
+			{showLogoutConfirm && (
+				<LogoutConfirm
+					onConfirm={handleLogout}
+					onCancel={() => setShowLogoutConfirm(false)}
+				/>
 			)}
 		</div>
 	);

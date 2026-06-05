@@ -74,10 +74,10 @@
 }
 
 /* Скрываем мобильные элементы внутри web-layout */
-.web-layout [class*="top-bar"],
-.web-layout [class*="TopBar"],
-.web-layout [class*="bottom-bar"],
-.web-layout [class*="BottomBar"] {
+.web-layout [class*='top-bar'],
+.web-layout [class*='TopBar'],
+.web-layout [class*='bottom-bar'],
+.web-layout [class*='BottomBar'] {
 	display: none !important;
 }
 

@@ -59,6 +59,7 @@ export { PaymentHistoryCard } from "./Payment/ui/PaymentHistoryCard";
 export { PaymentRequisitesCard } from "./Payment/ui/PaymentRequisitesCard";
 export { PaymentScheduleCard } from "./Payment/ui/PaymentScheduleCard";
 export { ActivityIntroCard, ActivityList } from "./Profile/Activity";
+export { DesktopActivityPreview } from "./Profile/ActivityPreview";
 export { ProfileAvatar } from "./Profile/ProfileDetails/ui/ProfileAvatar";
 export { ProfileInfoCard } from "./Profile/ProfileDetails/ui/ProfileInfoCard";
 export { ProfilePaymentCard } from "./Profile/ProfileDetails/ui/ProfilePaymentCard";
