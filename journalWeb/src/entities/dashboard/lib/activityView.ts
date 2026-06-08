@@ -5,7 +5,11 @@ export type ActivityFilter = "ALL" | "COIN" | "DIAMOND";
 export interface ActivityViewItem {
 	key: string;
 	dateLabel: string;
+	dateGroupKey: string;
+	dateGroupLabel: string;
+	timeLabel: string;
 	title: string;
+	points: number;
 	pointsLabel: string;
 	pointType: string;
 	pointTypeLabel: string;
@@ -47,7 +51,7 @@ const SPEND_ACHIEVEMENTS = new Set([
 	"AUTO_MARK_EXPIRED_HOMEWORK",
 	"REDO_HOMETASK",
 	"REDO_LABORATORY_WORK",
-	"QUIZ_PASSING_EXPIRATION"
+	"QUIZ_PASSING_EXPIRATION",
 ]);
 
 /**
@@ -115,11 +119,16 @@ export function buildActivityViewItems(entries: DashboardActivityEntry[]) {
 					: "rgba(34,197,94,0.24)";
 
 		const pointsPrefix = isSpend ? "−" : "+";
+		const dateInfo = formatActivityDateParts(entry.date);
 
 		return {
 			key: `${entry.date}-${entry.achievement}-${entry.point_type}-${entry.points}-${index}`,
-			dateLabel: formatActivityDate(entry.date),
+			dateLabel: dateInfo.full,
+			dateGroupKey: dateInfo.groupKey,
+			dateGroupLabel: dateInfo.group,
+			timeLabel: dateInfo.time,
 			title: getAchievementLabel(entry.achievement),
+			points: entry.points,
 			pointsLabel: `${pointsPrefix}${entry.points.toLocaleString("ru-RU")}`,
 			pointType: entry.point_type,
 			pointTypeLabel: getPointTypeLabel(entry.point_type),
@@ -130,19 +139,43 @@ export function buildActivityViewItems(entries: DashboardActivityEntry[]) {
 	});
 }
 
-function formatActivityDate(raw: string) {
+function normalizeActivityDate(raw: string) {
 	const normalized = raw.includes(" ") ? raw.replace(" ", "T") : raw;
 	const date = new Date(normalized);
+	return Number.isNaN(date.getTime()) ? null : date;
+}
 
-	if (Number.isNaN(date.getTime())) return raw;
+function formatActivityDateParts(raw: string) {
+	const date = normalizeActivityDate(raw);
 
-	return date.toLocaleString("ru-RU", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-	});
+	if (!date) {
+		return {
+			full: raw,
+			groupKey: raw,
+			group: raw,
+			time: "",
+		};
+	}
+
+	return {
+		full: date.toLocaleString("ru-RU", {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		}),
+		groupKey: date.toISOString().split("T")[0],
+		group: date.toLocaleDateString("ru-RU", {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+		}),
+		time: date.toLocaleTimeString("ru-RU", {
+			hour: "2-digit",
+			minute: "2-digit",
+		}),
+	};
 }
 
 function getAchievementLabel(achievement: string) {

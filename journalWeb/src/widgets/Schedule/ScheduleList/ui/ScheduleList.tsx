@@ -85,7 +85,9 @@ export function ScheduleList({
 				);
 
 	return (
-		<div className="relative flex flex-col flex-1 min-h-0 w-full">
+		<div
+			className={`relative flex flex-col min-h-0 w-full ${isHomeDesktop ? "self-start" : "flex-1"}`}
+		>
 			{isHomeDesktop && (
 				<div
 					className="absolute left-[16px] top-[18px] bottom-[18px] w-[2px] -translate-x-1/2 rounded-full z-0"
@@ -99,7 +101,7 @@ export function ScheduleList({
 				/>
 			)}
 			<ul
-				className={`flex flex-col flex-1 min-h-0 ${isHomeDesktop ? "gap-0" : "gap-1.5"}`}
+				className={`flex flex-col min-h-0 ${isHomeDesktop ? "gap-0" : "flex-1 gap-1.5"}`}
 			>
 				{sorted.map((lesson, i) => (
 					<li

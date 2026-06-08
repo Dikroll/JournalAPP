@@ -17,7 +17,7 @@ export function WebHomePage() {
 	const user = useUser();
 
 	return (
-		<div className="p-5 pb-8 flex flex-col gap-4 w-full h-full min-h-0">
+		<div className="p-5 pb-8 flex flex-col gap-4 w-full h-full min-h-0 overflow-hidden">
 			{/* ОСНОВНАЯ СЕТКА: 3 колонки */}
 			<div
 				className="grid gap-4 flex-1 min-h-0"
@@ -27,7 +27,7 @@ export function WebHomePage() {
 				}}
 			>
 				{/* ── КОЛОНКА 1 (Планирование) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full">
+				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
 					{/* Сводка */}
 					<GoalsSummaryCard />
 
@@ -49,35 +49,35 @@ export function WebHomePage() {
 					</div>
 
 					{/* Домашка (тянется, чтобы закрыть дыру, внутри будет красивое заполнение) */}
-					<HomeworkUpcomingWidget className="flex-1" />
+					<HomeworkUpcomingWidget className="flex-1 min-h-0 overflow-hidden" />
 				</div>
 
 				{/* ── КОЛОНКА 2 (Расписание) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full">
+				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
 					{/* Следующая пара */}
 					<NextClassWidget />
 
 					{/* Расписание (без скролла, тянется чтобы закрыть дыру снизу) */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1"
+						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0 overflow-hidden"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
 						}}
 					>
-						<div className="-mx-3 px-3 pt-2 pb-3 flex flex-col flex-1">
+						<div className="-mx-3 px-3 pt-2 pb-3 flex flex-col flex-1 min-h-0">
 							<HomeScheduleSection cardVariant="homeDesktop" />
 						</div>
 					</div>
 				</div>
 
 				{/* ── КОЛОНКА 3 (Результаты) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full">
+				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
 					{/* Последние оценки */}
 					<RecentGradesWidget />
 
 					{/* Активность (График красиво тянется по высоте!) */}
-					<ActivityWidget className="flex-1" />
+					<ActivityWidget className="flex-1 min-h-0" />
 
 					{/* Лидеры (Схлопывается по контенту, чтобы не было дыры снизу) */}
 					<div
@@ -99,4 +99,3 @@ export function WebHomePage() {
 		</div>
 	);
 }
-

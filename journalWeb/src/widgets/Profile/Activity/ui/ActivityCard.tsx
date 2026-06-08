@@ -1,13 +1,13 @@
-import type { ActivityViewItem } from '@/entities/dashboard'
-import { Coins, Gem, TrendingUp } from 'lucide-react'
-import { memo } from 'react'
+import { Coins, Gem, TrendingUp } from "lucide-react";
+import { memo } from "react";
+import type { ActivityViewItem } from "@/entities/dashboard";
 
 function getPointTypeIcon(pointType: string) {
 	switch (pointType) {
-		case 'COIN':
-			return <Gem size={16} className='text-[#00D9FF]' />
-		case 'DIAMOND':
-			return <Coins size={16} className='text-[#FFD700]' />
+		case "COIN":
+			return <Gem size={16} className="text-[#00D9FF]" />;
+		case "DIAMOND":
+			return <Coins size={16} className="text-[#FFD700]" />;
 		default:
 			return <TrendingUp size={16} className="text-status-checked" />;
 	}
@@ -16,12 +16,17 @@ function getPointTypeIcon(pointType: string) {
 interface Props {
 	item: ActivityViewItem;
 	index: number;
+	desktop?: boolean;
 }
 
-export const ActivityCard = memo(function ActivityCard({ item, index }: Props) {
+export const ActivityCard = memo(function ActivityCard({
+	item,
+	index,
+	desktop = false,
+}: Props) {
 	return (
 		<div
-			className="rounded-[26px] p-4 border border-app-border relative overflow-hidden"
+			className={`${desktop ? "rounded-[22px] p-5 min-h-[148px]" : "rounded-[26px] p-4"} border border-app-border relative overflow-hidden`}
 			style={{
 				boxShadow: "var(--shadow-card)",
 				background:
@@ -31,7 +36,7 @@ export const ActivityCard = memo(function ActivityCard({ item, index }: Props) {
 			}}
 		>
 			<div
-				className="absolute left-0 top-4 bottom-4 w-1 rounded-full"
+				className={`${desktop ? "top-5 bottom-5" : "top-4 bottom-4"} absolute left-0 w-1 rounded-full`}
 				style={{ background: item.accentBorder }}
 			/>
 
@@ -40,15 +45,23 @@ export const ActivityCard = memo(function ActivityCard({ item, index }: Props) {
 					<p className="text-sm font-semibold text-app-text leading-snug">
 						{item.title}
 					</p>
-					<p className="text-xs text-app-muted mt-1">{item.dateLabel}</p>
+					<p className="text-xs text-app-muted mt-1">
+						{desktop ? item.timeLabel : item.dateLabel}
+					</p>
 				</div>
 
 				<div className="text-right shrink-0">
-					<p className="text-lg font-bold text-app-text">{item.pointsLabel}</p>
+					<p
+						className={`${desktop ? "text-2xl" : "text-lg"} font-bold text-app-text`}
+					>
+						{item.pointsLabel}
+					</p>
 				</div>
 			</div>
 
-			<div className="mt-3 flex items-center justify-between gap-3 pl-3">
+			<div
+				className={`${desktop ? "mt-5" : "mt-3"} flex items-center justify-between gap-3 pl-3`}
+			>
 				<div
 					className="inline-flex items-center gap-2 rounded-full px-3 py-1.5"
 					style={{
