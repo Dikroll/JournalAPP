@@ -1,5 +1,5 @@
-import { Coins, Crown, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { BadgeCheck, Crown, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import type {
 	LeaderboardScope,
@@ -103,7 +103,8 @@ export function LeaderboardModal({
 	// For the subtitle: use student.position if user is in the list,
 	// otherwise fall back to the API rank for the current scope
 	const apiRank = scope === "group" ? myRankGroup : myRankStream;
-	const myPosition = meIndex >= 0 ? students[meIndex].position : apiRank?.position ?? null;
+	const myPosition =
+		meIndex >= 0 ? students[meIndex].position : (apiRank?.position ?? null);
 
 	const top3 = students.slice(0, 3);
 	const rest = students.slice(3);
@@ -125,7 +126,10 @@ export function LeaderboardModal({
 			{/* Modal Container */}
 			<div
 				className="relative w-full max-w-4xl max-h-full flex flex-col border border-app-border rounded-[24px] shadow-2xl overflow-hidden"
-				style={{ background: "var(--color-modal-bg)", maxHeight: "calc(100vh - 16px)" }}
+				style={{
+					background: "var(--color-modal-bg)",
+					maxHeight: "calc(100vh - 16px)",
+				}}
 			>
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
@@ -206,7 +210,14 @@ export function LeaderboardModal({
 											size={70}
 											className="border-[3px]"
 											style={{ borderColor: color }}
-											onClick={() => student.photo_url ? setPhotoViewerSrc(getCachedImageUrl(student.photo_url) || student.photo_url) : undefined}
+											onClick={() =>
+												student.photo_url
+													? setPhotoViewerSrc(
+															getCachedImageUrl(student.photo_url) ||
+																student.photo_url,
+														)
+													: undefined
+											}
 										/>
 										<div
 											className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-[#1C1C1E] text-white"
@@ -225,7 +236,7 @@ export function LeaderboardModal({
 											borderColor: rankSurface.badgeBorder,
 										}}
 									>
-										<Coins size={12} style={{ color: rankSurface.text }} />
+										<BadgeCheck size={12} style={{ color: rankSurface.text }} />
 										<span
 											className="text-xs font-bold"
 											style={{ color: rankSurface.text }}
@@ -239,107 +250,114 @@ export function LeaderboardModal({
 					</div>
 
 					{/* REST OF LIST – left column fills first */}
-				{(() => {
-					const mid = Math.ceil(rest.length / 2);
-					const leftCol = rest.slice(0, mid);
-					const rightCol = rest.slice(mid);
+					{(() => {
+						const mid = Math.ceil(rest.length / 2);
+						const leftCol = rest.slice(0, mid);
+						const rightCol = rest.slice(mid);
 
-					const renderStudent = (student: LeaderboardStudent) => {
-						const rank = student.position;
-						const isMe = student.student_id === myStudentId;
+						const renderStudent = (student: LeaderboardStudent) => {
+							const rank = student.position;
+							const isMe = student.student_id === myStudentId;
 
-						return (
-							<div
-								key={student.student_id}
-								className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-colors hover:bg-app-surface-strong"
-								style={
-									isMe
-										? {
-												background: HIGHLIGHT.bg,
-												border: `1px solid ${HIGHLIGHT.border}`,
-												boxShadow: HIGHLIGHT.shadow,
-											}
-										: {
-												border: "1px solid transparent",
-											}
-								}
-							>
+							return (
 								<div
-									className="w-6 text-center text-sm font-bold shrink-0"
-									style={{
-										color: isMe ? HIGHLIGHT.text : getRankColor(rank),
-									}}
-								>
-									{rank}
-								</div>
-								<Avatar
-									photoUrl={getCachedImageUrl(student.photo_url) || ""}
-									fullName={student.full_name}
-									size={32}
-									onClick={() => student.photo_url ? setPhotoViewerSrc(getCachedImageUrl(student.photo_url) || student.photo_url) : undefined}
-								/>
-								<div className="flex-1 min-w-0 flex items-center gap-1">
-									<span
-										className="text-sm font-semibold truncate block"
-										style={{
-											color: isMe ? HIGHLIGHT.text : "var(--color-text)",
-										}}
-									>
-										{getShortName(student.full_name)}
-									</span>
-									{isMe && (
-										<span
-											className="text-sm font-semibold shrink-0"
-											style={{ color: HIGHLIGHT.text }}
-										>
-											(Вы)
-										</span>
-									)}
-								</div>
-								<div
-									className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
+									key={student.student_id}
+									className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-colors hover:bg-app-surface-strong"
 									style={
 										isMe
 											? {
-													background: HIGHLIGHT.badgeBg,
-													border: `1px solid ${HIGHLIGHT.badgeBorder}`,
+													background: HIGHLIGHT.bg,
+													border: `1px solid ${HIGHLIGHT.border}`,
+													boxShadow: HIGHLIGHT.shadow,
 												}
 											: {
-													background: "var(--color-surface-strong)",
-													border: "1px solid var(--color-border)",
+													border: "1px solid transparent",
 												}
 									}
 								>
-									<Coins
-										size={13}
+									<div
+										className="w-6 text-center text-sm font-bold shrink-0"
 										style={{
-											color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
-										}}
-									/>
-									<span
-										className="text-sm font-bold"
-										style={{
-											color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+											color: isMe ? HIGHLIGHT.text : getRankColor(rank),
 										}}
 									>
-										{student.points.toLocaleString()}
-									</span>
+										{rank}
+									</div>
+									<Avatar
+										photoUrl={getCachedImageUrl(student.photo_url) || ""}
+										fullName={student.full_name}
+										size={32}
+										onClick={() =>
+											student.photo_url
+												? setPhotoViewerSrc(
+														getCachedImageUrl(student.photo_url) ||
+															student.photo_url,
+													)
+												: undefined
+										}
+									/>
+									<div className="flex-1 min-w-0 flex items-center gap-1">
+										<span
+											className="text-sm font-semibold truncate block"
+											style={{
+												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+											}}
+										>
+											{getShortName(student.full_name)}
+										</span>
+										{isMe && (
+											<span
+												className="text-sm font-semibold shrink-0"
+												style={{ color: HIGHLIGHT.text }}
+											>
+												(Вы)
+											</span>
+										)}
+									</div>
+									<div
+										className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
+										style={
+											isMe
+												? {
+														background: HIGHLIGHT.badgeBg,
+														border: `1px solid ${HIGHLIGHT.badgeBorder}`,
+													}
+												: {
+														background: "var(--color-surface-strong)",
+														border: "1px solid var(--color-border)",
+													}
+										}
+									>
+										<BadgeCheck
+											size={13}
+											style={{
+												color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
+											}}
+										/>
+										<span
+											className="text-sm font-bold"
+											style={{
+												color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+											}}
+										>
+											{student.points.toLocaleString()}
+										</span>
+									</div>
+								</div>
+							);
+						};
+
+						return (
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+								<div className="flex flex-col gap-y-2">
+									{leftCol.map((s) => renderStudent(s))}
+								</div>
+								<div className="flex flex-col gap-y-2">
+									{rightCol.map((s) => renderStudent(s))}
 								</div>
 							</div>
 						);
-					};
-
-					return (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
-							<div className="flex flex-col gap-y-2">
-								{leftCol.map((s) => renderStudent(s))}
-							</div>
-							<div className="flex flex-col gap-y-2">
-								{rightCol.map((s) => renderStudent(s))}
-							</div>
-						</div>
-					);
-				})()}
+					})()}
 				</div>
 			</div>
 
