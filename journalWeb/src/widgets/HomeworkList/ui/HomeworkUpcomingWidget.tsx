@@ -34,11 +34,11 @@ export function HomeworkUpcomingWidget({
 	const fullUpcoming = [...overdueItems, ...newItems].sort(
 		(a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
 	);
-	
+
 	const upcoming = limit ? fullUpcoming.slice(0, limit) : fullUpcoming;
 	const hasMore = limit ? fullUpcoming.length > limit : false;
-	const hasSpaceForPlaceholder = limit !== undefined && limit > upcoming.length;
-	const shouldShowButton = hasMore || hasSpaceForPlaceholder;
+	const shouldShowFooter =
+		hasMore || upcoming.length < fullUpcoming.length || limit !== undefined;
 
 	return (
 		<div
@@ -122,16 +122,20 @@ export function HomeworkUpcomingWidget({
 						</p>
 					</div>
 				) : (
-					shouldShowButton && (
-						<>
-							<div className="flex-1 min-h-0 pointer-events-none shrink-0" />
-							<button
-								onClick={() => navigate("/homework")}
-								className="w-full mt-2 py-2.5 rounded-xl border border-transparent bg-transparent text-app-muted/50 text-[13px] font-medium hover:bg-app-surface-active hover:text-app-text transition-colors shrink-0"
-							>
-								Это все актуальные задания
-							</button>
-						</>
+					shouldShowFooter && (
+						<button
+							type="button"
+							onClick={() => navigate("/homework")}
+							className={`w-full mt-2 py-2.5 rounded-xl border text-[13px] font-medium transition-colors shrink-0 ${
+								hasMore
+									? "border-app-border bg-app-surface text-app-muted hover:bg-app-surface-active hover:text-app-text"
+									: "border-transparent bg-transparent text-app-muted/50 hover:bg-app-surface-active hover:text-app-text"
+							}`}
+						>
+							{hasMore
+								? `Показать все (${fullUpcoming.length})`
+								: "Это все актуальные задания"}
+						</button>
 					)
 				)}
 			</div>

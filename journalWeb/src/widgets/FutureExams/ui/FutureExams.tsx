@@ -34,79 +34,81 @@ export function FutureExams({ limit }: { limit?: number } = {}) {
 			<div className="flex flex-col gap-2 flex-1 min-h-0">
 				<ul className="flex flex-col gap-2 pr-1 -mr-1 flex-1">
 					{displayExams.map((exam) => (
-					<li key={`${exam.date}-${exam.spec}`} className="shrink-0">
-						<SurfaceCard paddingClassName="p-2.5" className="backdrop-blur-sm flex items-center gap-2.5">
-						<div
-							className="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center"
-							style={
-								exam.days_left !== null && exam.days_left > 7
-									? {
-											background: "var(--color-checked-bg)",
-											border: "1px solid var(--color-checked-border)",
-										}
-									: {
-											background: "var(--color-overdue-bg)",
-											border: "1px solid var(--color-overdue-border)",
-										}
-							}
-						>
-							<CalendarDays
-								size={14}
-								className={`mb-0.5 ${
-									exam.days_left !== null && exam.days_left > 7
-										? "text-status-checked"
-										: "text-status-overdue"
-								}`}
-							/>
-							{exam.days_left !== null && (
-								<span
-									className={`text-[9px] font-bold leading-none ${
-										exam.days_left > 7
-											? "text-status-checked"
-											: "text-status-overdue"
-									}`}
-								>
-									{exam.days_left}д
-								</span>
-							)}
-						</div>
-						<div className="flex flex-col min-w-0">
-							<div
-								className="font-medium text-[13px] leading-snug text-app-text line-clamp-2"
-								title={exam.spec}
+						<li key={`${exam.date}-${exam.spec}`} className="shrink-0">
+							<SurfaceCard
+								paddingClassName="p-2.5"
+								className="backdrop-blur-sm flex items-center gap-2.5"
 							>
-								{exam.spec}
-							</div>
-							<div className="text-app-muted text-[11px] mt-0.5 truncate">
-								{formatDate(exam.date)}
-							</div>
-						</div>
-						</SurfaceCard>
-					</li>
-				))}
-				
-				{shouldShowButton && <div className="flex-1 min-h-0 pointer-events-none shrink-0" />}
-			</ul>
-			
-			{shouldShowButton && (
-				<button
-					onClick={() => setIsModalOpen(true)}
-					className={`w-full mt-2 py-2.5 rounded-xl border text-[13px] font-medium transition-colors shrink-0 ${
-						hasMore 
-							? "border-app-border bg-app-surface text-app-muted hover:bg-app-border hover:text-app-text" 
-							: "border-transparent bg-transparent text-app-muted/50 hover:bg-app-surface-active hover:text-app-text"
-					}`}
-				>
-					{hasMore ? `Показать все (${exams.length})` : "Это все экзамены"}
-				</button>
-			)}
-		</div>
+								<div
+									className="flex-shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center"
+									style={
+										exam.days_left !== null && exam.days_left > 7
+											? {
+													background: "var(--color-checked-bg)",
+													border: "1px solid var(--color-checked-border)",
+												}
+											: {
+													background: "var(--color-overdue-bg)",
+													border: "1px solid var(--color-overdue-border)",
+												}
+									}
+								>
+									<CalendarDays
+										size={14}
+										className={`mb-0.5 ${
+											exam.days_left !== null && exam.days_left > 7
+												? "text-status-checked"
+												: "text-status-overdue"
+										}`}
+									/>
+									{exam.days_left !== null && (
+										<span
+											className={`text-[9px] font-bold leading-none ${
+												exam.days_left > 7
+													? "text-status-checked"
+													: "text-status-overdue"
+											}`}
+										>
+											{exam.days_left}д
+										</span>
+									)}
+								</div>
+								<div className="flex flex-col min-w-0">
+									<div
+										className="font-medium text-[13px] leading-snug text-app-text line-clamp-2"
+										title={exam.spec}
+									>
+										{exam.spec}
+									</div>
+									<div className="text-app-muted text-[11px] mt-0.5 truncate">
+										{formatDate(exam.date)}
+									</div>
+								</div>
+							</SurfaceCard>
+						</li>
+					))}
+				</ul>
 
-		<FutureExamsModal 
-			isOpen={isModalOpen} 
-			onClose={() => setIsModalOpen(false)} 
-			exams={exams} 
-		/>
+				{shouldShowButton && (
+					<button
+						type="button"
+						onClick={() => setIsModalOpen(true)}
+						className={`w-full mt-2 py-2.5 rounded-xl border text-[13px] font-medium transition-colors shrink-0 ${
+							hasMore
+								? "border-app-border bg-app-surface text-app-muted hover:bg-app-border hover:text-app-text"
+								: "border-transparent bg-transparent text-app-muted/50 hover:bg-app-surface-active hover:text-app-text"
+						}`}
+					>
+						{hasMore ? `Показать все (${exams.length})` : "Это все экзамены"}
+					</button>
+				)}
+			</div>
+
+			<FutureExamsModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				exams={exams}
+			/>
 		</>
 	);
 }
