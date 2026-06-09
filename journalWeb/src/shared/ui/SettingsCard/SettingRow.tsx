@@ -33,17 +33,13 @@ export function SettingRow<T extends string | number>({
 				<div
 					className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
 					style={{
-						background: enabled
-							? "var(--color-brand-subtle)"
-							: "var(--color-surface-strong)",
-						border: enabled
-							? "1px solid var(--color-brand-border)"
-							: "1px solid var(--color-border)",
+						background: "var(--color-surface-strong)",
+						border: "1px solid var(--color-border)",
 					}}
 				>
 					<Icon
 						size={15}
-						className={enabled ? "text-brand" : "text-app-muted"}
+						className="text-app-muted"
 					/>
 				</div>
 				<div className="flex-1 min-w-0">
@@ -55,21 +51,17 @@ export function SettingRow<T extends string | number>({
 				<button
 					type="button"
 					onClick={() => onToggle(!enabled)}
-					className="relative w-11 h-[26px] rounded-full transition-colors duration-300 flex-shrink-0"
-					style={{
-						background: enabled
-							? "var(--color-brand)"
-							: "var(--color-border-strong)",
-						WebkitTapHighlightColor: "transparent",
-					}}
+					className={`relative w-11 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${
+						enabled ? "bg-brand" : "bg-app-border-strong"
+					}`}
+					style={{ WebkitTapHighlightColor: "transparent" }}
 					aria-pressed={enabled}
 					aria-label={title}
 				>
 					<div
-						className="absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300"
-						style={{
-							transform: enabled ? "translateX(22px)" : "translateX(3px)",
-						}}
+						className={`absolute top-[2px] left-[2px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+							enabled ? "translate-x-5" : "translate-x-0"
+						}`}
 					/>
 				</button>
 			</div>

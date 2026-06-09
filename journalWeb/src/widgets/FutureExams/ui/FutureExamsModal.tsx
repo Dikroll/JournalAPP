@@ -1,6 +1,8 @@
 import { CalendarDays, X } from "lucide-react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { FutureExamItem } from "@/entities/exam";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { formatDate } from "@/shared/utils";
 
 interface Props {
@@ -10,6 +12,19 @@ interface Props {
 }
 
 export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
+	const isDesktop = useIsDesktop();
+
+	useEffect(() => {
+		if (!isOpen || !isDesktop) return;
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [isOpen, isDesktop, onClose]);
+
 	if (!isOpen) return null;
 
 	return createPortal(

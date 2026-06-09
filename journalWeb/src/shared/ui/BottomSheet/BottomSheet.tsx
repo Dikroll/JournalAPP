@@ -38,6 +38,19 @@ export function BottomSheet({
 		};
 	}, []);
 
+	useEffect(() => {
+		if (!isDesktop || !onBackdropClick) return;
+		
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
+				onBackdropClick();
+			}
+		};
+		
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [isDesktop, onBackdropClick]);
+
 	const dismiss = useCallback(() => {
 		onBackdropClick?.();
 	}, [onBackdropClick]);

@@ -1,11 +1,12 @@
 import { Coins, Crown, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type {
 	LeaderboardScope,
 	LeaderboardStudent,
 	MyRankEntry,
 } from "@/entities/leaderboard";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { getCachedImageUrl } from "@/shared/lib";
 import { Avatar } from "@/shared/ui";
 import { PhotoViewerModal } from "@/shared/ui/PhotoViewerModal/PhotoViewerModal";
@@ -79,8 +80,21 @@ export function LeaderboardModal({
 	myRankGroup,
 	myRankStream,
 }: Props) {
+	const isDesktop = useIsDesktop();
 	const [scope, setScope] = useState<LeaderboardScope>("group");
 	const [photoViewerSrc, setPhotoViewerSrc] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!isOpen || !isDesktop) return;
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [isOpen, isDesktop, onClose]);
+
 	if (!isOpen) return null;
 
 	const students = scope === "group" ? groupStudents : streamStudents;

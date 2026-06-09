@@ -10,9 +10,7 @@ export function ProfilePaymentCard() {
 		>
 			<div className="flex items-center gap-2 px-5 pt-5 pb-3">
 				<CreditCard size={16} className="text-app-muted" />
-				<p className="text-[11px] font-semibold text-app-muted uppercase tracking-wider">
-					Оплата
-				</p>
+				<h3 className="text-sm font-bold text-app-text">Оплата</h3>
 			</div>
 
 			<div className="px-4 pb-4">

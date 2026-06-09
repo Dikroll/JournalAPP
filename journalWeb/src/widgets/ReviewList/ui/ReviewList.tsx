@@ -36,7 +36,7 @@ export function ReviewsList() {
 		<div className="bg-app-surface rounded-[20px] p-4 border border-app-border" style={{ boxShadow: "var(--shadow-card)" }}>
 			<h3 className="text-app-text text-sm font-bold flex items-center gap-2 mb-4">
 				<MessageSquare size={16} className="text-app-muted shrink-0" />
-				<span>Отзывы преподавателей</span>
+				<span>Отзывы Преподавателей</span>
 			</h3>
 
 			<div>

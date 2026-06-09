@@ -24,9 +24,7 @@ export function SettingsSection({ onAccounts, onClearCache, onLogout }: Props) {
 		>
 			<div className="flex items-center gap-2 px-5 pt-5 pb-3">
 				<Settings size={16} className="text-app-muted" />
-				<p className="text-[11px] font-semibold text-app-muted uppercase tracking-wider">
-					Настройки
-				</p>
+				<h3 className="text-sm font-bold text-app-text">Настройки</h3>
 			</div>
 
 			<div className="pb-2">
@@ -81,22 +79,14 @@ export function SettingsSection({ onAccounts, onClearCache, onLogout }: Props) {
 						Тема
 					</span>
 					<div
-						className="relative w-11 h-[26px] rounded-full transition-colors duration-300"
-						style={{
-							background:
-								theme === "light"
-									? "var(--color-brand)"
-									: "var(--color-border-strong)",
-						}}
+						className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
+							theme === "dark" ? "bg-brand" : "bg-app-border-strong"
+						}`}
 					>
 						<div
-							className="absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300"
-							style={{
-								transform:
-									theme === "light"
-										? "translateX(22px)"
-										: "translateX(3px)",
-							}}
+							className={`absolute top-[2px] left-[2px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+								theme === "dark" ? "translate-x-5" : "translate-x-0"
+							}`}
 						/>
 					</div>
 				</button>

@@ -1,4 +1,4 @@
-import { Coffee, GraduationCap, Sunrise } from "lucide-react";
+import { Coffee, GraduationCap, Sunrise, CalendarDays } from "lucide-react";
 import {
 	type PillOption,
 	SectionCard,
@@ -60,7 +60,7 @@ export function ScheduleRemindersSection() {
 	);
 
 	return (
-		<SectionCard title="Расписание">
+		<SectionCard title="Расписание" icon={CalendarDays}>
 			<SettingRow
 				icon={Sunrise}
 				title="Перед первой парой"

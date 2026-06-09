@@ -1,24 +1,23 @@
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 interface Props {
 	title: string;
+	icon?: LucideIcon;
 	children: ReactNode;
 }
 
-export function SectionCard({ title, children }: Props) {
+export function SectionCard({ title, icon: Icon, children }: Props) {
 	return (
-		<div className="space-y-2">
-			<p className="text-xs font-semibold text-app-muted uppercase tracking-wider px-1">
-				{title}
-			</p>
-			<div
-				className="rounded-[20px] overflow-hidden"
-				style={{
-					background: "var(--color-surface)",
-					border: "1px solid var(--color-border)",
-					boxShadow: "var(--shadow-card)",
-				}}
-			>
+		<div
+			className="bg-app-surface rounded-[24px] border border-app-border overflow-hidden"
+			style={{ boxShadow: "var(--shadow-card)" }}
+		>
+			<div className="flex items-center gap-2 px-5 pt-5 pb-3">
+				{Icon && <Icon size={16} className="text-app-muted" />}
+				<h3 className="text-sm font-bold text-app-text">{title}</h3>
+			</div>
+			<div className="pb-2">
 				{children}
 			</div>
 		</div>

@@ -125,13 +125,13 @@ export function LessonList({
 							Еще {hiddenCount} пар
 						</div>
 					</li>
-				) : (
+				) : isHomeDesktop ? (
 					<li className="flex-1 flex flex-col items-center justify-start min-h-[40px] opacity-30 select-none pointer-events-none mt-4 shrink-0">
 						<p className="text-[12px] font-medium text-app-muted text-center pl-[20px]">
 							На этот день всё
 						</p>
 					</li>
-				)}
+				) : null}
 			</ul>
 		</div>
 	);

@@ -131,7 +131,7 @@ export function ProfilePage() {
 		<div className='pb-24 w-full lg:max-w-7xl lg:mx-auto lg:px-8 lg:pt-6'>
 			<div className='grid grid-cols-1 lg:grid-cols-[1fr_380px] lg:gap-6 items-start'>
 				{/* Левая колонка: Шапка, Детали, Отзывы, История */}
-				<div className='space-y-4'>
+				<div className='space-y-4 min-w-0'>
 					<div className='lg:-mx-4 lg:-mt-4'>
 						<ProfileHeader user={user} rank={myRankGroup?.position} />
 					</div>
@@ -148,8 +148,8 @@ export function ProfilePage() {
 							>
 								<div className='flex items-center justify-between mb-4'>
 									<h2 className='text-[17px] font-bold text-app-text flex items-center gap-2.5'>
-										<Users size={20} className='text-[#E0A890]' />
-										Личные данные
+										<Users size={20} className='text-app-muted' />
+										Личные Данные
 									</h2>
 								</div>
 								<ProfileInfoCard details={details} flat />

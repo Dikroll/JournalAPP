@@ -130,10 +130,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 	return <>{children}</>
 }
 
-function MobileOnlyRoute({ children }: { children: React.ReactNode }) {
+function MobileOnlyRoute({ children, fallback = pageConfig.news }: { children: React.ReactNode, fallback?: string }) {
 	const isDesktop = useIsDesktop()
 
-	return isDesktop ? <Navigate to={pageConfig.news} replace /> : <>{children}</>
+	return isDesktop ? <Navigate to={fallback} replace /> : <>{children}</>
 }
 
 import { ErrorBoundary } from '@/shared/ui'
@@ -236,9 +236,11 @@ function AppRoutes() {
 						<Route
 							path='profile/details'
 							element={
-								<Suspended>
-									<ProfileDetailsPage />
-								</Suspended>
+								<MobileOnlyRoute fallback={pageConfig.profile}>
+									<Suspended>
+										<ProfileDetailsPage />
+									</Suspended>
+								</MobileOnlyRoute>
 							}
 						/>
 						<Route
@@ -252,9 +254,11 @@ function AppRoutes() {
 						<Route
 							path='profile/notification-settings'
 							element={
-								<Suspended>
-									<NotificationSettingsPage />
-								</Suspended>
+								<MobileOnlyRoute fallback={pageConfig.profile}>
+									<Suspended>
+										<NotificationSettingsPage />
+									</Suspended>
+								</MobileOnlyRoute>
 							}
 						/>
 						<Route

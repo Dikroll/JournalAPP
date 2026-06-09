@@ -49,7 +49,7 @@ export function ExamRemindersSection() {
 	const setNotifyHour = useExamRemindersStore((s) => s.setNotifyHour);
 
 	return (
-		<SectionCard title="Экзамены">
+		<SectionCard title="Экзамены" icon={GraduationCap}>
 			<SettingRow
 				icon={GraduationCap}
 				title="Уведомления об экзаменах"

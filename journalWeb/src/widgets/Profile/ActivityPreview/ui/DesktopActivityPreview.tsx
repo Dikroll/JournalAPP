@@ -25,9 +25,9 @@ export function DesktopActivityPreview() {
     return (
         <div className="bg-app-surface rounded-[24px] border border-app-border p-5" style={{ boxShadow: 'var(--shadow-card)' }}>
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-app-text text-base font-semibold flex items-center gap-2">
-                    <Clock size={18} className="text-app-muted" />
-                    История операций
+                <h3 className="text-sm font-bold text-app-text flex items-center gap-2">
+                    <Clock size={16} className="text-app-muted" />
+                    <span>История активности</span>
                 </h3>
                 <button 
                     onClick={() => navigate(pageConfig.profileActivity)}

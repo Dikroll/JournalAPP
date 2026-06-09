@@ -33,7 +33,7 @@ export function NotificationSettingsPage() {
 				</div>
 			</div>
 
-			<div className="px-4 space-y-3">
+			<div className="px-4 space-y-4">
 				<MasterRemindersToggle />
 				{enabled && <ScheduleRemindersSection />}
 				{enabled && <ExamRemindersSection />}

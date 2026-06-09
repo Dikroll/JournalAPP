@@ -17,8 +17,8 @@ export function DesktopMarketWidget({ user }: Props) {
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center gap-2 mb-5">
-				<Wallet size={20} className="text-app-text" />
-				<h3 className="text-app-text text-lg font-bold leading-snug">Баланс</h3>
+				<Wallet size={16} className="text-app-muted" />
+				<h3 className="text-sm font-bold text-app-text">Баланс</h3>
 			</div>
 
 			<div className="grid grid-cols-2 gap-3 mb-5">

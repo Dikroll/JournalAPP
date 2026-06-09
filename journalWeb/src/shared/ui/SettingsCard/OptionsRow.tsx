@@ -24,11 +24,11 @@ export function OptionsRow<T extends string | number>({
 				<div
 					className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
 					style={{
-						background: "var(--color-brand-subtle)",
-						border: "1px solid var(--color-brand-border)",
+						background: "var(--color-surface-strong)",
+						border: "1px solid var(--color-border)",
 					}}
 				>
-					<Icon size={15} className="text-brand" />
+					<Icon size={15} className="text-app-muted" />
 				</div>
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium text-app-text">{title}</p>

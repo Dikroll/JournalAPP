@@ -1,4 +1,4 @@
-import { BellRing } from "lucide-react";
+import { BellRing, Settings } from "lucide-react";
 import { SectionCard, SettingRow } from "@/shared/ui";
 import { useScheduleRemindersStore } from "../model/store";
 
@@ -7,7 +7,7 @@ export function MasterRemindersToggle() {
 	const setEnabled = useScheduleRemindersStore((s) => s.setEnabled);
 
 	return (
-		<SectionCard title="Общее">
+		<SectionCard title="Общее" icon={Settings}>
 			<SettingRow
 				icon={BellRing}
 				title="Включить уведомления"

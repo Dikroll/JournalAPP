@@ -9,6 +9,8 @@ import {
 	Newspaper,
 	Store,
 	CreditCard,
+	User,
+	Clock,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -31,6 +33,8 @@ export const studyNavItems: NavItemConfig[] = [
 ]
 
 export const quickLinksNavItems: NavItemConfig[] = [
+	{ to: pageConfig.profile, label: 'Профиль', icon: User, exact: true },
+	{ to: pageConfig.profileActivity, label: 'История активности', icon: Clock, exact: false },
 	{ to: pageConfig.evaluateLesson, label: 'Оценка занятий', icon: Star, exact: false },
 	{ to: pageConfig.news, label: 'Новости', icon: Newspaper, exact: false },
 	{ to: pageConfig.market, label: 'Маркет', icon: Store, exact: false },

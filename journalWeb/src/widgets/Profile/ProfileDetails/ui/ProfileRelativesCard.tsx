@@ -120,9 +120,7 @@ export function ProfileRelativesCard({ relatives, flat }: Props) {
 				className={`flex items-center gap-2 ${flat ? "px-1" : "px-5"} pt-5 pb-3`}
 			>
 				<Users size={16} className="text-app-muted" />
-				<p className="text-[11px] font-semibold text-app-muted uppercase tracking-wider">
-					Родственники
-				</p>
+				<h3 className="text-sm font-bold text-app-text">Родственники</h3>
 				<span className="ml-auto text-xs font-semibold text-app-text bg-app-surface-strong px-2 py-0.5 rounded-full">
 					{relatives.length}
 				</span>

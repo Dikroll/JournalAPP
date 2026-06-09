@@ -108,7 +108,7 @@ export function ScheduleList({
 				/>
 			)}
 			<ul
-				className={`flex flex-col min-h-0 flex-1 ${isHomeDesktop ? "gap-0" : "gap-1.5"}`}
+				className={`flex flex-col min-h-0 flex-1 ${isHomeDesktop ? "gap-0" : compact ? "gap-1.5" : "gap-3"}`}
 			>
 				{visibleLessons.map((lesson, i) => (
 					<li
@@ -146,13 +146,13 @@ export function ScheduleList({
 							Еще {hiddenCount} пар
 						</div>
 					</li>
-				) : (
+				) : isHomeDesktop ? (
 					<li className="flex-1 flex flex-col items-center justify-start min-h-[40px] opacity-30 select-none pointer-events-none mt-4 shrink-0">
 						<p className="text-[12px] font-medium text-app-muted text-center pl-[20px]">
 							На сегодня всё
 						</p>
 					</li>
-				)}
+				) : null}
 			</ul>
 		</div>
 	);

@@ -6,6 +6,7 @@ import {
 	CheckCircle2,
 	MapPin,
 	Phone,
+	Users,
 	XCircle,
 } from 'lucide-react'
 import { Divider, InfoRow } from './shared/ProfileInfoParts'
@@ -43,11 +44,10 @@ export function ProfileInfoCard({ details, flat }: Props) {
 			style={flat ? undefined : { boxShadow: 'var(--shadow-card)' }}
 		>
 			{!flat && (
-				<p
-					className={`text-xs font-semibold text-app-muted uppercase tracking-wider px-5 pt-5 pb-4`}
-				>
-					Личные данные
-				</p>
+				<div className="flex items-center gap-2 px-5 pt-5 pb-4">
+					<Users size={16} className="text-app-muted" />
+					<h3 className="text-sm font-bold text-app-text">Личные Данные</h3>
+				</div>
 			)}
 			<div className={`${flat ? '' : 'px-5'} pb-1 flex flex-col`}>
 				<div className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8'>
