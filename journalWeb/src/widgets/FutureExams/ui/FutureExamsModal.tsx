@@ -1,7 +1,6 @@
 import { CalendarDays, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import type { FutureExamItem } from "@/entities/exam";
-import { SurfaceCard } from "@/shared/ui";
 import { formatDate } from "@/shared/utils";
 
 interface Props {
@@ -19,14 +18,14 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 			<button
 				type="button"
 				aria-label="Закрыть будущие экзамены"
-				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+				className="absolute inset-0 bg-black/85"
 				onClick={onClose}
 			/>
 
 			{/* Modal Container */}
-			<div className="relative w-full max-w-2xl max-h-full flex flex-col bg-app-surface border border-app-border rounded-[24px] shadow-2xl overflow-hidden">
+			<div className="relative w-full max-w-2xl max-h-full flex flex-col bg-[#202126] border border-[#3A3B42] rounded-[24px] shadow-2xl overflow-hidden">
 				{/* Header */}
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-[#34363D] gap-4 shrink-0">
 					<h2 className="text-xl font-bold text-app-text">Будущие экзамены</h2>
 
 					<button
@@ -46,10 +45,7 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 					<ul className="flex flex-col gap-2">
 						{exams.map((exam) => (
 							<li key={`${exam.date}-${exam.spec}`}>
-								<SurfaceCard
-									paddingClassName="p-3"
-									className="flex items-center gap-3"
-								>
+								<div className="flex items-center gap-3 rounded-[18px] border border-[#454750] bg-[#303238] p-3">
 									<div
 										className="flex-shrink-0 w-12 h-12 rounded-xl flex flex-col items-center justify-center"
 										style={
@@ -95,7 +91,7 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 											{formatDate(exam.date)}
 										</div>
 									</div>
-								</SurfaceCard>
+								</div>
 							</li>
 						))}
 					</ul>

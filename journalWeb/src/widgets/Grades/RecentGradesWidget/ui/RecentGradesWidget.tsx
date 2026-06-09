@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { getGradeStyle, useGrades } from "@/entities/grades";
 import { formatDateRelative } from "@/shared/utils";
 
-export function RecentGradesWidget() {
+export function RecentGradesWidget({ limit = 5 }: { limit?: number }) {
 	const { entries } = useGrades();
 	const navigate = useNavigate();
 
 	const recentGrades = entries
 		.filter((e) => e.marks && Object.values(e.marks).some((v) => v !== null))
 		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-		.slice(0, 5);
+		.slice(0, limit);
 
 	if (recentGrades.length === 0) {
 		return (

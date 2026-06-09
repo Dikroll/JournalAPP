@@ -20,8 +20,10 @@ function getDeadlineLabel(deadline: string, isOverdue: boolean) {
 
 export function HomeworkUpcomingWidget({
 	className = "",
+	limit = 3,
 }: {
 	className?: string;
+	limit?: number;
 }) {
 	const navigate = useNavigate();
 	const { items, counters } = useHomework();
@@ -33,7 +35,7 @@ export function HomeworkUpcomingWidget({
 		.sort(
 			(a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
 		)
-		.slice(0, 3);
+		.slice(0, limit);
 
 	return (
 		<div
@@ -57,10 +59,7 @@ export function HomeworkUpcomingWidget({
 				</button>
 			</div>
 
-			<div
-				className="flex flex-col gap-2 overflow-y-auto flex-1 min-h-0"
-				style={{ scrollbarWidth: "thin" }}
-			>
+			<div className="flex flex-col gap-2 flex-1 min-h-0">
 				{upcoming.map((hw) => {
 					const isOverdue = hw.status === STATUS_KEY_MAP.overdue;
 
@@ -111,13 +110,13 @@ export function HomeworkUpcomingWidget({
 				})}
 
 				{/* Декоративное заполнение пустого пространства, если заданий мало */}
-				{upcoming.length <= 2 && (
+				{upcoming.length === 0 && (
 					<div className="flex-1 flex flex-col items-center justify-center min-h-[120px] opacity-40 select-none pointer-events-none mt-2">
 						<CheckCircle size={32} className="mb-2 text-app-muted" />
 						<p className="text-[13px] font-medium text-app-muted text-center leading-snug">
-							{upcoming.length === 0
-								? "Нет актуальных заданий\nВы всё сдали!"
-								: "Почти всё готово!\nОтличная работа."}
+							Нет актуальных заданий
+							<br />
+							Вы всё сдали!
 						</p>
 					</div>
 				)}

@@ -12,6 +12,7 @@ interface Props {
 	forDate?: string;
 	compact?: boolean;
 	cardVariant?: LessonCardVariant;
+	limit?: number;
 }
 
 export function LessonList({
@@ -19,6 +20,7 @@ export function LessonList({
 	forDate,
 	compact = false,
 	cardVariant = "default",
+	limit,
 }: Props) {
 	const nowMinutes = useCurrentMinutes();
 	const todayStr = getTodayString();
@@ -39,20 +41,25 @@ export function LessonList({
 		);
 
 	const sorted = [...lessons].sort((a, b) => a.lesson - b.lesson);
+	const visibleLessons = limit ? sorted.slice(0, limit) : sorted;
+	const hiddenCount = sorted.length - visibleLessons.length;
 	const isHomeDesktop = cardVariant === "homeDesktop";
-	const activeTimelineDots = sorted.filter((lesson) => {
+	const activeTimelineDots = visibleLessons.filter((lesson) => {
 		if (lesson.date < todayStr) return true;
 		if (lesson.date > todayStr) return false;
 		return nowMinutes >= toMinutes(lesson.started_at);
 	}).length;
 	const timelineFillPercent =
-		sorted.length <= 1
+		visibleLessons.length <= 1
 			? activeTimelineDots > 0
 				? 100
 				: 0
 			: Math.max(
 					0,
-					Math.min(100, ((activeTimelineDots - 1) / (sorted.length - 1)) * 100),
+					Math.min(
+						100,
+						((activeTimelineDots - 1) / (visibleLessons.length - 1)) * 100,
+					),
 				);
 
 	return (
@@ -72,7 +79,7 @@ export function LessonList({
 			<ul
 				className={`relative z-10 flex flex-col ${isHomeDesktop ? "gap-0" : compact ? "gap-1.5" : "gap-3"}`}
 			>
-				{sorted.map((lesson, i) => {
+				{visibleLessons.map((lesson, i) => {
 					const isCurrent =
 						isToday &&
 						nowMinutes >= toMinutes(lesson.started_at) &&
@@ -112,6 +119,13 @@ export function LessonList({
 						</li>
 					);
 				})}
+				{hiddenCount > 0 && (
+					<li className={isHomeDesktop ? "pl-[36px] pr-2 pt-1" : ""}>
+						<div className="rounded-[12px] border border-dashed border-app-border px-3 py-2 text-[12px] font-medium text-app-muted">
+							Еще {hiddenCount} пар
+						</div>
+					</li>
+				)}
 			</ul>
 		</div>
 	);

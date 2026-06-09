@@ -149,6 +149,16 @@ svg:focus-visible,
 	padding-top: 4px;
 }
 
+.payment-page__grid {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.payment-page__grid p {
+	overflow-wrap: anywhere;
+}
+
 @media (min-width: 768px) {
 	.schedule-calendar-layout {
 		display: grid;
@@ -206,5 +216,54 @@ svg:focus-visible,
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 		gap: 16px;
 		align-items: start;
+	}
+}
+
+@media (min-width: 768px) and (max-height: 740px) {
+	.web-sidebar__header {
+		padding: 12px 16px;
+	}
+
+	.web-sidebar__logo,
+	.web-sidebar__date {
+		margin-bottom: 10px;
+	}
+
+	.web-sidebar__user {
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+
+	.web-sidebar__page-title {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	.web-sidebar__page-title h1 {
+		font-size: 16px;
+		line-height: 1.2;
+	}
+
+	.web-sidebar__nav {
+		padding: 8px;
+		gap: 10px;
+	}
+
+	.web-sidebar__nav > :not([hidden]) ~ :not([hidden]) {
+		margin-top: 10px;
+	}
+
+	.web-sidebar__section-label {
+		margin-bottom: 2px;
+	}
+
+	.web-sidebar__link {
+		padding-top: 6px;
+		padding-bottom: 6px;
+	}
+
+	.web-sidebar__footer {
+		padding-top: 6px;
+		padding-bottom: 6px;
 	}
 }

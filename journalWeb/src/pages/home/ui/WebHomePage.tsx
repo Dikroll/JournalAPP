@@ -1,37 +1,63 @@
 import { CalendarCheck } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/entities/user";
 import { ActivityWidget } from "@/widgets/DashboardCharts/ui/ActivityWidget";
 import { FutureExams } from "@/widgets/FutureExams/ui/FutureExams";
-import { GoalsSummaryCard } from "@/widgets/Goals/GoalsSummaryCard/ui/GoalsSummaryCard";
+import { WebGoalsSummaryWidget } from "@/widgets/Goals/GoalsSummaryCard/ui/WebGoalsSummaryWidget";
 import { RecentGradesWidget } from "@/widgets/Grades/RecentGradesWidget/ui/RecentGradesWidget";
 import { HomeworkUpcomingWidget } from "@/widgets/HomeworkList/ui/HomeworkUpcomingWidget";
 import { Leaderboard } from "@/widgets/Leaderboard/ui/Leaderboard";
 import { HomeScheduleSection } from "@/widgets/Schedule/HomeScheduleSection/ui/HomeScheduleSection";
 import { NextClassWidget } from "@/widgets/Schedule/NextClassWidget/ui/NextClassWidget";
 
-/**
- * WebHomePage — десктопная версия главной страницы.
- * 3-колоночный макет.
- */
+function getDashboardDensity() {
+	if (typeof window === "undefined") return "roomy";
+
+	const { innerWidth: width, innerHeight: height } = window;
+	if (width < 1120 || height < 760) return "compact";
+	if (width < 1380 || height < 860) return "cozy";
+	return "roomy";
+}
+
+function useDashboardDensity() {
+	const [density, setDensity] = useState(getDashboardDensity);
+
+	useEffect(() => {
+		const onResize = () => setDensity(getDashboardDensity());
+
+		onResize();
+		window.addEventListener("resize", onResize);
+		return () => window.removeEventListener("resize", onResize);
+	}, []);
+
+	return density;
+}
+
 export function WebHomePage() {
 	const user = useUser();
+	const density = useDashboardDensity();
+	const isCompact = density === "compact";
+	const isCozy = density === "cozy";
+	const limits = {
+		exams: isCompact ? 2 : 3,
+		homework: isCompact ? 2 : 3,
+		grades: isCompact ? 4 : 5,
+		lessons: isCompact ? 4 : isCozy ? 5 : undefined,
+	};
 
 	return (
-		<div className="p-5 pb-8 flex flex-col gap-4 w-full h-full min-h-0 overflow-hidden">
-			{/* ОСНОВНАЯ СЕТКА: 3 колонки */}
+		<div className="p-4 xl:p-5 pb-8 w-full min-h-full">
 			<div
-				className="grid gap-4 flex-1 min-h-0"
+				className="grid gap-4 w-full"
 				style={{
-					gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-					alignItems: "stretch",
+					gridTemplateColumns:
+						"repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+					alignItems: "start",
 				}}
 			>
-				{/* ── КОЛОНКА 1 (Планирование) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
-					{/* Сводка */}
-					<GoalsSummaryCard />
+				<div className="flex flex-col gap-4 min-w-0">
+					<WebGoalsSummaryWidget />
 
-					{/* Экзамены (без скролла) */}
 					<div
 						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
 						style={{
@@ -45,41 +71,36 @@ export function WebHomePage() {
 								Будущие экзамены
 							</h2>
 						</div>
-						<FutureExams limit={3} />
+						<FutureExams limit={limits.exams} />
 					</div>
 
-					{/* Домашка (тянется, чтобы закрыть дыру, внутри будет красивое заполнение) */}
-					<HomeworkUpcomingWidget className="flex-1 min-h-0 overflow-hidden" />
+					<HomeworkUpcomingWidget limit={limits.homework} />
 				</div>
 
-				{/* ── КОЛОНКА 2 (Расписание) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
-					{/* Следующая пара */}
+				<div className="flex flex-col gap-4 min-w-0">
 					<NextClassWidget />
 
-					{/* Расписание (без скролла, тянется чтобы закрыть дыру снизу) */}
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0 overflow-hidden"
+						className="rounded-[20px] border border-app-border p-4 flex flex-col min-h-0"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
 						}}
 					>
-						<div className="-mx-3 px-3 pt-2 pb-3 flex flex-col flex-1 min-h-0">
-							<HomeScheduleSection cardVariant="homeDesktop" />
+						<div className="-mx-3 px-3 pb-3 flex flex-col flex-1 min-h-0">
+							<HomeScheduleSection
+								cardVariant="homeDesktop"
+								lessonLimit={limits.lessons}
+							/>
 						</div>
 					</div>
 				</div>
 
-				{/* ── КОЛОНКА 3 (Результаты) ── */}
-				<div className="flex flex-col gap-4 min-w-0 h-full min-h-0 overflow-hidden">
-					{/* Последние оценки */}
-					<RecentGradesWidget />
+				<div className="flex flex-col gap-4 min-w-0">
+					<RecentGradesWidget limit={limits.grades} />
 
-					{/* Активность (График красиво тянется по высоте!) */}
-					<ActivityWidget className="flex-1 min-h-0" />
+					<ActivityWidget />
 
-					{/* Лидеры (Схлопывается по контенту, чтобы не было дыры снизу) */}
 					<div
 						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0"
 						style={{
@@ -87,10 +108,7 @@ export function WebHomePage() {
 							boxShadow: "var(--shadow-card)",
 						}}
 					>
-						<div
-							className="overflow-y-auto shrink-0 -mx-3 px-3"
-							style={{ scrollbarWidth: "thin" }}
-						>
+						<div className="-mx-3 px-3">
 							{user && <Leaderboard myStudentId={user.student_id} />}
 						</div>
 					</div>

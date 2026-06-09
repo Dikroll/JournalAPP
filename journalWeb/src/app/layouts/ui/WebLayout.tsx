@@ -34,7 +34,7 @@ export const WebLayout = memo(() => {
 		<div className="bg-[var(--color-bg)] h-[100dvh] min-h-[100dvh] flex justify-start overflow-hidden relative">
 			<GlowBackground useVariables />
 			<div
-				className='flex h-[100dvh] w-full overflow-hidden relative z-10 [&_[class*="top-bar"]]:!hidden [&_[class*="TopBar"]]:!hidden [&_[class*="bottom-bar"]]:!hidden [&_[class*="BottomBar"]]:!hidden [&_.min-h-screen]:!pb-0 [&_.min-h-screen]:min-h-[unset] [&_.pb-28]:!pb-0 [&_.pb-24]:!pb-0'
+				className='web-layout flex h-[100dvh] w-full overflow-hidden relative z-10 [&_[class*="top-bar"]]:!hidden [&_[class*="TopBar"]]:!hidden [&_[class*="bottom-bar"]]:!hidden [&_[class*="BottomBar"]]:!hidden [&_.min-h-screen]:!pb-0 [&_.min-h-screen]:min-h-[unset] [&_.pb-28]:!pb-0 [&_.pb-24]:!pb-0'
 				style={{
 					transform: `scale(${zoom})`,
 					transformOrigin: "top left",

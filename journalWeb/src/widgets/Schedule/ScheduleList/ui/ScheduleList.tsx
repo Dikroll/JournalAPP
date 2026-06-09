@@ -13,9 +13,11 @@ import { LessonCard } from "./LessonCard";
 export function ScheduleList({
 	compact = false,
 	cardVariant = "default",
+	limit,
 }: {
 	compact?: boolean;
 	cardVariant?: LessonCardVariant;
+	limit?: number;
 }) {
 	const { today, status, error } = useScheduleToday();
 	const nowMinutes = useCurrentMinutes();
@@ -60,6 +62,8 @@ export function ScheduleList({
 	if (today.length === 0) return null;
 
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson);
+	const visibleLessons = limit ? sorted.slice(0, limit) : sorted;
+	const hiddenCount = sorted.length - visibleLessons.length;
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
 	const isHomeDesktop = cardVariant === "homeDesktop";
 	const activeTimelineDots = sorted.filter(
@@ -75,13 +79,16 @@ export function ScheduleList({
 		: sorted.filter((lesson) => nowMinutes > toMinutes(lesson.finished_at))
 				.length;
 	const timelineFillPercent =
-		sorted.length <= 1
+		visibleLessons.length <= 1
 			? activeTimelineDots > 0
 				? 100
 				: 0
 			: Math.max(
 					0,
-					Math.min(100, ((activeTimelineDots - 1) / (sorted.length - 1)) * 100),
+					Math.min(
+						100,
+						((activeTimelineDots - 1) / (visibleLessons.length - 1)) * 100,
+					),
 				);
 
 	return (
@@ -103,7 +110,7 @@ export function ScheduleList({
 			<ul
 				className={`flex flex-col min-h-0 ${isHomeDesktop ? "gap-0" : "flex-1 gap-1.5"}`}
 			>
-				{sorted.map((lesson, i) => (
+				{visibleLessons.map((lesson, i) => (
 					<li
 						key={`${lesson.started_at}-${lesson.room}`}
 						className="flex flex-col min-h-0"
@@ -133,6 +140,13 @@ export function ScheduleList({
 						/>
 					</li>
 				))}
+				{hiddenCount > 0 && (
+					<li className="pl-[36px] pr-2 pt-1">
+						<div className="rounded-[12px] border border-dashed border-app-border px-3 py-2 text-[12px] font-medium text-app-muted">
+							Еще {hiddenCount} пар
+						</div>
+					</li>
+				)}
 			</ul>
 		</div>
 	);

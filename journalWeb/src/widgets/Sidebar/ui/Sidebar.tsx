@@ -36,17 +36,17 @@ export const Sidebar = memo(() => {
 	const { weekday, dayMonth } = getTodayDateParts();
 
 	return (
-		<aside className="w-[14rem] shrink-0 flex flex-col h-full bg-transparent border-r border-app-border select-none">
+		<aside className="web-sidebar w-[14rem] shrink-0 flex flex-col h-full bg-transparent border-r border-app-border select-none">
 			{/* Header */}
-			<div className="shrink-0 p-4 border-b border-app-border">
+			<div className="web-sidebar__header shrink-0 p-4 border-b border-app-border">
 				{/* Logo */}
 				<BrandLogo
 					size="sm"
-					className="mb-4 hover:opacity-80 transition-opacity"
+					className="web-sidebar__logo mb-4 hover:opacity-80 transition-opacity"
 				/>
 
 				{/* Date */}
-				<div className="flex items-center gap-1.5 mb-4 text-xs font-bold">
+				<div className="web-sidebar__date flex items-center gap-1.5 mb-4 text-xs font-bold">
 					<span className="text-brand capitalize">{weekday}</span>
 					<span className="text-app-muted">•</span>
 					<span className="text-app-text">{dayMonth}</span>
@@ -56,7 +56,7 @@ export const Sidebar = memo(() => {
 				{vm && (
 					<button
 						type="button"
-						className="w-full flex items-center gap-2.5 p-1.5 -mx-1.5 rounded-xl hover:bg-app-surface-hover transition-colors text-left group"
+						className="web-sidebar__user w-full flex items-center gap-2.5 p-1.5 -mx-1.5 rounded-xl hover:bg-app-surface-hover transition-colors text-left group"
 						onClick={() => navigate(pageConfig.profile)}
 					>
 						<Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
@@ -92,21 +92,21 @@ export const Sidebar = memo(() => {
 			</div>
 
 			{/* Page Title */}
-			<div className="shrink-0 px-4 py-3 border-b border-app-border">
+			<div className="web-sidebar__page-title shrink-0 px-4 py-3 border-b border-app-border">
 				<h1 className="text-lg font-bold text-app-text tracking-tight">
 					{pageTitle}
 				</h1>
 			</div>
 
 			{/* Nav */}
-			<nav className="flex-1 overflow-hidden p-2 space-y-4">
+			<nav className="web-sidebar__nav flex-1 overflow-hidden p-2 space-y-4">
 				<NavSection label="Главное" items={mainNavItems} hwBadge={hwBadge} />
 				<NavSection label="Учёба" items={studyNavItems} />
 				<NavSection label="Быстрый переход" items={quickLinksNavItems} />
 			</nav>
 
 			{/* Footer */}
-			<div className="shrink-0 p-2 border-t border-app-border space-y-1">
+			<div className="web-sidebar__footer shrink-0 p-2 border-t border-app-border space-y-1">
 				{isOffline && (
 					<div className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-danger/10 border border-danger/20 text-danger text-[11px] font-semibold">
 						<WifiOff size={14} />
@@ -151,17 +151,17 @@ const NavSection = memo(
 		items: NavItemConfig[];
 		hwBadge?: number;
 	}) => (
-		<div>
-			<div className="text-[10px] font-bold tracking-wider uppercase text-app-faint px-2 mb-1">
+		<div className="web-sidebar__section">
+			<div className="web-sidebar__section-label text-[10px] font-bold tracking-wider uppercase text-app-faint px-2 mb-1">
 				{label}
 			</div>
-			<div className="space-y-0.5">
+			<div className="web-sidebar__section-items space-y-0.5">
 				{items.map((item) => (
 					<NavLink
 						key={item.to}
 						to={item.to}
 						className={({ isActive }) =>
-							`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
+							`web-sidebar__link flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
 								isActive
 									? "bg-brand/10 shadow-sm"
 									: "text-app-muted hover:bg-app-surface-hover hover:text-app-text"
