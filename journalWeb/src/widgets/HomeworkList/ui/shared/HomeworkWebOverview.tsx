@@ -73,14 +73,16 @@ export function HomeworkWebOverview({ counters, items }: Props) {
 		<div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
 			<section className="rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)]">
 				<div className="grid min-h-[150px] grid-cols-3 items-stretch gap-4 2xl:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
-					<div className="col-span-3 flex min-w-0 items-center gap-5 p-1 2xl:col-span-1 2xl:p-0">
-						<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/15 text-brand xl:h-16 xl:w-16">
-							<FileText size={30} />
-						</div>
-						<div className="min-w-0">
+					<div className="col-span-3 flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 2xl:col-span-1">
+						<div className="flex items-center justify-between gap-2">
+							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/15 text-brand">
+								<FileText size={26} />
+							</div>
 							<p className="text-sm font-medium text-app-muted">
 								На этой неделе
 							</p>
+						</div>
+						<div className="mt-5 min-w-0">
 							<h2 className="mt-1 text-2xl font-bold leading-tight text-app-text xl:text-[28px]">
 								{weekNew} {getHomeworkWord(weekNew)}
 							</h2>

@@ -1,4 +1,4 @@
-import { ArrowRight, MessageSquare } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { type ReviewItem, useReviews } from "@/entities/review";
 import { formatDate } from "@/shared/utils";
@@ -32,6 +32,15 @@ function DesktopReviewCard({ review }: { review: ReviewItem }) {
 						className="text-status-comment text-sm font-medium flex items-center gap-1 hover:opacity-80 transition-opacity self-start mt-auto"
 					>
 						Читать полностью <ArrowRight size={14} />
+					</button>
+				)}
+				{expanded && review.message.length > 100 && (
+					<button
+						type="button"
+						onClick={() => setExpanded(false)}
+						className="text-status-comment text-sm font-medium flex items-center gap-1 hover:opacity-80 transition-opacity self-start mt-auto"
+					>
+						<ArrowLeft size={14} /> Свернуть
 					</button>
 				)}
 			</div>
