@@ -1,7 +1,6 @@
 import { deriveHomeworkCardState } from '@/entities/homework'
 import type { HomeworkItemWithStatus } from '@/entities/homework'
 import { getCachedImageUrl } from '@/shared/lib'
-import { isWebPlatform } from '@/shared/lib/platform'
 import { PhotoViewerModal } from '@/shared/ui'
 import { ChevronDown, MessageSquare } from 'lucide-react'
 import { memo, useState } from 'react'
@@ -18,7 +17,6 @@ export const HomeworkCard = memo(
 	function HomeworkCard({ hw }: Props) {
 		const [commentOpen, setCommentOpen] = useState(false)
 		const [viewerOpen, setViewerOpen] = useState(false)
-		const isWeb = isWebPlatform
 
 		const photoUrl = getCachedImageUrl(hw.photo_url);
 		const {
@@ -37,7 +35,7 @@ export const HomeworkCard = memo(
 			<>
 				<div
 					id={`hw-card-${hw.id}`}
-					className={`homework-card ${cardBg} shadow-[var(--shadow-card)] backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden ${isWeb ? 'h-full flex flex-col' : ''}`}
+					className={`homework-card ${cardBg} shadow-[var(--shadow-card)] backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden h-full flex flex-col`}
 				>
 					{photoUrl && (
 						<button
@@ -53,7 +51,7 @@ export const HomeworkCard = memo(
 						</button>
 					)}
 
-					<div className={photoUrl ? `p-4 space-y-3 ${isWeb ? 'flex flex-col flex-1' : ''}` : `p-5 ${isWeb ? 'flex flex-col flex-1' : ''}`}>
+					<div className={photoUrl ? 'p-4 flex flex-col flex-1 gap-3' : 'p-5 flex flex-col flex-1'}>
 						<HomeworkCardHeader hw={hw} gradeStyle={gradeStyle} grade={grade} />
 
 						<HomeworkCardDates
@@ -95,7 +93,7 @@ export const HomeworkCard = memo(
 							</div>
 						)}
 
-						<div className={isWeb ? 'mt-auto pt-4' : ''}>
+						<div className="mt-auto pt-4">
 							<HomeworkCardActions
 								homeworkId={hw.id}
 								homeworkTheme={hw.theme ?? hw.spec_name}

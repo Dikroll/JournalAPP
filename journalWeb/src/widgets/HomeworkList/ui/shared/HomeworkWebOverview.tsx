@@ -94,14 +94,10 @@ function focusHomeworkCard(homeworkId: number) {
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
 		).matches;
-		const rect = target.getBoundingClientRect();
-		const viewportAnchor = window.innerHeight * 0.42;
-		const scrollTop =
-			window.scrollY + rect.top - viewportAnchor + rect.height / 2;
 
-		window.scrollTo({
-			top: Math.max(0, scrollTop),
+		target.scrollIntoView({
 			behavior: prefersReducedMotion ? "auto" : "smooth",
+			block: "center",
 		});
 
 		target.dataset.deadlineFocus = "false";
