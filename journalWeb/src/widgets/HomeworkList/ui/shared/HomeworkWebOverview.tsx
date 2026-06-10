@@ -68,6 +68,49 @@ function getNearestDeadline(items: Record<string, HomeworkItem[]>): HomeworkItem
 	)[0];
 }
 
+function focusHomeworkCard(homeworkId: number) {
+	let attempts = 0;
+
+	const tryFocus = () => {
+		attempts++;
+		const elements = document.querySelectorAll<HTMLElement>(
+			`#hw-card-${homeworkId}`,
+		);
+		const target = Array.from(elements).find((element) => {
+			const rect = element.getBoundingClientRect();
+			return rect.width > 0 && rect.height > 0;
+		});
+
+		if (!target) {
+			if (attempts < 12) window.setTimeout(tryFocus, 50);
+			return;
+		}
+
+		const prefersReducedMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+		const rect = target.getBoundingClientRect();
+		const viewportAnchor = window.innerHeight * 0.42;
+		const scrollTop = window.scrollY + rect.top - viewportAnchor + rect.height / 2;
+
+		window.scrollTo({
+			top: Math.max(0, scrollTop),
+			behavior: prefersReducedMotion ? "auto" : "smooth",
+		});
+
+		target.dataset.deadlineFocus = "false";
+		window.setTimeout(() => {
+			target.dataset.deadlineFocus = "true";
+		}, prefersReducedMotion ? 0 : 220);
+
+		window.setTimeout(() => {
+			delete target.dataset.deadlineFocus;
+		}, prefersReducedMotion ? 900 : 1700);
+	};
+
+	window.setTimeout(tryFocus, 50);
+}
+
 export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 	const weekNew = getWeekNewCount(items) || counters.new;
 	const nearestDeadline = getNearestDeadline(items);
@@ -141,40 +184,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 						type="button"
 						onClick={() => {
 							if (onFilter) onFilter(null);
-							
-							let attempts = 0;
-							const tryScroll = () => {
-								attempts++;
-								const elements = document.querySelectorAll(`#hw-card-${nearestDeadline.id}`);
-								let foundVisible = false;
-								
-								elements.forEach(el => {
-									const htmlEl = el as HTMLElement;
-									// Check if element is visible
-									if (htmlEl.getBoundingClientRect().width > 0) {
-										foundVisible = true;
-										
-										// Scroll into view robustly
-										htmlEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-										
-										// Subtle highlight
-										htmlEl.style.transition = 'box-shadow 0.4s ease';
-										htmlEl.style.boxShadow = '0 0 0 4px var(--color-brand)';
-
-										setTimeout(() => {
-											htmlEl.style.boxShadow = 'var(--shadow-card)';
-										}, 2000);
-									}
-								});
-
-								// If not found and we haven't tried too many times, wait and try again
-								if (!foundVisible && attempts < 10) {
-									setTimeout(tryScroll, 50);
-								}
-							};
-							
-							// Start trying to scroll (to allow React to render if filter changed)
-							setTimeout(tryScroll, 50);
+							focusHomeworkCard(nearestDeadline.id);
 						}}
 						className="block w-full text-left focus:outline-none group"
 					>

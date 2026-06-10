@@ -37,8 +37,7 @@ export const HomeworkCard = memo(
 			<>
 				<div
 					id={`hw-card-${hw.id}`}
-					className={`${cardBg} backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden ${isWeb ? 'h-full flex flex-col' : ''}`}
-					style={{ boxShadow: 'var(--shadow-card)' }}
+					className={`homework-card ${cardBg} shadow-[var(--shadow-card)] backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden ${isWeb ? 'h-full flex flex-col' : ''}`}
 				>
 					{photoUrl && (
 						<button
