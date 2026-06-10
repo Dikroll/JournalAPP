@@ -4,11 +4,13 @@ import {
 	Clock3,
 	FileText,
 	Sparkles,
+	GraduationCap,
 } from "lucide-react";
 import type {
 	HomeworkCounters,
 	HomeworkItem,
 	HomeworkStatus,
+	HomeworkItemWithStatus,
 } from "@/entities/homework";
 import { STATUS_KEY_MAP } from "@/entities/homework";
 import { getTodayString } from "@/shared/utils";
@@ -16,6 +18,7 @@ import { getTodayString } from "@/shared/utils";
 interface Props {
 	counters: HomeworkCounters;
 	items: Record<string, HomeworkItem[]>;
+	onFilter?: (key: HomeworkStatus | null) => void;
 }
 
 function getWeekNewCount(items: Record<string, HomeworkItem[]>) {
@@ -54,10 +57,10 @@ function getHomeworkWord(count: number) {
 	return "новых заданий";
 }
 
-function getNearestDeadline(items: Record<string, HomeworkItem[]>) {
-	const statuses: HomeworkStatus[] = ["overdue", "new", "returned"];
+function getNearestDeadline(items: Record<string, HomeworkItem[]>): HomeworkItemWithStatus | undefined {
+	const statuses: HomeworkStatus[] = ["new", "returned"];
 	const activeItems = statuses.flatMap(
-		(status) => items[STATUS_KEY_MAP[status]] ?? [],
+		(status) => (items[STATUS_KEY_MAP[status]] ?? []).map(hw => ({...hw, statusKey: status}))
 	);
 
 	return activeItems.sort(
@@ -65,15 +68,15 @@ function getNearestDeadline(items: Record<string, HomeworkItem[]>) {
 	)[0];
 }
 
-export function HomeworkWebOverview({ counters, items }: Props) {
+export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 	const weekNew = getWeekNewCount(items) || counters.new;
 	const nearestDeadline = getNearestDeadline(items);
 
 	return (
-		<div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
-			<section className="rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)]">
-				<div className="grid min-h-[150px] grid-cols-3 items-stretch gap-4 2xl:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
-					<div className="col-span-3 flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 2xl:col-span-1">
+		<div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
+			<section className="flex flex-col rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)] h-full">
+				<div className="flex-1 grid min-h-[150px] grid-cols-3 items-stretch gap-4 lg:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
+					<div className="col-span-3 flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 lg:col-span-1">
 						<div className="flex items-center justify-between gap-2">
 							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/15 text-brand">
 								<FileText size={26} />
@@ -134,17 +137,63 @@ export function HomeworkWebOverview({ counters, items }: Props) {
 				</div>
 
 				{nearestDeadline ? (
-					<>
-						<p className="text-sm font-bold text-status-pending">
+					<button
+						type="button"
+						onClick={() => {
+							if (onFilter) onFilter(null);
+							
+							let attempts = 0;
+							const tryScroll = () => {
+								attempts++;
+								const elements = document.querySelectorAll(`#hw-card-${nearestDeadline.id}`);
+								let foundVisible = false;
+								
+								elements.forEach(el => {
+									const htmlEl = el as HTMLElement;
+									// Check if element is visible
+									if (htmlEl.getBoundingClientRect().width > 0) {
+										foundVisible = true;
+										
+										// Scroll into view robustly
+										htmlEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+										
+										// Subtle highlight
+										htmlEl.style.transition = 'box-shadow 0.4s ease';
+										htmlEl.style.boxShadow = '0 0 0 4px var(--color-brand)';
+
+										setTimeout(() => {
+											htmlEl.style.boxShadow = 'var(--shadow-card)';
+										}, 2000);
+									}
+								});
+
+								// If not found and we haven't tried too many times, wait and try again
+								if (!foundVisible && attempts < 10) {
+									setTimeout(tryScroll, 50);
+								}
+							};
+							
+							// Start trying to scroll (to allow React to render if filter changed)
+							setTimeout(tryScroll, 50);
+						}}
+						className="block w-full text-left focus:outline-none group"
+					>
+						<p className="text-sm font-bold text-status-pending group-hover:opacity-80 transition-opacity">
 							{formatDeadlineLabel(nearestDeadline.deadline)}
 						</p>
-						<h3 className="mt-3 line-clamp-2 text-base font-bold text-app-text">
+						<h3 className="mt-3 line-clamp-2 text-base font-bold text-app-text group-hover:text-brand transition-colors">
 							{nearestDeadline.theme || nearestDeadline.spec_name}
 						</h3>
 						<p className="mt-1 line-clamp-2 text-sm leading-snug text-app-muted">
 							{nearestDeadline.spec_name}
 						</p>
-					</>
+						{nearestDeadline.teacher && (
+							<div className="flex items-center gap-1.5 mt-2 text-[12px]">
+								<GraduationCap size={13} className="text-app-text flex-shrink-0" />
+								<span className="text-app-text font-medium truncate">{nearestDeadline.teacher}</span>
+							</div>
+						)}
+					</button>
 				) : (
 					<div className="flex min-h-[86px] items-center gap-3 text-app-muted">
 						<CheckCircle2 size={20} className="text-status-checked" />

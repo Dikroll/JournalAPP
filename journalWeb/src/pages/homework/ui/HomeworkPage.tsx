@@ -81,7 +81,7 @@ export function HomeworkPage() {
 				{counters && (
 					<>
 						<div className="hidden md:block">
-							<HomeworkWebOverview counters={counters} items={items} />
+							<HomeworkWebOverview counters={counters} items={items} onFilter={setFilter} />
 						</div>
 						<div className="hidden md:block">
 							<HomeworkWebFilters

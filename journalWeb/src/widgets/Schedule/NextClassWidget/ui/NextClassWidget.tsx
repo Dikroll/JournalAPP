@@ -2,7 +2,7 @@ import { useScheduleToday } from '@/entities/schedule'
 import { formatGapMinutes } from '@/entities/schedule/lib/scheduleGaps'
 import { getScheduleTimeInfo } from '@/entities/schedule/lib/scheduleTime'
 import { useCurrentMinutes } from '@/shared/hooks'
-import { Clock } from 'lucide-react'
+import { Clock, User, MapPin } from 'lucide-react'
 
 export function NextClassWidget() {
 	const { today, status } = useScheduleToday()
@@ -11,13 +11,13 @@ export function NextClassWidget() {
 	if (status !== 'success' || today.length === 0) {
 		return (
 			<div
-				className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 relative overflow-hidden'
+				className='rounded-[20px] border border-app-border p-3.5 flex flex-col min-h-0 relative overflow-hidden'
 				style={{
 					background: 'var(--color-surface)',
 					boxShadow: 'var(--shadow-card)',
 				}}
 			>
-				<div className='flex items-center justify-between mb-3 shrink-0'>
+				<div className='flex items-center justify-between mb-2 shrink-0'>
 					<h2 className='text-sm font-bold text-app-text flex items-center gap-2'>
 						<Clock size={16} className='text-app-muted shrink-0' />
 						<span>Следующая пара</span>
@@ -52,13 +52,13 @@ export function NextClassWidget() {
 	if (!targetLesson) {
 		return (
 			<div
-				className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 relative overflow-hidden'
+				className='rounded-[20px] border border-app-border p-3.5 flex flex-col min-h-0 relative overflow-hidden'
 				style={{
 					background: 'var(--color-surface)',
 					boxShadow: 'var(--shadow-card)',
 				}}
 			>
-				<div className='flex items-center justify-between mb-3 shrink-0'>
+				<div className='flex items-center justify-between mb-2 shrink-0'>
 					<h2 className='text-sm font-bold text-app-text flex items-center gap-2'>
 						<Clock size={16} className='text-app-muted shrink-0' />
 						<span>Следующая пара</span>
@@ -78,13 +78,13 @@ export function NextClassWidget() {
 
 	return (
 		<div
-			className='rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 relative overflow-hidden'
+			className='rounded-[20px] border border-app-border p-3 flex flex-col min-h-0 relative overflow-hidden'
 			style={{
 				background: 'var(--color-surface)',
 				boxShadow: 'var(--shadow-card)',
 			}}
 		>
-			<div className='flex items-center justify-between mb-3 shrink-0'>
+			<div className='flex items-center justify-between mb-2 shrink-0'>
 				<h2 className='text-sm font-bold text-app-text flex items-center gap-2'>
 					<Clock size={16} className='text-app-muted shrink-0' />
 					<span>{titleText}</span>
@@ -99,8 +99,22 @@ export function NextClassWidget() {
 				{targetLesson.subject}
 			</div>
 
-			<div className='text-xs text-app-muted flex items-center justify-between'>
-				<span>{targetLesson.room ? `${targetLesson.room}` : ''}</span>
+			{targetLesson.teacher && (
+				<div className='flex items-center gap-1.5 text-app-muted mb-1.5'>
+					<User size={12} className='shrink-0' />
+					<span className='text-[11px] truncate'>{targetLesson.teacher}</span>
+				</div>
+			)}
+
+			<div className='text-xs text-app-muted flex items-center justify-between mt-auto pt-1'>
+				{targetLesson.room ? (
+					<div className='inline-flex items-center gap-1 bg-app-surface border border-app-border rounded-lg px-2 py-0.5'>
+						<MapPin size={10} className='text-app-text flex-shrink-0' />
+						<span className='text-[10px] text-app-text'>{targetLesson.room}</span>
+					</div>
+				) : (
+					<span />
+				)}
 
 				<span
 					className='px-2 py-1 rounded-lg text-[11px] font-medium'
