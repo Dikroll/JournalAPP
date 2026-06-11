@@ -41,7 +41,7 @@ export const StatsCard = memo(function StatsCard({
 
 	return (
 		<div
-			className="bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border flex flex-col overflow-hidden aspect-square"
+			className="bg-app-surface backdrop-blur-xl rounded-3xl border border-app-border flex flex-col overflow-hidden aspect-square"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex flex-col p-4 flex-1 min-h-0">

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { useHomeworkStore, isHomeworkExpired } from "@/entities/homework";
+import { isHomeworkExpired, useHomeworkStore } from "@/entities/homework";
 import { useOfflineQueueStore } from "@/features/offlineQueue";
 import { saveFileForQueue } from "@/features/offlineQueue/lib/fileStorage";
 import { getIsOnline } from "@/shared/model/networkStore";
@@ -79,7 +79,8 @@ export function useSendHomework(
 		if (hw && isHomeworkExpired(hw.overdue_date)) {
 			setState((s) => ({
 				...s,
-				error: "Срок сдачи истёк более 6 месяцев назад — задание нельзя отправить",
+				error:
+					"Срок сдачи истёк более 6 месяцев назад — задание нельзя отправить",
 			}));
 			return;
 		}

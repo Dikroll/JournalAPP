@@ -26,7 +26,7 @@ interface ScheduleRemindersState {
 
 export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			enabled: true,
 			firstLessonEnabled: true,
 			firstLessonOffset: 30,
@@ -35,23 +35,21 @@ export const useScheduleRemindersStore = create<ScheduleRemindersState>()(
 			lunchBreakEnabled: true,
 			postLunchEnabled: true,
 			postLunchOffset: 10,
-			setEnabled: enabled => set({ enabled }),
-			setFirstLessonEnabled: firstLessonEnabled =>
+			setEnabled: (enabled) => set({ enabled }),
+			setFirstLessonEnabled: (firstLessonEnabled) =>
 				set({ firstLessonEnabled }),
-			setFirstLessonOffset: firstLessonOffset =>
-				set({ firstLessonOffset }),
-			setRegularLessonEnabled: regularLessonEnabled =>
+			setFirstLessonOffset: (firstLessonOffset) => set({ firstLessonOffset }),
+			setRegularLessonEnabled: (regularLessonEnabled) =>
 				set({ regularLessonEnabled }),
-			setRegularLessonOffset: regularLessonOffset =>
+			setRegularLessonOffset: (regularLessonOffset) =>
 				set({ regularLessonOffset }),
-			setLunchBreakEnabled: lunchBreakEnabled =>
-				set({ lunchBreakEnabled }),
-			setPostLunchEnabled: postLunchEnabled => set({ postLunchEnabled }),
-			setPostLunchOffset: postLunchOffset => set({ postLunchOffset }),
+			setLunchBreakEnabled: (lunchBreakEnabled) => set({ lunchBreakEnabled }),
+			setPostLunchEnabled: (postLunchEnabled) => set({ postLunchEnabled }),
+			setPostLunchOffset: (postLunchOffset) => set({ postLunchOffset }),
 		}),
 		{
-			name: 'schedule-reminders-store',
-			partialize: state => ({
+			name: "schedule-reminders-store",
+			partialize: (state) => ({
 				enabled: state.enabled,
 				firstLessonEnabled: state.firstLessonEnabled,
 				firstLessonOffset: state.firstLessonOffset,

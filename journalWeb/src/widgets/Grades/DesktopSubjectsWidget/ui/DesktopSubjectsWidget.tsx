@@ -110,7 +110,7 @@ export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 
 	return (
 		<div
-			className="w-full text-left rounded-[22px] p-4 bg-app-surface border border-app-border flex flex-col"
+			className="w-full text-left rounded-3xl p-4 bg-app-surface border border-app-border flex flex-col"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<h3 className="text-[15px] font-bold text-app-text mb-4">По предметам</h3>

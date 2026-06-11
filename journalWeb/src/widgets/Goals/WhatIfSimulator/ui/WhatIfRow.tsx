@@ -26,7 +26,7 @@ export function WhatIfRow({
 
 	return (
 		<div
-			className="rounded-[20px] p-4 mb-2 transition-colors"
+			className="rounded-3xl p-4 mb-2 transition-colors"
 			style={{
 				background: active ? GRADE_BG[value] : "var(--color-surface)",
 				border: `1px solid ${

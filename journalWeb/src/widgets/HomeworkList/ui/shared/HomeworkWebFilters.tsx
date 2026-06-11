@@ -60,7 +60,7 @@ export function HomeworkWebFilters({
 	subjectsLoading,
 }: Props) {
 	return (
-		<section className="rounded-[20px] border border-app-border bg-app-surface p-3 shadow-[var(--shadow-card)]">
+		<section className="rounded-3xl border border-app-border bg-app-surface p-3 shadow-[var(--shadow-card)]">
 			<div className="grid grid-cols-1 gap-3 2xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)] 2xl:items-center">
 				<div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-none">
 					{FILTERS.map(({ label, status, countKey, color, widthClass }) => {
@@ -74,7 +74,7 @@ export function HomeworkWebFilters({
 								type="button"
 								onClick={() => onFilter(status)}
 								className={[
-									"flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl border px-3.5 text-sm font-semibold transition-colors",
+									"flex h-11 shrink-0 items-center justify-center gap-2 rounded-3xl border px-3.5 text-sm font-semibold transition-colors",
 									widthClass,
 									isActive
 										? "border-app-border-strong bg-app-surface-active text-app-text"

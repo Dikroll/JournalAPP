@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
 import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { IconButton, PageHeader } from "@/shared/ui";
-import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { EvaluateLessonList } from "@/widgets";
 
 export function EvaluateLessonPage() {

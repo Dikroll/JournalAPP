@@ -7,7 +7,7 @@ interface Props {
 
 export function HomeworkCardUploadWarning({ onCancel, onConfirm }: Props) {
 	return (
-		<div className="mt-3 p-3 bg-comment-subtle border border-comment-border rounded-2xl">
+		<div className="mt-3 p-3 bg-comment-subtle border border-comment-border rounded-3xl">
 			<div className="flex items-start gap-2 mb-3">
 				<Diamond
 					size={16}

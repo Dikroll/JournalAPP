@@ -25,7 +25,7 @@ export function SheetButton({
 			type="button"
 			onClick={onClick}
 			disabled={disabled}
-			className={`w-full py-3.5 rounded-[18px] text-sm disabled:opacity-50 ${styles[variant]}`}
+			className={`w-full py-3.5 rounded-3xl text-sm disabled:opacity-50 ${styles[variant]}`}
 			style={
 				variant === "primary"
 					? {

@@ -15,7 +15,9 @@ export function InfoRow({ icon, label, value, badge }: InfoRowProps) {
 			<div className="mt-0.5 text-app-muted">{icon}</div>
 			<div className="flex-1 min-w-0">
 				<p className="text-xs text-app-muted mb-1">{label}</p>
-				<p className="text-sm font-semibold text-app-text break-words">{value}</p>
+				<p className="text-sm font-semibold text-app-text break-words">
+					{value}
+				</p>
 			</div>
 			{badge && <div className="shrink-0 mt-0.5">{badge}</div>}
 		</div>

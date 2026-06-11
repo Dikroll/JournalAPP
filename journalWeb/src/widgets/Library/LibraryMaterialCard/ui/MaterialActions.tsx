@@ -1,8 +1,8 @@
-import { canOpenMaterial, getOpenUrl } from '@/shared/lib/materialUrls'
-import { fixUrl } from '@/shared/lib/imageCache'
-import { isWebPlatform } from '@/shared/lib/platform'
-import { Browser } from '@capacitor/browser'
-import { Download, ExternalLink } from 'lucide-react'
+import { Browser } from "@capacitor/browser";
+import { Download, ExternalLink } from "lucide-react";
+import { fixUrl } from "@/shared/lib/imageCache";
+import { canOpenMaterial, getOpenUrl } from "@/shared/lib/materialUrls";
+import { isWebPlatform } from "@/shared/lib/platform";
 
 interface Props {
 	/** url — embed/внешняя ссылка, link — FS-файл */
@@ -13,9 +13,9 @@ interface Props {
 }
 
 async function openExternalUrl(rawUrl: string) {
-	const absolute = fixUrl(rawUrl) ?? rawUrl
+	const absolute = fixUrl(rawUrl) ?? rawUrl;
 	if (!isWebPlatform) {
-		await Browser.open({ url: absolute })
+		await Browser.open({ url: absolute });
 	} else {
 		window.open(absolute, "_blank");
 	}
@@ -48,7 +48,7 @@ export function MaterialActions({
 			{canOpen && (
 				<button
 					onClick={handleOpen}
-					className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs"
+					className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-3xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs"
 				>
 					<ExternalLink size={14} />
 					<span>Открыть</span>
@@ -57,7 +57,7 @@ export function MaterialActions({
 			{canDownload && (
 				<button
 					onClick={handleDownload}
-					className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-2xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs"
+					className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-3xl text-app-muted hover:text-app-text border border-app-border transition-colors text-xs"
 				>
 					<Download size={14} />
 					<span>Скачать</span>

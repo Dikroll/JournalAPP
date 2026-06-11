@@ -18,7 +18,7 @@ export function ReviewCard({ review }: Props) {
 
 	return (
 		<div
-			className="bg-app-surface backdrop-blur-xl rounded-[20px] p-4 border border-app-border overflow-hidden"
+			className="bg-app-surface backdrop-blur-xl rounded-3xl p-4 border border-app-border overflow-hidden"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center justify-between gap-2 mb-2">

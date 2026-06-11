@@ -54,7 +54,7 @@ export const ProfileHeader = memo(
 			<>
 				<div className="px-4 pt-4 pb-2">
 					<div
-						className="rounded-[28px] p-6 relative overflow-hidden"
+						className="rounded-3xl p-6 relative overflow-hidden"
 						style={{
 							background:
 								"linear-gradient(135deg, var(--color-gradient-from) 0%, var(--color-gradient-to) 100%)",
@@ -130,7 +130,7 @@ export const ProfileHeader = memo(
 											key={label}
 											type="button"
 											onClick={onClick}
-											className="text-left bg-white/20 hover:bg-white/30 cursor-pointer backdrop-blur-sm rounded-2xl p-3 border border-white/30 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/45"
+											className="text-left bg-white/20 hover:bg-white/30 cursor-pointer backdrop-blur-sm rounded-3xl p-3 border border-white/30 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/45"
 										>
 											{content}
 										</button>
@@ -143,7 +143,7 @@ export const ProfileHeader = memo(
 											key={label}
 											to={to}
 											state={state}
-											className="bg-white/20 hover:bg-white/30 cursor-pointer backdrop-blur-sm rounded-2xl p-3 border border-white/30 active:scale-[0.98] transition-all"
+											className="bg-white/20 hover:bg-white/30 cursor-pointer backdrop-blur-sm rounded-3xl p-3 border border-white/30 active:scale-[0.98] transition-all"
 										>
 											{content}
 										</Link>
@@ -153,7 +153,7 @@ export const ProfileHeader = memo(
 								return (
 									<div
 										key={label}
-										className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 border border-white/30"
+										className="bg-white/20 backdrop-blur-sm rounded-3xl p-3 border border-white/30"
 									>
 										{content}
 									</div>

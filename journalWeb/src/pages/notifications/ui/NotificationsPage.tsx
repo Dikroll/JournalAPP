@@ -1,46 +1,52 @@
-import { useFeedbackStore } from '@/entities/feedback'
-import { AppUpdateBanner, useAppUpdateStore } from '@/features/appUpdate'
-import { RefreshNotificationsButton } from '@/features/refreshNotifications'
+import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useFeedbackStore } from "@/entities/feedback";
+import { AppUpdateBanner, useAppUpdateStore } from "@/features/appUpdate";
+import { RefreshNotificationsButton } from "@/features/refreshNotifications";
 import {
 	FALLBACK_CHANGELOG,
 	getNewPendingCount,
 	getUnreadCount,
 	useNotificationsStore,
-} from '@/features/sendNotifications'
-import type { ChangelogEntry } from '@/features/sendNotifications/model/store'
-import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { toChangelogFeedEntry } from '@/shared/lib/appRelease'
-import type { Segment } from '@/shared/ui'
-import { pageConfig, PAGE_TITLES } from '@/shared/config'
-import { IconButton, PageHeader, SegmentedControl } from '@/shared/ui'
-import { isNativePlatform } from '@/shared/lib/platform'
-import { EvaluateLessonList, NewsTab, ChangelogTab } from '@/widgets'
-import { ArrowLeft, ClipboardCheck, Megaphone, Sparkles } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+} from "@/features/sendNotifications";
+import type { ChangelogEntry } from "@/features/sendNotifications/model/store";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
+import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
+import { isNativePlatform } from "@/shared/lib/platform";
+import type { Segment } from "@/shared/ui";
+import { IconButton, PageHeader, SegmentedControl } from "@/shared/ui";
+import { ChangelogTab, EvaluateLessonList, NewsTab } from "@/widgets";
 
 type Tab = "changelog" | "feedback" | "news";
 
 const TABS: Segment<Tab>[] = [
-	...(isNativePlatform ? [{ key: "changelog" as Tab, label: "Обновления", icon: <Sparkles size={13} /> }] : []),
+	...(isNativePlatform
+		? [
+				{
+					key: "changelog" as Tab,
+					label: "Обновления",
+					icon: <Sparkles size={13} />,
+				},
+			]
+		: []),
 	{ key: "feedback", label: "Оценки", icon: <ClipboardCheck size={13} /> },
 	{ key: "news", label: "Новости", icon: <Megaphone size={13} /> },
 ];
 
-
-
 export function NotificationsPage() {
-	const navigate = useNavigate()
-	const location = useLocation()
+	const navigate = useNavigate();
+	const location = useLocation();
 
-	const activeTab = useNotificationsStore(s => s.activeTab)
-	const setActiveTab = useNotificationsStore(s => s.setActiveTab)
+	const activeTab = useNotificationsStore((s) => s.activeTab);
+	const setActiveTab = useNotificationsStore((s) => s.setActiveTab);
 
-	const { lastReadChangelogId, setLastRead } = useNotificationsStore()
-	const seenPendingKeys = useNotificationsStore(s => s.seenPendingKeys)
-	const markPendingSeen = useNotificationsStore(s => s.markPendingSeen)
-	const latestRelease = useAppUpdateStore(s => s.latestRelease)
-	const pending = useFeedbackStore(s => s.pending)
+	const { lastReadChangelogId, setLastRead } = useNotificationsStore();
+	const seenPendingKeys = useNotificationsStore((s) => s.seenPendingKeys);
+	const markPendingSeen = useNotificationsStore((s) => s.markPendingSeen);
+	const latestRelease = useAppUpdateStore((s) => s.latestRelease);
+	const pending = useFeedbackStore((s) => s.pending);
 
 	useSwipeBack();
 
@@ -52,9 +58,9 @@ export function NotificationsPage() {
 
 	// Открываем нужную вкладку если пришли с сайдбара
 	useEffect(() => {
-		const tab = (location.state as { tab?: Tab } | null)?.tab
-		if (tab) setActiveTab(tab)
-	}, [location.state, setActiveTab])
+		const tab = (location.state as { tab?: Tab } | null)?.tab;
+		if (tab) setActiveTab(tab);
+	}, [location.state, setActiveTab]);
 
 	const entries = useMemo<ChangelogEntry[]>(
 		() =>
@@ -87,13 +93,13 @@ export function NotificationsPage() {
 
 	const tabsWithBadge = useMemo<Segment<Tab>[]>(
 		() =>
-			TABS.map(tab => {
+			TABS.map((tab) => {
 				if (
-					tab.key === 'changelog' &&
+					tab.key === "changelog" &&
 					unread > 0 &&
 					lastReadChangelogId !== null
 				) {
-					return { ...tab, badge: unread }
+					return { ...tab, badge: unread };
 				}
 				if (tab.key === "feedback" && newPendingCount > 0) {
 					return { ...tab, badge: newPendingCount };
@@ -133,7 +139,6 @@ export function NotificationsPage() {
 			</div>
 
 			<div className="px-4">
-
 				{activeTab === "changelog" && isNativePlatform && (
 					<>
 						<AppUpdateBanner allowLatestReleaseFallback />
@@ -144,5 +149,5 @@ export function NotificationsPage() {
 				{activeTab === "news" && <NewsTab />}
 			</div>
 		</div>
-	)
+	);
 }

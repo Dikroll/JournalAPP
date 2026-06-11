@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { isCacheValid } from "../lib/isCacheValid";
-import { getIsOnline } from "../model/networkStore";
 import { useAuthStore } from "../model/authStore";
+import { getIsOnline } from "../model/networkStore";
 
 interface UseEntityFetchOptions<T> {
 	cacheKey: string;
@@ -117,7 +117,8 @@ export function useEntityFetch<T>({
 		// Always revalidate from API
 		const generation = fetchGeneration;
 		const username = useAuthStore.getState().activeUsername;
-		const promise = fetchFnRef.current()
+		const promise = fetchFnRef
+			.current()
 			.then((data) => {
 				if (!isRequestCurrent(generation, username)) return;
 				onSuccessRef.current(data);

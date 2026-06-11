@@ -7,7 +7,7 @@ export function EmptyGoalsState({ hasAnyEntries, onPressSetup }: Props) {
 	if (!hasAnyEntries) {
 		return (
 			<div
-				className="rounded-[22px] p-6 text-center"
+				className="rounded-3xl p-6 text-center"
 				style={{
 					background: "var(--color-surface)",
 					border: "1px solid var(--color-border)",
@@ -23,7 +23,7 @@ export function EmptyGoalsState({ hasAnyEntries, onPressSetup }: Props) {
 
 	return (
 		<div
-			className="rounded-[22px] p-4"
+			className="rounded-3xl p-4"
 			style={{
 				background: "var(--color-brand-subtle)",
 				border: "1px dashed var(--color-brand-border)",

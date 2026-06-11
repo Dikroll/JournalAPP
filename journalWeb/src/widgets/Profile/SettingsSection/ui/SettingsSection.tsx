@@ -1,9 +1,18 @@
-import { BellRing, ChevronRight, Moon, Sun, Trash2, Users, LogOut, Settings } from "lucide-react";
+import {
+	BellRing,
+	ChevronRight,
+	LogOut,
+	Moon,
+	Settings,
+	Sun,
+	Trash2,
+	Users,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useScheduleRemindersStore } from "@/features/scheduleReminders";
 import { pageConfig } from "@/shared/config";
-import { useThemeStore } from "@/shared/lib/themeStore";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { useThemeStore } from "@/shared/lib/themeStore";
 
 interface Props {
 	onAccounts: () => void;
@@ -19,7 +28,7 @@ export function SettingsSection({ onAccounts, onClearCache, onLogout }: Props) {
 
 	return (
 		<div
-			className="bg-app-surface rounded-[24px] border border-app-border overflow-hidden"
+			className="bg-app-surface rounded-3xl border border-app-border overflow-hidden"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center gap-2 px-5 pt-5 pb-3">
@@ -118,9 +127,7 @@ export function SettingsSection({ onAccounts, onClearCache, onLogout }: Props) {
 							>
 								<BellRing
 									size={15}
-									className={
-										remindersEnabled ? "text-brand" : "text-app-muted"
-									}
+									className={remindersEnabled ? "text-brand" : "text-app-muted"}
 								/>
 							</div>
 							<span className="flex-1 text-sm font-medium text-app-text text-left">

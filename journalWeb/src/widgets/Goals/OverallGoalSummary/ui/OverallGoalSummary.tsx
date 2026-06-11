@@ -26,7 +26,7 @@ export function OverallGoalSummary({ summary }: Props) {
 
 	return (
 		<div
-			className="rounded-[22px] p-5 mb-3 bg-app-surface"
+			className="rounded-3xl p-5 mb-3 bg-app-surface"
 			style={{
 				border: "1px solid var(--color-border)",
 				boxShadow: "var(--shadow-card)",

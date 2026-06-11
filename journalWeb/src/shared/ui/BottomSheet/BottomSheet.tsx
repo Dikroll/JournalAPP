@@ -1,5 +1,11 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
+import {
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 
 interface BottomSheetProps {
 	children: ReactNode;
@@ -14,11 +20,11 @@ export function BottomSheet({
 	zIndex = 200,
 	maxWidth,
 }: BottomSheetProps) {
-	const [dragY, setDragY] = useState(0)
-	const [dragging, setDragging] = useState(false)
-	const dragStart = useRef(0)
-	const sheetRef = useRef<HTMLDivElement>(null)
-	const isDesktop = useIsDesktop()
+	const [dragY, setDragY] = useState(0);
+	const [dragging, setDragging] = useState(false);
+	const dragStart = useRef(0);
+	const sheetRef = useRef<HTMLDivElement>(null);
+	const isDesktop = useIsDesktop();
 
 	useEffect(() => {
 		const scrollY = window.scrollY;
@@ -40,31 +46,34 @@ export function BottomSheet({
 
 	useEffect(() => {
 		if (!isDesktop || !onBackdropClick) return;
-		
+
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') {
+			if (e.key === "Escape") {
 				onBackdropClick();
 			}
 		};
-		
-		window.addEventListener('keydown', handleKeyDown);
-		return () => window.removeEventListener('keydown', handleKeyDown);
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [isDesktop, onBackdropClick]);
 
 	const dismiss = useCallback(() => {
 		onBackdropClick?.();
 	}, [onBackdropClick]);
 
-	const onTouchStart = useCallback((e: React.TouchEvent) => {
-		if (isDesktop) return
-		const sheet = sheetRef.current
-		if (!sheet) return
-		const rect = sheet.getBoundingClientRect()
-		const touchY = e.touches[0].clientY
-		if (touchY - rect.top > 40) return
-		dragStart.current = touchY
-		setDragging(true)
-	}, [isDesktop])
+	const onTouchStart = useCallback(
+		(e: React.TouchEvent) => {
+			if (isDesktop) return;
+			const sheet = sheetRef.current;
+			if (!sheet) return;
+			const rect = sheet.getBoundingClientRect();
+			const touchY = e.touches[0].clientY;
+			if (touchY - rect.top > 40) return;
+			dragStart.current = touchY;
+			setDragging(true);
+		},
+		[isDesktop],
+	);
 
 	const onTouchMove = useCallback(
 		(e: React.TouchEvent) => {
@@ -86,7 +95,7 @@ export function BottomSheet({
 
 	return (
 		<div
-			className={`fixed inset-0 flex justify-center ${isDesktop ? 'items-center p-4' : 'items-end'}`}
+			className={`fixed inset-0 flex justify-center ${isDesktop ? "items-center p-4" : "items-end"}`}
 			style={{
 				background: "var(--color-modal-backdrop)",
 				backdropFilter: "blur(4px)",
@@ -96,19 +105,21 @@ export function BottomSheet({
 		>
 			<div
 				ref={sheetRef}
-				className={`w-full ${maxWidth ?? 'max-w-md'} ${isDesktop ? 'rounded-[28px] border max-h-[90vh] overflow-y-auto' : 'rounded-t-[28px] border-t border-x'} p-5 border-app-border`}
+				className={`w-full ${maxWidth ?? "max-w-md"} ${isDesktop ? "rounded-3xl border max-h-[90vh] overflow-y-auto" : "rounded-t-[28px] border-t border-x"} p-5 border-app-border`}
 				style={{
 					background: "var(--color-modal-bg)",
 					transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-					transition: dragging ? 'none' : 'transform 0.2s ease-out',
-					boxShadow: isDesktop ? 'var(--shadow-modal)' : undefined,
+					transition: dragging ? "none" : "transform 0.2s ease-out",
+					boxShadow: isDesktop ? "var(--shadow-modal)" : undefined,
 				}}
 				onClick={(e) => e.stopPropagation()}
 				onTouchStart={onTouchStart}
 				onTouchMove={onTouchMove}
 				onTouchEnd={onTouchEnd}
 			>
-				{!isDesktop && <div className='w-10 h-1 bg-glass-strong rounded-full mx-auto mb-4 cursor-grab' />}
+				{!isDesktop && (
+					<div className="w-10 h-1 bg-glass-strong rounded-full mx-auto mb-4 cursor-grab" />
+				)}
 				{children}
 			</div>
 		</div>

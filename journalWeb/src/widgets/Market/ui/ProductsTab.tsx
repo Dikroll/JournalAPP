@@ -1,7 +1,8 @@
 import type { MarketPrice, MarketProduct } from "@/entities/market";
 import { Badge, SkeletonList } from "@/shared/ui";
-import { ProductCard } from "./ProductCard";
 import { PriceDisplay } from "./PriceDisplay";
+import { ProductCard } from "./ProductCard";
+
 interface Props {
 	products: MarketProduct[];
 	cartByProduct: Map<number, number>;

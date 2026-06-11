@@ -1,4 +1,4 @@
-import { BadgeCheck, Crown, Trophy } from "lucide-react";
+import { BadgeCheck, Trophy } from "lucide-react";
 import { useState } from "react";
 import type { LeaderboardScope } from "@/entities/leaderboard";
 import { useLeaderboard } from "@/entities/leaderboard";
@@ -6,41 +6,9 @@ import { getCachedImageUrl } from "@/shared/lib";
 import { Avatar } from "@/shared/ui";
 import { PhotoViewerModal } from "@/shared/ui/PhotoViewerModal/PhotoViewerModal";
 import { getShortName } from "@/shared/utils/nameUtils";
+import { HIGHLIGHT } from "../lib/constants";
 import { LeaderboardModal } from "./LeaderboardModal";
-
-const RANK_COLORS: Record<number, string> = {
-	1: "#FBBF24",
-	2: "#CBD5E1",
-	3: "#D97706",
-};
-
-const RANK_SURFACES: Record<
-	number,
-	{ badgeBg: string; badgeBorder: string; text: string }
-> = {
-	1: {
-		badgeBg: "rgba(251, 191, 36, 0.14)",
-		badgeBorder: "rgba(251, 191, 36, 0.36)",
-		text: "#FBBF24",
-	},
-	2: {
-		badgeBg: "rgba(203, 213, 225, 0.12)",
-		badgeBorder: "rgba(203, 213, 225, 0.28)",
-		text: "#CBD5E1",
-	},
-	3: {
-		badgeBg: "rgba(217, 119, 6, 0.13)",
-		badgeBorder: "rgba(217, 119, 6, 0.32)",
-		text: "#D97706",
-	},
-};
-
-const HIGHLIGHT = {
-	badgeBg: "var(--color-highlight-badge-bg)",
-	badgeBorder: "var(--color-highlight-badge-border)",
-	text: "var(--color-highlight-text)",
-	coin: "var(--color-highlight-coin)",
-};
+import { TopThreeWidgetList } from "./TopThreeWidgetList";
 
 export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,10 +26,6 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 
 	const meIndex = students.findIndex((s) => s.student_id === myStudentId);
 	const me = meIndex >= 0 ? students[meIndex] : null;
-
-	const getRankColor = (rank: number) => {
-		return RANK_COLORS[rank] ?? "var(--color-text-muted)";
-	};
 
 	return (
 		<div className="flex flex-col h-full">
@@ -91,83 +55,14 @@ export function Leaderboard({ myStudentId }: { myStudentId?: number }) {
 							</div>
 						))}
 					</div>
-					<div className="h-14 bg-app-surface-strong rounded-[18px]" />
+					<div className="h-14 bg-app-surface-strong rounded-3xl" />
 				</div>
 			) : (
 				<div className="flex flex-col flex-1">
-					{/* TOP 3 */}
-					<div className="flex items-start justify-between px-2 mb-6">
-						{paddedTop3.map((s, idx) => {
-							const rank = s ? s.position : idx + 1;
-							const color = getRankColor(rank);
-							const rankSurface = RANK_SURFACES[rank];
-
-							if (!s) {
-								return (
-									<div
-										key={`empty-rank-${rank}`}
-										className="flex flex-col items-center w-1/3 opacity-0"
-									>
-										<div className="w-12 h-12" />
-									</div>
-								);
-							}
-
-							return (
-								<div
-									key={s.student_id}
-									className="flex flex-col items-center w-1/3 relative"
-								>
-									{rank === 1 && (
-										<Crown
-											size={20}
-											className="absolute -top-[18px] text-[#EAB308]"
-										/>
-									)}
-									<div className="relative mt-1">
-										<Avatar
-											photoUrl={getCachedImageUrl(s.photo_url) || ""}
-											fullName={s.full_name}
-											size={56}
-											className="border-[3px]"
-											style={{ borderColor: color }}
-											onClick={() =>
-												s.photo_url
-													? setPhotoViewerSrc(
-															getCachedImageUrl(s.photo_url) || s.photo_url,
-														)
-													: undefined
-											}
-										/>
-										<div
-											className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold bg-[#1C1C1E] text-white"
-											style={{ border: `1.5px solid ${color}` }}
-										>
-											{rank}
-										</div>
-									</div>
-									<span className="text-[11px] font-semibold text-app-text mt-3 text-center line-clamp-1 break-all">
-										{getShortName(s.full_name)}
-									</span>
-									<div
-										className="mt-1 flex items-center gap-1 rounded-lg border px-2 py-0.5"
-										style={{
-											background: rankSurface.badgeBg,
-											borderColor: rankSurface.badgeBorder,
-										}}
-									>
-										<BadgeCheck size={10} style={{ color: rankSurface.text }} />
-										<span
-											className="text-[10px] font-bold"
-											style={{ color: rankSurface.text }}
-										>
-											{s.points.toLocaleString()}
-										</span>
-									</div>
-								</div>
-							);
-						})}
-					</div>
+					<TopThreeWidgetList
+						paddedTop3={paddedTop3}
+						onPhotoClick={(url) => setPhotoViewerSrc(url)}
+					/>
 
 					<div className="h-2" />
 

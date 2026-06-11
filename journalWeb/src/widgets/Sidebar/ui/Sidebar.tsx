@@ -56,7 +56,7 @@ export const Sidebar = memo(() => {
 				{vm && (
 					<button
 						type="button"
-						className="web-sidebar__user w-full flex items-center gap-2.5 p-1.5 -mx-1.5 rounded-xl hover:bg-app-surface-hover transition-colors text-left group"
+						className="web-sidebar__user w-full flex items-center gap-2.5 p-1.5 -mx-1.5 rounded-lg hover:bg-app-surface-hover transition-colors text-left group"
 						onClick={() => navigate(pageConfig.profile)}
 					>
 						<Avatar photoUrl={vm.photoUrl} fullName={vm.fullName} />
@@ -108,7 +108,7 @@ export const Sidebar = memo(() => {
 			{/* Footer */}
 			<div className="web-sidebar__footer shrink-0 p-2 border-t border-app-border space-y-1">
 				{isOffline && (
-					<div className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-danger/10 border border-danger/20 text-danger text-[11px] font-semibold">
+					<div className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-danger/10 border border-danger/20 text-danger text-[11px] font-semibold">
 						<WifiOff size={14} />
 						<span>ОФЛАЙН</span>
 					</div>
@@ -116,7 +116,7 @@ export const Sidebar = memo(() => {
 				<button
 					type="button"
 					onClick={toggleTheme}
-					className="w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-app-muted hover:bg-app-surface-hover hover:text-app-text transition-colors"
+					className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-medium text-app-muted hover:bg-app-surface-hover hover:text-app-text transition-colors"
 				>
 					{theme === "dark" ? <Moon size={14} /> : <Sun size={14} />}
 					<span className="flex-1 text-left">
@@ -161,7 +161,7 @@ const NavSection = memo(
 						key={item.to}
 						to={item.to}
 						className={({ isActive }) =>
-							`web-sidebar__link flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all duration-200 ${
+							`web-sidebar__link flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
 								isActive
 									? "bg-brand/10 shadow-sm"
 									: "text-app-muted hover:bg-app-surface-hover hover:text-app-text"

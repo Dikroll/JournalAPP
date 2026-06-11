@@ -38,7 +38,7 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 			/>
 
 			{/* Modal Container */}
-			<div className="relative w-full max-w-2xl max-h-full flex flex-col bg-[#202126] border border-[#3A3B42] rounded-[24px] shadow-2xl overflow-hidden">
+			<div className="relative w-full max-w-2xl max-h-full flex flex-col bg-[#202126] border border-[#3A3B42] rounded-3xl shadow-2xl overflow-hidden">
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-[#34363D] gap-4 shrink-0">
 					<h2 className="text-xl font-bold text-app-text">Будущие экзамены</h2>
@@ -60,7 +60,7 @@ export function FutureExamsModal({ isOpen, onClose, exams }: Props) {
 					<ul className="flex flex-col gap-2">
 						{exams.map((exam) => (
 							<li key={`${exam.date}-${exam.spec}`}>
-								<div className="flex items-center gap-3 rounded-[18px] border border-[#454750] bg-[#303238] p-3">
+								<div className="flex items-center gap-3 rounded-3xl border border-[#454750] bg-[#303238] p-3">
 									<div
 										className="flex-shrink-0 w-12 h-12 rounded-xl flex flex-col items-center justify-center"
 										style={

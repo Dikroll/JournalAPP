@@ -8,7 +8,7 @@ export function CatGame() {
 	return (
 		<canvas
 			ref={canvasRef}
-			className="w-full h-full block cursor-pointer select-none rounded-2xl"
+			className="w-full h-full block cursor-pointer select-none rounded-3xl"
 			onClick={jump}
 		/>
 	);

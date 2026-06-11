@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import { resetAllAppState } from '@/shared/lib/resetAllAppState'
-import { useProfileDetails } from '@/entities/profile'
-import { pageConfig, PAGE_TITLES } from '@/shared/config'
-import { useSwipeBack } from '@/shared/hooks/useSwipeBack'
-import { ErrorView, IconButton, PageHeader, SkeletonList } from '@/shared/ui'
-import { useAuthStore } from '@/shared/model/authStore'
-import { useUserStore } from '@/entities/user'
-import { LogoutConfirm } from '@/features/changeUser/ui/LogoutConfirm'
+import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useProfileDetails } from "@/entities/profile";
+import { useUserStore } from "@/entities/user";
+import { LogoutConfirm } from "@/features/changeUser/ui/LogoutConfirm";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
+import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { resetAllAppState } from "@/shared/lib/resetAllAppState";
+import { useAuthStore } from "@/shared/model/authStore";
+import { ErrorView, IconButton, PageHeader, SkeletonList } from "@/shared/ui";
 import {
 	AccountSwitcher,
 	ClearCacheSheet,

@@ -1,4 +1,4 @@
-import { Pencil, StickyNote, Trash2, X } from "lucide-react";
+import { StickyNote, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -9,100 +9,14 @@ import {
 	useLessonNotesStore,
 } from "@/entities/schedule";
 import { BottomSheet, SheetButton } from "@/shared/ui";
+import { NoteItem } from "./components/NoteItem";
+import { StatusPicker } from "./components/StatusPicker";
 
 interface Props {
 	date: string;
 	lessonNumber: number;
 	subjectName: string;
 	onClose: () => void;
-}
-
-function StatusPicker({
-	statuses,
-	selected,
-	onSelect,
-}: {
-	statuses: NoteStatus[];
-	selected: NoteStatus;
-	onSelect: (s: NoteStatus) => void;
-}) {
-	return (
-		<div className="flex flex-wrap gap-2">
-			{statuses.map((status) => {
-				const active = selected.label === status.label;
-				return (
-					<button
-						key={status.label}
-						type="button"
-						onClick={() => onSelect(status)}
-						className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
-						style={{
-							background: active
-								? `${status.color}15`
-								: "var(--color-surface-strong)",
-							border: active
-								? `1.5px solid ${status.color}40`
-								: "1px solid var(--color-border)",
-							color: active ? status.color : "var(--color-text-muted)",
-						}}
-					>
-						{status.label}
-					</button>
-				);
-			})}
-		</div>
-	);
-}
-
-function NoteItem({
-	note,
-	lessonKey,
-	onEdit,
-}: {
-	note: LessonNote;
-	lessonKey: string;
-	onEdit: (n: LessonNote) => void;
-}) {
-	const removeNote = useLessonNotesStore((s) => s.removeNote);
-
-	return (
-		<div
-			className="flex items-start gap-2 rounded-xl px-3 py-2.5 border"
-			style={{
-				background: `${note.status.color}08`,
-				borderColor: `${note.status.color}20`,
-			}}
-		>
-			<span
-				className="text-[10px] font-semibold rounded-full px-2 py-0.5 shrink-0 mt-0.5"
-				style={{
-					background: `${note.status.color}15`,
-					color: note.status.color,
-				}}
-			>
-				{note.status.label}
-			</span>
-			<p className="text-xs text-app-text flex-1 leading-relaxed">
-				{note.text}
-			</p>
-			<div className="flex gap-1 shrink-0">
-				<button
-					type="button"
-					onClick={() => onEdit(note)}
-					className="p-1 rounded-md text-app-faint hover:text-app-muted transition-colors"
-				>
-					<Pencil size={11} />
-				</button>
-				<button
-					type="button"
-					onClick={() => removeNote(lessonKey, note.id)}
-					className="p-1 rounded-md text-app-faint hover:text-status-overdue transition-colors"
-				>
-					<Trash2 size={11} />
-				</button>
-			</div>
-		</div>
-	);
 }
 
 export function LessonNoteSheet({
@@ -203,7 +117,7 @@ export function LessonNoteSheet({
 						placeholder="Например: принести тетрадь, доделать лабу..."
 						maxLength={300}
 						rows={2}
-						className="w-full rounded-2xl px-4 py-3 text-sm text-app-text placeholder:text-app-faint resize-none focus:outline-none"
+						className="w-full rounded-3xl px-4 py-3 text-sm text-app-text placeholder:text-app-faint resize-none focus:outline-none"
 						style={{
 							background: "var(--color-surface-strong)",
 							border: "1px solid var(--color-border)",

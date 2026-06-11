@@ -1,7 +1,7 @@
 import { RefreshNotificationsButton } from "@/features/refreshNotifications";
-import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
-import { pageConfig, PAGE_TITLES } from "@/shared/config";
+import { useSwipeBack } from "@/shared/hooks/useSwipeBack";
 import { PageHeader } from "@/shared/ui";
 import { NewsTab } from "@/widgets";
 

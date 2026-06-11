@@ -37,34 +37,34 @@ export const FALLBACK_CHANGELOG: ChangelogEntry[] = [
 ];
 
 interface NotificationsState {
-	lastReadChangelogId: string | null
-	setLastRead: (id: string) => void
-	seenPendingKeys: string[]
-	markPendingSeen: (keys: string[]) => void
-	activeTab: 'changelog' | 'feedback' | 'news'
-	setActiveTab: (tab: 'changelog' | 'feedback' | 'news') => void
+	lastReadChangelogId: string | null;
+	setLastRead: (id: string) => void;
+	seenPendingKeys: string[];
+	markPendingSeen: (keys: string[]) => void;
+	activeTab: "changelog" | "feedback" | "news";
+	setActiveTab: (tab: "changelog" | "feedback" | "news") => void;
 }
 
 export const useNotificationsStore = create<NotificationsState>()(
 	persistEncrypted(
-		set => ({
+		(set) => ({
 			lastReadChangelogId: null,
-			setLastRead: id => set({ lastReadChangelogId: id }),
+			setLastRead: (id) => set({ lastReadChangelogId: id }),
 			seenPendingKeys: [],
-			markPendingSeen: keys => set({ seenPendingKeys: keys }),
-			activeTab: 'news',
-			setActiveTab: tab => set({ activeTab: tab }),
+			markPendingSeen: (keys) => set({ seenPendingKeys: keys }),
+			activeTab: "news",
+			setActiveTab: (tab) => set({ activeTab: tab }),
 		}),
 		{
-			name: 'notifications-store',
-			partialize: state => ({
+			name: "notifications-store",
+			partialize: (state) => ({
 				lastReadChangelogId: state.lastReadChangelogId,
 				seenPendingKeys: state.seenPendingKeys,
 				activeTab: state.activeTab,
 			}),
 		},
 	),
-)
+);
 
 export function getUnreadCount(
 	lastReadId: string | null,

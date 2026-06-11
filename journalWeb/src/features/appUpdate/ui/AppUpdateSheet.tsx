@@ -31,7 +31,7 @@ export function AppUpdateSheet() {
 				{/* Header */}
 				<div className="flex items-start justify-between">
 					<div className="flex items-center gap-3">
-						<div className="w-10 h-10 rounded-2xl bg-brand/10 border border-brand/20 flex items-center justify-center">
+						<div className="w-10 h-10 rounded-3xl bg-brand/10 border border-brand/20 flex items-center justify-center">
 							<Download size={18} className="text-brand" />
 						</div>
 						<div>
@@ -104,7 +104,7 @@ export function AppUpdateSheet() {
 
 				{/* Ошибка */}
 				{isError && errorMessage && (
-					<div className="bg-danger-subtle border border-danger-border rounded-2xl px-4 py-3">
+					<div className="bg-danger-subtle border border-danger-border rounded-3xl px-4 py-3">
 						<p className="text-sm text-danger">{errorMessage}</p>
 					</div>
 				)}

@@ -96,14 +96,14 @@ export function ProfileActivityPage() {
 					<div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4">
 						<ActivityIntroCard desktop />
 						<div
-							className="rounded-[24px] border border-app-border bg-app-surface p-5"
+							className="rounded-3xl border border-app-border bg-app-surface p-5"
 							style={{ boxShadow: "var(--shadow-card)" }}
 						>
 							<p className="text-sm font-semibold text-app-text">
 								Сводка по фильтру
 							</p>
 							<div className="mt-4 grid grid-cols-2 gap-3">
-								<div className="rounded-2xl border border-app-border bg-app-surface-hover p-3">
+								<div className="rounded-3xl border border-app-border bg-app-surface-hover p-3">
 									<p className="text-[11px] uppercase tracking-[0.12em] text-app-muted">
 										Начислено
 									</p>
@@ -111,7 +111,7 @@ export function ProfileActivityPage() {
 										+{summary.earn.toLocaleString("ru-RU")}
 									</p>
 								</div>
-								<div className="rounded-2xl border border-app-border bg-app-surface-hover p-3">
+								<div className="rounded-3xl border border-app-border bg-app-surface-hover p-3">
 									<p className="text-[11px] uppercase tracking-[0.12em] text-app-muted">
 										Списано
 									</p>
@@ -119,7 +119,7 @@ export function ProfileActivityPage() {
 										−{summary.spend.toLocaleString("ru-RU")}
 									</p>
 								</div>
-								<div className="rounded-2xl border border-[#00D9FF]/20 bg-[#00D9FF]/10 p-3">
+								<div className="rounded-3xl border border-[#00D9FF]/20 bg-[#00D9FF]/10 p-3">
 									<p className="text-[11px] uppercase tracking-[0.12em] text-app-muted">
 										Топгемы
 									</p>
@@ -127,7 +127,7 @@ export function ProfileActivityPage() {
 										{summary.coins}
 									</p>
 								</div>
-								<div className="rounded-2xl border border-[#FFD700]/20 bg-[#FFD700]/10 p-3">
+								<div className="rounded-3xl border border-[#FFD700]/20 bg-[#FFD700]/10 p-3">
 									<p className="text-[11px] uppercase tracking-[0.12em] text-app-muted">
 										Топмани
 									</p>
@@ -145,7 +145,7 @@ export function ProfileActivityPage() {
 				<div
 					className={
 						isDesktop
-							? "rounded-[22px] border border-app-border bg-app-surface/70 p-2"
+							? "rounded-3xl border border-app-border bg-app-surface/70 p-2"
 							: undefined
 					}
 					style={isDesktop ? { boxShadow: "var(--shadow-card)" } : undefined}

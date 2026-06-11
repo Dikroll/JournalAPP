@@ -1,7 +1,7 @@
 import { ttl } from "@/shared/config";
+import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { CACHE_KEYS } from "@/shared/lib";
 import { newsApi } from "../api";
-import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
 import { useNewsStore } from "../model/store";
 
 export function useNews() {
@@ -15,7 +15,12 @@ export function useNews() {
 		fetchFn: () => newsApi.getLatest(),
 		updateStore: (state) => {
 			if (state.data !== undefined) {
-				update({ latest: state.data, status: state.status as any, loadedAt: state.loadedAt, error: state.error });
+				update({
+					latest: state.data,
+					status: state.status as any,
+					loadedAt: state.loadedAt,
+					error: state.error,
+				});
 			} else {
 				update({ status: state.status as any, error: state.error });
 			}

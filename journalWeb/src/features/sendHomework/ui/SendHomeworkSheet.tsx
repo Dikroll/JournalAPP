@@ -122,7 +122,7 @@ export function SendHomeworkSheet({
 								onChange={(e) => setText(e.target.value)}
 								placeholder="Введите ответ..."
 								rows={3}
-								className="w-full rounded-2xl px-4 py-3 text-sm text-app-text placeholder:text-app-muted resize-none focus:outline-none"
+								className="w-full rounded-3xl px-4 py-3 text-sm text-app-text placeholder:text-app-muted resize-none focus:outline-none"
 								style={{
 									background: "var(--color-surface-strong)",
 									border: "1px solid var(--color-border)",

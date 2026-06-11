@@ -47,7 +47,7 @@ export function useScheduleByDate(date: string | null) {
 		// Early return condition handled by skipping the request if no date
 	});
 
-	// If no date is provided, we still need to keep the hook call valid, 
+	// If no date is provided, we still need to keep the hook call valid,
 	// so the cacheKey changes, but fetchFn just resolves empty immediately.
 	// However, useEntityFetch is robust enough to handle it cleanly.
 	return { lessons, status };

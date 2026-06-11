@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { getTodayString } from "@/shared/utils";
 import { useEntityFetch } from "@/shared/hooks/useEntityFetch";
+import { getTodayString } from "@/shared/utils";
 import { scheduleApi } from "../api";
 import { SCHEDULE_CACHE_VERSION, useScheduleStore } from "../model/store";
 import type { LessonItem } from "../model/types";
@@ -26,7 +26,7 @@ export function useScheduleToday() {
 	const todayLoadedAt = useScheduleStore((s) => s.todayLoadedAt);
 	const cacheVersion = useScheduleStore((s) => s.cacheVersion);
 	const error = useScheduleStore((s) => s.error);
-	
+
 	const setToday = useScheduleStore((s) => s.setToday);
 	const setTodayStatus = useScheduleStore((s) => s.setTodayStatus);
 	const setTodayLoadedAt = useScheduleStore((s) => s.setTodayLoadedAt);
@@ -36,7 +36,10 @@ export function useScheduleToday() {
 	const isTodayValid = todayLoadedAt !== null && isLoadedToday(todayLoadedAt);
 
 	useEffect(() => {
-		if (cacheVersion !== SCHEDULE_CACHE_VERSION || (todayLoadedAt !== null && !isTodayValid)) {
+		if (
+			cacheVersion !== SCHEDULE_CACHE_VERSION ||
+			(todayLoadedAt !== null && !isTodayValid)
+		) {
 			resetAllCache();
 		}
 	}, [cacheVersion, isTodayValid, todayLoadedAt, resetAllCache]);

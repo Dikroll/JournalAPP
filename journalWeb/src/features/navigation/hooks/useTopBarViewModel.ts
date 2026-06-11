@@ -9,8 +9,8 @@ import {
 import { getCachedImageUrl } from "@/shared/lib";
 import { toChangelogFeedEntry } from "@/shared/lib/appRelease";
 import { useHydrationStore } from "@/shared/lib/hydrationStore";
-import { getInitials, getShortName } from "@/shared/utils/nameUtils";
 import { isNativePlatform } from "@/shared/lib/platform";
+import { getInitials, getShortName } from "@/shared/utils/nameUtils";
 
 function useUserStoreHydrated() {
 	const hasHydrated = useHydrationStore((state) => state.hasHydrated);

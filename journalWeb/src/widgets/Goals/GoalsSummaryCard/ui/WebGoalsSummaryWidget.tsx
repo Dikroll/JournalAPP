@@ -70,7 +70,11 @@ function MetricCard({
 	);
 }
 
-export function WebGoalsSummaryWidget({ variant = "cube" }: { variant?: "cube" | "line" }) {
+export function WebGoalsSummaryWidget({
+	variant = "cube",
+}: {
+	variant?: "cube" | "line";
+}) {
 	const { progress, attendance } = useDashboardCharts();
 	const { entries } = useGrades();
 	const { myRankGroup } = useLeaderboard();
@@ -127,7 +131,7 @@ export function WebGoalsSummaryWidget({ variant = "cube" }: { variant?: "cube" |
 
 	return (
 		<div
-			className="w-full rounded-[20px] border border-app-border bg-app-surface p-2.5 shrink-0 min-h-0"
+			className="w-full rounded-3xl border border-app-border bg-app-surface p-2.5 shrink-0 min-h-0"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="mb-2 flex items-center gap-2 px-1">
@@ -136,7 +140,9 @@ export function WebGoalsSummaryWidget({ variant = "cube" }: { variant?: "cube" |
 					Сводка оценок
 				</h2>
 			</div>
-			<div className={`grid gap-2 min-[1180px]:gap-2.5 ${variant === "cube" ? "grid-cols-2" : "grid-cols-4"}`}>
+			<div
+				className={`grid gap-2 min-[1180px]:gap-2.5 ${variant === "cube" ? "grid-cols-2" : "grid-cols-4"}`}
+			>
 				{metrics.map((metric) => (
 					<MetricCard key={metric.title} {...metric} />
 				))}

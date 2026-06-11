@@ -1,5 +1,3 @@
-import { CheckCircle2 } from "lucide-react";
-import { useLayoutEffect, useRef, useState } from "react";
 import {
 	getGapBetweenLessons,
 	getLessonTimeLabel,
@@ -8,6 +6,8 @@ import {
 } from "@/entities/schedule";
 import { toMinutes, useCurrentMinutes } from "@/shared/hooks";
 import { InlineImage } from "@/shared/ui";
+import { useTimelineMetrics } from "../lib/useTimelineMetrics";
+import { CompletionMarker } from "./CompletionMarker";
 import { GapIndicator } from "./GapIndicator";
 import type { LessonCardVariant } from "./LessonCard";
 import { LessonCard } from "./LessonCard";
@@ -23,95 +23,29 @@ export function ScheduleList({
 }) {
 	const { today, status, error } = useScheduleToday();
 	const nowMinutes = useCurrentMinutes();
+
 	const sorted = [...today].sort((a, b) => a.lesson - b.lesson);
 	const visibleLessons = limit ? sorted.slice(0, limit) : sorted;
 	const hiddenCount = sorted.length - visibleLessons.length;
 	const timeInfo = getScheduleTimeInfo(sorted, nowMinutes);
+
 	const isHomeDesktop = cardVariant === "homeDesktop";
 	const showCompletionMarker = isHomeDesktop && hiddenCount === 0;
-	const completionDotIndex = visibleLessons.length;
-	const lastVisibleLesson = visibleLessons[visibleLessons.length - 1];
-	const timelineRef = useRef<HTMLDivElement | null>(null);
-	const dotRefs = useRef<Array<HTMLSpanElement | null>>([]);
-	const [timelineMetrics, setTimelineMetrics] = useState({
-		top: 18,
-		height: 0,
-	});
-	const activeTimelineDots = sorted.filter(
-		(lesson) =>
-			nowMinutes >= toMinutes(lesson.started_at) &&
-			nowMinutes <= toMinutes(lesson.finished_at),
-	).length
-		? sorted.findIndex(
-				(lesson) =>
-					nowMinutes >= toMinutes(lesson.started_at) &&
-					nowMinutes <= toMinutes(lesson.finished_at),
-			) + 1
-		: sorted.filter((lesson) => nowMinutes > toMinutes(lesson.finished_at))
-				.length;
-	const isCompletionActive = lastVisibleLesson
-		? nowMinutes > toMinutes(lastVisibleLesson.finished_at)
-		: false;
-	const completionColor = isCompletionActive ? "#3B82F6" : "#64748B";
-	const activeTimelineMarkers =
-		activeTimelineDots + (showCompletionMarker && isCompletionActive ? 1 : 0);
-	const timelineMarkerCount =
-		visibleLessons.length + (showCompletionMarker ? 1 : 0);
-	const timelineFillPercent =
-		timelineMarkerCount <= 1
-			? activeTimelineMarkers > 0
-				? 100
-				: 0
-			: Math.max(
-					0,
-					Math.min(
-						100,
-						((activeTimelineMarkers - 1) / (timelineMarkerCount - 1)) * 100,
-					),
-				);
 
-	useLayoutEffect(() => {
-		if (!isHomeDesktop || visibleLessons.length === 0) return;
-
-		const updateTimelineMetrics = () => {
-			const container = timelineRef.current;
-			const firstDot = dotRefs.current[0];
-			const lastDot =
-				dotRefs.current[
-					showCompletionMarker ? completionDotIndex : visibleLessons.length - 1
-				];
-			if (!container || !firstDot || !lastDot) return;
-
-			const containerRect = container.getBoundingClientRect();
-			const firstDotRect = firstDot.getBoundingClientRect();
-			const lastDotRect = lastDot.getBoundingClientRect();
-			const top = firstDotRect.top - containerRect.top;
-			const height = Math.max(0, lastDotRect.top - firstDotRect.top);
-
-			setTimelineMetrics((current) =>
-				Math.abs(current.top - top) < 0.5 &&
-				Math.abs(current.height - height) < 0.5
-					? current
-					: { top, height },
-			);
-		};
-
-		updateTimelineMetrics();
-
-		const resizeObserver =
-			typeof ResizeObserver !== "undefined"
-				? new ResizeObserver(updateTimelineMetrics)
-				: null;
-		if (timelineRef.current && resizeObserver) {
-			resizeObserver.observe(timelineRef.current);
-		}
-		window.addEventListener("resize", updateTimelineMetrics);
-
-		return () => {
-			resizeObserver?.disconnect();
-			window.removeEventListener("resize", updateTimelineMetrics);
-		};
-	}, [completionDotIndex, isHomeDesktop, showCompletionMarker, visibleLessons]);
+	const {
+		timelineRef,
+		dotRefs,
+		timelineMetrics,
+		timelineFillPercent,
+		completionColor,
+		completionDotIndex,
+	} = useTimelineMetrics(
+		visibleLessons,
+		sorted,
+		nowMinutes,
+		isHomeDesktop,
+		showCompletionMarker,
+	);
 
 	if (status === "loading" && today.length === 0) {
 		return (
@@ -119,7 +53,7 @@ export function ScheduleList({
 				{[0, 1, 2].map((i) => (
 					<div
 						key={i}
-						className="bg-app-surface rounded-[20px] h-24 animate-pulse border border-app-border"
+						className="bg-app-surface rounded-3xl h-24 animate-pulse border border-app-border"
 					/>
 				))}
 			</div>
@@ -235,37 +169,12 @@ export function ScheduleList({
 							</div>
 						</li>
 					) : showCompletionMarker ? (
-						<li className="relative flex h-8 items-center select-none pointer-events-none">
-							<span
-								ref={(node) => {
-									dotRefs.current[completionDotIndex] = node;
-								}}
-								className="pointer-events-none absolute left-[16px] top-1/2 h-0 w-0"
-								aria-hidden="true"
-							/>
-							<div
-								className="absolute left-[16px] top-1/2 z-10 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
-								style={{
-									background: completionColor,
-									borderColor: completionColor,
-									boxShadow: `0 0 0 2px var(--color-surface), 0 0 14px ${completionColor}35`,
-								}}
-							>
-								<CheckCircle2 size={12} className="text-white" />
-							</div>
-							<div className="pl-[36px] flex flex-1 items-center gap-3">
-								<span
-									className="text-[12px] font-medium"
-									style={{ color: completionColor }}
-								>
-									На сегодня всё
-								</span>
-								<div
-									className="flex-1 h-px border-b border-dashed"
-									style={{ borderColor: `${completionColor}40` }}
-								/>
-							</div>
-						</li>
+						<CompletionMarker
+							color={completionColor}
+							setDotRef={(node) => {
+								dotRefs.current[completionDotIndex] = node;
+							}}
+						/>
 					) : null}
 				</ul>
 			</div>

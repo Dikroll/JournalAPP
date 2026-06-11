@@ -1,1 +1,1 @@
-export { DesktopActivityPreview } from './ui/DesktopActivityPreview';
+export { DesktopActivityPreview } from "./ui/DesktopActivityPreview";

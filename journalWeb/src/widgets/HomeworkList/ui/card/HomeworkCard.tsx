@@ -35,7 +35,7 @@ export const HomeworkCard = memo(
 			<>
 				<div
 					id={`hw-card-${hw.id}`}
-					className={`homework-card ${cardBg} shadow-[var(--shadow-card)] backdrop-blur-xl rounded-[24px] border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden h-full flex flex-col`}
+					className={`homework-card ${cardBg} shadow-[var(--shadow-card)] backdrop-blur-xl rounded-3xl border-4 border-l-4 border-b-4 ${config.borderColor} border-t-0 border-r-0 overflow-hidden h-full flex flex-col`}
 				>
 					{photoUrl && (
 						<button
@@ -87,7 +87,7 @@ export const HomeworkCard = memo(
 								)}
 								{(commentAlwaysVisible || commentOpen) && (
 									<div
-										className={`p-3 rounded-2xl border ${
+										className={`p-3 rounded-3xl border ${
 											isReturned
 												? "bg-returned-subtle border-returned-border"
 												: "bg-comment-subtle border-comment-border"

@@ -21,7 +21,7 @@ export function GoalCard({ data, onPress }: Props) {
 		<button
 			type="button"
 			onClick={() => onPress(data.specId)}
-			className="w-full text-left rounded-[22px] p-4 mb-2 block active:scale-[0.99] transition-transform bg-app-surface"
+			className="w-full text-left rounded-3xl p-4 mb-2 block active:scale-[0.99] transition-transform bg-app-surface"
 			style={{
 				border: "1px solid var(--color-border)",
 				boxShadow: "var(--shadow-card)",

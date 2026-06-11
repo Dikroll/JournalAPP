@@ -1,8 +1,8 @@
 import { PackageOpen, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { MarketProduct } from "@/entities/market";
-import { PhotoViewerModal } from "@/shared/ui";
 import { getCachedImageUrl } from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {
@@ -26,7 +26,7 @@ export function ProductCard({
 
 	return (
 		<>
-			<article className="flex h-full flex-col overflow-hidden rounded-[18px] border border-app-border bg-app-surface">
+			<article className="flex h-full flex-col overflow-hidden rounded-3xl border border-app-border bg-app-surface">
 				<div
 					className="h-36 shrink-0 bg-app-surface-hover cursor-pointer sm:h-40 xl:h-44"
 					onClick={() => fixedImageUrl && setPhotoViewerOpen(true)}
@@ -67,7 +67,7 @@ export function ProductCard({
 							<button
 								type="button"
 								onClick={onRemove}
-								className="h-9 w-full rounded-2xl border border-status-error/30 bg-status-error/10 px-3 text-xs font-semibold text-status-error transition hover:bg-status-error/20"
+								className="h-9 w-full rounded-3xl border border-status-error/30 bg-status-error/10 px-3 text-xs font-semibold text-status-error transition hover:bg-status-error/20"
 							>
 								<div className="flex items-center justify-center gap-2 whitespace-nowrap">
 									<Trash2 size={14} />
@@ -80,7 +80,7 @@ export function ProductCard({
 								onClick={onAdd}
 								disabled={isSoldOut || !canAddToCart}
 								title={!canAddToCart ? "Не хватает средств" : ""}
-								className="h-9 w-full rounded-2xl bg-brand px-3 text-xs font-semibold text-white transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
+								className="h-9 w-full rounded-3xl bg-brand px-3 text-xs font-semibold text-white transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								В корзину
 							</button>

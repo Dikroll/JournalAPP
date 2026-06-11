@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
 				style={{ backgroundColor: "var(--color-bg, #1F2024)" }}
 			>
 				<div
-					className="w-full max-w-sm rounded-[24px] border border-app-border bg-app-surface p-5 text-center"
+					className="w-full max-w-sm rounded-3xl border border-app-border bg-app-surface p-5 text-center"
 					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					<p className="text-base font-semibold">Страница не загрузилась</p>

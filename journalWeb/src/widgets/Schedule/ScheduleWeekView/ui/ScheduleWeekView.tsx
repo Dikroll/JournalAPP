@@ -54,7 +54,7 @@ export function ScheduleWeekView() {
 				{LOADING_SKELETONS.map((skeleton) => (
 					<div
 						key={skeleton.id}
-						className="bg-app-surface rounded-[24px] border border-app-border animate-pulse"
+						className="bg-app-surface rounded-3xl border border-app-border animate-pulse"
 						style={{ height: skeleton.height }}
 					/>
 				))}
@@ -130,7 +130,7 @@ export function ScheduleWeekView() {
 					return (
 						<section
 							key={dateStr}
-							className={`w-full min-w-0 bg-app-surface rounded-[24px] p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
+							className={`w-full min-w-0 bg-app-surface rounded-3xl p-3 border border-app-border ${isPast && !isToday ? "opacity-60" : ""}`}
 							style={{ boxShadow: "var(--shadow-card)" }}
 						>
 							{/* Section header */}

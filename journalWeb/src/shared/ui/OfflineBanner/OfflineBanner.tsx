@@ -9,7 +9,7 @@ export function OfflineBanner() {
 	return (
 		<div className="w-full flex justify-center mb-1 mt-2">
 			<div
-				className="w-full max-w-[520px] mx-4 rounded-[20px] px-4 py-3 border bg-app-surface border-app-border"
+				className="w-full max-w-[520px] mx-4 rounded-3xl px-4 py-3 border bg-app-surface border-app-border"
 				style={{
 					boxShadow: "0 2px 12px 0 rgba(0,0,0,0.25)",
 					backdropFilter: "blur(16px)",

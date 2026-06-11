@@ -37,10 +37,7 @@ export function SettingRow<T extends string | number>({
 						border: "1px solid var(--color-border)",
 					}}
 				>
-					<Icon
-						size={15}
-						className="text-app-muted"
-					/>
+					<Icon size={15} className="text-app-muted" />
 				</div>
 				<div className="flex-1 min-w-0">
 					<p className="text-sm font-medium text-app-text">{title}</p>

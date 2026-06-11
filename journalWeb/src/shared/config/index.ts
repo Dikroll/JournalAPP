@@ -1,13 +1,9 @@
-export { pageConfig, PAGE_TITLES } from './pageConfig'
+export { apiConfig } from "./apiConfig";
+export { ttl } from "./cacheConfig";
+export * from "./gradeColors";
+export * from "./navigation";
+export { PAGE_TITLES, pageConfig } from "./pageConfig";
 
-export { apiConfig } from './apiConfig'
-
-export { ttl } from './cacheConfig'
-
-export { timing } from './timingConfig'
-export { widgetConfig } from './widgetConfig'
-
-export * from './semesterConfig'
-
-export * from './gradeColors'
-export * from './navigation'
+export * from "./semesterConfig";
+export { timing } from "./timingConfig";
+export { widgetConfig } from "./widgetConfig";

@@ -65,7 +65,7 @@ export function HomeworkCardActions({
 			}}
 			disabled={!fileUrl}
 			title="Скачать задание"
-			className="min-w-0 flex items-center justify-center gap-1.5 rounded-2xl border border-app-border bg-app-surface px-3 py-2.5 text-xs text-app-muted hover:bg-app-surface-hover hover:text-app-text disabled:cursor-not-allowed disabled:opacity-30"
+			className="min-w-0 flex items-center justify-center gap-1.5 rounded-3xl border border-app-border bg-app-surface px-3 py-2.5 text-xs text-app-muted hover:bg-app-surface-hover hover:text-app-text disabled:cursor-not-allowed disabled:opacity-30"
 		>
 			<Download size={14} />
 			<span className="truncate">Задание</span>
@@ -81,7 +81,7 @@ export function HomeworkCardActions({
 			}}
 			disabled={!hasAnswer}
 			title="Мой ответ"
-			className="min-w-0 flex items-center justify-center gap-1.5 rounded-2xl border border-app-border bg-app-surface px-3 py-2.5 text-xs text-app-muted hover:bg-app-surface-hover hover:text-app-text disabled:cursor-not-allowed disabled:opacity-30"
+			className="min-w-0 flex items-center justify-center gap-1.5 rounded-3xl border border-app-border bg-app-surface px-3 py-2.5 text-xs text-app-muted hover:bg-app-surface-hover hover:text-app-text disabled:cursor-not-allowed disabled:opacity-30"
 		>
 			{!studAnswerIsUrl && !studFileUrl ? (
 				<MessageSquare size={14} />
@@ -99,7 +99,7 @@ export function HomeworkCardActions({
 				e.preventDefault();
 				setSheetOpen(true);
 			}}
-			className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-medium ${
+			className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-3xl px-3 py-2.5 text-xs font-medium ${
 				red
 					? "bg-overdue-bg hover:bg-overdue-border text-status-overdue border border-overdue-border"
 					: "bg-app-surface-strong hover:bg-app-surface-active text-app-text border border-app-border-strong"
@@ -111,7 +111,7 @@ export function HomeworkCardActions({
 	);
 
 	const ExpiredBadge = (
-		<div className="flex min-w-0 flex-1 items-center gap-2 rounded-2xl border border-overdue-border bg-overdue-bg px-3 py-2.5 text-xs">
+		<div className="flex min-w-0 flex-1 items-center gap-2 rounded-3xl border border-overdue-border bg-overdue-bg px-3 py-2.5 text-xs">
 			<OctagonAlert size={14} className="text-status-overdue shrink-0" />
 			<span className="min-w-0 text-status-overdue">
 				Срок сдачи истёк более 6 месяцев назад
@@ -128,7 +128,7 @@ export function HomeworkCardActions({
 			}}
 			disabled={!studId}
 			title="Удалить сданное ДЗ"
-			className="flex shrink-0 items-center justify-center rounded-2xl border border-app-border bg-app-surface px-3 py-2.5 text-app-muted hover:border-overdue-border hover:bg-overdue-bg hover:text-status-overdue disabled:cursor-not-allowed disabled:opacity-30"
+			className="flex shrink-0 items-center justify-center rounded-3xl border border-app-border bg-app-surface px-3 py-2.5 text-app-muted hover:border-overdue-border hover:bg-overdue-bg hover:text-status-overdue disabled:cursor-not-allowed disabled:opacity-30"
 		>
 			<Trash2 size={14} />
 		</button>
@@ -164,7 +164,7 @@ export function HomeworkCardActions({
 			</div>
 
 			{showDeleteWarning && (
-				<div className="mt-3 p-3 bg-overdue-bg border border-overdue-border rounded-2xl">
+				<div className="mt-3 p-3 bg-overdue-bg border border-overdue-border rounded-3xl">
 					<p className="text-sm text-app-text mb-3">
 						Удалить сданное задание? Это действие нельзя отменить.
 					</p>

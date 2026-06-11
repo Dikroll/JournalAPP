@@ -14,7 +14,7 @@ export function SkeletonList({
 			{Array.from({ length: count }).map((_, i) => (
 				<div
 					key={i}
-					className="bg-app-surface rounded-[24px] animate-pulse"
+					className="bg-app-surface rounded-3xl animate-pulse"
 					style={{ height }}
 				/>
 			))}

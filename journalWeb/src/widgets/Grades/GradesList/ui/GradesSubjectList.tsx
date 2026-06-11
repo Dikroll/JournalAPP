@@ -8,11 +8,11 @@ import {
 import {
 	SortSubjectsControl,
 	useSortSubjectsStore,
-} from '@/features/sortSubjects'
-import { useLazyItems } from '@/shared/hooks'
-import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
-import { formatDayMonth } from '@/shared/utils/dateUtils'
-import { isWebPlatform } from '@/shared/lib/platform'
+} from "@/features/sortSubjects";
+import { useLazyItems } from "@/shared/hooks";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import { isWebPlatform } from "@/shared/lib/platform";
+import { formatDayMonth } from "@/shared/utils/dateUtils";
 
 interface Props {
 	bySubject: SubjectStats[];
@@ -33,18 +33,18 @@ export function GradesSubjectList({ bySubject }: Props) {
 		);
 	}
 
-	const isWeb = isWebPlatform
+	const isWeb = isWebPlatform;
 
 	return (
 		<div className="space-y-3">
 			<SortSubjectsControl />
 
-			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-				{sorted.slice(0, visibleCount).map(subj => (
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				{sorted.slice(0, visibleCount).map((subj) => (
 					<div
 						key={subj.spec_id}
-						className={`bg-app-surface ${isWeb ? 'rounded-2xl' : 'rounded-[24px]'} p-4 border border-app-border flex flex-col h-full`}
-						style={{ boxShadow: 'var(--shadow-card)' }}
+						className={`bg-app-surface ${isWeb ? "rounded-3xl" : "rounded-3xl"} p-4 border border-app-border flex flex-col h-full`}
+						style={{ boxShadow: "var(--shadow-card)" }}
 					>
 						<div className="flex items-start justify-between gap-3 mb-4">
 							<h3 className="text-sm font-semibold text-app-text leading-snug">
@@ -66,51 +66,55 @@ export function GradesSubjectList({ bySubject }: Props) {
 							</div>
 						</div>
 
-					<div
-						className={`-mx-4 overflow-x-auto ${!isDesktop ? 'scrollbar-none' : ''}`}
-						style={isDesktop ? { scrollbarWidth: 'thin', paddingBottom: '8px' } : undefined}
-					>
-						<div className='flex gap-3 px-4 pb-2 w-max'>
-							{subj.entries.flatMap((entry, entryIdx) =>
-								entry.flatMarks.map(({ type, value }, markIdx) => (
-									<div
-										key={`${subj.spec_id}-${entryIdx}-${type}-${markIdx}`}
-										className='flex flex-col items-center gap-1.5'
-									>
+						<div
+							className={`-mx-4 overflow-x-auto ${!isDesktop ? "scrollbar-none" : ""}`}
+							style={
+								isDesktop
+									? { scrollbarWidth: "thin", paddingBottom: "8px" }
+									: undefined
+							}
+						>
+							<div className="flex gap-3 px-4 pb-2 w-max">
+								{subj.entries.flatMap((entry, entryIdx) =>
+									entry.flatMarks.map(({ type, value }, markIdx) => (
 										<div
-											className='w-12 h-12 rounded-full flex items-center justify-center border-2 font-bold text-lg'
-											style={gradeCircleStyle(type, value)}
+											key={`${subj.spec_id}-${entryIdx}-${type}-${markIdx}`}
+											className="flex flex-col items-center gap-1.5"
 										>
-											{value}
-										</div>
-										<div className='text-xs text-app-muted whitespace-nowrap'>
-											{formatDayMonth(entry.date)}
-										</div>
+											<div
+												className="w-12 h-12 rounded-full flex items-center justify-center border-2 font-bold text-lg"
+												style={gradeCircleStyle(type, value)}
+											>
+												{value}
+											</div>
+											<div className="text-xs text-app-muted whitespace-nowrap">
+												{formatDayMonth(entry.date)}
+											</div>
 
-										<span
-											className='px-1.5 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap'
-											style={GRADE_TYPE_CONFIG[type].style}
-										>
-											{GRADE_TYPE_CONFIG[type].label}
-										</span>
-									</div>
-								)),
-							)}
+											<span
+												className="px-1.5 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap"
+												style={GRADE_TYPE_CONFIG[type].style}
+											>
+												{GRADE_TYPE_CONFIG[type].label}
+											</span>
+										</div>
+									)),
+								)}
+							</div>
 						</div>
 					</div>
-				</div>
-			))}
+				))}
 
-			{visibleCount < sorted.length && (
-				<>
-					{[0, 1].map(i => (
-						<div
-							key={`skeleton-${i}`}
-							className='bg-app-surface rounded-[24px] animate-pulse h-24'
-						/>
-					))}
-				</>
-			)}
+				{visibleCount < sorted.length && (
+					<>
+						{[0, 1].map((i) => (
+							<div
+								key={`skeleton-${i}`}
+								className="bg-app-surface rounded-3xl animate-pulse h-24"
+							/>
+						))}
+					</>
+				)}
 			</div>
 			{visibleCount < sorted.length && <div ref={sentinelRef} />}
 		</div>

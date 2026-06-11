@@ -5,7 +5,7 @@ import { pageConfig } from "@/shared/config";
 export function ProfilePaymentCard() {
 	return (
 		<div
-			className="bg-app-surface rounded-[24px] border border-app-border overflow-hidden"
+			className="bg-app-surface rounded-3xl border border-app-border overflow-hidden"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center gap-2 px-5 pt-5 pb-3">

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
+import { useEffect, useState } from "react";
 import { isRemoteReleaseNewer } from "@/shared/lib/appRelease";
 import { useAppUpdate } from "../hooks/useAppUpdate";
 import { useAppUpdateStore } from "../model/store";
@@ -76,7 +76,7 @@ export function AppUpdateBanner({
 			type="button"
 			onClick={openSheet}
 			disabled={isDownloading}
-			className="w-full mb-3 flex items-center justify-between px-4 py-3.5 rounded-[18px] border disabled:opacity-60"
+			className="w-full mb-3 flex items-center justify-between px-4 py-3.5 rounded-3xl border disabled:opacity-60"
 			style={{
 				background:
 					"linear-gradient(90deg, rgba(213,4,22,0.12), rgba(242,159,5,0.08))",
@@ -102,4 +102,3 @@ export function AppUpdateBanner({
 		</button>
 	);
 }
-

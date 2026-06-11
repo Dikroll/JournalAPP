@@ -18,7 +18,7 @@ export function AttendanceStat({ data }: Props) {
 						: NEUTRAL_COLOR;
 	return (
 		<div
-			className="rounded-[20px] p-4"
+			className="rounded-3xl p-4"
 			style={{
 				background: "var(--color-surface)",
 				border: "1px solid var(--color-border)",

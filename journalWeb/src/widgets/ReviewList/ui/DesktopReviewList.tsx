@@ -55,7 +55,7 @@ export function DesktopReviewList() {
 	if (status === "loading") {
 		return (
 			<div
-				className="bg-app-surface rounded-[24px] border border-app-border p-5 space-y-4"
+				className="bg-app-surface rounded-3xl border border-app-border p-5 space-y-4"
 				style={{ boxShadow: "var(--shadow-card)" }}
 			>
 				<div className="h-6 w-48 bg-app-border animate-pulse rounded" />
@@ -72,7 +72,7 @@ export function DesktopReviewList() {
 
 	return (
 		<div
-			className="bg-app-surface rounded-[24px] border border-app-border p-5"
+			className="bg-app-surface rounded-3xl border border-app-border p-5"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center justify-between mb-4">

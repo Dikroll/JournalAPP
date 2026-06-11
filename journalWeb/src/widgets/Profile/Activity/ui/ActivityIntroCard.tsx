@@ -3,7 +3,7 @@ import { Coins, Gem } from "lucide-react";
 export function ActivityIntroCard({ desktop = false }: { desktop?: boolean }) {
 	return (
 		<div
-			className={`${desktop ? "rounded-[24px] p-7 min-h-[168px]" : "rounded-[28px] p-5"} border border-app-border relative overflow-hidden`}
+			className={`${desktop ? "rounded-3xl p-7 min-h-[168px]" : "rounded-3xl p-5"} border border-app-border relative overflow-hidden`}
 			style={{
 				boxShadow: "var(--shadow-card)",
 				background:
@@ -44,12 +44,12 @@ export function ActivityIntroCard({ desktop = false }: { desktop?: boolean }) {
 					className={`${desktop ? "items-end gap-3 pt-1" : "items-center gap-2"} flex shrink-0`}
 				>
 					<div
-						className={`${desktop ? "w-14 h-14 rounded-[20px]" : "w-10 h-10 rounded-2xl"} bg-[#FFD700]/10 border border-[#FFD700]/20 flex items-center justify-center`}
+						className={`${desktop ? "w-14 h-14 rounded-3xl" : "w-10 h-10 rounded-3xl"} bg-[#FFD700]/10 border border-[#FFD700]/20 flex items-center justify-center`}
 					>
 						<Coins size={desktop ? 24 : 18} className="text-[#FFD700]" />
 					</div>
 					<div
-						className={`${desktop ? "w-14 h-14 rounded-[20px]" : "w-10 h-10 rounded-2xl"} bg-[#00D9FF]/10 border border-[#00D9FF]/20 flex items-center justify-center`}
+						className={`${desktop ? "w-14 h-14 rounded-3xl" : "w-10 h-10 rounded-3xl"} bg-[#00D9FF]/10 border border-[#00D9FF]/20 flex items-center justify-center`}
 					>
 						<Gem size={desktop ? 24 : 18} className="text-[#00D9FF]" />
 					</div>

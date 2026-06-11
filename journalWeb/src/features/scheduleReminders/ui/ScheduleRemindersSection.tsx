@@ -1,4 +1,4 @@
-import { Coffee, GraduationCap, Sunrise, CalendarDays } from "lucide-react";
+import { CalendarDays, Coffee, GraduationCap, Sunrise } from "lucide-react";
 import {
 	type PillOption,
 	SectionCard,

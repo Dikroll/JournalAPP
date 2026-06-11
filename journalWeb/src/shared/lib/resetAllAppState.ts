@@ -3,9 +3,9 @@ import { useExamStore } from "@/entities/exam/model/store";
 import { useFeedbackStore } from "@/entities/feedback/model/store";
 import { useGoalsStore } from "@/entities/goals";
 import { useGradesStore } from "@/entities/grades/model/store";
-import { useHomeworkStore } from "@/entities/homework/model/store";
 import { resetHomeworkFetch } from "@/entities/homework/hooks/useHomework";
 import { resetHomeworkBySubjectFetch } from "@/entities/homework/hooks/useHomeworkBySubject";
+import { useHomeworkStore } from "@/entities/homework/model/store";
 import { useLeaderboardStore } from "@/entities/leaderboard/model/store";
 import { useLibraryStore } from "@/entities/library/model/store";
 import { useMarketStore } from "@/entities/market/model/store";
@@ -174,19 +174,19 @@ export function resetAllAppState(options: ResetOptions = {}) {
 	});
 
 	if (resetTheme) {
-		useThemeStore.setState(state => ({
+		useThemeStore.setState((state) => ({
 			...state,
 			theme: "dark",
 		}));
 	}
 
 	if (resetAuth) {
-		useAuthStore.setState(state => ({
+		useAuthStore.setState((state) => ({
 			token: null,
 			isAuthenticated: false,
 			activeUsername: null,
 			accounts: state.accounts.filter(
-				account => account.username !== state.activeUsername,
+				(account) => account.username !== state.activeUsername,
 			),
 		}));
 	}

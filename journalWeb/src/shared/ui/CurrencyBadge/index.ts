@@ -1,1 +1,1 @@
-export * from './CurrencyBadge';
+export * from "./CurrencyBadge";

@@ -22,7 +22,9 @@ export interface HomeworkCardState {
  * Returns true if the homework overdue date is more than 6 months ago.
  * After 6 months past the overdue date, the upstream API rejects submissions.
  */
-export function isHomeworkExpired(overdueDate: string | null | undefined): boolean {
+export function isHomeworkExpired(
+	overdueDate: string | null | undefined,
+): boolean {
 	if (!overdueDate) return false;
 	const overdue = new Date(overdueDate);
 	if (Number.isNaN(overdue.getTime())) return false;

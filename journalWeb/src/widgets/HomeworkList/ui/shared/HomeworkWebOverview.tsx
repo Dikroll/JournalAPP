@@ -125,11 +125,11 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 
 	return (
 		<div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
-			<section className="flex flex-col rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)] h-full">
+			<section className="flex flex-col rounded-3xl border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)] h-full">
 				<div className="grid min-h-[150px] flex-1 grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] items-stretch gap-4 2xl:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
-					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 md:col-span-2 2xl:col-span-1">
+					<div className="flex min-w-0 flex-col justify-between rounded-3xl border border-brand/20 bg-brand/10 p-4 md:col-span-2 2xl:col-span-1">
 						<div className="flex items-center justify-between gap-2">
-							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/15 text-brand">
+							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-3xl border border-brand/25 bg-brand/15 text-brand">
 								<FileText size={26} />
 							</div>
 							<p className="text-sm font-medium text-app-muted">
@@ -143,7 +143,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 						</div>
 					</div>
 
-					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-new/20 bg-status-new/10 p-4">
+					<div className="flex min-w-0 flex-col justify-between rounded-3xl border border-status-new/20 bg-status-new/10 p-4">
 						<div className="flex items-center justify-between gap-2">
 							<span className="text-[34px] font-bold leading-none text-status-new xl:text-[42px]">
 								{counters.new}
@@ -153,7 +153,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 						<p className="text-sm font-medium text-app-muted">Новых</p>
 					</div>
 
-					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-pending/20 bg-status-pending/10 p-4">
+					<div className="flex min-w-0 flex-col justify-between rounded-3xl border border-status-pending/20 bg-status-pending/10 p-4">
 						<div className="flex items-center justify-between gap-2">
 							<span className="text-[34px] font-bold leading-none text-status-pending xl:text-[42px]">
 								{counters.pending}
@@ -165,7 +165,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 						</p>
 					</div>
 
-					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-overdue/20 bg-status-overdue/10 p-4">
+					<div className="flex min-w-0 flex-col justify-between rounded-3xl border border-status-overdue/20 bg-status-overdue/10 p-4">
 						<div className="flex items-center justify-between gap-2">
 							<span className="text-[34px] font-bold leading-none text-status-overdue xl:text-[42px]">
 								{counters.overdue}
@@ -179,7 +179,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 				</div>
 			</section>
 
-			<section className="min-h-[178px] rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)]">
+			<section className="min-h-[178px] rounded-3xl border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)]">
 				<div className="mb-5 flex items-center justify-between gap-3">
 					<p className="text-sm font-semibold text-app-muted">
 						Ближайший дедлайн

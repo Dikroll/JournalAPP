@@ -145,7 +145,7 @@ export function GradesExamList({
 			>
 				<p className="text-sm font-medium text-app-muted px-1">{title}</p>
 				<div
-					className={`bg-app-surface rounded-[24px] md:rounded-2xl p-3 border border-app-border ${
+					className={`bg-app-surface rounded-3xl md:rounded-3xl p-3 border border-app-border ${
 						scrollable ? "md:flex md:min-h-0 md:flex-1 md:flex-col" : ""
 					}`}
 					style={{ boxShadow: "var(--shadow-card)" }}
@@ -174,7 +174,7 @@ export function GradesExamList({
 	return (
 		<div className="space-y-4">
 			<div className="flex w-full items-center gap-3">
-				<label className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-2xl border border-app-border bg-app-surface px-3 text-app-muted">
+				<label className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-3xl border border-app-border bg-app-surface px-3 text-app-muted">
 					<Search size={15} className="shrink-0" />
 					<input
 						value={query}

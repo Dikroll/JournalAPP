@@ -34,8 +34,8 @@ export function useSwitchUser(onReset: () => void) {
 					});
 				} catch (err: unknown) {
 					// If token is expired/revoked, remove the stale account
-					const status = (err as { response?: { status?: number } })
-						?.response?.status;
+					const status = (err as { response?: { status?: number } })?.response
+						?.status;
 					if (status === 401) {
 						removeAccount(username);
 						navigate(pageConfig.login, { replace: true });
@@ -55,4 +55,3 @@ export function useSwitchUser(onReset: () => void) {
 
 	return { switchTo, switching };
 }
-

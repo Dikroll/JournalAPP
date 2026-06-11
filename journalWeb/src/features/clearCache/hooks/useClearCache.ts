@@ -1,4 +1,4 @@
-import { resetAllAppState } from '@/shared/lib/resetAllAppState'
+import { resetAllAppState } from "@/shared/lib/resetAllAppState";
 
 export function clearCache(): void {
 	resetAllAppState({

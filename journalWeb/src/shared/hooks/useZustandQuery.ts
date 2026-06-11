@@ -1,8 +1,8 @@
-import { useEffect, useRef, useCallback } from "react";
-import { isCacheValid } from "../lib/isCacheValid";
-import { getIsOnline } from "../model/networkStore";
+import { useCallback, useEffect, useRef } from "react";
 import { storage } from "../lib/encryptedStorage";
+import { isCacheValid } from "../lib/isCacheValid";
 import { useAuthStore } from "../model/authStore";
+import { getIsOnline } from "../model/networkStore";
 
 export interface ZustandQueryOptions<T> {
 	cacheKey: string;
@@ -11,7 +11,12 @@ export interface ZustandQueryOptions<T> {
 	status: string;
 	hasData: boolean;
 	fetchFn: () => Promise<T>;
-	updateStore: (state: { status: string; loadedAt?: number; error?: string | null; data?: T }) => void;
+	updateStore: (state: {
+		status: string;
+		loadedAt?: number;
+		error?: string | null;
+		data?: T;
+	}) => void;
 	errorMessage?: string;
 }
 
@@ -85,7 +90,10 @@ export function useZustandQuery<T>({
 			const username = useAuthStore.getState().activeUsername;
 			setTimeout(() => {
 				if (!isRequestCurrent(generation, username)) return;
-				updateStoreRef.current({ status: "error", error: "Нет подключения к интернету" });
+				updateStoreRef.current({
+					status: "error",
+					error: "Нет подключения к интернету",
+				});
 			}, ERROR_STATE_DELAY_MS);
 			return;
 		}
@@ -94,7 +102,12 @@ export function useZustandQuery<T>({
 		if (!hasData) {
 			const cached = storage.get<T>(cacheKey);
 			if (cached) {
-				updateStoreRef.current({ data: cached, status: "success", loadedAt: Date.now(), error: null });
+				updateStoreRef.current({
+					data: cached,
+					status: "success",
+					loadedAt: Date.now(),
+					error: null,
+				});
 				// Don't return — still revalidate below
 			}
 		}
@@ -107,10 +120,16 @@ export function useZustandQuery<T>({
 		// Always fetch from API (background revalidation)
 		const generation = fetchGeneration;
 		const username = useAuthStore.getState().activeUsername;
-		const promise = fetchFnRef.current()
+		const promise = fetchFnRef
+			.current()
 			.then((data) => {
 				if (!isRequestCurrent(generation, username)) return data;
-				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
+				updateStoreRef.current({
+					data,
+					status: "success",
+					loadedAt: Date.now(),
+					error: null,
+				});
 				storage.set(cacheKey, data, ttlMs / 1000);
 				return data;
 			})
@@ -146,10 +165,16 @@ export function useZustandQuery<T>({
 
 		const generation = fetchGeneration;
 		const username = useAuthStore.getState().activeUsername;
-		const promise = fetchFnRef.current()
+		const promise = fetchFnRef
+			.current()
 			.then((data) => {
 				if (!isRequestCurrent(generation, username)) return data;
-				updateStoreRef.current({ data, status: "success", loadedAt: Date.now(), error: null });
+				updateStoreRef.current({
+					data,
+					status: "success",
+					loadedAt: Date.now(),
+					error: null,
+				});
 				storage.set(cacheKey, data, ttlMs / 1000);
 				return data;
 			})

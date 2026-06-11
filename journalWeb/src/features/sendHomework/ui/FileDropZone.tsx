@@ -20,7 +20,7 @@ export function FileDropZone({
 	if (file)
 		return (
 			<div
-				className="flex items-center gap-3 px-4 py-3 rounded-2xl"
+				className="flex items-center gap-3 px-4 py-3 rounded-3xl"
 				style={{
 					background: "var(--color-surface-strong)",
 					border: "1px solid var(--color-border)",
@@ -63,7 +63,7 @@ export function FileDropZone({
 					const f = e.dataTransfer.files[0];
 					if (f) onChange(f);
 				}}
-				className="w-full flex flex-col items-center gap-2 py-5 rounded-2xl border border-dashed"
+				className="w-full flex flex-col items-center gap-2 py-5 rounded-3xl border border-dashed"
 				style={{
 					borderColor: drag ? "var(--color-brand)" : "var(--color-border)",
 					background: drag

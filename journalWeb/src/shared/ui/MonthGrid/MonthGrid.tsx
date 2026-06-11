@@ -47,7 +47,7 @@ export function MonthGrid({
 
 	return (
 		<div
-			className="bg-app-surface backdrop-blur-xl rounded-[24px] p-4 border border-app-border"
+			className="bg-app-surface backdrop-blur-xl rounded-3xl p-4 border border-app-border"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center justify-between mb-4">

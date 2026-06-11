@@ -68,7 +68,7 @@ export function VideoPlayerOverlay({ url, title, onClose }: Props) {
 			</button>
 
 			<div
-				className="w-full max-w-2xl mx-4 rounded-2xl overflow-hidden"
+				className="w-full max-w-2xl mx-4 rounded-3xl overflow-hidden"
 				style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.6)" }}
 				onClick={(e) => e.stopPropagation()}
 			>

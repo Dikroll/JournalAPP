@@ -12,9 +12,8 @@ export interface SavedAccount {
 	avatarUrl: string | null;
 }
 
-import { useHydrationStore } from '../lib/hydrationStore'
-export { useHydrationStore }
-
+import { useHydrationStore } from "../lib/hydrationStore";
+export { useHydrationStore };
 
 interface AuthState {
 	token: string | null;

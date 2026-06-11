@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export function useIsDesktop(): boolean {
 	const checkIsDesktop = () => {
 		if (typeof window === "undefined") return false;
-		
+
 		// Определяем минимальную сторону экрана. У телефонов она всегда меньше 768px.
 		const minDimension = Math.min(window.screen.width, window.screen.height);
 		const isPhoneSize = minDimension < 768;
@@ -23,16 +23,19 @@ export function useIsDesktop(): boolean {
 	useEffect(() => {
 		// Попытка заблокировать ориентацию через Web API (работает в PWA)
 		try {
-			if (screen.orientation && typeof (screen.orientation as any).lock === 'function') {
-				(screen.orientation as any).lock('portrait').catch(() => {});
+			if (
+				screen.orientation &&
+				typeof (screen.orientation as any).lock === "function"
+			) {
+				(screen.orientation as any).lock("portrait").catch(() => {});
 			}
 		} catch (e) {}
 
 		const handleResize = () => setIsDesktop(checkIsDesktop());
-		
+
 		window.addEventListener("resize", handleResize);
 		window.addEventListener("orientationchange", handleResize);
-		
+
 		return () => {
 			window.removeEventListener("resize", handleResize);
 			window.removeEventListener("orientationchange", handleResize);

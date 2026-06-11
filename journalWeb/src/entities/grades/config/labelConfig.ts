@@ -81,25 +81,26 @@ export function getGradeStyle(grade: number | string): {
 			borderColor: "rgba(168,85,247,0.35)",
 		};
 	}
-	if (typeof grade === "number" && grade >= 5)
+	const numGrade = Number(grade);
+	if (!isNaN(numGrade) && numGrade >= 5)
 		return {
 			background: "rgba(16,185,129,0.15)",
 			color: "#10B981",
 			borderColor: "rgba(16,185,129,0.35)",
 		};
-	if (grade >= 4)
+	if (!isNaN(numGrade) && numGrade >= 4)
 		return {
 			background: "rgba(59,130,246,0.15)",
 			color: "#3B82F6",
 			borderColor: "rgba(59,130,246,0.35)",
 		};
-	if (grade >= 3)
+	if (!isNaN(numGrade) && numGrade >= 3)
 		return {
 			background: "rgba(245,158,11,0.15)",
 			color: "#F59E0B",
 			borderColor: "rgba(245,158,11,0.35)",
 		};
-	if (grade >= 2)
+	if (!isNaN(numGrade) && numGrade >= 2)
 		return {
 			background: "rgba(249,115,22,0.15)",
 			color: "#F97316",

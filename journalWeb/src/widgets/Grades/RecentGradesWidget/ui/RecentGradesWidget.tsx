@@ -1,6 +1,7 @@
 import { BookMarked } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getGradeStyle, useGrades } from "@/entities/grades";
+import { SurfaceCard } from "@/shared/ui";
 import { formatDateRelative } from "@/shared/utils";
 
 export function RecentGradesWidget({
@@ -15,18 +16,15 @@ export function RecentGradesWidget({
 
 	const sortedGrades = entries
 		.filter((e) => e.marks && Object.values(e.marks).some((v) => v !== null))
-		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+		.sort((a, b) => b.date.localeCompare(a.date));
 
 	const recentGrades = limit ? sortedGrades.slice(0, limit) : sortedGrades;
 
 	if (recentGrades.length === 0) {
 		return (
-			<div
-				className={`rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 ${className}`}
-				style={{
-					background: "var(--color-surface)",
-					boxShadow: "var(--shadow-card)",
-				}}
+			<SurfaceCard
+				className={`flex flex-col min-h-0 ${className}`}
+				style={{ boxShadow: "var(--shadow-card)" }}
 			>
 				<div className="flex items-center justify-between mb-3 shrink-0">
 					<h2 className="text-sm font-bold text-app-text flex items-center gap-2">
@@ -44,17 +42,14 @@ export function RecentGradesWidget({
 				<div className="text-app-muted text-sm py-4 text-center flex-1 flex items-center justify-center">
 					Оценок пока нет
 				</div>
-			</div>
+			</SurfaceCard>
 		);
 	}
 
 	return (
-		<div
-			className={`rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 ${className}`}
-			style={{
-				background: "var(--color-surface)",
-				boxShadow: "var(--shadow-card)",
-			}}
+		<SurfaceCard
+			className={`flex flex-col min-h-0 ${className}`}
+			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center justify-between mb-3 shrink-0">
 				<h2 className="text-sm font-bold text-app-text flex items-center gap-2">
@@ -102,6 +97,6 @@ export function RecentGradesWidget({
 					);
 				})}
 			</div>
-		</div>
+		</SurfaceCard>
 	);
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ttl } from "@/shared/config";
-import { CACHE_KEYS } from "@/shared/lib";
 import { useZustandQuery } from "@/shared/hooks/useZustandQuery";
+import { CACHE_KEYS } from "@/shared/lib";
 import { newsApi } from "../api";
 import { useNewsStore } from "../model/store";
 

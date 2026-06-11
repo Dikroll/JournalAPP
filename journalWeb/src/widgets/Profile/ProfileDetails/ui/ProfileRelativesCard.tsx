@@ -24,7 +24,7 @@ function RelativeItem({
 		relative.emails.length > 0;
 
 	return (
-		<div className="border border-app-border rounded-[20px] overflow-hidden bg-app-surface">
+		<div className="border border-app-border rounded-3xl overflow-hidden bg-app-surface">
 			<div className="flex items-center gap-3 p-4">
 				<div
 					className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
@@ -112,7 +112,7 @@ export function ProfileRelativesCard({ relatives, flat }: Props) {
 			className={
 				flat
 					? "overflow-hidden"
-					: "bg-app-surface backdrop-blur-xl rounded-[24px] border border-app-border overflow-hidden"
+					: "bg-app-surface backdrop-blur-xl rounded-3xl border border-app-border overflow-hidden"
 			}
 			style={flat ? undefined : { boxShadow: "var(--shadow-card)" }}
 		>

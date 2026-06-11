@@ -73,7 +73,7 @@ export function ActivityWidget({ className = "" }: { className?: string }) {
 
 	return (
 		<div
-			className={`rounded-[20px] border border-app-border p-4 flex flex-col min-h-0 ${className}`}
+			className={`rounded-3xl border border-app-border p-4 flex flex-col min-h-0 ${className}`}
 			style={{
 				background: "var(--color-surface)",
 				boxShadow: "var(--shadow-card)",

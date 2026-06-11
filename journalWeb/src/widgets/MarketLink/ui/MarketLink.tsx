@@ -12,7 +12,7 @@ export function MarketLink() {
 	return (
 		<Link
 			to={pageConfig.market}
-			className="bg-app-surface rounded-[20px] p-4 border border-app-border block active:scale-[0.99] transition-transform"
+			className="bg-app-surface rounded-3xl p-4 border border-app-border block active:scale-[0.99] transition-transform"
 			style={{ boxShadow: "var(--shadow-card)" }}
 		>
 			<div className="flex items-center justify-between mb-4">
@@ -29,10 +29,7 @@ export function MarketLink() {
 						const imageUrl = getCachedImageUrl(product.image_url);
 
 						return (
-							<div
-								key={product.id}
-								className={`flex items-center gap-3`}
-							>
+							<div key={product.id} className={`flex items-center gap-3`}>
 								<div className="w-11 h-11 shrink-0 rounded-xl bg-app-surface border border-app-border overflow-hidden flex items-center justify-center">
 									{imageUrl ? (
 										<img

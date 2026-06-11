@@ -1,176 +1,102 @@
-import { BadgeCheck, Crown, Medal } from "lucide-react";
-import { memo, useState } from "react";
+import { BadgeCheck } from "lucide-react";
 import type { LeaderboardStudent } from "@/entities/leaderboard";
 import { getCachedImageUrl } from "@/shared/lib";
-import { Avatar, PhotoViewerModal } from "@/shared/ui";
+import { Avatar } from "@/shared/ui";
 import { getShortName } from "@/shared/utils/nameUtils";
+import { getRankColor, HIGHLIGHT } from "../lib/constants";
 
 interface Props {
 	student: LeaderboardStudent;
 	isMe: boolean;
+	rank: number;
+	onPhotoClick?: (url: string) => void;
 }
 
-function RankBadge({ rank }: { rank: number }) {
-	if (rank === 1)
-		return (
-			<div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#FFD700] to-[#F59E0B] rounded-full flex items-center justify-center shadow-sm">
-				<Crown size={10} className="text-white" />
-			</div>
-		);
-	if (rank <= 3)
-		return (
-			<div
-				className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center shadow-sm ${
-					rank === 2
-						? "bg-gradient-to-br from-[#C0C0C0] to-[#9CA3AF]"
-						: "bg-gradient-to-br from-[#CD7F32] to-[#92400E]"
-				}`}
-			>
-				<Medal size={10} className="text-white" />
-			</div>
-		);
-	return null;
-}
-
-const RANK_COLORS: Record<number, string> = {
-	1: "#D97706",
-	2: "#9CA3AF",
-	3: "#B45309",
-};
-
-const HIGHLIGHT = {
-	bg: "var(--color-highlight-bg)",
-	border: "var(--color-highlight-border)",
-	text: "var(--color-highlight-text)",
-	badgeBg: "var(--color-highlight-badge-bg)",
-	badgeBorder: "var(--color-highlight-badge-border)",
-	shadow: "var(--color-highlight-shadow)",
-};
-
-export const LeaderboardRow = memo(function LeaderboardRow({
-	student,
-	isMe,
-}: Props) {
-	const [viewerOpen, setViewerOpen] = useState(false);
-	const rankColor = RANK_COLORS[student.position];
-	const shortName = getShortName(student.full_name);
-	const photoUrl = getCachedImageUrl(student.photo_url);
-
+export function LeaderboardRow({ student, isMe, rank, onPhotoClick }: Props) {
 	return (
-		<>
+		<div
+			className="flex items-center gap-3 px-3 py-2 rounded-3xl transition-colors hover:bg-app-surface-strong"
+			style={
+				isMe
+					? {
+							background: HIGHLIGHT.bg,
+							border: `1px solid ${HIGHLIGHT.border}`,
+							boxShadow: HIGHLIGHT.shadow,
+						}
+					: {
+							border: "1px solid transparent",
+						}
+			}
+		>
 			<div
-				className="rounded-[18px] p-3 flex items-center gap-3"
+				className="w-6 text-center text-sm font-bold shrink-0"
+				style={{
+					color: isMe ? HIGHLIGHT.text : getRankColor(rank),
+				}}
+			>
+				{rank}
+			</div>
+			<Avatar
+				photoUrl={getCachedImageUrl(student.photo_url) || ""}
+				fullName={student.full_name}
+				size={32}
+				onClick={
+					onPhotoClick && student.photo_url
+						? () => {
+								onPhotoClick(
+									getCachedImageUrl(student.photo_url) || student.photo_url!,
+								);
+							}
+						: undefined
+				}
+			/>
+			<div className="flex-1 min-w-0 flex items-center gap-1">
+				<span
+					className="text-sm font-semibold truncate block"
+					style={{
+						color: isMe ? HIGHLIGHT.text : "var(--color-text)",
+					}}
+				>
+					{getShortName(student.full_name)}
+				</span>
+				{isMe && (
+					<span
+						className="text-sm font-semibold shrink-0"
+						style={{ color: HIGHLIGHT.text }}
+					>
+						(Вы)
+					</span>
+				)}
+			</div>
+			<div
+				className="flex items-center gap-1 rounded-xl px-2.5 py-1.5 shrink-0"
 				style={
 					isMe
 						? {
-								background: HIGHLIGHT.bg,
-								border: `1px solid ${HIGHLIGHT.border}`,
-								boxShadow: HIGHLIGHT.shadow,
+								background: HIGHLIGHT.badgeBg,
+								border: `1px solid ${HIGHLIGHT.badgeBorder}`,
 							}
 						: {
-								background: "var(--color-surface)",
+								background: "var(--color-surface-strong)",
 								border: "1px solid var(--color-border)",
-								boxShadow: "var(--shadow-card)",
 							}
 				}
 			>
-				<span
-					className="w-6 text-center text-base font-bold shrink-0"
+				<BadgeCheck
+					size={13}
 					style={{
-						color: isMe
-							? HIGHLIGHT.text
-							: (rankColor ?? "var(--color-text-muted)"),
+						color: isMe ? HIGHLIGHT.coin : "var(--color-comment)",
+					}}
+				/>
+				<span
+					className="text-sm font-bold"
+					style={{
+						color: isMe ? HIGHLIGHT.text : "var(--color-text)",
 					}}
 				>
-					{student.position}
+					{student.points.toLocaleString()}
 				</span>
-
-				<div className="relative shrink-0">
-					{photoUrl ? (
-						<button
-							type="button"
-							onClick={() => setViewerOpen(true)}
-							className="w-10 h-10 p-0 rounded-full overflow-hidden focus:outline-none"
-						>
-							<img
-								src={photoUrl}
-								alt={student.full_name}
-								width={40}
-								height={40}
-								loading={student.position <= 3 ? "eager" : "lazy"}
-								fetchPriority={student.position === 1 ? "high" : "auto"}
-								className="w-10 h-10 rounded-full object-cover"
-								style={{
-									border: isMe
-										? `2px solid ${HIGHLIGHT.border}`
-										: "2px solid var(--color-border)",
-								}}
-							/>
-							<RankBadge rank={student.position} />
-						</button>
-					) : (
-						<Avatar
-							fullName={student.full_name}
-							size={40}
-							style={
-								isMe
-									? { border: `2px solid ${HIGHLIGHT.border}` }
-									: { border: "2px solid var(--color-border)" }
-							}
-						/>
-					)}
-				</div>
-
-				<div className="flex-1 min-w-0">
-					<p
-						className="text-sm font-semibold truncate"
-						style={{ color: isMe ? HIGHLIGHT.text : "var(--color-text)" }}
-					>
-						{shortName}
-						{isMe && (
-							<span className="ml-1 text-xs font-normal opacity-60">(Вы)</span>
-						)}
-					</p>
-				</div>
-
-				<div
-					className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl shrink-0"
-					style={
-						isMe
-							? {
-									background: HIGHLIGHT.badgeBg,
-									border: `1px solid ${HIGHLIGHT.badgeBorder}`,
-								}
-							: {
-									background: "var(--color-surface-strong)",
-									border: "1px solid var(--color-border)",
-								}
-					}
-				>
-					<BadgeCheck
-						size={13}
-						style={{
-							color: isMe
-								? "var(--color-highlight-coin)"
-								: "var(--color-comment)",
-						}}
-					/>
-					<span
-						className="text-sm font-bold"
-						style={{ color: isMe ? HIGHLIGHT.text : "var(--color-text)" }}
-					>
-						{student.points.toLocaleString()}
-					</span>
-				</div>
 			</div>
-
-			{viewerOpen && photoUrl && (
-				<PhotoViewerModal
-					src={photoUrl}
-					alt={student.full_name}
-					onClose={() => setViewerOpen(false)}
-				/>
-			)}
-		</>
+		</div>
 	);
-});
+}

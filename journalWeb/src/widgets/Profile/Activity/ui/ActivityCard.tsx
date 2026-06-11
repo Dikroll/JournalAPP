@@ -26,7 +26,7 @@ export const ActivityCard = memo(function ActivityCard({
 }: Props) {
 	return (
 		<div
-			className={`${desktop ? "rounded-[22px] p-5 min-h-[148px]" : "rounded-[26px] p-4"} border border-app-border relative overflow-hidden`}
+			className={`${desktop ? "rounded-3xl p-5 min-h-[148px]" : "rounded-[26px] p-4"} border border-app-border relative overflow-hidden`}
 			style={{
 				boxShadow: "var(--shadow-card)",
 				background:

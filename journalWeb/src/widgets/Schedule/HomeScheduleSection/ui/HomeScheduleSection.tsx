@@ -69,33 +69,33 @@ export function HomeScheduleSection({
 							aria-label="Предыдущий день"
 						/>
 
-					<div 
-						className={`grid transition-all duration-300 ease-out ${
-							offset === 0 
-								? "grid-cols-[0fr] opacity-0 mx-1" 
-								: "grid-cols-[1fr] opacity-100 mx-2"
-						}`}
-					>
-						<div className="overflow-hidden flex items-center justify-center px-[2px] py-1 -mx-[2px]">
-							<button
-								type="button"
-								onClick={goToday}
-								className="h-9 px-3 text-xs font-medium rounded-2xl border border-app-border bg-app-surface hover:bg-app-surface/80 text-app-text whitespace-nowrap active:scale-95 transition-transform"
-							>
-								К сегодня
-							</button>
+						<div
+							className={`grid transition-all duration-300 ease-out ${
+								offset === 0
+									? "grid-cols-[0fr] opacity-0 mx-1"
+									: "grid-cols-[1fr] opacity-100 mx-2"
+							}`}
+						>
+							<div className="overflow-hidden flex items-center justify-center px-[2px] py-1 -mx-[2px]">
+								<button
+									type="button"
+									onClick={goToday}
+									className="h-9 px-3 text-xs font-medium rounded-3xl border border-app-border bg-app-surface hover:bg-app-surface/80 text-app-text whitespace-nowrap active:scale-95 transition-transform"
+								>
+									К сегодня
+								</button>
+							</div>
 						</div>
-					</div>
 
-					<IconButton
-						icon={<ChevronRight size={18} />}
-						onClick={goNext}
-						disabled={offset >= 1}
-						size="md"
-						shape="square"
-						variant="surface"
-						aria-label="Следующий день"
-					/>
+						<IconButton
+							icon={<ChevronRight size={18} />}
+							onClick={goNext}
+							disabled={offset >= 1}
+							size="md"
+							shape="square"
+							variant="surface"
+							aria-label="Следующий день"
+						/>
 					</div>
 				</div>
 			</div>

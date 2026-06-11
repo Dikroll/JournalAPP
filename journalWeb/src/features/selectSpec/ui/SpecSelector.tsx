@@ -32,7 +32,7 @@ export function SpecSelector({
 	return (
 		<div ref={ref} className="relative">
 			<div
-				className="w-full flex items-center h-12 bg-app-surface border border-app-border rounded-2xl text-sm hover:bg-app-surface-hover overflow-hidden"
+				className="w-full flex items-center h-12 bg-app-surface border border-app-border rounded-3xl text-sm hover:bg-app-surface-hover overflow-hidden"
 				onClick={openWithFocus}
 			>
 				<div className="flex items-center gap-2 min-w-0 px-4 h-full flex-1">
@@ -90,7 +90,7 @@ export function SpecSelector({
 
 			{open && !loading && (
 				<div
-					className="absolute z-50 top-full mt-2 left-0 right-0 rounded-2xl overflow-hidden"
+					className="absolute z-50 top-full mt-2 left-0 right-0 rounded-3xl overflow-hidden"
 					style={{
 						background: "var(--color-modal-bg)",
 						border: "1px solid var(--color-border)",

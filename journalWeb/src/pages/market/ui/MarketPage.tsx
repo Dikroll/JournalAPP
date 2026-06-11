@@ -1,15 +1,14 @@
-import { type MarketPrice, useMarket } from '@/entities/market'
-import { useUser } from '@/entities/user'
-import { RefreshMarketButton } from '@/features/refreshMarket'
-import { useSwipeBack } from '@/shared/hooks'
-import type { Segment } from '@/shared/ui'
-import { pageConfig, PAGE_TITLES } from '@/shared/config'
-import { PageHeader, SegmentedControl } from '@/shared/ui'
-import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from '@/widgets'
-import { Archive, ShoppingBag, ShoppingCart } from 'lucide-react'
-import { useMemo, useState } from 'react'
-
-import { useIsDesktop } from '@/shared/hooks/useIsDesktop'
+import { Archive, ShoppingBag, ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
+import { type MarketPrice, useMarket } from "@/entities/market";
+import { useUser } from "@/entities/user";
+import { RefreshMarketButton } from "@/features/refreshMarket";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
+import { useSwipeBack } from "@/shared/hooks";
+import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
+import type { Segment } from "@/shared/ui";
+import { PageHeader, SegmentedControl } from "@/shared/ui";
+import { CartItemCard, OrdersTab, PriceDisplay, ProductsTab } from "@/widgets";
 
 type MarketTab = "products" | "cart" | "orders";
 
@@ -40,9 +39,9 @@ function canAfford(price: MarketPrice, userBalance: MarketPrice): boolean {
 }
 
 export function MarketPage() {
-	const [tab, setTab] = useState<MarketTab>('products')
-	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null)
-	const isDesktop = useIsDesktop()
+	const [tab, setTab] = useState<MarketTab>("products");
+	const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
+	const isDesktop = useIsDesktop();
 	const {
 		products,
 		productsStatus,
@@ -64,10 +63,13 @@ export function MarketPage() {
 
 	const user = useUser();
 
-	const userBalance = useMemo(() => ({
-		diamonds: user?.points?.diamonds?.balance ?? 0,
-		coins: user?.points?.coins?.balance ?? 0,
-	}), [user]);
+	const userBalance = useMemo(
+		() => ({
+			diamonds: user?.points?.diamonds?.balance ?? 0,
+			coins: user?.points?.coins?.balance ?? 0,
+		}),
+		[user],
+	);
 	useSwipeBack();
 	const cartByProduct = useMemo(
 		() => new Map(cartItems.map((item) => [item.productId, item.quantity])),
@@ -95,11 +97,14 @@ export function MarketPage() {
 	};
 
 	return (
-		<div className='min-h-screen text-app-text pb-28'>
-			<div className='p-4 space-y-3'>
-				<div className='flex items-center justify-between'>
-					<div className='flex items-center gap-2'>
-						<PageHeader title={PAGE_TITLES[pageConfig.market]} showBack={!isDesktop} />
+		<div className="min-h-screen text-app-text pb-28">
+			<div className="p-4 space-y-3">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-2">
+						<PageHeader
+							title={PAGE_TITLES[pageConfig.market]}
+							showBack={!isDesktop}
+						/>
 					</div>
 					<RefreshMarketButton
 						isRefreshing={
@@ -130,7 +135,7 @@ export function MarketPage() {
 
 				{tab === "cart" && (
 					<div className="space-y-3">
-						<div className="rounded-[20px] border border-amber-400/30 bg-amber-400/10 p-4">
+						<div className="rounded-3xl border border-amber-400/30 bg-amber-400/10 p-4">
 							<p className="text-sm font-semibold text-amber-200">
 								Оформление заказа в разработке
 							</p>
@@ -159,7 +164,7 @@ export function MarketPage() {
 									/>
 								))}
 
-								<div className="bg-app-surface rounded-[20px] border border-app-border p-4 space-y-3">
+								<div className="bg-app-surface rounded-3xl border border-app-border p-4 space-y-3">
 									<div className="flex items-center justify-between">
 										<span className="text-sm text-app-muted">Итого</span>
 										<PriceDisplay price={cartTotal} className="text-base" />
@@ -174,7 +179,7 @@ export function MarketPage() {
 								<button
 									type="button"
 									disabled
-									className="w-full h-12 rounded-[18px] bg-brand text-white text-sm font-semibold opacity-50"
+									className="w-full h-12 rounded-3xl bg-brand text-white text-sm font-semibold opacity-50"
 								>
 									Оформить заказ
 								</button>

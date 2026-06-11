@@ -6,8 +6,8 @@ import {
 	ScheduleRemindersSection,
 	useScheduleRemindersStore,
 } from "@/features/scheduleReminders";
+import { PAGE_TITLES, pageConfig } from "@/shared/config";
 import { useSwipeBack } from "@/shared/hooks";
-import { pageConfig, PAGE_TITLES } from "@/shared/config";
 import { IconButton, PageHeader } from "@/shared/ui";
 
 export function NotificationSettingsPage() {

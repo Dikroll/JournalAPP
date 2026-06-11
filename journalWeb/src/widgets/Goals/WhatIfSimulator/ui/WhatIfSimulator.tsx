@@ -33,7 +33,7 @@ export function WhatIfSimulator({ entries }: Props) {
 			</div>
 
 			<div
-				className="rounded-[22px] p-4 mb-3"
+				className="rounded-3xl p-4 mb-3"
 				style={{
 					background: "var(--color-surface)",
 					border: "1px solid var(--color-border)",

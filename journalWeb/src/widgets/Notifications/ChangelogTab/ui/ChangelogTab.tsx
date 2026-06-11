@@ -9,7 +9,7 @@ export function ChangelogTab({ entries }: { entries: ChangelogEntry[] }) {
 			{entries.map((entry, idx) => (
 				<div
 					key={entry.id}
-					className="bg-app-surface rounded-[24px] p-4 border border-app-border"
+					className="bg-app-surface rounded-3xl p-4 border border-app-border"
 					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					<div className="flex items-center justify-between mb-3">

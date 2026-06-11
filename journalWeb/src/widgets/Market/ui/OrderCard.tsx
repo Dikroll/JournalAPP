@@ -40,7 +40,7 @@ export function OrderCard({
 	children,
 }: Props) {
 	return (
-		<article className="bg-app-surface rounded-[20px] border border-app-border overflow-hidden">
+		<article className="bg-app-surface rounded-3xl border border-app-border overflow-hidden">
 			<button
 				type="button"
 				onClick={onToggle}

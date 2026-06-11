@@ -13,7 +13,7 @@ export function PaymentHistoryCard({ history, flat }: Props) {
 	return (
 		<div
 			className={
-				flat ? "" : "bg-app-surface rounded-[24px] border border-app-border p-4"
+				flat ? "" : "bg-app-surface rounded-3xl border border-app-border p-4"
 			}
 			style={flat ? undefined : { boxShadow: "var(--shadow-card)" }}
 		>

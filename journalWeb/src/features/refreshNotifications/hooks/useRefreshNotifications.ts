@@ -1,19 +1,19 @@
-import { useAppUpdate } from '@/features/appUpdate'
-import { feedbackApi, useFeedbackStore } from '@/entities/feedback'
-import { useNetworkRefresh } from '@/shared/hooks/useNetworkRefresh'
-import { newsApi, useNewsStore } from '@/entities/news'
-import { CACHE_KEYS } from '@/shared/lib'
-import { storage } from '@/shared/lib/encryptedStorage'
-import { ttl } from '@/shared/config'
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react";
+import { feedbackApi, useFeedbackStore } from "@/entities/feedback";
+import { newsApi, useNewsStore } from "@/entities/news";
+import { useAppUpdate } from "@/features/appUpdate";
+import { ttl } from "@/shared/config";
+import { useNetworkRefresh } from "@/shared/hooks/useNetworkRefresh";
+import { CACHE_KEYS } from "@/shared/lib";
+import { storage } from "@/shared/lib/encryptedStorage";
 
 export function useRefreshNotifications() {
-	const [isRefreshing, setIsRefreshing] = useState(false)
-	const { checkForUpdate } = useAppUpdate()
-	const setPending = useFeedbackStore(s => s.setPending)
-	const setPendingLoadedAt = useFeedbackStore(s => s.setPendingLoadedAt)
-	const setPendingStatus = useFeedbackStore(s => s.setPendingStatus)
-	const updateNews = useNewsStore(s => s.update)
+	const [isRefreshing, setIsRefreshing] = useState(false);
+	const { checkForUpdate } = useAppUpdate();
+	const setPending = useFeedbackStore((s) => s.setPending);
+	const setPendingLoadedAt = useFeedbackStore((s) => s.setPendingLoadedAt);
+	const setPendingStatus = useFeedbackStore((s) => s.setPendingStatus);
+	const updateNews = useNewsStore((s) => s.update);
 
 	const refreshAction = useCallback(async () => {
 		if (isRefreshing) return;
@@ -32,19 +32,19 @@ export function useRefreshNotifications() {
 
 		const newsTask = newsApi
 			.getLatest()
-			.then(data => {
+			.then((data) => {
 				updateNews({
 					latest: data,
-					status: 'success',
+					status: "success",
 					loadedAt: Date.now(),
 					error: null,
-				})
-				storage.set(CACHE_KEYS.NEWS, data, ttl.ACTIVITY)
+				});
+				storage.set(CACHE_KEYS.NEWS, data, ttl.ACTIVITY);
 			})
-			.catch(() => {})
+			.catch(() => {});
 
 		try {
-			await Promise.all([updateTask, pendingTask, newsTask])
+			await Promise.all([updateTask, pendingTask, newsTask]);
 		} finally {
 			setIsRefreshing(false);
 		}
@@ -55,7 +55,7 @@ export function useRefreshNotifications() {
 		setPendingLoadedAt,
 		setPendingStatus,
 		updateNews,
-	])
+	]);
 
 	return useNetworkRefresh(refreshAction, isRefreshing);
 }

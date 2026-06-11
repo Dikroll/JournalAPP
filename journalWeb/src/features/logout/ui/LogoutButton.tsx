@@ -32,7 +32,7 @@ export function LogoutButton({ onBeforeLogout }: Props) {
 					e.preventDefault();
 					handleOpen();
 				}}
-				className="w-full flex items-center justify-center gap-2 py-3.5 rounded-[18px] bg-glass border border-glass-border text-app-muted text-sm font-medium active:bg-glass-active"
+				className="w-full flex items-center justify-center gap-2 py-3.5 rounded-3xl bg-glass border border-glass-border text-app-muted text-sm font-medium active:bg-glass-active"
 			>
 				<LogOut size={16} />
 				Выход

@@ -1,31 +1,25 @@
-import { useTopBarViewModel } from '@/features/navigation/hooks/useTopBarViewModel'
-import { pageConfig } from '@/shared/config'
-import { Avatar, BrandLogo } from '@/shared/ui'
-import { Bell } from 'lucide-react'
-import { memo } from 'react'
-import { Link } from 'react-router-dom'
+import { Bell } from "lucide-react";
+import { memo } from "react";
+import { Link } from "react-router-dom";
+import { useTopBarViewModel } from "@/features/navigation/hooks/useTopBarViewModel";
+import { pageConfig } from "@/shared/config";
+import { Avatar, BrandLogo } from "@/shared/ui";
 
 export const TopBar = memo(function TopBar() {
 	const viewModel = useTopBarViewModel();
 
 	if (!viewModel) return null;
 
-	const {
-		fullName,
-		groupName,
-		photoUrl,
-		hydrated,
-		shortName,
-		hasBadge,
-	} = viewModel;
+	const { fullName, groupName, photoUrl, hydrated, shortName, hasBadge } =
+		viewModel;
 
 	return (
-		<div className='px-4 pt-2 pb-1'>
+		<div className="px-4 pt-2 pb-1">
 			<div
-				className='flex items-center bg-app-surface backdrop-blur-xl rounded-[24px] px-5 py-4 border border-app-border'
-				style={{ boxShadow: 'var(--shadow-card)' }}
+				className="flex items-center bg-app-surface backdrop-blur-xl rounded-3xl px-5 py-4 border border-app-border"
+				style={{ boxShadow: "var(--shadow-card)" }}
 			>
-				<Link to={pageConfig.profile} className='flex-shrink-0 mr-5'>
+				<Link to={pageConfig.profile} className="flex-shrink-0 mr-5">
 					<Avatar
 						photoUrl={hydrated ? photoUrl : null}
 						fullName={fullName}
@@ -34,14 +28,14 @@ export const TopBar = memo(function TopBar() {
 					/>
 				</Link>
 
-				<div className='flex-1 min-w-0 flex flex-col justify-between h-14'>
+				<div className="flex-1 min-w-0 flex flex-col justify-between h-14">
 					<BrandLogo />
 
-					<p className='text-sm text-app-muted truncate leading-none'>
+					<p className="text-sm text-app-muted truncate leading-none">
 						{shortName}
 					</p>
 
-					<p className='text-xs text-app-muted truncate leading-none'>
+					<p className="text-xs text-app-muted truncate leading-none">
 						{groupName}
 					</p>
 				</div>

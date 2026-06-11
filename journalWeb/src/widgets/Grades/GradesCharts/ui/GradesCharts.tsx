@@ -167,7 +167,7 @@ export const GradesCharts = memo(function GradesCharts({
 		<div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${className ?? ""}`}>
 			{progressData.length > 0 && (
 				<div
-					className="bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full"
+					className="bg-app-surface backdrop-blur-xl rounded-3xl p-5 border border-app-border flex flex-col h-full"
 					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					<div className="flex items-center justify-between mb-4">
@@ -183,7 +183,7 @@ export const GradesCharts = memo(function GradesCharts({
 			)}
 			{attendanceData.length > 0 && (
 				<div
-					className="bg-app-surface backdrop-blur-xl rounded-[24px] p-5 border border-app-border flex flex-col h-full"
+					className="bg-app-surface backdrop-blur-xl rounded-3xl p-5 border border-app-border flex flex-col h-full"
 					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					<div className="flex items-center justify-between mb-4">

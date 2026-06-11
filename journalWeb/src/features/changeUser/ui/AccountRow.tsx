@@ -1,5 +1,5 @@
-import type { SavedAccount } from '@/shared/model/authStore'
-import { RefreshCw, Trash2, UserRound } from 'lucide-react'
+import { RefreshCw, Trash2, UserRound } from "lucide-react";
+import type { SavedAccount } from "@/shared/model/authStore";
 
 interface Props {
 	account: SavedAccount;
@@ -18,7 +18,7 @@ export function AccountRow({
 }: Props) {
 	return (
 		<div
-			className={`flex items-center gap-3 p-3 rounded-2xl transition-colors ${
+			className={`flex items-center gap-3 p-3 rounded-3xl transition-colors ${
 				isActive
 					? "bg-glass-active border border-status-comment"
 					: "bg-glass border border-app-border hover:bg-glass-hover cursor-pointer active:bg-glass-active"

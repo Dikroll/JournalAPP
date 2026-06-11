@@ -1,8 +1,8 @@
 import { PackageOpen } from "lucide-react";
 import { useState } from "react";
 import type { MarketOrderProduct } from "@/entities/market";
-import { PhotoViewerModal } from "@/shared/ui";
 import { getCachedImageUrl } from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {

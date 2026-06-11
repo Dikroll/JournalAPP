@@ -43,7 +43,7 @@ export const WebLayout = memo(() => {
 				}}
 			>
 				<div className="pt-6 pr-0 pb-2 pl-2 self-stretch shrink-0 h-full">
-					<div className="h-full rounded-2xl overflow-hidden bg-[rgba(255,255,255,0.04)] backdrop-blur-[12px] border border-[var(--color-border)] will-change-transform [transform:translateZ(0)]">
+					<div className="h-full rounded-3xl overflow-hidden bg-[rgba(255,255,255,0.04)] backdrop-blur-[12px] border border-[var(--color-border)] will-change-transform [transform:translateZ(0)]">
 						<Sidebar />
 					</div>
 				</div>

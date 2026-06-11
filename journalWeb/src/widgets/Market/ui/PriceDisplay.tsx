@@ -1,5 +1,5 @@
-import type { MarketPrice } from '@/entities/market'
-import { CurrencyBadge } from '@/shared/ui'
+import type { MarketPrice } from "@/entities/market";
+import { CurrencyBadge } from "@/shared/ui";
 
 interface Props {
 	price: MarketPrice;
@@ -11,13 +11,18 @@ export function PriceDisplay({ price, className = "" }: Props) {
 
 	if (price.diamonds) {
 		parts.push(
-			<CurrencyBadge key="diamonds" type="diamonds" amount={price.diamonds} size="md" />
+			<CurrencyBadge
+				key="diamonds"
+				type="diamonds"
+				amount={price.diamonds}
+				size="md"
+			/>,
 		);
 	}
 
 	if (price.coins) {
 		parts.push(
-			<CurrencyBadge key="coins" type="coins" amount={price.coins} size="md" />
+			<CurrencyBadge key="coins" type="coins" amount={price.coins} size="md" />,
 		);
 	}
 

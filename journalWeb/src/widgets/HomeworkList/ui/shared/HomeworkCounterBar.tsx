@@ -81,13 +81,25 @@ export function HomeworkCountersBar({
 }: Props) {
 	return (
 		<div
-			className={columns ? "w-full" : `-mx-4 homework-counters-bar ${isVertical ? "mx-0 flex-1 min-h-0 relative" : "overflow-x-auto"}`}
+			className={
+				columns
+					? "w-full"
+					: `-mx-4 homework-counters-bar ${isVertical ? "mx-0 flex-1 min-h-0 relative" : "overflow-x-auto"}`
+			}
 		>
 			<div
-				className={columns ? "" : `flex gap-2 ${isVertical ? "absolute inset-0 flex-col px-0 overflow-y-auto scrollbar-none" : "px-4 w-max py-2"} homework-counters-bar__inner`}
+				className={
+					columns
+						? ""
+						: `flex gap-2 ${isVertical ? "absolute inset-0 flex-col px-0 overflow-y-auto scrollbar-none" : "px-4 w-max py-2"} homework-counters-bar__inner`
+				}
 			>
 				<div
-					className={columns ? `grid gap-2 w-full ${columns === 2 ? "grid-cols-2" : columns === 3 ? "grid-cols-3" : ""}` : `flex gap-2 ${isVertical ? "flex-col w-full min-h-full h-full justify-between" : ""}`}
+					className={
+						columns
+							? `grid gap-2 w-full ${columns === 2 ? "grid-cols-2" : columns === 3 ? "grid-cols-3" : ""}`
+							: `flex gap-2 ${isVertical ? "flex-col w-full min-h-full h-full justify-between" : ""}`
+					}
 				>
 					{ITEMS.map(({ key, label, color, icon: Icon, statusKey, status }) => {
 						const isClickable = !readonly;
@@ -159,7 +171,7 @@ export function HomeworkCountersBar({
 										: undefined
 								}
 								className={[
-									"flex-shrink-0 min-w-[72px] rounded-2xl px-3 py-2 transition-all duration-200 homework-counters-bar__btn",
+									"flex-shrink-0 min-w-[72px] rounded-3xl px-3 py-2 transition-all duration-200 homework-counters-bar__btn",
 									withIcons
 										? "flex items-center gap-3 text-left"
 										: "text-center",

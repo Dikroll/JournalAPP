@@ -26,13 +26,13 @@ export { RecentMarks } from "./Goals/RecentMarks/ui/RecentMarks";
 export { SetGoalSheet } from "./Goals/SetGoalSheet/ui/SetGoalSheet";
 export { SubjectStats } from "./Goals/SubjectStats/ui/SubjectStats";
 export { WhatIfSimulator } from "./Goals/WhatIfSimulator/ui/WhatIfSimulator";
+export { DesktopSubjectsWidget } from "./Grades/DesktopSubjectsWidget/ui/DesktopSubjectsWidget";
 export { GradesCalendar } from "./Grades/GradesCalendar/ui/GradesCalendar";
 export { GradesCharts } from "./Grades/GradesCharts/ui/GradesCharts";
 export { GradesExamList } from "./Grades/GradesList/ui/GradesExamList";
 export { GradesRecentList } from "./Grades/GradesList/ui/GradesRecentList";
 export { GradesSubjectList } from "./Grades/GradesList/ui/GradesSubjectList";
 export { GradesTabs } from "./Grades/GradesTabs/ui/GradesTabs";
-export { DesktopSubjectsWidget } from "./Grades/DesktopSubjectsWidget/ui/DesktopSubjectsWidget";
 export { HomeworkCard } from "./HomeworkList/ui/card/HomeworkCard";
 export { HomeworkCountersBar } from "./HomeworkList/ui/shared/HomeworkCounterBar";
 // Profile
@@ -49,8 +49,8 @@ export { OrdersTab } from "./Market/ui/OrdersTab";
 export { PriceDisplay } from "./Market/ui/PriceDisplay";
 export { ProductCard } from "./Market/ui/ProductCard";
 export { ProductsTab } from "./Market/ui/ProductsTab";
-export { MarketLink } from "./MarketLink/ui/MarketLink";
 export { DesktopMarketWidget } from "./MarketLink/ui/DesktopMarketWidget";
+export { MarketLink } from "./MarketLink/ui/MarketLink";
 // Notifications
 export { ChangelogTab } from "./Notifications/ChangelogTab/ui/ChangelogTab";
 export { ComingSoonTab } from "./Notifications/ComingSoonTab/ui/ComingSoonTab";

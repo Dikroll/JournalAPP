@@ -86,7 +86,7 @@ export function GradesTabs({ active, onChange }: Props) {
 								key={key}
 								type="button"
 								onClick={() => handleTabClick(key)}
-								className="flex-shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap"
+								className="flex-shrink-0 flex items-center gap-1.5 rounded-3xl text-xs font-medium whitespace-nowrap"
 								style={{
 									minHeight: 44,
 									paddingLeft: 16,

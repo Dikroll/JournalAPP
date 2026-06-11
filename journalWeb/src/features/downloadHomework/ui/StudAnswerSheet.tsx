@@ -16,7 +16,7 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 				{/* Header */}
 				<div className="flex items-center justify-between pb-3 flex-shrink-0">
 					<div className="flex items-center gap-2.5">
-						<div className="w-9 h-9 rounded-2xl bg-glass border border-glass-border flex items-center justify-center">
+						<div className="w-9 h-9 rounded-3xl bg-glass border border-glass-border flex items-center justify-center">
 							<MessageSquare size={16} className="text-app-muted" />
 						</div>
 						<div>
@@ -38,7 +38,7 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 
 				{/* Answer — scrollable, max ~5 lines visible */}
 				<div
-					className="mb-3 rounded-2xl bg-glass border border-glass-border px-4 py-3 flex-shrink-0 overflow-y-auto"
+					className="mb-3 rounded-3xl bg-glass border border-glass-border px-4 py-3 flex-shrink-0 overflow-y-auto"
 					style={{ maxHeight: "9rem" }}
 				>
 					<p className="text-sm text-app-text leading-relaxed whitespace-pre-wrap break-words">
@@ -57,7 +57,7 @@ export function StudAnswerSheet({ answer, homeworkTheme, onClose }: Props) {
 
 				{/* Game — fixed comfortable height */}
 				<div className="flex-shrink-0" style={{ height: "240px" }}>
-					<div className="w-full h-full rounded-2xl overflow-hidden">
+					<div className="w-full h-full rounded-3xl overflow-hidden">
 						<CatGame />
 					</div>
 				</div>

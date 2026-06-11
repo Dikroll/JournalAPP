@@ -57,7 +57,7 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 							onClose();
 							onAddAccount();
 						}}
-						className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-glass border border-glass-border text-app-muted text-sm hover:bg-glass-hover"
+						className="w-full flex items-center justify-center gap-2 py-3 rounded-3xl bg-glass border border-glass-border text-app-muted text-sm hover:bg-glass-hover"
 					>
 						<Plus size={15} />
 						Добавить аккаунт
@@ -70,7 +70,7 @@ export function AccountSwitcher({ onClose, onAddAccount, onReset }: Props) {
 						e.preventDefault();
 						setConfirmLogout(true);
 					}}
-					className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-danger-subtle border border-danger-border text-danger text-sm font-medium hover:bg-danger-subtle"
+					className="w-full flex items-center justify-center gap-2 py-3 rounded-3xl bg-danger-subtle border border-danger-border text-danger text-sm font-medium hover:bg-danger-subtle"
 				>
 					<LogOut size={15} />
 					Выйти из аккаунта

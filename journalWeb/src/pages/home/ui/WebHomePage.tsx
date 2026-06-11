@@ -97,7 +97,7 @@ export function WebHomePage() {
 					<WebGoalsSummaryWidget variant={summary} />
 
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0 min-h-0"
+						className="rounded-3xl border border-app-border p-4 flex flex-col shrink-0 min-h-0"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
@@ -120,7 +120,7 @@ export function WebHomePage() {
 					<NextClassWidget />
 
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col flex-1 min-h-0"
+						className="rounded-3xl border border-app-border p-4 flex flex-col flex-1 min-h-0"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",
@@ -139,7 +139,7 @@ export function WebHomePage() {
 					<ActivityWidget className="flex-1" />
 
 					<div
-						className="rounded-[20px] border border-app-border p-4 flex flex-col shrink-0 min-h-0"
+						className="rounded-3xl border border-app-border p-4 flex flex-col shrink-0 min-h-0"
 						style={{
 							background: "var(--color-surface)",
 							boxShadow: "var(--shadow-card)",

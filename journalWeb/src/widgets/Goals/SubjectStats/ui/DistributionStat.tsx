@@ -32,7 +32,7 @@ export function DistributionStat({ data }: Props) {
 
 	return (
 		<div
-			className="rounded-[22px] p-5"
+			className="rounded-3xl p-5"
 			style={{
 				background: "var(--color-surface)",
 				border: "1px solid var(--color-border)",

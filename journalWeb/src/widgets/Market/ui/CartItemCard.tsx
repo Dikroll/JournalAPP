@@ -1,8 +1,8 @@
 import { Box, Minus, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { MarketProduct } from "@/entities/market";
-import { PhotoViewerModal } from "@/shared/ui";
 import { getCachedImageUrl } from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
 import { PriceDisplay } from "./PriceDisplay";
 
 interface Props {
@@ -26,7 +26,7 @@ export function CartItemCard({
 
 	return (
 		<>
-			<div className="bg-app-surface rounded-[20px] border border-app-border p-4 flex gap-3">
+			<div className="bg-app-surface rounded-3xl border border-app-border p-4 flex gap-3">
 				<div
 					className="w-16 h-16 rounded-[16px] overflow-hidden bg-app-surface-hover shrink-0 cursor-pointer"
 					onClick={() => fixedImageUrl && setPhotoViewerOpen(true)}

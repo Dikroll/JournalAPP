@@ -26,7 +26,7 @@ export function EvaluateLessonList() {
 		return (
 			<div className="flex flex-col items-center justify-center py-16 gap-3">
 				<div
-					className="w-16 h-16 rounded-[20px] flex items-center justify-center"
+					className="w-16 h-16 rounded-3xl flex items-center justify-center"
 					style={{
 						background: "var(--color-surface-strong)",
 						border: "1px solid var(--color-border)",

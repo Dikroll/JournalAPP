@@ -114,7 +114,7 @@ export const LibraryTabs = memo(function LibraryTabs({ specId }: Props) {
 								key={key}
 								type="button"
 								onClick={() => setActive(key)}
-								className="shrink-0 flex items-center gap-1.5 rounded-2xl text-xs font-medium whitespace-nowrap transition-all"
+								className="shrink-0 flex items-center gap-1.5 rounded-3xl text-xs font-medium whitespace-nowrap transition-all"
 								style={{
 									height: 40,
 									paddingLeft: 14,

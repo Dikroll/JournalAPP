@@ -23,7 +23,7 @@ export function ErrorView({
 						e.preventDefault();
 						onRetry();
 					}}
-					className="flex items-center gap-2 px-4 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-2xl text-app-text text-sm border border-app-border"
+					className="flex items-center gap-2 px-4 py-2.5 bg-app-surface hover:bg-app-surface-hover rounded-3xl text-app-text text-sm border border-app-border"
 				>
 					<RefreshCw size={15} />
 					Повторить

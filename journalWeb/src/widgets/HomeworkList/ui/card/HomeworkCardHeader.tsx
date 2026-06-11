@@ -62,7 +62,7 @@ export function HomeworkCardHeader({ hw, gradeStyle, grade }: Props) {
 
 			{isChecked && grade != null && (
 				<div
-					className={`ml-3 flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold border ${
+					className={`ml-3 flex-shrink-0 w-12 h-12 rounded-3xl flex items-center justify-center text-xl font-bold border ${
 						gradeStyle?.badge
 					}`}
 				>

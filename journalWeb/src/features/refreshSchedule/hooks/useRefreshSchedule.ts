@@ -19,4 +19,3 @@ export function useRefreshSchedule() {
 
 	return useNetworkRefresh(refreshAction, isRefreshing);
 }
-

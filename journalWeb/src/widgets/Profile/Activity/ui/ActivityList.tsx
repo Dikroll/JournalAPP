@@ -68,7 +68,7 @@ export function ActivityList({
 	return (
 		<>
 			{(isRefreshing || isFilterPending) && viewItems.length > 0 && (
-				<div className="rounded-[20px] px-4 py-3 border border-app-border bg-app-surface/80 backdrop-blur-sm text-xs text-app-muted">
+				<div className="rounded-3xl px-4 py-3 border border-app-border bg-app-surface/80 backdrop-blur-sm text-xs text-app-muted">
 					{isFilterPending
 						? "Переключаем список и подгружаем нужные записи."
 						: "Обновляем историю в фоне. Пока показываем последнюю сохранённую версию."}
@@ -85,7 +85,7 @@ export function ActivityList({
 
 			{viewItems.length === 0 && status !== "loading" && (
 				<div
-					className="rounded-[24px] p-5 border border-app-border bg-app-surface"
+					className="rounded-3xl p-5 border border-app-border bg-app-surface"
 					style={{ boxShadow: "var(--shadow-card)" }}
 				>
 					<p className="text-sm font-semibold text-app-text">
@@ -118,7 +118,7 @@ export function ActivityList({
 
 								<div className="flex items-center gap-2 shrink-0">
 									{activeFilter !== "DIAMOND" && (
-										<div className="inline-flex items-center gap-2 rounded-2xl border border-[#00D9FF]/20 bg-[#00D9FF]/10 px-3 py-2">
+										<div className="inline-flex items-center gap-2 rounded-3xl border border-[#00D9FF]/20 bg-[#00D9FF]/10 px-3 py-2">
 											<Gem size={16} className="text-[#00D9FF]" />
 											<span className="text-sm font-bold text-app-text">
 												+{group.coinEarned.toLocaleString("ru-RU")}
@@ -126,7 +126,7 @@ export function ActivityList({
 										</div>
 									)}
 									{activeFilter !== "COIN" && (
-										<div className="inline-flex items-center gap-2 rounded-2xl border border-[#FFD700]/20 bg-[#FFD700]/10 px-3 py-2">
+										<div className="inline-flex items-center gap-2 rounded-3xl border border-[#FFD700]/20 bg-[#FFD700]/10 px-3 py-2">
 											<Coins size={16} className="text-[#FFD700]" />
 											<span className="text-sm font-bold text-app-text">
 												+{group.diamondEarned.toLocaleString("ru-RU")}
@@ -172,7 +172,7 @@ export function ActivityList({
 					{[0, 1, 2].map((i) => (
 						<div
 							key={i}
-							className="rounded-[24px] border border-app-border bg-app-surface animate-pulse h-24"
+							className="rounded-3xl border border-app-border bg-app-surface animate-pulse h-24"
 							style={{ boxShadow: "var(--shadow-card)" }}
 						/>
 					))}
