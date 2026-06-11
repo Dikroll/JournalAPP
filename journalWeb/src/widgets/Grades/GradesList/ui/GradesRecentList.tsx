@@ -1,6 +1,6 @@
 import { Clock, GraduationCap, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { GradeEntryExpanded } from "@/entities/grades";
+import { getGradeStyle, type GradeEntryExpanded } from "@/entities/grades";
 import type { LessonItem } from "@/entities/schedule";
 import { useLazyItems } from "@/shared/hooks";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
@@ -272,57 +272,84 @@ export function GradesRecentList({
 		);
 	}
 
-	const weeksMap = new Map<
-		string,
-		Array<{ date: string; items: DisplayItem[] }>
-	>();
-
-	visibleDays.forEach((day) => {
-		const weekStart = getStartOfWeek(day.date);
-		if (!weeksMap.has(weekStart)) {
-			weeksMap.set(weekStart, []);
-		}
-		weeksMap.get(weekStart)?.push(day);
-	});
-
-	const weeks = Array.from(weeksMap.entries());
-
 	return (
-		<div className="space-y-8">
-			{weeks.map(([weekStart, days]) => {
-				let displayDays = days;
+		<div className="space-y-4">
+			<div 
+				className="grid gap-4 px-4 py-2 text-[13px] font-medium text-app-muted border-b border-app-border" 
+				style={{ gridTemplateColumns: "30px 60px 1fr 100px 120px" }}
+			>
+				<div>№</div>
+				<div>Время</div>
+				<div>Предмет</div>
+				<div>Посещение</div>
+				<div>Оценки</div>
+			</div>
 
-				if (isDesktop) {
-					// Pad to 5 days (Monday to Friday)
-					const paddedDays: Array<{ date: string; items: DisplayItem[] }> = [];
-					const start = new Date(`${weekStart}T00:00:00`);
-					for (let i = 0; i < 5; i++) {
-						const d = new Date(start);
-						d.setDate(d.getDate() + i);
-						const dateStr = toDateString(
-							d.getFullYear(),
-							d.getMonth(),
-							d.getDate(),
-						);
-						const existingDay = days.find((day) => day.date === dateStr);
-						if (existingDay) {
-							paddedDays.push(existingDay);
-						} else {
-							paddedDays.push({ date: dateStr, items: [] });
-						}
-					}
-					displayDays = paddedDays;
-				}
+			{visibleDays.map(({ date, items }) => {
+				const dateObj = new Date(`${date}T00:00:00`);
+				const dayMonth = dateObj.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+				const weekday = dateObj.toLocaleDateString("ru-RU", { weekday: "long" });
+				const dateDisplay = `${dayMonth}, ${weekday}`;
 
 				return (
-					<div key={weekStart} className="space-y-4">
-						<h3 className="text-base font-bold text-app-text px-1">
-							{formatWeekLabel(weekStart)}
-						</h3>
-						<div className="grid grid-cols-5 gap-4">
-							{displayDays.map(({ date, items }) => (
-								<DateCard key={date} date={date} items={items} />
-							))}
+					<div key={date} className="mb-6">
+						<div className="text-[13px] font-bold text-app-text px-4 mb-3">{dateDisplay}</div>
+						<div className="flex flex-col border border-app-border rounded-xl bg-app-surface overflow-hidden">
+							{items.map((item, idx) => {
+								const isGrade = item.type === "grade";
+								const entry = isGrade ? item.entry : null;
+								const lesson = isGrade ? null : item.lesson;
+
+								const time = lesson?.started_at || scheduledLessons.find(l => l.date === entry?.date && l.lesson === entry?.lesson_number)?.started_at || "—";
+								const subjectName = isGrade ? entry!.spec_name : lesson!.subject;
+								const teacher = isGrade ? entry!.teacher : lesson!.teacher;
+								const lessonNum = isGrade ? entry!.lesson_number : lesson!.lesson;
+
+								let attendanceText = "—";
+								let attendanceColor = "var(--color-text-muted)";
+								if (isGrade) {
+									if (entry!.attended === "present") { attendanceText = "Посетил"; attendanceColor = "#10B981"; }
+									if (entry!.attended === "late") { attendanceText = "Опоздание"; attendanceColor = "#F59E0B"; }
+									if (entry!.attended === "absent") { attendanceText = "Не посетил"; attendanceColor = "#EF4444"; }
+								} else {
+									const isPast = isPastLesson(lesson!);
+									attendanceText = isPast ? "Не посетил" : "Ожидает";
+									attendanceColor = isPast ? "#EF4444" : "var(--color-text-muted)";
+								}
+
+								return (
+									<div 
+										key={idx} 
+										className="grid gap-4 px-4 py-3 border-b border-app-border last:border-0 items-center text-[13px]" 
+										style={{ gridTemplateColumns: "30px 60px 1fr 100px 120px" }}
+									>
+										<div className="text-app-muted font-medium">{lessonNum}</div>
+										<div className="text-app-muted">{time}</div>
+										<div className="min-w-0 pr-4">
+											<div className="text-app-text font-medium truncate">{subjectName}</div>
+											{teacher && <div className="text-[11px] text-app-muted truncate mt-0.5">{teacher}</div>}
+										</div>
+										<div style={{ color: attendanceColor }} className="font-medium">{attendanceText}</div>
+										<div>
+											{isGrade && entry!.flatMarks.length > 0 ? (
+												<div className="flex flex-wrap gap-1.5">
+													{entry!.flatMarks.map((m, i) => (
+														<div 
+															key={i} 
+															className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs text-white" 
+															style={getGradeStyle(m.value)}
+														>
+															{m.value}
+														</div>
+													))}
+												</div>
+											) : (
+												<span className="text-app-muted">—</span>
+											)}
+										</div>
+									</div>
+								);
+							})}
 						</div>
 					</div>
 				);
@@ -333,7 +360,7 @@ export function GradesRecentList({
 					{[0, 1].map((i) => (
 						<div
 							key={i}
-							className="bg-app-surface rounded-[24px] animate-pulse h-20"
+							className="bg-app-surface rounded-xl border border-app-border animate-pulse h-16"
 						/>
 					))}
 				</div>
