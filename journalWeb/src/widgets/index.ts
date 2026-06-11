@@ -32,6 +32,7 @@ export { GradesExamList } from "./Grades/GradesList/ui/GradesExamList";
 export { GradesRecentList } from "./Grades/GradesList/ui/GradesRecentList";
 export { GradesSubjectList } from "./Grades/GradesList/ui/GradesSubjectList";
 export { GradesTabs } from "./Grades/GradesTabs/ui/GradesTabs";
+export { DesktopSubjectsWidget } from "./Grades/DesktopSubjectsWidget/ui/DesktopSubjectsWidget";
 export { HomeworkCard } from "./HomeworkList/ui/card/HomeworkCard";
 export { HomeworkCountersBar } from "./HomeworkList/ui/shared/HomeworkCounterBar";
 // Profile

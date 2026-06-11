@@ -27,24 +27,24 @@ export function HomeworkCardDates({
 	const isUrgent = isUrgentRed || isUrgentYellow;
 
 	return (
-		<div className="flex gap-4 mb-4">
-			<div className="flex items-center gap-1.5 text-sm text-app-muted">
-				<Calendar size={13} />
-				<span>{issuedDate}</span>
+		<div className="mb-4 flex flex-wrap gap-x-4 gap-y-2">
+			<div className="flex min-w-0 items-center gap-1.5 text-sm text-app-muted">
+				<Calendar size={13} className="shrink-0" />
+				<span className="break-all">{issuedDate}</span>
 			</div>
-			<div className="flex items-center gap-1.5 text-sm">
+			<div className="flex min-w-0 flex-wrap items-center gap-1.5 text-sm">
 				<Clock
 					size={13}
 					className={
 						isOverdue || isUrgentRed
-							? "text-status-overdue"
+							? "shrink-0 text-status-overdue"
 							: isUrgentYellow
-								? "text-status-pending"
-								: "text-app-muted"
+								? "shrink-0 text-status-pending"
+								: "shrink-0 text-app-muted"
 					}
 				/>
 				<span
-					className={
+					className={`break-all ${
 						isOverdue
 							? "text-status-overdue font-semibold"
 							: isUrgentRed
@@ -52,7 +52,7 @@ export function HomeworkCardDates({
 								: isUrgentYellow
 									? "text-status-pending font-semibold drop-shadow-[0_0_6px_rgba(245,158,11,0.6)]"
 									: "text-app-muted"
-					}
+					}`}
 				>
 					{deadline}
 				</span>

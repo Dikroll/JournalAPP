@@ -38,18 +38,31 @@ export function HomeworkStatusView({
 		useHomeworkStatusFiltering(byStatus, filterStatus);
 	const isSearching = searchQuery.trim().length > 0;
 
-	if (!selectedSpec) {
-		const visibleGroups = filteredGroups
-			.map(({ status, group }) => ({
+	const visibleGroups = filteredGroups
+		.map(({ status, group }) => {
+			const subjectItems = selectedSpec
+				? group.items.filter(
+						(hw) =>
+							hw.spec_id === selectedSpec.id ||
+							hw.spec_name === selectedSpec.name,
+					)
+				: group.items;
+
+			return {
 				status,
 				group: {
 					...group,
-					items: group.items.filter((hw) =>
+					items: subjectItems.filter((hw) =>
 						matchesHomeworkSearch(hw, searchQuery),
 					),
+					total: selectedSpec ? subjectItems.length : group.total,
+					hasMore: selectedSpec ? false : group.hasMore,
 				},
-			}))
-			.filter(({ group }) => group.items.length > 0);
+			};
+		})
+		.filter(({ group }) => group.items.length > 0);
+
+	if (!selectedSpec) {
 		const hasVisibleItems = isSearching
 			? visibleGroups.length > 0
 			: hasAnyItems;
@@ -84,7 +97,7 @@ export function HomeworkStatusView({
 									{!isSearching && group.hasMore ? "+" : ""})
 								</span>
 							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
 								{group.items.map((hw) => (
 									<HomeworkCard key={hw.id} hw={hw} />
 								))}
@@ -102,7 +115,37 @@ export function HomeworkStatusView({
 		);
 	}
 
-	const isLoading = !subjectData || subjectData.status === "loading";
+	const canUseSubjectData =
+		subjectData?.status === "success" && subjectData.loadedAt !== null;
+	const loadedSubjectData = canUseSubjectData ? subjectData : null;
+
+	if (selectedSpec && !canUseSubjectData && visibleGroups.length > 0) {
+		return (
+			<div className="space-y-6">
+				{visibleGroups.map(({ status: s, group }) => {
+					const { label, icon: Icon, textColor } = STATUS_CONFIG[s];
+					return (
+						<div key={s}>
+							<h2 className="text-base font-semibold text-app-text mb-3 flex items-center gap-2">
+								<Icon size={18} className={textColor} />
+								{label}
+								<span className="text-sm text-app-muted font-normal">
+									({group.items.length})
+								</span>
+							</h2>
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
+								{group.items.map((hw) => (
+									<HomeworkCard key={hw.id} hw={hw} />
+								))}
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		);
+	}
+
+	const isLoading = !canUseSubjectData && visibleGroups.length === 0;
 
 	if (isLoading) {
 		return (
@@ -117,54 +160,100 @@ export function HomeworkStatusView({
 		);
 	}
 
+	if (!loadedSubjectData) {
+		return (
+			<EmptyState
+				message={isSearching ? "Ничего не найдено" : "Нет домашних заданий"}
+				illustration={
+					<InlineImage
+						src={illustrations.noHomework}
+						alt={isSearching ? "Ничего не найдено" : "Нет домашних заданий"}
+						width={300}
+						height={300}
+					/>
+				}
+			/>
+		);
+	}
+
+	const visibleSubjectGroups = statusesToShow
+		.map((s) => {
+			const numKey = STATUS_KEY_MAP[s];
+			const storeItems = loadedSubjectData.items[numKey] ?? [];
+			const displayItems: HW[] = storeItems
+				.map((hw) => ({
+					...hw,
+					statusKey: s,
+				}))
+				.filter((hw) => matchesHomeworkSearch(hw, searchQuery));
+
+			if (!displayItems.length) return null;
+
+			const total = isSearching
+				? displayItems.length
+				: (loadedSubjectData.counters?.[s] ?? displayItems.length);
+			const hasMore =
+				!isSearching &&
+				!loadedSubjectData.expandedStatuses.has(numKey) &&
+				displayItems.length < total;
+
+			return {
+				status: s,
+				numKey,
+				displayItems,
+				total,
+				hasMore,
+			};
+		})
+		.filter((group): group is NonNullable<typeof group> => group !== null);
+
+	if (!visibleSubjectGroups.length) {
+		return (
+			<EmptyState
+				message={isSearching ? "Ничего не найдено" : "Нет домашних заданий"}
+				illustration={
+					<InlineImage
+						src={illustrations.noHomework}
+						alt={isSearching ? "Ничего не найдено" : "Нет домашних заданий"}
+						width={300}
+						height={300}
+					/>
+				}
+			/>
+		);
+	}
+
 	return (
 		<div className="space-y-6">
-			{statusesToShow.map((s) => {
-				const numKey = STATUS_KEY_MAP[s];
-				const storeItems = subjectData.items[numKey] ?? [];
-				if (!storeItems.length) return null;
+			{visibleSubjectGroups.map(
+				({ status: s, numKey, displayItems, total, hasMore }) => {
+					const { label, icon: Icon, textColor } = STATUS_CONFIG[s];
 
-				const displayItems: HW[] = storeItems
-					.map((hw) => ({
-						...hw,
-						statusKey: s,
-					}))
-					.filter((hw) => matchesHomeworkSearch(hw, searchQuery));
-				if (!displayItems.length) return null;
-
-				const total = isSearching
-					? displayItems.length
-					: (subjectData.counters?.[s] ?? displayItems.length);
-				const hasMore =
-					!isSearching &&
-					!subjectData.expandedStatuses.has(numKey) &&
-					displayItems.length < total;
-				const { label, icon: Icon, textColor } = STATUS_CONFIG[s];
-
-				return (
-					<div key={s}>
-						<h2 className="text-base font-semibold text-app-text mb-3 flex items-center gap-2">
-							<Icon size={18} className={textColor} />
-							{label}
-							<span className="text-sm text-app-muted font-normal">
-								({total}
-								{hasMore ? "+" : ""})
-							</span>
-						</h2>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-							{displayItems.map((hw) => (
-								<HomeworkCard key={hw.id} hw={hw} />
-							))}
+					return (
+						<div key={s}>
+							<h2 className="text-base font-semibold text-app-text mb-3 flex items-center gap-2">
+								<Icon size={18} className={textColor} />
+								{label}
+								<span className="text-sm text-app-muted font-normal">
+									({total}
+									{hasMore ? "+" : ""})
+								</span>
+							</h2>
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
+								{displayItems.map((hw) => (
+									<HomeworkCard key={hw.id} hw={hw} />
+								))}
+							</div>
+							{hasMore && (
+								<ShowMoreBtn
+									onClick={() => onLoadMoreForSubject(selectedSpec.id, numKey)}
+									remaining={total - displayItems.length}
+								/>
+							)}
 						</div>
-						{hasMore && (
-							<ShowMoreBtn
-								onClick={() => onLoadMoreForSubject(selectedSpec.id, numKey)}
-								remaining={total - displayItems.length}
-							/>
-						)}
-					</div>
-				);
-			})}
+					);
+				},
+			)}
 		</div>
 	);
 }

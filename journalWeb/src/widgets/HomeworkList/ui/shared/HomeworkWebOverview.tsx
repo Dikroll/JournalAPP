@@ -3,14 +3,14 @@ import {
 	CheckCircle2,
 	Clock3,
 	FileText,
-	Sparkles,
 	GraduationCap,
+	Sparkles,
 } from "lucide-react";
 import type {
 	HomeworkCounters,
 	HomeworkItem,
-	HomeworkStatus,
 	HomeworkItemWithStatus,
+	HomeworkStatus,
 } from "@/entities/homework";
 import { STATUS_KEY_MAP } from "@/entities/homework";
 import { getTodayString } from "@/shared/utils";
@@ -57,10 +57,15 @@ function getHomeworkWord(count: number) {
 	return "новых заданий";
 }
 
-function getNearestDeadline(items: Record<string, HomeworkItem[]>): HomeworkItemWithStatus | undefined {
+function getNearestDeadline(
+	items: Record<string, HomeworkItem[]>,
+): HomeworkItemWithStatus | undefined {
 	const statuses: HomeworkStatus[] = ["new", "returned"];
-	const activeItems = statuses.flatMap(
-		(status) => (items[STATUS_KEY_MAP[status]] ?? []).map(hw => ({...hw, statusKey: status}))
+	const activeItems = statuses.flatMap((status) =>
+		(items[STATUS_KEY_MAP[status]] ?? []).map((hw) => ({
+			...hw,
+			statusKey: status,
+		})),
 	);
 
 	return activeItems.sort(
@@ -96,13 +101,19 @@ function focusHomeworkCard(homeworkId: number) {
 		});
 
 		target.dataset.deadlineFocus = "false";
-		window.setTimeout(() => {
-			target.dataset.deadlineFocus = "true";
-		}, prefersReducedMotion ? 0 : 220);
+		window.setTimeout(
+			() => {
+				target.dataset.deadlineFocus = "true";
+			},
+			prefersReducedMotion ? 0 : 220,
+		);
 
-		window.setTimeout(() => {
-			delete target.dataset.deadlineFocus;
-		}, prefersReducedMotion ? 900 : 1700);
+		window.setTimeout(
+			() => {
+				delete target.dataset.deadlineFocus;
+			},
+			prefersReducedMotion ? 900 : 1700,
+		);
 	};
 
 	window.setTimeout(tryFocus, 50);
@@ -113,10 +124,10 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 	const nearestDeadline = getNearestDeadline(items);
 
 	return (
-		<div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
+		<div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,2.1fr)_minmax(280px,0.9fr)]">
 			<section className="flex flex-col rounded-[20px] border border-app-border bg-app-surface p-5 shadow-[var(--shadow-card)] h-full">
-				<div className="flex-1 grid min-h-[150px] grid-cols-3 items-stretch gap-4 lg:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
-					<div className="col-span-3 flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 lg:col-span-1">
+				<div className="grid min-h-[150px] flex-1 grid-cols-[repeat(auto-fit,minmax(min(100%,150px),1fr))] items-stretch gap-4 2xl:grid-cols-[minmax(220px,1fr)_repeat(3,minmax(116px,0.45fr))]">
+					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-brand/20 bg-brand/10 p-4 md:col-span-2 2xl:col-span-1">
 						<div className="flex items-center justify-between gap-2">
 							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/15 text-brand">
 								<FileText size={26} />
@@ -134,7 +145,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 
 					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-new/20 bg-status-new/10 p-4">
 						<div className="flex items-center justify-between gap-2">
-							<span className="text-3xl font-bold leading-none text-status-new xl:text-4xl">
+							<span className="text-[34px] font-bold leading-none text-status-new xl:text-[42px]">
 								{counters.new}
 							</span>
 							<Sparkles size={18} className="text-status-new" />
@@ -144,7 +155,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 
 					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-pending/20 bg-status-pending/10 p-4">
 						<div className="flex items-center justify-between gap-2">
-							<span className="text-3xl font-bold leading-none text-status-pending xl:text-4xl">
+							<span className="text-[34px] font-bold leading-none text-status-pending xl:text-[42px]">
 								{counters.pending}
 							</span>
 							<Clock3 size={18} className="text-status-pending" />
@@ -156,7 +167,7 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 
 					<div className="flex min-w-0 flex-col justify-between rounded-2xl border border-status-overdue/20 bg-status-overdue/10 p-4">
 						<div className="flex items-center justify-between gap-2">
-							<span className="text-3xl font-bold leading-none text-status-overdue xl:text-4xl">
+							<span className="text-[34px] font-bold leading-none text-status-overdue xl:text-[42px]">
 								{counters.overdue}
 							</span>
 							<Clock3 size={18} className="text-status-overdue" />
@@ -196,8 +207,13 @@ export function HomeworkWebOverview({ counters, items, onFilter }: Props) {
 						</p>
 						{nearestDeadline.teacher && (
 							<div className="flex items-center gap-1.5 mt-2 text-[12px]">
-								<GraduationCap size={13} className="text-app-text flex-shrink-0" />
-								<span className="text-app-text font-medium truncate">{nearestDeadline.teacher}</span>
+								<GraduationCap
+									size={13}
+									className="text-app-text flex-shrink-0"
+								/>
+								<span className="text-app-text font-medium truncate">
+									{nearestDeadline.teacher}
+								</span>
 							</div>
 						)}
 					</button>

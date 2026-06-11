@@ -1,13 +1,13 @@
-import { deriveHomeworkCardState } from '@/entities/homework'
-import type { HomeworkItemWithStatus } from '@/entities/homework'
-import { getCachedImageUrl } from '@/shared/lib'
-import { PhotoViewerModal } from '@/shared/ui'
-import { ChevronDown, MessageSquare } from 'lucide-react'
-import { memo, useState } from 'react'
-import { createPortal } from 'react-dom'
-import { HomeworkCardActions } from './HomeworkCardActions'
-import { HomeworkCardDates } from './HomeworkCardDates'
-import { HomeworkCardHeader } from './HomeworkCardHeader'
+import { ChevronDown, MessageSquare } from "lucide-react";
+import { memo, useState } from "react";
+import { createPortal } from "react-dom";
+import type { HomeworkItemWithStatus } from "@/entities/homework";
+import { deriveHomeworkCardState } from "@/entities/homework";
+import { getCachedImageUrl } from "@/shared/lib";
+import { PhotoViewerModal } from "@/shared/ui";
+import { HomeworkCardActions } from "./HomeworkCardActions";
+import { HomeworkCardDates } from "./HomeworkCardDates";
+import { HomeworkCardHeader } from "./HomeworkCardHeader";
 
 interface Props {
 	hw: HomeworkItemWithStatus;
@@ -15,8 +15,8 @@ interface Props {
 
 export const HomeworkCard = memo(
 	function HomeworkCard({ hw }: Props) {
-		const [commentOpen, setCommentOpen] = useState(false)
-		const [viewerOpen, setViewerOpen] = useState(false)
+		const [commentOpen, setCommentOpen] = useState(false);
+		const [viewerOpen, setViewerOpen] = useState(false);
 
 		const photoUrl = getCachedImageUrl(hw.photo_url);
 		const {
@@ -51,7 +51,13 @@ export const HomeworkCard = memo(
 						</button>
 					)}
 
-					<div className={photoUrl ? 'p-4 flex flex-col flex-1 gap-3' : 'p-5 flex flex-col flex-1'}>
+					<div
+						className={
+							photoUrl
+								? "p-4 flex flex-col flex-1 gap-3"
+								: "p-5 flex flex-col flex-1"
+						}
+					>
 						<HomeworkCardHeader hw={hw} gradeStyle={gradeStyle} grade={grade} />
 
 						<HomeworkCardDates
