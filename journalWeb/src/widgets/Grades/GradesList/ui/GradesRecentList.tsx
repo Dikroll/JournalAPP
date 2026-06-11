@@ -5,13 +5,7 @@ import type { LessonItem } from "@/entities/schedule";
 import { useLazyItems } from "@/shared/hooks";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { isWebPlatform } from "@/shared/lib/platform";
-import {
-	formatDateRelative,
-	formatWeekLabel,
-	getStartOfWeek,
-	getTodayString,
-	toDateString,
-} from "@/shared/utils";
+import { formatDateRelative, getTodayString } from "@/shared/utils";
 import { GradeEntryRow } from "./GradeEntryRow";
 
 interface Props {

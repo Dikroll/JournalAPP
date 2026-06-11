@@ -73,33 +73,52 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 				style={{ boxShadow: "var(--shadow-card)" }}
 			>
 				<div className="flex items-center justify-between mb-8">
-					<div className="text-[18px] font-bold text-app-text">Сводка оценок</div>
+					<div className="text-[18px] font-bold text-app-text">
+						Сводка оценок
+					</div>
 				</div>
 
-				<div className="grid grid-cols-3 gap-4 mb-8">
-					<div>
-						<div 
-							className="text-[34px] font-bold leading-none tabular-nums" 
-							style={{ color: avg != null ? (avg >= 4.5 ? GRADE_COLOR[5] : avg >= 3.5 ? GRADE_COLOR[4] : avg >= 2.5 ? GRADE_COLOR[3] : GRADE_COLOR[2]) : GRADE_COLOR[5] }}
+				<div className="grid grid-cols-[repeat(auto-fit,minmax(84px,1fr))] gap-x-4 gap-y-5 mb-8">
+					<div className="min-w-0">
+						<div
+							className="text-[28px] 2xl:text-[34px] font-bold leading-none tabular-nums break-words"
+							style={{
+								color:
+									avg != null
+										? avg >= 4.5
+											? GRADE_COLOR[5]
+											: avg >= 3.5
+												? GRADE_COLOR[4]
+												: avg >= 2.5
+													? GRADE_COLOR[3]
+													: GRADE_COLOR[2]
+										: GRADE_COLOR[5],
+							}}
 						>
 							{avg != null ? avg.toFixed(1) : "—"}
 						</div>
-						<div className="text-[13px] text-app-muted mt-2">средний балл</div>
+						<div className="text-[12px] 2xl:text-[13px] text-app-muted mt-2 leading-snug">
+							средний балл
+						</div>
 					</div>
-					<div>
-						<div 
-							className="text-[34px] font-bold leading-none tabular-nums" 
+					<div className="min-w-0">
+						<div
+							className="text-[28px] 2xl:text-[34px] font-bold leading-none tabular-nums break-words"
 							style={{ color: GRADE_COLOR[4] }}
 						>
 							{att != null ? `${att}%` : "—"}
 						</div>
-						<div className="text-[13px] text-app-muted mt-2">посещаемость</div>
+						<div className="text-[12px] 2xl:text-[13px] text-app-muted mt-2 leading-snug">
+							посещаемость
+						</div>
 					</div>
-					<div>
-						<div className="text-[34px] font-bold text-app-text leading-none tabular-nums">
+					<div className="min-w-0">
+						<div className="text-[28px] 2xl:text-[34px] font-bold text-app-text leading-none tabular-nums break-words">
 							{totalMarks}
 						</div>
-						<div className="text-[13px] text-app-muted mt-2">всего оценок</div>
+						<div className="text-[12px] 2xl:text-[13px] text-app-muted mt-2 leading-snug">
+							всего оценок
+						</div>
 					</div>
 				</div>
 
@@ -169,8 +188,9 @@ export function GoalsSummaryCard({ className }: { className?: string }) {
 				)}
 
 				<div className="mt-8 flex justify-center w-full">
-					<button 
-						onClick={() => navigate(pageConfig.goals)} 
+					<button
+						type="button"
+						onClick={() => navigate(pageConfig.goals)}
 						className="flex items-center justify-center gap-2 text-[14px] font-medium text-app-muted hover:text-app-text transition-colors"
 					>
 						<Target size={16} />

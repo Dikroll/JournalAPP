@@ -61,7 +61,7 @@ export function HomeworkWebFilters({
 }: Props) {
 	return (
 		<section className="rounded-[20px] border border-app-border bg-app-surface p-3 shadow-[var(--shadow-card)]">
-			<div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(300px,340px)] lg:items-center">
+			<div className="grid grid-cols-1 gap-3 2xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)] 2xl:items-center">
 				<div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-none">
 					{FILTERS.map(({ label, status, countKey, color, widthClass }) => {
 						const isActive = activeFilter === status;

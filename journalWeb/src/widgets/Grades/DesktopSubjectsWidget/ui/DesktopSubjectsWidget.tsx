@@ -1,8 +1,12 @@
-import { useMemo } from "react";
 import { ChevronRight } from "lucide-react";
+import { useMemo } from "react";
+import { gradeColor } from "@/entities/goals";
 import { useGrades } from "@/entities/grades";
 import { useSubjects } from "@/entities/subject";
-import { gradeColor } from "@/entities/goals";
+import {
+	normalizeSubjectName,
+	useFutureScheduledSubjects,
+} from "@/features/goalForecast/hooks/useScheduledSubjects";
 
 interface SubjectStatsWithAttendance {
 	specId: number;
@@ -19,6 +23,7 @@ interface Props {
 export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 	const { entries } = useGrades();
 	const { subjects } = useSubjects();
+	const activeSubjectNames = useFutureScheduledSubjects();
 
 	const stats = useMemo(() => {
 		const bySpec: Record<number, typeof entries> = {};
@@ -40,10 +45,17 @@ export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 				items[0]?.spec_name ??
 				`Предмет ${specId}`;
 
+			if (
+				activeSubjectNames.size > 0 &&
+				!activeSubjectNames.has(normalizeSubjectName(specName))
+			) {
+				continue;
+			}
+
 			let totalMarksValue = 0;
 			let totalMarksCount = 0;
 			let absences = 0;
-			let totalClasses = items.length;
+			const totalClasses = items.length;
 
 			let hasRecent = false;
 			const thresholdDate = new Date();
@@ -92,7 +104,7 @@ export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 				return a.specName.localeCompare(b.specName, "ru");
 			})
 			.slice(0, 4);
-	}, [entries, subjects]);
+	}, [entries, subjects, activeSubjectNames]);
 
 	if (stats.length === 0) return null;
 
@@ -112,6 +124,7 @@ export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 
 					return (
 						<button
+							type="button"
 							key={s.specId}
 							onClick={() => onSubjectClick?.(s.specId)}
 							className="group w-full text-left block active:scale-[0.99] transition-transform"
@@ -127,14 +140,14 @@ export function DesktopSubjectsWidget({ onViewAll, onSubjectClick }: Props) {
 									<ChevronRight size={16} className="text-app-muted" />
 								</div>
 							</div>
-							
+
 							<div className="h-[4px] w-full rounded-full bg-app-surface-strong overflow-hidden mb-1.5">
 								<div
 									className="h-full rounded-full transition-all"
 									style={{ width: `${s.attendanceRate}%`, background: color }}
 								/>
 							</div>
-							
+
 							<div className="text-[11px] text-app-muted text-right">
 								Посещаемость: {Math.round(s.attendanceRate)}%
 							</div>

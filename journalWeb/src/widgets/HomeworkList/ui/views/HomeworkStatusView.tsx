@@ -97,7 +97,7 @@ export function HomeworkStatusView({
 									{!isSearching && group.hasMore ? "+" : ""})
 								</span>
 							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
 								{group.items.map((hw) => (
 									<HomeworkCard key={hw.id} hw={hw} />
 								))}
@@ -133,7 +133,7 @@ export function HomeworkStatusView({
 									({group.items.length})
 								</span>
 							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
 								{group.items.map((hw) => (
 									<HomeworkCard key={hw.id} hw={hw} />
 								))}
@@ -239,7 +239,7 @@ export function HomeworkStatusView({
 									{hasMore ? "+" : ""})
 								</span>
 							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+							<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-3">
 								{displayItems.map((hw) => (
 									<HomeworkCard key={hw.id} hw={hw} />
 								))}
