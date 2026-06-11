@@ -95,8 +95,8 @@ export function HomeworkWebFilters({
 										"rounded-lg px-1.5 py-0.5 text-xs font-bold",
 										isActive
 											? color
-												? "bg-app-surface"
-												: "bg-app-surface text-app-text"
+												? "bg-app-surface-strong"
+												: "bg-app-surface-strong text-app-text"
 											: color
 												? "bg-app-surface-strong"
 												: "bg-app-surface-strong text-app-muted",

@@ -114,7 +114,7 @@ export function LeaderboardModal({
 	};
 
 	return createPortal(
-		<div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-12 animate-in fade-in duration-200">
+		<div className="fixed inset-0 z-50 flex items-stretch justify-center p-0 sm:items-center sm:p-6 md:p-12 animate-in fade-in duration-200">
 			{/* Backdrop */}
 			<button
 				type="button"
@@ -125,14 +125,13 @@ export function LeaderboardModal({
 
 			{/* Modal Container */}
 			<div
-				className="relative w-full max-w-4xl max-h-full flex flex-col border border-app-border rounded-[24px] shadow-2xl overflow-hidden"
+				className="relative flex h-[100dvh] max-h-[100dvh] w-full max-w-4xl flex-col overflow-hidden border border-app-border shadow-2xl sm:h-auto sm:max-h-[calc(100dvh-48px)] sm:rounded-[24px]"
 				style={{
 					background: "var(--color-modal-bg)",
-					maxHeight: "calc(100vh - 16px)",
 				}}
 			>
 				{/* Header */}
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-app-border gap-4 shrink-0">
+				<div className="flex shrink-0 flex-col justify-between gap-4 border-b border-app-border px-6 pb-5 pt-[max(36px,calc(env(safe-area-inset-top)+20px))] sm:flex-row sm:items-center sm:p-6">
 					<h2 className="text-xl font-bold text-app-text">Рейтинг</h2>
 
 					{/* Tabs */}
@@ -156,7 +155,7 @@ export function LeaderboardModal({
 					<button
 						type="button"
 						onClick={onClose}
-						className="absolute top-6 right-6 text-app-muted hover:text-app-text transition-colors"
+						className="absolute right-6 top-[max(36px,calc(env(safe-area-inset-top)+20px))] text-app-muted transition-colors hover:text-app-text sm:top-6"
 					>
 						<X size={20} />
 					</button>
@@ -164,14 +163,14 @@ export function LeaderboardModal({
 
 				{/* Subtitle */}
 				{myPosition != null && (
-					<div className="text-center py-4 text-sm text-app-muted shrink-0">
+					<div className="shrink-0 py-4 text-center text-sm text-app-muted">
 						Ваше место: {myPosition}
 					</div>
 				)}
 
 				{/* Content Scroll Area */}
 				<div
-					className="flex-1 overflow-y-auto p-4 sm:p-6"
+					className="min-h-0 flex-1 overflow-y-auto px-4 pb-[max(20px,env(safe-area-inset-bottom))] pt-4 sm:p-6"
 					style={{ scrollbarWidth: "thin" }}
 				>
 					{/* TOP 3 */}
