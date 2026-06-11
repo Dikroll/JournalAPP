@@ -1,6 +1,6 @@
 import { Clock, GraduationCap, MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { getGradeStyle, type GradeEntryExpanded } from "@/entities/grades";
+import { getGradeStyle, GRADE_TYPE_CONFIG, type GradeEntryExpanded } from "@/entities/grades";
 import type { LessonItem } from "@/entities/schedule";
 import { useLazyItems } from "@/shared/hooks";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
@@ -270,10 +270,9 @@ export function GradesRecentList({
 		<div className="space-y-4">
 			<div 
 				className="grid gap-4 px-4 py-2 text-[13px] font-medium text-app-muted border-b border-app-border" 
-				style={{ gridTemplateColumns: "30px 60px 1fr 100px 120px" }}
+				style={{ gridTemplateColumns: "30px 1fr 100px 120px" }}
 			>
 				<div>№</div>
-				<div>Время</div>
 				<div>Предмет</div>
 				<div>Посещение</div>
 				<div>Оценки</div>
@@ -315,10 +314,9 @@ export function GradesRecentList({
 									<div 
 										key={idx} 
 										className="grid gap-4 px-4 py-3 border-b border-app-border last:border-0 items-center text-[13px]" 
-										style={{ gridTemplateColumns: "30px 60px 1fr 100px 120px" }}
+										style={{ gridTemplateColumns: "30px 1fr 100px 120px" }}
 									>
 										<div className="text-app-muted font-medium">{lessonNum}</div>
-										<div className="text-app-muted">{time}</div>
 										<div className="min-w-0 pr-4">
 											<div className="text-app-text font-medium truncate">{subjectName}</div>
 											{teacher && <div className="text-[11px] text-app-muted truncate mt-0.5">{teacher}</div>}
@@ -330,10 +328,20 @@ export function GradesRecentList({
 													{entry!.flatMarks.map((m, i) => (
 														<div 
 															key={i} 
-															className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs text-white" 
-															style={getGradeStyle(m.value)}
+															className="flex items-center gap-1.5 bg-app-surface-strong border border-app-border rounded px-1.5 py-1"
 														>
-															{m.value}
+															<span 
+																className="text-[10px] text-app-muted rounded" 
+																style={GRADE_TYPE_CONFIG[m.type]?.style}
+															>
+																{GRADE_TYPE_CONFIG[m.type]?.label || m.type}
+															</span>
+															<div 
+																className="w-5 h-5 rounded-[4px] flex items-center justify-center font-bold text-[11px] text-white" 
+																style={getGradeStyle(m.value)}
+															>
+																{m.value}
+															</div>
 														</div>
 													))}
 												</div>

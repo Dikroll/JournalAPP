@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { GradeEntryExpanded } from "@/entities/grades";
-import { GRADE_DOT_LEGEND, getGradeDotInfo, getGradeStyle } from "@/entities/grades";
+import { GRADE_DOT_LEGEND, getGradeDotInfo, getGradeStyle, GRADE_TYPE_CONFIG } from "@/entities/grades";
 import { useMonthNav } from "@/shared/hooks";
 import { useIsDesktop } from "@/shared/hooks/useIsDesktop";
 import { MonthGrid } from "@/shared/ui";
@@ -202,7 +202,23 @@ export function GradesCalendar({ byMonth }: Props) {
 												{entry.flatMarks.length > 0 ? (
 													<div className="flex flex-wrap gap-1.5">
 														{entry.flatMarks.map((m, i) => (
-															<div key={i} className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs text-white" style={getGradeStyle(m.value)}>{m.value}</div>
+															<div 
+																key={i} 
+																className="flex items-center gap-1.5 bg-app-surface-strong border border-app-border rounded px-1.5 py-1"
+															>
+																<span 
+																	className="text-[10px] text-app-muted rounded" 
+																	style={GRADE_TYPE_CONFIG[m.type]?.style}
+																>
+																	{GRADE_TYPE_CONFIG[m.type]?.label || m.type}
+																</span>
+																<div 
+																	className="w-5 h-5 rounded-[4px] flex items-center justify-center font-bold text-[11px] text-white" 
+																	style={getGradeStyle(m.value)}
+																>
+																	{m.value}
+																</div>
+															</div>
 														))}
 													</div>
 												) : (

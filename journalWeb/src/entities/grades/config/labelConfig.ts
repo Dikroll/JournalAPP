@@ -69,12 +69,19 @@ export const GRADE_TYPE_CONFIG: Record<GradeType, GradeTypeStyle> = {
 	},
 };
 
-export function getGradeStyle(grade: number): {
+export function getGradeStyle(grade: number | string): {
 	background: string;
 	color: string;
 	borderColor: string;
 } {
-	if (grade >= 5)
+	if (grade === "З" || grade === "Зачет" || grade === "Зачёт") {
+		return {
+			background: "rgba(168,85,247,0.15)",
+			color: "#A855F7",
+			borderColor: "rgba(168,85,247,0.35)",
+		};
+	}
+	if (typeof grade === "number" && grade >= 5)
 		return {
 			background: "rgba(16,185,129,0.15)",
 			color: "#10B981",
