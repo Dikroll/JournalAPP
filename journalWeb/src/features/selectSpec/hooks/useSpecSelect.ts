@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Subject } from "@/entities/subject";
-import { useSpecSelectorStore } from "../models/store";
 
 interface Params {
 	subjects: Subject[];
@@ -9,11 +8,17 @@ interface Params {
 }
 
 export function useSpecSelector({ subjects, selectedId, onChange }: Params) {
-	const { open, search, setOpen, setSearch, close } = useSpecSelectorStore();
+	const [open, setOpen] = useState(false);
+	const [search, setSearch] = useState("");
 
 	const ref = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const shouldFocusInput = useRef(false);
+
+	const close = useCallback(() => {
+		setOpen(false);
+		setSearch("");
+	}, []);
 
 	const selected = subjects.find((s) => s.id === selectedId) ?? null;
 
@@ -30,20 +35,6 @@ export function useSpecSelector({ subjects, selectedId, onChange }: Params) {
 		document.addEventListener("mousedown", handler);
 		return () => document.removeEventListener("mousedown", handler);
 	}, [close]);
-
-	useEffect(() => {
-		if (!open) return;
-
-		const onBack = () => close();
-
-		window.addEventListener("popstate", onBack);
-		history.pushState({ specSelector: true }, "");
-
-		return () => {
-			window.removeEventListener("popstate", onBack);
-			if (history.state?.specSelector) history.back();
-		};
-	}, [open, close]);
 
 	useEffect(() => {
 		if (open && inputRef.current && shouldFocusInput.current) {
@@ -63,6 +54,7 @@ export function useSpecSelector({ subjects, selectedId, onChange }: Params) {
 
 	const handleSelect = (subject: Subject | null) => {
 		onChange(subject);
+		setSearch("");
 		close();
 	};
 
